@@ -239,15 +239,18 @@ export function ArrestCalculatorPage() {
                                   setOpenChargeSelector(null);
                                 }}
                                 disabled={c.type === '?'}
+                                className="flex items-center"
                               >
-                                <Check
-                                  className={cn(
-                                    'mr-2 h-4 w-4',
-                                    chargeRow.chargeId === c.id
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
+                                <div className="w-6">
+                                  <Check
+                                    className={cn(
+                                      'mr-2 h-4 w-4',
+                                      chargeRow.chargeId === c.id
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )}
+                                  />
+                                </div>
                                 <Badge
                                   className={cn(
                                     'mr-2 rounded-sm px-1.5 py-0.5 text-xs',
@@ -256,7 +259,7 @@ export function ArrestCalculatorPage() {
                                 >
                                   {c.id}
                                 </Badge>
-                                {c.charge}
+                                <span className="flex-1 truncate">{c.charge}</span>
                               </CommandItem>
                             ))}
                           </CommandGroup>
