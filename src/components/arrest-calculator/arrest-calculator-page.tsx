@@ -26,6 +26,7 @@ import { Label } from '@/components/ui/label';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Plus, Trash2, ChevronsUpDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface Charge {
   id: string;
@@ -48,16 +49,16 @@ interface SelectedCharge {
   addition: string | null;
 }
 
-const getTypeColor = (type: Charge['type']) => {
+const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
     case 'F':
-      return 'text-red-500';
+      return 'bg-red-500 hover:bg-red-500/80 text-white';
     case 'M':
-      return 'text-yellow-500';
+      return 'bg-yellow-500 hover:bg-yellow-500/80 text-white';
     case 'I':
-      return 'text-green-500';
+      return 'bg-green-500 hover:bg-green-500/80 text-white';
     default:
-      return 'text-gray-500';
+      return 'bg-gray-500 hover:bg-gray-500/80 text-white';
   }
 };
 
@@ -156,9 +157,9 @@ export function ArrestCalculatorPage() {
                         {chargeRow.chargeId && penalCode[chargeRow.chargeId]
                           ? (
                             <span className="flex items-center">
-                              <span className={`${getTypeColor(penalCode[chargeRow.chargeId].type)} font-bold mr-2`}>
+                              <Badge className={cn('mr-2', getTypeClasses(penalCode[chargeRow.chargeId].type))}>
                                 {penalCode[chargeRow.chargeId].id}
-                              </span>
+                              </Badge>
                               {penalCode[chargeRow.chargeId].charge}
                             </span>
                           )
@@ -201,9 +202,9 @@ export function ArrestCalculatorPage() {
                                     chargeRow.chargeId === c.id ? 'opacity-100' : 'opacity-0'
                                   )}
                                 />
-                                <span className={`${getTypeColor(c.type)} font-bold mr-2`}>
+                                 <Badge className={cn('mr-2', getTypeClasses(c.type))}>
                                   {c.id}
-                                </span>
+                                </Badge>
                                 {c.charge}
                               </CommandItem>
                             ))}
@@ -261,7 +262,7 @@ export function ArrestCalculatorPage() {
                   <Label htmlFor={`addition-${chargeRow.uniqueId}`}>Addition</Label>
                    <Select
                     value={chargeRow.addition || ''}
-                    onValueChange={(value) =>
+                    onValue-change={(value) =>
                       updateCharge(chargeRow.uniqueId, 'addition', value)
                     }
                     disabled={!chargeDetails}
