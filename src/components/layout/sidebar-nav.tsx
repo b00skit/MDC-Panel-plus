@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel, FileText } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useState, useEffect } from 'react';
 
 import {
   SidebarHeader,
@@ -20,6 +21,11 @@ import { Separator } from '@/components/ui/separator';
 export function SidebarNav() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isActive = (path: string) => {
     return pathname === path;
@@ -98,8 +104,8 @@ export function SidebarNav() {
           </SidebarMenuItem>
            <SidebarMenuItem>
             <SidebarMenuButton onClick={toggleTheme}>
-              {theme === 'light' ? <Sun /> : <Moon />}
-              <span>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
+              {mounted && theme === 'light' ? <Sun /> : <Moon />}
+              <span>{mounted && theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
