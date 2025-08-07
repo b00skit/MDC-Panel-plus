@@ -49,7 +49,7 @@ export function SidebarNav() {
           </Link>
            <div className="flex items-center gap-1">
             <span className="text-xl font-semibold font-headline">MDC Panel</span>
-            <span className="font-bold text-primary">+</span>
+            <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">+</span>
           </div>
         </div>
       </SidebarHeader>
