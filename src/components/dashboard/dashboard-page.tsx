@@ -4,50 +4,50 @@ import { useState, useEffect } from 'react';
 import { PageHeader } from './page-header';
 import { ModuleCard, type ModuleCardProps } from './module-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FileText, CalendarCheck, Shield, Activity, Users, Puzzle } from 'lucide-react';
+import { Gavel, FileText, BookOpen, Landmark, Puzzle } from 'lucide-react';
 
 const modules: ModuleCardProps[] = [
   {
-    title: "Content Generator",
-    description: "Generate articles, summaries, and other text content.",
+    title: "Arrest Calculator",
+    description: "Calculate arrest sentences based on charges.",
+    icon: <Gavel className="w-8 h-8 text-primary" />,
+    href: "/arrest-calculator",
+    dataAiHint: "calculator gavel"
+  },
+  {
+    title: "Arrest Report",
+    description: "Create and manage arrest reports.",
     icon: <FileText className="w-8 h-8 text-primary" />,
-    href: "#",
-    dataAiHint: "writing text"
+    href: "/arrest-report",
+    dataAiHint: "report document"
   },
   {
-    title: "Task Scheduler",
-    description: "Automate and manage your upcoming tasks and events.",
-    icon: <CalendarCheck className="w-8 h-8 text-primary" />,
+    title: "Simplified Penal Code",
+    description: "Browse a simplified version of the penal code.",
+    icon: <BookOpen className="w-8 h-8 text-primary" />,
     href: "#",
-    dataAiHint: "planning schedule"
+    dataAiHint: "law book"
   },
   {
-    title: "Security Scanner",
-    description: "Analyze and secure your applications from vulnerabilities.",
-    icon: <Shield className="w-8 h-8 text-primary" />,
+    title: "Caselaw & Legal Resources",
+    description: "Access caselaw and other legal resources.",
+    icon: <Landmark className="w-8 h-8 text-primary" />,
     href: "#",
-    dataAiHint: "cyber security"
+    dataAiHint: "court building"
   },
   {
-    title: "API Monitor",
-    description: "Keep track of your API's health and performance.",
-    icon: <Activity className="w-8 h-8 text-primary" />,
-    href: "#",
-    dataAiHint: "server analytics"
-  },
-  {
-    title: "User Management",
-    description: "Manage users, roles, and permissions with ease.",
-    icon: <Users className="w-8 h-8 text-primary" />,
-    href: "#",
-    dataAiHint: "team collaboration"
-  },
-  {
-    title: "Plugin Integrations",
-    description: "Extend functionality with third-party plugins.",
+    title: "Placeholder Module",
+    description: "This is a placeholder for a future module.",
     icon: <Puzzle className="w-8 h-8 text-primary" />,
     href: "#",
-    dataAiHint: "puzzle pieces"
+    dataAiHint: "puzzle piece"
+  },
+  {
+    title: "Another Placeholder",
+    description: "This is another placeholder for a future module.",
+    icon: <Puzzle className="w-8 h-8 text-primary" />,
+    href: "#",
+    dataAiHint: "puzzle piece"
   },
 ];
 

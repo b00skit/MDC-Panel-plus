@@ -14,13 +14,13 @@ function Footer() {
         <Separator className="my-4 bg-transparent" />
         <div className="container mx-auto flex flex-col items-center justify-center gap-4">
             <Image 
-                src="/img/logos/MDC-Logo.svg"
+                src="/img/logos/MDC-Panel.svg"
                 width={80}
                 height={40}
                 alt="MDC Panel Logo"
             />
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear() + 1} MDC Panel. All rights reserved.
+            &copy; 2025-{new Date().getFullYear() + 1} MDC Panel. All rights reserved.
           </p>
         </div>
       </footer>
