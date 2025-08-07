@@ -2,8 +2,9 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Shield, LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel } from 'lucide-react';
+import { LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import {
@@ -32,9 +33,14 @@ export function SidebarNav() {
     <>
       <SidebarHeader>
         <div className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <Shield className="h-6 w-6 text-primary-foreground" />
-          </div>
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/MDC-Panel-Favicon.svg"
+              width={40}
+              height={40}
+              alt="MDC Panel Logo"
+            />
+          </Link>
            <div className="flex items-center gap-1">
             <span className="text-xl font-semibold font-headline">MDC Panel</span>
             <span className="font-bold text-primary">+</span>
