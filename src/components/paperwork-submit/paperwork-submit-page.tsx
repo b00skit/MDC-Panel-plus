@@ -245,19 +245,29 @@ const SummaryTable = ({ totals }: { totals: any }) => {
 
 const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any) => {
     const { general, arrest, location, evidence, officers } = formData;
-    
-    const getReportHeader = () => {
-        const primaryOfficer = officers?.[0];
-        if (primaryOfficer?.department) {
-            return primaryOfficer.department.toUpperCase();
+    const [header, setHeader] = useState('COUNTY OF LOS SANTOS');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedOfficer = localStorage.getItem('initial-officer-storage');
+            if (storedOfficer) {
+                try {
+                    const parsedOfficer = JSON.parse(storedOfficer);
+                    if (parsedOfficer.department) {
+                        setHeader(parsedOfficer.department.toUpperCase());
+                    }
+                } catch (e) {
+                    console.error('Failed to parse stored officer data', e);
+                }
+            }
         }
-        return 'COUNTY OF LOS SANTOS';
-    };
+    }, []);
+    
 
     return (
       <Card className="p-8 font-serif" ref={innerRef}>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold uppercase">{getReportHeader()}</h1>
+          <h1 className="text-3xl font-bold uppercase">{header}</h1>
           <h2 className="text-2xl font-semibold">Arrest Report</h2>
         </div>
   
@@ -308,9 +318,11 @@ const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any)
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-gray-200 dark:bg-gray-700">
-                            <TableHead className="w-[70%]">CHARGE DESCRIPTION</TableHead>
+                            <TableHead className="w-[50%]">CHARGE DESCRIPTION</TableHead>
                             <TableHead>TYPE</TableHead>
                             <TableHead>CLASS</TableHead>
+                            <TableHead>OFFENCE</TableHead>
+                            <TableHead>ADDITION</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -323,6 +335,8 @@ const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any)
                                     <TableCell>{title}</TableCell>
                                     <TableCell>{getType(chargeDetails.type)}</TableCell>
                                     <TableCell>{row.class}</TableCell>
+                                    <TableCell>{row.offense}</TableCell>
+                                    <TableCell>{row.addition}</TableCell>
                                 </TableRow>
                              )
                         })}
@@ -530,5 +544,3 @@ export function PaperworkSubmitPage() {
     </div>
   );
 }
-
-    
