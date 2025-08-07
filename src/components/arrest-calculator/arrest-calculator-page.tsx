@@ -141,7 +141,7 @@ export function ArrestCalculatorPage() {
               key={chargeRow.uniqueId}
               className="flex items-end gap-2 p-4 border rounded-lg"
             >
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-2">
                 {/* Charge Dropdown */}
                 <div className="space-y-1.5 md:col-span-2">
                   <Label>Charge</Label>
@@ -151,16 +151,16 @@ export function ArrestCalculatorPage() {
                         variant="outline"
                         role="combobox"
                         aria-expanded={openChargeSelector === chargeRow.uniqueId}
-                        className="w-full justify-between"
+                        className="w-full justify-between h-9"
                         disabled={loading}
                       >
                         {chargeRow.chargeId && penalCode[chargeRow.chargeId]
                           ? (
                             <span className="flex items-center">
-                              <Badge className={cn('mr-2', getTypeClasses(penalCode[chargeRow.chargeId].type))}>
+                              <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(penalCode[chargeRow.chargeId].type))}>
                                 {penalCode[chargeRow.chargeId].id}
                               </Badge>
-                              {penalCode[chargeRow.chargeId].charge}
+                              <span className="truncate">{penalCode[chargeRow.chargeId].charge}</span>
                             </span>
                           )
                           : 'Select a charge...'}
@@ -203,7 +203,7 @@ export function ArrestCalculatorPage() {
                                     chargeRow.chargeId === c.id ? 'opacity-100' : 'opacity-0'
                                   )}
                                 />
-                                 <Badge className={cn('mr-2', getTypeClasses(c.type))}>
+                                 <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(c.type))}>
                                   {c.id}
                                 </Badge>
                                 {c.charge}
@@ -226,7 +226,7 @@ export function ArrestCalculatorPage() {
                     }
                     disabled={!chargeDetails}
                   >
-                    <SelectTrigger id={`class-${chargeRow.uniqueId}`}>
+                    <SelectTrigger id={`class-${chargeRow.uniqueId}`} className="h-9">
                       <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
@@ -247,7 +247,7 @@ export function ArrestCalculatorPage() {
                     }
                     disabled={!chargeDetails}
                   >
-                    <SelectTrigger id={`offense-${chargeRow.uniqueId}`}>
+                    <SelectTrigger id={`offense-${chargeRow.uniqueId}`} className="h-9">
                       <SelectValue placeholder="Select offense" />
                     </SelectTrigger>
                     <SelectContent>
@@ -263,12 +263,12 @@ export function ArrestCalculatorPage() {
                   <Label htmlFor={`addition-${chargeRow.uniqueId}`}>Addition</Label>
                    <Select
                     value={chargeRow.addition || ''}
-                    onValue-change={(value) =>
+                    onValueChange={(value) =>
                       updateCharge(chargeRow.uniqueId, 'addition', value)
                     }
                     disabled={!chargeDetails}
                   >
-                    <SelectTrigger id={`addition-${chargeRow.uniqueId}`}>
+                    <SelectTrigger id={`addition-${chargeRow.uniqueId}`} className="h-9">
                       <SelectValue placeholder="Select addition" />
                     </SelectTrigger>
                     <SelectContent>
@@ -288,7 +288,7 @@ export function ArrestCalculatorPage() {
                 variant="ghost"
                 size="icon"
                 onClick={() => removeCharge(chargeRow.uniqueId)}
-                className="text-red-500 hover:text-red-700"
+                className="text-red-500 hover:text-red-700 h-9 w-9"
               >
                 <Trash2 className="h-5 w-5" />
               </Button>
