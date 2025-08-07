@@ -251,9 +251,9 @@ export function ArrestCalculatorPage() {
                       <SelectValue placeholder="Select offense" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="1" disabled={!chargeDetails?.offence['1']}>Offense 1</SelectItem>
-                        <SelectItem value="2" disabled={!chargeDetails?.offence['2']}>Offense 2</SelectItem>
-                        <SelectItem value="3" disabled={!chargeDetails?.offence['3']}>Offense 3</SelectItem>
+                        <SelectItem value="1" disabled={!chargeDetails?.offence['1']}>Offense #1</SelectItem>
+                        <SelectItem value="2" disabled={!chargeDetails?.offence['2']}>Offense #2</SelectItem>
+                        <SelectItem value="3" disabled={!chargeDetails?.offence['3']}>Offense #3</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
