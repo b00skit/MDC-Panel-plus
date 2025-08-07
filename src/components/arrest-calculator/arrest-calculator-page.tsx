@@ -241,16 +241,14 @@ export function ArrestCalculatorPage() {
                                 disabled={c.type === '?'}
                                 className="flex items-center"
                               >
-                                <div className="w-6">
-                                  <Check
-                                    className={cn(
-                                      'mr-2 h-4 w-4',
-                                      chargeRow.chargeId === c.id
-                                        ? 'opacity-100'
-                                        : 'opacity-0'
-                                    )}
-                                  />
-                                </div>
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    chargeRow.chargeId === c.id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
                                 <Badge
                                   className={cn(
                                     'mr-2 rounded-sm px-1.5 py-0.5 text-xs',
