@@ -63,12 +63,22 @@ const InputField = ({
 );
 
 export function GeneralSection() {
-    const { general, setFormField } = useFormStore();
+    const { general, setFormField } = useFormStore(state => ({
+        general: state.formData.general,
+        setFormField: state.setFormField,
+    }));
   
     useEffect(() => {
         const now = new Date();
-        setFormField('general', 'date', format(now, 'dd/MMM/yyyy').toUpperCase());
-        setFormField('general', 'time', format(now, 'HH:mm'));
+        const existingDate = useFormStore.getState().formData.general.date;
+        const existingTime = useFormStore.getState().formData.general.time;
+        
+        if (!existingDate) {
+            setFormField('general', 'date', format(now, 'dd/MMM/yyyy').toUpperCase());
+        }
+        if (!existingTime) {
+            setFormField('general', 'time', format(now, 'HH:mm'));
+        }
     }, [setFormField]);
 
 
@@ -81,7 +91,7 @@ export function GeneralSection() {
           placeholder="DD/MMM/YYYY"
           icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
           type="text"
-          value={general.date}
+          value={general?.date || ''}
           readOnly
         />
         <InputField
@@ -90,7 +100,7 @@ export function GeneralSection() {
           placeholder="HH:MM"
           icon={<Clock className="h-4 w-4 text-muted-foreground" />}
           type="text"
-          value={general.time}
+          value={general?.time || ''}
           readOnly
         />
         <InputField
@@ -98,7 +108,7 @@ export function GeneralSection() {
           id="call-sign"
           placeholder="CALL SIGN"
           icon={<Radio className="h-4 w-4 text-muted-foreground" />}
-          value={general.callSign}
+          value={general?.callSign || ''}
           onChange={(e) => setFormField('general', 'callSign', e.target.value)}
         />
       </div>
