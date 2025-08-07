@@ -17,8 +17,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['\'Noto Sans\'', 'sans-serif'],
-        headline: ['\'Noto Sans\'', 'sans-serif'],
+        body: ['\'Segoe UI\'', 'sans-serif'],
+        headline: ['\'Segoe UI\'', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

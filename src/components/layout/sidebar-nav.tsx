@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Shield, LayoutGrid, Settings, LifeBuoy } from 'lucide-react';
+import { Shield, LayoutGrid, Settings, LifeBuoy, Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 import {
   SidebarHeader,
@@ -13,12 +14,18 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '../ui/button';
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
 
   const isActive = (path: string) => {
     return pathname === path;
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   return (
@@ -62,6 +69,12 @@ export function SidebarNav() {
                 <LifeBuoy />
                 <span>Help & Support</span>
               </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+           <SidebarMenuItem>
+            <SidebarMenuButton onClick={toggleTheme}>
+              {theme === 'light' ? <Sun /> : <Moon />}
+              <span>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
