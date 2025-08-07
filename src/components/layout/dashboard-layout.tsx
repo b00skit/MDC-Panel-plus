@@ -16,7 +16,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <SidebarInset>
         <div className="absolute inset-0 z-0">
           <Image
-            src="/img/logos/Logo-SanAndreasSealTransparent.png"
+            src="/img/logos/Logo-SanAndreasSeal.png"
             alt="San Andreas Seal"
             fill
             style={{ objectFit: 'contain' }}
