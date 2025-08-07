@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
+import { ArrestReportForm } from './arrest-report-form';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -72,291 +73,293 @@ const formatBailCost = (bailInfo: any) => {
 
 export function ArrestReportPage() {
   const { report, penalCode } = useChargeStore();
-  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    if (report.length === 0) {
-      router.push('/arrest-calculator');
-    }
-  }, [report, router]);
+  }, []);
 
-  if (!isClient || report.length === 0 || !penalCode) {
-    return (
-        <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-            <PageHeader
-                title="Arrest Report"
-                description="Loading report data..."
-            />
-             <Card>
-                <CardHeader>
-                    <CardTitle>
-                        <Skeleton className="h-8 w-1/4" />
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-2">
-                        <Skeleton className="h-12 w-full" />
-                        <Skeleton className="h-12 w-full" />
-                        <Skeleton className="h-12 w-full" />
-                    </div>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle>
-                        <Skeleton className="h-8 w-1/4" />
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
+  const hasReport = isClient && report.length > 0 && !!penalCode;
+
+  const renderSkeleton = () => (
+     <div className="space-y-6">
+         <Card>
+            <CardHeader>
+                <CardTitle>
+                    <Skeleton className="h-8 w-1/4" />
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-2">
                     <Skeleton className="h-12 w-full" />
-                </CardContent>
-            </Card>
-        </div>
-    );
-  }
-
-  const totals = report.reduce(
-    (acc, row) => {
-      const chargeDetails = penalCode[row.chargeId!];
-      const isDrugCharge = !!chargeDetails.drugs;
-
-      const getTime = (timeObj: any) => {
-        if (!timeObj) return { days: 0, hours: 0, min: 0 };
-        if (isDrugCharge && row.category) {
-          return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
-        }
-        return timeObj;
-      }
-      
-      const getFine = (fineObj: any) => {
-        if (!fineObj) return 0;
-        if(isDrugCharge && row.category) return fineObj[row.category] || 0;
-        return fineObj[row.offense!] || 0;
-      }
-
-      const minTime = getTime(chargeDetails.time);
-      const maxTime = getTime(chargeDetails.maxtime);
-
-      acc.minTime += formatTimeInMinutes(minTime);
-      acc.maxTime += formatTimeInMinutes(maxTime);
-      acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
-      acc.fine += getFine(chargeDetails.fine);
-      
-      const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
-      if (impound) acc.impound = true;
-
-      const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
-      if (suspension) acc.suspension = true;
-
-      const getBailAuto = () => {
-        if (typeof chargeDetails.bail.auto === 'object' && row.category) {
-            return chargeDetails.bail.auto[row.category];
-        }
-        return chargeDetails.bail.auto;
-      }
-
-      const bailAuto = getBailAuto();
-      if(bailAuto === false) acc.bailStatus.noBail = true;
-      if(bailAuto === 2) acc.bailStatus.discretionary = true;
-      if(bailAuto === true) acc.bailStatus.eligible = true;
-      
-      const getBailCost = () => {
-         if (typeof chargeDetails.bail.cost === 'object' && row.category) {
-            return chargeDetails.bail.cost[row.category];
-        }
-        return chargeDetails.bail.cost;
-      }
-      
-      if (bailAuto !== false) {
-        acc.bailCost += getBailCost() || 0;
-      }
-      
-      return acc;
-    },
-    { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                </div>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+                <CardTitle>
+                    <Skeleton className="h-8 w-1/4" />
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <Skeleton className="h-12 w-full" />
+            </CardContent>
+        </Card>
+     </div>
   );
 
-  const getBailStatus = () => {
-    if(totals.bailStatus.noBail) return 'NOT ELIGIBLE';
-    if(totals.bailStatus.discretionary) return 'DISCRETIONARY';
-    if(totals.bailStatus.eligible) return 'ELIGIBLE';
-    return 'N/A';
-  }
-  
-  const formatTotalTime = (totalMinutes: number) => {
-    if (totalMinutes === 0) return '0 minutes';
-    const days = Math.floor(totalMinutes / 1440);
-    const hours = Math.floor((totalMinutes % 1440) / 60);
-    const minutes = totalMinutes % 60;
-    
-    const parts = [];
-    if(days > 0) parts.push(`${days} Day(s)`);
-    if(hours > 0) parts.push(`${hours} Hour(s)`);
-    if(minutes > 0) parts.push(`${minutes} Minute(s)`);
 
-    return `${parts.join(' ')} (${totalMinutes} mins)`;
+  const renderReport = () => {
+    if (!hasReport) return null;
+
+    const totals = report.reduce(
+        (acc, row) => {
+          const chargeDetails = penalCode[row.chargeId!];
+          const isDrugCharge = !!chargeDetails.drugs;
+    
+          const getTime = (timeObj: any) => {
+            if (!timeObj) return { days: 0, hours: 0, min: 0 };
+            if (isDrugCharge && row.category) {
+              return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
+            }
+            return timeObj;
+          }
+          
+          const getFine = (fineObj: any) => {
+            if (!fineObj) return 0;
+            if(isDrugCharge && row.category) return fineObj[row.category] || 0;
+            return fineObj[row.offense!] || 0;
+          }
+    
+          const minTime = getTime(chargeDetails.time);
+          const maxTime = getTime(chargeDetails.maxtime);
+    
+          acc.minTime += formatTimeInMinutes(minTime);
+          acc.maxTime += formatTimeInMinutes(maxTime);
+          acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
+          acc.fine += getFine(chargeDetails.fine);
+          
+          const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
+          if (impound) acc.impound = true;
+    
+          const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
+          if (suspension) acc.suspension = true;
+    
+          const getBailAuto = () => {
+            if (typeof chargeDetails.bail.auto === 'object' && row.category) {
+                return chargeDetails.bail.auto[row.category];
+            }
+            return chargeDetails.bail.auto;
+          }
+    
+          const bailAuto = getBailAuto();
+          if(bailAuto === false) acc.bailStatus.noBail = true;
+          if(bailAuto === 2) acc.bailStatus.discretionary = true;
+          if(bailAuto === true) acc.bailStatus.eligible = true;
+          
+          const getBailCost = () => {
+             if (typeof chargeDetails.bail.cost === 'object' && row.category) {
+                return chargeDetails.bail.cost[row.category];
+            }
+            return chargeDetails.bail.cost;
+          }
+          
+          if (bailAuto !== false) {
+            acc.bailCost += getBailCost() || 0;
+          }
+          
+          return acc;
+        },
+        { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
+      );
+    
+      const getBailStatus = () => {
+        if(totals.bailStatus.noBail) return 'NOT ELIGIBLE';
+        if(totals.bailStatus.discretionary) return 'DISCRETIONARY';
+        if(totals.bailStatus.eligible) return 'ELIGIBLE';
+        return 'N/A';
+      }
+      
+      const formatTotalTime = (totalMinutes: number) => {
+        if (totalMinutes === 0) return '0 minutes';
+        const days = Math.floor(totalMinutes / 1440);
+        const hours = Math.floor((totalMinutes % 1440) / 60);
+        const minutes = totalMinutes % 60;
+        
+        const parts = [];
+        if(days > 0) parts.push(`${days} Day(s)`);
+        if(hours > 0) parts.push(`${hours} Hour(s)`);
+        if(minutes > 0) parts.push(`${minutes} Minute(s)`);
+    
+        return `${parts.join(' ')} (${totalMinutes} mins)`;
+      }
+
+    return (
+        <div className="space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Charges</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                        <TableRow>
+                            <TableHead>Title</TableHead>
+                            <TableHead>Addition</TableHead>
+                            <TableHead>Offence</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Min Time</TableHead>
+                            <TableHead>Max Time</TableHead>
+                            <TableHead>Points</TableHead>
+                            <TableHead>Fine</TableHead>
+                            <TableHead>Impound</TableHead>
+                            <TableHead>Suspension</TableHead>
+                            <TableHead>Extra</TableHead>
+                            <TableHead>Bail</TableHead>
+                            <TableHead>Bail / Bond</TableHead>
+                        </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                        {report.map((row) => {
+                            const chargeDetails = penalCode[row.chargeId!];
+                            if (!chargeDetails) return null;
+
+                            const isDrugCharge = !!chargeDetails.drugs;
+
+                            const typePrefix = `${chargeDetails.type}${row.class}`;
+                            const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
+                            
+                            const getTime = (timeObj: any) => {
+                                if(!timeObj) return 'N/A';
+                                if (isDrugCharge && row.category) {
+                                    return formatTime(timeObj[row.category]);
+                                }
+                                return formatTime(timeObj);
+                            }
+                            const minTime = getTime(chargeDetails.time);
+                            const maxTime = getTime(chargeDetails.maxtime);
+
+                            const getFine = (fineObj: any) => {
+                                if (!fineObj) return '$0';
+                                if(isDrugCharge && row.category) return `$${(fineObj[row.category] || 0).toLocaleString()}`;
+                                return `$${(fineObj[row.offense!] || 0).toLocaleString()}`;
+                            }
+                            
+                            const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
+                            const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
+
+                            const getBailInfo = () => {
+                                let auto = chargeDetails.bail.auto;
+                                let cost = chargeDetails.bail.cost;
+                                if(isDrugCharge && row.category) {
+                                if(typeof chargeDetails.bail.auto === 'object') auto = chargeDetails.bail.auto[row.category];
+                                if(typeof chargeDetails.bail.cost === 'object') cost = chargeDetails.bail.cost[row.category];
+                                }
+                                return {auto, cost};
+                            }
+                            const bailInfo = getBailInfo();
+
+                            return (
+                                <TableRow key={row.uniqueId}>
+                                    <TableCell className="font-medium">{title}</TableCell>
+                                    <TableCell>{row.addition}</TableCell>
+                                    <TableCell>{row.offense}</TableCell>
+                                    <TableCell>
+                                        <span className={cn('font-bold', {
+                                            'text-red-500': chargeDetails.type === 'F',
+                                            'text-yellow-500': chargeDetails.type === 'M',
+                                            'text-green-500': chargeDetails.type === 'I',
+                                        })}>
+                                            {getType(chargeDetails.type)}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>{minTime}</TableCell>
+                                    <TableCell>{maxTime}</TableCell>
+                                    <TableCell>{chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0}</TableCell>
+                                    <TableCell>{getFine(chargeDetails.fine)}</TableCell>
+                                    <TableCell>{impound ? `Yes | ${impound} Days` : 'No'}</TableCell>
+                                    <TableCell>{suspension ? `Yes | ${suspension} Days` : 'No'}</TableCell>
+                                    <TableCell>{chargeDetails.extra || 'N/A'}</TableCell>
+                                    <TableCell><BailStatusBadge bailInfo={bailInfo} /></TableCell>
+                                    <TableCell>{formatBailCost(bailInfo)}</TableCell>
+                                </TableRow>
+                            );
+                        })}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+            
+            <Card>
+                <CardHeader>
+                    <CardTitle>Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Total Min Time</TableHead>
+                                <TableHead>Total Max Time</TableHead>
+                                <TableHead>Total Points</TableHead>
+                                <TableHead>Total Fine</TableHead>
+                                <TableHead>Impound</TableHead>
+                                <TableHead>Suspension</TableHead>
+                                <TableHead>Bail Status</TableHead>
+                                <TableHead>Total Bail Cost</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell>{formatTotalTime(totals.minTime)}</TableCell>
+                                <TableCell>{formatTotalTime(totals.maxTime)}</TableCell>
+                                <TableCell>{totals.points}</TableCell>
+                                <TableCell>${totals.fine.toLocaleString()}</TableCell>
+                                <TableCell>{totals.impound ? 'Yes' : 'No'}</TableCell>
+                                <TableCell>{totals.suspension ? 'Yes' : 'No'}</TableCell>
+                                <TableCell>
+                                    {(() => {
+                                        const status = getBailStatus();
+                                        switch (status) {
+                                            case 'NOT ELIGIBLE':
+                                                return <Badge variant="destructive">NOT ELIGIBLE</Badge>;
+                                            case 'DISCRETIONARY':
+                                                return <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">DISCRETIONARY</Badge>;
+                                            case 'ELIGIBLE':
+                                                return <Badge className="bg-green-500 hover:bg-green-600 text-white">ELIGIBLE</Badge>;
+                                            default:
+                                                return <Badge variant="secondary">N/A</Badge>;
+                                        }
+                                    })()}
+                                </TableCell>
+                                <TableCell>${totals.bailCost.toLocaleString()}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+
+            <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Disclaimer</AlertTitle>
+                <AlertDescription>
+                    This tool is for informational purposes only and does not constitute legal advice. All calculations are based on the provided penal code and may not reflect all sentencing factors. Consult with a legal professional for official guidance.
+                </AlertDescription>
+            </Alert>
+        </div>
+    );
   }
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
       <PageHeader
         title="Arrest Report"
-        description="A summary of the calculated charges."
+        description={hasReport ? "A summary of the calculated charges and report form." : "Create a new arrest report."}
       />
-
-      <Card>
-        <CardHeader>
-            <CardTitle>Charges</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Addition</TableHead>
-                    <TableHead>Offence</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Min Time</TableHead>
-                    <TableHead>Max Time</TableHead>
-                    <TableHead>Points</TableHead>
-                    <TableHead>Fine</TableHead>
-                    <TableHead>Impound</TableHead>
-                    <TableHead>Suspension</TableHead>
-                    <TableHead>Extra</TableHead>
-                    <TableHead>Bail</TableHead>
-                    <TableHead>Bail / Bond</TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {report.map((row) => {
-                    const chargeDetails = penalCode[row.chargeId!];
-                    if (!chargeDetails) return null;
-
-                    const isDrugCharge = !!chargeDetails.drugs;
-
-                    const typePrefix = `${chargeDetails.type}${row.class}`;
-                    const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
-                    
-                    const getTime = (timeObj: any) => {
-                        if(!timeObj) return 'N/A';
-                         if (isDrugCharge && row.category) {
-                            return formatTime(timeObj[row.category]);
-                        }
-                        return formatTime(timeObj);
-                    }
-                    const minTime = getTime(chargeDetails.time);
-                    const maxTime = getTime(chargeDetails.maxtime);
-
-                    const getFine = (fineObj: any) => {
-                        if (!fineObj) return '$0';
-                        if(isDrugCharge && row.category) return `$${(fineObj[row.category] || 0).toLocaleString()}`;
-                        return `$${(fineObj[row.offense!] || 0).toLocaleString()}`;
-                    }
-                    
-                    const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
-                    const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
-
-                    const getBailInfo = () => {
-                        let auto = chargeDetails.bail.auto;
-                        let cost = chargeDetails.bail.cost;
-                        if(isDrugCharge && row.category) {
-                           if(typeof chargeDetails.bail.auto === 'object') auto = chargeDetails.bail.auto[row.category];
-                           if(typeof chargeDetails.bail.cost === 'object') cost = chargeDetails.bail.cost[row.category];
-                        }
-                        return {auto, cost};
-                    }
-                    const bailInfo = getBailInfo();
-
-                    return (
-                        <TableRow key={row.uniqueId}>
-                            <TableCell className="font-medium">{title}</TableCell>
-                            <TableCell>{row.addition}</TableCell>
-                            <TableCell>{row.offense}</TableCell>
-                            <TableCell>
-                                <span className={cn('font-bold', {
-                                    'text-red-500': chargeDetails.type === 'F',
-                                    'text-yellow-500': chargeDetails.type === 'M',
-                                    'text-green-500': chargeDetails.type === 'I',
-                                })}>
-                                    {getType(chargeDetails.type)}
-                                </span>
-                            </TableCell>
-                            <TableCell>{minTime}</TableCell>
-                            <TableCell>{maxTime}</TableCell>
-                            <TableCell>{chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0}</TableCell>
-                            <TableCell>{getFine(chargeDetails.fine)}</TableCell>
-                            <TableCell>{impound ? `Yes | ${impound} Days` : 'No'}</TableCell>
-                            <TableCell>{suspension ? `Yes | ${suspension} Days` : 'No'}</TableCell>
-                            <TableCell>{chargeDetails.extra || 'N/A'}</TableCell>
-                            <TableCell><BailStatusBadge bailInfo={bailInfo} /></TableCell>
-                            <TableCell>{formatBailCost(bailInfo)}</TableCell>
-                        </TableRow>
-                    );
-                })}
-                </TableBody>
-            </Table>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader>
-            <CardTitle>Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Total Min Time</TableHead>
-                        <TableHead>Total Max Time</TableHead>
-                        <TableHead>Total Points</TableHead>
-                        <TableHead>Total Fine</TableHead>
-                        <TableHead>Impound</TableHead>
-                        <TableHead>Suspension</TableHead>
-                        <TableHead>Bail Status</TableHead>
-                        <TableHead>Total Bail Cost</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    <TableRow>
-                        <TableCell>{formatTotalTime(totals.minTime)}</TableCell>
-                        <TableCell>{formatTotalTime(totals.maxTime)}</TableCell>
-                        <TableCell>{totals.points}</TableCell>
-                        <TableCell>${totals.fine.toLocaleString()}</TableCell>
-                        <TableCell>{totals.impound ? 'Yes' : 'No'}</TableCell>
-                        <TableCell>{totals.suspension ? 'Yes' : 'No'}</TableCell>
-                        <TableCell>
-                            {(() => {
-                                const status = getBailStatus();
-                                switch (status) {
-                                    case 'NOT ELIGIBLE':
-                                        return <Badge variant="destructive">NOT ELIGIBLE</Badge>;
-                                    case 'DISCRETIONARY':
-                                        return <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">DISCRETIONARY</Badge>;
-                                    case 'ELIGIBLE':
-                                        return <Badge className="bg-green-500 hover:bg-green-600 text-white">ELIGIBLE</Badge>;
-                                    default:
-                                        return <Badge variant="secondary">N/A</Badge>;
-                                }
-                            })()}
-                        </TableCell>
-                        <TableCell>${totals.bailCost.toLocaleString()}</TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </CardContent>
-      </Card>
-
-      <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Disclaimer</AlertTitle>
-        <AlertDescription>
-            This tool is for informational purposes only and does not constitute legal advice. All calculations are based on the provided penal code and may not reflect all sentencing factors. Consult with a legal professional for official guidance.
-        </AlertDescription>
-      </Alert>
+        {!isClient && renderSkeleton()}
+        {hasReport && renderReport()}
+        {isClient && <ArrestReportForm />}
     </div>
   );
 }
-
-    

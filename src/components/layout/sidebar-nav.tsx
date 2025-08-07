@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel } from 'lucide-react';
+import { LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel, FileText } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import {
@@ -63,6 +63,14 @@ export function SidebarNav() {
               <Link href="/arrest-calculator">
                 <Gavel />
                 <span>Arrest Calculator</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+           <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive('/arrest-report')}>
+              <Link href="/arrest-report">
+                <FileText />
+                <span>Arrest Report</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
