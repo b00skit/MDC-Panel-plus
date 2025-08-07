@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -24,9 +24,11 @@ import {
 } from '@/components/ui/command';
 import { Label } from '@/components/ui/label';
 import { PageHeader } from '@/components/dashboard/page-header';
-import { Plus, Trash2, ChevronsUpDown, Check } from 'lucide-react';
+import { Plus, Trash2, ChevronsUpDown, AlertTriangle } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface Charge {
   id: string;
@@ -67,7 +69,9 @@ export function ArrestCalculatorPage() {
   const [penalCode, setPenalCode] = useState<PenalCode>({});
   const [charges, setCharges] = useState<SelectedCharge[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openChargeSelector, setOpenChargeSelector] = useState<number | null>(null);
+  const [openChargeSelector, setOpenChargeSelector] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
@@ -125,8 +129,15 @@ export function ArrestCalculatorPage() {
     if (!chargeId) return null;
     return penalCode[chargeId] || null;
   };
-  
+
   const penalCodeArray = Object.values(penalCode);
+
+  const showDrugChargeWarning = useMemo(() => {
+    return charges.some(charge => {
+        const details = getChargeDetails(charge.chargeId);
+        return !!details?.drugs;
+    });
+  }, [charges, penalCode]);
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -145,11 +156,21 @@ export function ArrestCalculatorPage() {
               key={chargeRow.uniqueId}
               className="flex items-end gap-2 p-4 border rounded-lg"
             >
-              <div className={cn("flex-1 grid grid-cols-1 md:grid-cols-5 gap-2", isDrugCharge && "md:grid-cols-6")}>
+              <div
+                className={cn(
+                  'flex-1 grid grid-cols-1 md:grid-cols-5 gap-2 items-end',
+                  isDrugCharge && 'md:grid-cols-6'
+                )}
+              >
                 {/* Charge Dropdown */}
                 <div className="space-y-1.5 md:col-span-2">
                   <Label>Charge</Label>
-                  <Popover open={openChargeSelector === chargeRow.uniqueId} onOpenChange={(isOpen) => setOpenChargeSelector(isOpen ? chargeRow.uniqueId : null)}>
+                  <Popover
+                    open={openChargeSelector === chargeRow.uniqueId}
+                    onOpenChange={(isOpen) =>
+                      setOpenChargeSelector(isOpen ? chargeRow.uniqueId : null)
+                    }
+                  >
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
@@ -158,30 +179,42 @@ export function ArrestCalculatorPage() {
                         className="w-full justify-between h-9"
                         disabled={loading}
                       >
-                        {chargeRow.chargeId && penalCode[chargeRow.chargeId]
-                          ? (
-                            <span className="flex items-center">
-                              <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(penalCode[chargeRow.chargeId].type))}>
-                                {penalCode[chargeRow.chargeId].id}
-                              </Badge>
-                              <span className="truncate">{penalCode[chargeRow.chargeId].charge}</span>
+                        {chargeRow.chargeId && penalCode[chargeRow.chargeId] ? (
+                          <span className="flex items-center">
+                            <Badge
+                              className={cn(
+                                'mr-2 rounded-sm px-1.5 py-0.5 text-xs',
+                                getTypeClasses(penalCode[chargeRow.chargeId].type)
+                              )}
+                            >
+                              {penalCode[chargeRow.chargeId].id}
+                            </Badge>
+                            <span className="truncate">
+                              {penalCode[chargeRow.chargeId].charge}
                             </span>
-                          )
-                          : 'Select a charge...'}
+                          </span>
+                        ) : (
+                          'Select a charge...'
+                        )}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                       <Command
                         filter={(value, search) => {
-                          const charge = penalCodeArray.find(c => c.id === value);
+                          const charge = penalCodeArray.find(
+                            (c) => c.id === value
+                          );
                           if (!charge) return 0;
-                          
+
                           const term = search.toLowerCase();
                           const chargeName = charge.charge.toLowerCase();
                           const chargeId = charge.id;
 
-                          if (chargeName.includes(term) || chargeId.includes(term)) {
+                          if (
+                            chargeName.includes(term) ||
+                            chargeId.includes(term)
+                          ) {
                             return 1;
                           }
                           return 0;
@@ -196,7 +229,13 @@ export function ArrestCalculatorPage() {
                                 key={c.id}
                                 value={c.id}
                                 onSelect={(currentValue) => {
-                                  updateCharge(chargeRow.uniqueId, 'chargeId', currentValue === chargeRow.chargeId ? '' : currentValue);
+                                  updateCharge(
+                                    chargeRow.uniqueId,
+                                    'chargeId',
+                                    currentValue === chargeRow.chargeId
+                                      ? ''
+                                      : currentValue
+                                  );
                                   setOpenChargeSelector(null);
                                 }}
                                 disabled={c.type === '?'}
@@ -204,10 +243,17 @@ export function ArrestCalculatorPage() {
                                 <Check
                                   className={cn(
                                     'mr-2 h-4 w-4',
-                                    chargeRow.chargeId === c.id ? 'opacity-100' : 'opacity-0'
+                                    chargeRow.chargeId === c.id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
                                   )}
                                 />
-                                 <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(c.type))}>
+                                <Badge
+                                  className={cn(
+                                    'mr-2 rounded-sm px-1.5 py-0.5 text-xs',
+                                    getTypeClasses(c.type)
+                                  )}
+                                >
                                   {c.id}
                                 </Badge>
                                 {c.charge}
@@ -234,9 +280,15 @@ export function ArrestCalculatorPage() {
                       <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="A" disabled={!chargeDetails?.class?.A}>Class A</SelectItem>
-                      <SelectItem value="B" disabled={!chargeDetails?.class?.B}>Class B</SelectItem>
-                      <SelectItem value="C" disabled={!chargeDetails?.class?.C}>Class C</SelectItem>
+                      <SelectItem value="A" disabled={!chargeDetails?.class?.A}>
+                        Class A
+                      </SelectItem>
+                      <SelectItem value="B" disabled={!chargeDetails?.class?.B}>
+                        Class B
+                      </SelectItem>
+                      <SelectItem value="C" disabled={!chargeDetails?.class?.C}>
+                        Class C
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -244,7 +296,7 @@ export function ArrestCalculatorPage() {
                 {/* Offense Dropdown */}
                 <div className="space-y-1.5">
                   <Label htmlFor={`offense-${chargeRow.uniqueId}`}>Offense</Label>
-                   <Select
+                  <Select
                     value={chargeRow.offense || ''}
                     onValueChange={(value) =>
                       updateCharge(chargeRow.uniqueId, 'offense', value)
@@ -255,42 +307,66 @@ export function ArrestCalculatorPage() {
                       <SelectValue placeholder="Select offense" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="1" disabled={!chargeDetails?.offence['1']}>Offense #1</SelectItem>
-                        <SelectItem value="2" disabled={!chargeDetails?.offence['2']}>Offense #2</SelectItem>
-                        <SelectItem value="3" disabled={!chargeDetails?.offence['3']}>Offense #3</SelectItem>
+                      <SelectItem
+                        value="1"
+                        disabled={!chargeDetails?.offence['1']}
+                      >
+                        Offense #1
+                      </SelectItem>
+                      <SelectItem
+                        value="2"
+                        disabled={!chargeDetails?.offence['2']}
+                      >
+                        Offense #2
+                      </SelectItem>
+                      <SelectItem
+                        value="3"
+                        disabled={!chargeDetails?.offence['3']}
+                      >
+                        Offense #3
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
-                 {/* Addition Dropdown */}
+
+                {/* Addition Dropdown */}
                 <div className="space-y-1.5">
-                  <Label htmlFor={`addition-${chargeRow.uniqueId}`}>Addition</Label>
-                   <Select
+                  <Label htmlFor={`addition-${chargeRow.uniqueId}`}>
+                    Addition
+                  </Label>
+                  <Select
                     value={chargeRow.addition || ''}
                     onValueChange={(value) =>
                       updateCharge(chargeRow.uniqueId, 'addition', value)
                     }
                     disabled={!chargeDetails}
                   >
-                    <SelectTrigger id={`addition-${chargeRow.uniqueId}`} className="h-9">
+                    <SelectTrigger
+                      id={`addition-${chargeRow.uniqueId}`}
+                      className="h-9"
+                    >
                       <SelectValue placeholder="Select addition" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="Offender">Offender</SelectItem>
-                        <SelectItem value="Accomplice">Accomplice</SelectItem>
-                        <SelectItem value="Accessory">Accessory</SelectItem>
-                        <SelectItem value="Conspiracy">Conspiracy</SelectItem>
-                        <SelectItem value="Attempt">Attempt</SelectItem>
-                        <SelectItem value="Solicitation">Solicitation</SelectItem>
-                        <SelectItem value="Parole Violation">Parole Violation</SelectItem>
+                      <SelectItem value="Offender">Offender</SelectItem>
+                      <SelectItem value="Accomplice">Accomplice</SelectItem>
+                      <SelectItem value="Accessory">Accessory</SelectItem>
+                      <SelectItem value="Conspiracy">Conspiracy</SelectItem>
+                      <SelectItem value="Attempt">Attempt</SelectItem>
+                      <SelectItem value="Solicitation">Solicitation</SelectItem>
+                      <SelectItem value="Parole Violation">
+                        Parole Violation
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 {/* Category Dropdown (for drug charges) */}
                 {isDrugCharge && (
                   <div className="space-y-1.5">
-                    <Label htmlFor={`category-${chargeRow.uniqueId}`}>Category</Label>
+                    <Label htmlFor={`category-${chargeRow.uniqueId}`}>
+                      Category
+                    </Label>
                     <Select
                       value={chargeRow.category || ''}
                       onValueChange={(value) =>
@@ -298,18 +374,25 @@ export function ArrestCalculatorPage() {
                       }
                       disabled={!chargeDetails}
                     >
-                      <SelectTrigger id={`category-${chargeRow.uniqueId}`} className="h-9">
+                      <SelectTrigger
+                        id={`category-${chargeRow.uniqueId}`}
+                        className="h-9"
+                      >
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
-                        {chargeDetails?.drugs && Object.entries(chargeDetails.drugs).map(([key, value]) => (
-                          <SelectItem key={key} value={value}>{value}</SelectItem>
-                        ))}
+                        {chargeDetails?.drugs &&
+                          Object.entries(chargeDetails.drugs).map(
+                            ([key, value]) => (
+                              <SelectItem key={key} value={value}>
+                                {value}
+                              </SelectItem>
+                            )
+                          )}
                       </SelectContent>
                     </Select>
                   </div>
                 )}
-
               </div>
               <Button
                 variant="ghost"
@@ -332,6 +415,18 @@ export function ArrestCalculatorPage() {
             Calculate Arrest
           </Button>
         </div>
+        
+        {showDrugChargeWarning && (
+            <Alert variant="warning" className="mt-4">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Heads up!</AlertTitle>
+                <AlertDescription>
+                   Please ensure you select the correct Category for drug charges. Check the warrant (if applicable) for more information.<br/>
+                   Reference: Drug Enforcement & Prevention Act of 2020 (DEPA)
+                </AlertDescription>
+            </Alert>
+        )}
+
         {loading && <p>Loading penal code...</p>}
       </div>
     </div>
