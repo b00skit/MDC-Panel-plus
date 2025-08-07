@@ -11,15 +11,17 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { AlertTriangle, Clipboard } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useFormStore } from '@/stores/form-store';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { renderToStaticMarkup } from 'react-dom/server';
+
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -241,12 +243,24 @@ const SummaryTable = ({ totals }: { totals: any }) => {
 };
 
 
-const FormattedReport = ({ formData, report, penalCode, totals }: any) => {
+const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any) => {
     const { general, arrest, location, evidence, officers } = formData;
+    
+    const getReportHeader = () => {
+        const primaryOfficer = officers?.[0];
+        if (primaryOfficer?.department === 'Los Santos Police Department') {
+            return 'CITY OF LOS SANTOS';
+        }
+        if (primaryOfficer?.department === 'Los Santos County Sheriff\'s Department') {
+            return 'COUNTY OF LOS SANTOS';
+        }
+        return 'STATE OF SAN ANDREAS';
+    };
+
     return (
-      <Card className="p-8 font-serif">
+      <Card className="p-8 font-serif" ref={innerRef}>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold uppercase">State of San Andreas</h1>
+          <h1 className="text-3xl font-bold uppercase">{getReportHeader()}</h1>
           <h2 className="text-2xl font-semibold">Arrest Report</h2>
         </div>
   
@@ -273,9 +287,9 @@ const FormattedReport = ({ formData, report, penalCode, totals }: any) => {
             ))}
           </div>
 
-          {/* Section 3: Arrestee Information */}
+          {/* Section 3: Suspect Information */}
            <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">3. ARRESTEE INFORMATION</h3>
+            <h3 className="font-bold text-lg mb-2">3. SUSPECT INFORMATION</h3>
             <div className="grid grid-cols-1">
               <div className="border p-2"><span className="font-semibold">A. FULL NAME:</span> {arrest.suspectName}</div>
             </div>
@@ -335,7 +349,7 @@ const FormattedReport = ({ formData, report, penalCode, totals }: any) => {
   
           {/* Section 8: Processing Summary */}
           <div>
-            <h3 className="font-bold text-lg mb-2">8. SENTENCING & BAIL SUMMARY</h3>
+            <h3 className="font-bold text-lg mb-2">8. SENTENCING & AUTO-BAIL SUMMARY</h3>
             <div className="border p-2">
                 <p><strong>MINIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.minTime) : 'N/A'}</p>
                 <p><strong>MAXIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.maxTime) : 'N/A'}</p>
@@ -376,6 +390,9 @@ export function PaperworkSubmitPage() {
   const { report, penalCode } = useChargeStore();
   const { formData } = useFormStore();
   const [isClient, setIsClient] = useState(false);
+  const { toast } = useToast();
+  const reportRef = useRef<HTMLDivElement>(null);
+  const [reportHtml, setReportHtml] = useState('');
 
   useEffect(() => {
     setIsClient(true);
@@ -444,6 +461,27 @@ export function PaperworkSubmitPage() {
     { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
   ) : null;
 
+  useEffect(() => {
+    if (reportRef.current) {
+        // A hack to remove the data-ref attributes from the rendered HTML
+        const clonedNode = reportRef.current.cloneNode(true) as HTMLElement;
+        clonedNode.querySelectorAll('[data-ref]').forEach(el => el.removeAttribute('data-ref'));
+        setReportHtml(clonedNode.innerHTML);
+    }
+  }, [formData, report, penalCode, totals]);
+
+  const handleCopy = () => {
+    if (reportRef.current) {
+      const htmlToCopy = reportRef.current.outerHTML;
+      navigator.clipboard.writeText(htmlToCopy);
+      toast({
+        title: "Success",
+        description: "Arrest report HTML copied to clipboard.",
+        variant: "default",
+      })
+    }
+  };
+
   if (!isClient) {
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
@@ -469,19 +507,31 @@ export function PaperworkSubmitPage() {
             <ChargesTable report={report} penalCode={penalCode} />
             <SummaryTable totals={totals} />
             <Separator />
-            <FormattedReport formData={formData} report={report} penalCode={penalCode} totals={totals} />
+            <FormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} totals={totals} />
         </div>
       )}
 
-      <div className="space-y-2">
-        <label htmlFor="final-submission" className="font-medium">Final Submission Area</label>
-        <Textarea 
-            id="final-submission"
-            placeholder="You can paste the generated report here or add any final notes..."
-            className="min-h-[200px]"
-        />
+       <div className="space-y-4">
+        <div className="flex justify-end">
+            <Button onClick={handleCopy} disabled={!hasReport}>
+                <Clipboard className="mr-2 h-4 w-4" />
+                Copy Arrest Report
+            </Button>
+        </div>
+        <div className="space-y-2">
+            <label htmlFor="final-submission" className="font-medium">Final Submission Area (HTML)</label>
+            <Textarea 
+                id="final-submission"
+                placeholder="The HTML for the report will be generated here."
+                className="min-h-[200px] font-mono text-xs"
+                value={reportHtml}
+                readOnly
+            />
+        </div>
       </div>
 
     </div>
   );
 }
+
+    
