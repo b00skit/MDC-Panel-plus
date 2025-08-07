@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
-  title: 'LEO Assistant+',
-  description: 'An assistant to help with your tasks.',
+  title: 'LEO Panel',
+  description: 'A panel to help with your tasks.',
 };
 
 export default function RootLayout({
