@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { SidebarNav } from './sidebar-nav';
+import Image from 'next/image';
 
 type DashboardLayoutProps = {
   children: ReactNode;
@@ -13,7 +14,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-        {children}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/Logo-SanAndreasSealTransparent.png"
+            alt="San Andreas Seal"
+            layout="fill"
+            objectFit="contain"
+            className="opacity-10"
+          />
+        </div>
+        <div className="relative z-10">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
