@@ -31,7 +31,7 @@ import { Badge } from '@/components/ui/badge';
 interface Charge {
   id: string;
   charge: string;
-  type: 'F' | 'M' | 'I';
+  type: 'F' | 'M' | 'I' | '?';
   class: { A: boolean; B: boolean; C: boolean };
   offence: { '1': boolean; '2': boolean; '3': boolean };
   drugs?: Record<string, string>;
@@ -195,6 +195,7 @@ export function ArrestCalculatorPage() {
                                   updateCharge(chargeRow.uniqueId, 'chargeId', currentValue === chargeRow.chargeId ? '' : currentValue);
                                   setOpenChargeSelector(null);
                                 }}
+                                disabled={c.type === '?'}
                               >
                                 <Check
                                   className={cn(
