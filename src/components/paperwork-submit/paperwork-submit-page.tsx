@@ -265,113 +265,210 @@ const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any)
     
 
     return (
-      <Card className="p-8 font-serif" ref={innerRef}>
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold uppercase">{header}</h1>
-          <h2 className="text-2xl font-semibold">Arrest Report</h2>
-        </div>
-  
-        <div className="border-4 border-black p-4 space-y-4">
-          {/* Section 1: General Information */}
-          <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">1. GENERAL INFORMATION</h3>
-            <div className="grid grid-cols-3 gap-x-4">
-              <div className="border p-2"><span className="font-semibold">A. DATE:</span> {general.date}</div>
-              <div className="border p-2"><span className="font-semibold">B. TIME (24HR):</span> {general.time}</div>
-              <div className="border p-2"><span className="font-semibold">C. CALLSIGN:</span> {general.callSign}</div>
-            </div>
-          </div>
-  
-          {/* Section 2: Officer Information */}
-          <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">2. OFFICER(S) INFORMATION</h3>
-            {officers.map((officer: any, index: number) => (
-                <div key={officer.id} className="grid grid-cols-12 gap-x-4 mb-2">
-                    <div className="border p-2 col-span-5"><span className="font-semibold">A. OFFICER {index + 1} NAME:</span> {officer.name}</div>
-                    <div className="border p-2 col-span-4"><span className="font-semibold">B. RANK:</span> {officer.rank}</div>
-                    <div className="border p-2 col-span-3"><span className="font-semibold">C. BADGE:</span> {officer.badgeNumber}</div>
-                </div>
-            ))}
-          </div>
+        <table
+        ref={innerRef}
+        style={{
+            width: '100%',
+            fontFamily: 'Times New Roman, serif',
+            borderCollapse: 'collapse',
+            border: '4px solid black',
+        }}
+        >
+        <tbody>
+            {/* Header */}
+            <tr>
+            <td colSpan={3} style={{ textAlign: 'center', paddingBottom: '2rem' }}>
+                <h1 style={{ fontFamily: 'Arial, sans-serif', fontSize: '2rem', fontWeight: 'bold', textTransform: 'uppercase', margin: 0 }}>
+                {header}
+                </h1>
+                <h2 style={{ fontFamily: 'Arial, sans-serif', fontSize: '1.5rem', fontWeight: '600', margin: 0 }}>
+                Arrest Report
+                </h2>
+            </td>
+            </tr>
 
-          {/* Section 3: Suspect Information */}
-           <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">3. SUSPECT INFORMATION</h3>
-            <div className="grid grid-cols-1">
-              <div className="border p-2"><span className="font-semibold">A. FULL NAME:</span> {arrest.suspectName}</div>
-            </div>
-          </div>
-  
-          {/* Section 4: Location of Arrest */}
-          <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">4. LOCATION OF ARREST</h3>
-             <div className="grid grid-cols-2 gap-x-4">
-              <div className="border p-2"><span className="font-semibold">A. DISTRICT:</span> {location.district}</div>
-              <div className="border p-2"><span className="font-semibold">B. STREET:</span> {location.street}</div>
-            </div>
-          </div>
-  
-          {/* Section 5: Charges */}
-          <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">5. CHARGES</h3>
-            <div className="border">
-                <Table>
-                    <TableHeader>
-                        <TableRow className="bg-gray-200 dark:bg-gray-700">
-                            <TableHead className="w-[50%]">CHARGE DESCRIPTION</TableHead>
-                            <TableHead>TYPE</TableHead>
-                            <TableHead>CLASS</TableHead>
-                            <TableHead>OFFENCE</TableHead>
-                            <TableHead>ADDITION</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {report.map((row: any) => {
-                             const chargeDetails = penalCode[row.chargeId!];
-                             if (!chargeDetails) return null;
-                             const title = `${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
-                             return (
-                                <TableRow key={row.uniqueId}>
-                                    <TableCell>{title}</TableCell>
-                                    <TableCell>{getType(chargeDetails.type)}</TableCell>
-                                    <TableCell>{row.class}</TableCell>
-                                    <TableCell>{row.offense}</TableCell>
-                                    <TableCell>{row.addition}</TableCell>
-                                </TableRow>
-                             )
-                        })}
-                    </TableBody>
-                </Table>
-            </div>
-          </div>
-  
-          {/* Section 6: Narrative */}
-          <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">6. NARRATIVE</h3>
-            <div className="border p-2 min-h-[150px] whitespace-pre-wrap">{arrest.narrative}</div>
-          </div>
+            {/* Section 1: General Information */}
+            <tr>
+            <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                1. GENERAL INFORMATION
+                </h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>A. DATE:</strong> {general.date}
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>B. TIME (24HR):</strong> {general.time}
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>C. CALLSIGN:</strong> {general.callSign}
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+            </tr>
 
-           {/* Section 7: Evidence */}
-           <div className="border-b-2 border-black pb-2">
-            <h3 className="font-bold text-lg mb-2">7. EVIDENCE</h3>
-            <div className="border p-2 mb-2 min-h-[100px] whitespace-pre-wrap"><span className="font-semibold block mb-1">A. SUPPORTING EVIDENCE:</span>{evidence.supporting}</div>
-            <div className="border p-2 min-h-[100px] whitespace-pre-wrap"><span className="font-semibold block mb-1">B. DASHCAM FOOTAGE:</span>{evidence.dashcam}</div>
-          </div>
-  
-          {/* Section 8: Processing Summary */}
-          <div>
-            <h3 className="font-bold text-lg mb-2">8. SENTENCING & AUTO-BAIL SUMMARY</h3>
-            <div className="border p-2">
-                <p><strong>MINIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.minTime) : 'N/A'}</p>
-                <p><strong>MAXIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.maxTime) : 'N/A'}</p>
-                <p><strong>TOTAL FINE:</strong> ${totals ? totals.fine.toLocaleString() : 'N/A'}</p>
-                <p><strong>POINTS:</strong> {totals ? totals.points : 'N/A'}</p>
-                <p><strong>BAIL STATUS:</strong> {totals ? getBailStatus(totals) : 'N/A'}</p>
-                <p><strong>BAIL AMOUNT:</strong> ${totals ? totals.bailCost.toLocaleString() : 'N/A'}</p>
-            </div>
-          </div>
-        </div>
-      </Card>
+            {/* Section 2: Officer Information */}
+            <tr>
+            <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                2. OFFICER(S) INFORMATION
+                </h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                    {officers.map((officer: any, index: number) => (
+                    <tr key={officer.id}>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '41.66%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>A. OFFICER {index + 1} NAME:</strong> {officer.name}
+                        </td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>B. RANK:</strong> {officer.rank}
+                        </td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '25%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>C. BADGE:</strong> {officer.badgeNumber}
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+                </table>
+            </td>
+            </tr>
+
+            {/* Section 3: Suspect Information */}
+            <tr>
+            <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                3. SUSPECT INFORMATION
+                </h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>A. FULL NAME:</strong> {arrest.suspectName}
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+            </tr>
+
+            {/* Section 4: Location of Arrest */}
+            <tr>
+            <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                4. LOCATION OF ARREST
+                </h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '50%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>A. DISTRICT:</strong> {location.district}
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '50%' }}>
+                        <strong style={{ fontFamily: 'Arial, sans-serif' }}>B. STREET:</strong> {location.street}
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+            </tr>
+
+            {/* Section 5: Charges */}
+            <tr>
+            <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                5. CHARGES
+                </h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid black' }}>
+                <thead style={{ backgroundColor: '#E5E7EB' }}>
+                    <tr>
+                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>CHARGE DESCRIPTION</th>
+                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>TYPE</th>
+                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>CLASS</th>
+                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>OFFENCE</th>
+                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>ADDITION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {report.map((row: any) => {
+                    const chargeDetails = penalCode[row.chargeId!];
+                    if (!chargeDetails) return null;
+                    const title = `${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
+                    return (
+                        <tr key={row.uniqueId}>
+                        <td style={{ border: '1px solid black', padding: '0.5rem' }}>{title}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem' }}>{getType(chargeDetails.type)}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem' }}>{row.class}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem' }}>{row.offense}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem' }}>{row.addition}</td>
+                        </tr>
+                    );
+                    })}
+                </tbody>
+                </table>
+            </td>
+            </tr>
+            
+            {/* Section 6: Narrative */}
+            <tr>
+                <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                    <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                    6. NARRATIVE
+                    </h3>
+                    <p style={{ border: '1px solid black', padding: '0.5rem', minHeight: '150px', whiteSpace: 'pre-wrap', margin: 0 }}>
+                    {arrest.narrative}
+                    </p>
+                </td>
+            </tr>
+
+            {/* Section 7: Evidence */}
+            <tr>
+            <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                7. EVIDENCE
+                </h3>
+                <p style={{ border: '1px solid black', padding: '0.5rem', minHeight: '100px', whiteSpace: 'pre-wrap', margin: '0 0 0.5rem 0' }}>
+                <strong style={{ fontFamily: 'Arial, sans-serif', display: 'block', marginBottom: '0.25rem' }}>
+                    A. SUPPORTING EVIDENCE:
+                </strong>
+                {evidence.supporting}
+                </p>
+                <p style={{ border: '1px solid black', padding: '0.5rem', minHeight: '100px', whiteSpace: 'pre-wrap', margin: 0 }}>
+                <strong style={{ fontFamily: 'Arial, sans-serif', display: 'block', marginBottom: '0.25rem' }}>
+                    B. DASHCAM FOOTAGE:
+                </strong>
+                {evidence.dashcam}
+                </p>
+            </td>
+            </tr>
+
+            {/* Section 8: Processing Summary */}
+            <tr>
+            <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                8. SENTENCING & AUTO-BAIL SUMMARY
+                </h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>
+                        <p style={{ margin: 0 }}><strong>MINIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.minTime) : 'N/A'}</p>
+                        <p style={{ margin: 0 }}><strong>MAXIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.maxTime) : 'N/A'}</p>
+                        <p style={{ margin: 0 }}><strong>TOTAL FINE:</strong> ${totals ? totals.fine.toLocaleString() : 'N/A'}</p>
+                        <p style={{ margin: 0 }}><strong>POINTS:</strong> {totals ? totals.points : 'N/A'}</p>
+                        <p style={{ margin: 0 }}><strong>BAIL STATUS:</strong> {totals ? getBailStatus(totals) : 'N/A'}</p>
+                        <p style={{ margin: 0 }}><strong>BAIL AMOUNT:</strong> ${totals ? totals.bailCost.toLocaleString() : 'N/A'}</p>
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+            </tr>
+        </tbody>
+        </table>
     );
   };
   
@@ -402,7 +499,7 @@ export function PaperworkSubmitPage() {
   const { formData } = useFormStore();
   const [isClient, setIsClient] = useState(false);
   const { toast } = useToast();
-  const reportRef = useRef<HTMLDivElement>(null);
+  const reportRef = useRef<HTMLTableElement>(null);
   const [reportHtml, setReportHtml] = useState('');
 
   useEffect(() => {
@@ -477,14 +574,25 @@ export function PaperworkSubmitPage() {
         // A hack to remove the data-ref attributes from the rendered HTML
         const clonedNode = reportRef.current.cloneNode(true) as HTMLElement;
         clonedNode.querySelectorAll('[data-ref]').forEach(el => el.removeAttribute('data-ref'));
-        setReportHtml(clonedNode.innerHTML);
+        
+        // A hack to remove react-specific attributes.
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = clonedNode.outerHTML;
+        tempDiv.querySelectorAll('*').forEach(el => {
+            for (const attr of el.attributes) {
+                if (attr.name.startsWith('data-') || attr.name === 'class') {
+                    el.removeAttribute(attr.name);
+                }
+            }
+        });
+
+        setReportHtml(tempDiv.innerHTML);
     }
-  }, [formData, report, penalCode, totals]);
+  }, [formData, report, penalCode, totals, isClient]);
 
   const handleCopy = () => {
     if (reportRef.current) {
-      const htmlToCopy = reportRef.current.outerHTML;
-      navigator.clipboard.writeText(htmlToCopy);
+      navigator.clipboard.writeText(reportHtml);
       toast({
         title: "Success",
         description: "Arrest report HTML copied to clipboard.",
@@ -518,7 +626,9 @@ export function PaperworkSubmitPage() {
             <ChargesTable report={report} penalCode={penalCode} />
             <SummaryTable totals={totals} />
             <Separator />
-            <FormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} totals={totals} />
+            <div className='p-4 border rounded-lg bg-card'>
+              <FormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} totals={totals} />
+            </div>
         </div>
       )}
 
@@ -544,3 +654,5 @@ export function PaperworkSubmitPage() {
     </div>
   );
 }
+
+    
