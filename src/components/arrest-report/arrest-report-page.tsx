@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useChargeStore } from '@/stores/charge-store';
@@ -298,7 +299,21 @@ export function ArrestReportPage() {
                         <TableCell>${totals.fine.toLocaleString()}</TableCell>
                         <TableCell>{totals.impound ? 'Yes' : 'No'}</TableCell>
                         <TableCell>{totals.suspension ? 'Yes' : 'No'}</TableCell>
-                        <TableCell>{getBailStatus()}</TableCell>
+                        <TableCell>
+                            {(() => {
+                                const status = getBailStatus();
+                                switch (status) {
+                                    case 'NOT ELIGIBLE':
+                                        return <Badge variant="destructive">NOT ELIGIBLE</Badge>;
+                                    case 'DISCRETIONARY':
+                                        return <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">DISCRETIONARY</Badge>;
+                                    case 'ELIGIBLE':
+                                        return <Badge className="bg-green-500 hover:bg-green-600 text-white">ELIGIBLE</Badge>;
+                                    default:
+                                        return <Badge variant="secondary">N/A</Badge>;
+                                }
+                            })()}
+                        </TableCell>
                         <TableCell>${totals.bailCost.toLocaleString()}</TableCell>
                     </TableRow>
                 </TableBody>
