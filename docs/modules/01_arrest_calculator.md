@@ -23,8 +23,33 @@ Create a new item in the navbar named "Arrest Calculator", use handcuffs as the 
 
 ## Phase 3:
 - Create a new page called /arrest-report, the layout should be the same as the dashboard.
-- The arrest report page should be fairly simple for now, but leave space below for future module implementation.
-- As a simple first step, you should sum up the days, hours and minutes someone is sentenced and provide an overview of the selected charges.
+- There should be an API call/route call that redirects you to /arrest-report when you press Calculate Arrest
+- The arrest report page should be fairly simple for now, it should have a table with the selected charges and all it's calculations, example of the table is below, but leave space below for future module implementation.
+| Title | Addition | Offence | Type | Min Time | Max Time | Points | Fine | Impound | Suspension | Extra | Bail | Bail / Bond |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| FC 115. Evading a Peace Officer (Offence #2) | Offender | 2 | Felony | 1 Day (1440 mins) | 5 Days (7200 mins) | 4 | $10,000 | Yes \| 7 Days | Yes \| 7 Days | N/A | AUTO BAIL | $500,000 / $50,000 (10%) |
+| FA 120. Assault & Battery on a Government Worker | Accomplice | 1 | Felony | 2 Days (2880 mins) | 6 Days (8640 mins) | 5 | $0 | No | No | N/A | AUTO BAIL | $500,000 / $50,000 (10%) |
+| MC 116. Resisting Arrest | Attempt | 1 | Misdemeanor | 3 Hours (180 mins) | 12 Hours (720 mins) | 0 | $0 | No | No | N/A | AUTO BAIL | $50,000 / $5,000 (10%) |
+| IC 434. Possession of Open Container | Offender | 1 | Infraction | | | 0 | $1,000 | No | No | N/A | NO BAIL | N/A |
+To explain the table
+- Title should be compiled like so: MC 116. Resisting Arrest.
+The MC is constructed as follows=> M is Misdemeanor (F for Felony, I for Infraction); C is Class C.
+116 is the charge number
+Resisting Arrest is the charge title
+Append the Offence number at the end of the title IF more then #1 is selected.
+- Addition is the dropdown selector for Addition
+- Offence is the dropdown selector for Offence (it should only type the number and not Offence #1, Offence #2...)
+- Type is determined off the charge, it's either Misdemanor, Felony or Infraction.
+- Min Time is determined off the "time" selector in the json of the charge.
+- Max Time is determined off the "maxtime" selector in the json of the charge.
+- Points is determined off the "points" selector in the json of the charge.
+- Fine is determined off the "fine" selector in the json of the charge.
+- Impound is determined off the "impound" selector in the json of the charge.
+- Suspension is determined off the "suspension" selector in the json of the charge.
+- Extra is determined off the "extra" selector in the json of the charge.
+- Bail has a couple of different selectors, the first one being "auto", it has three possibilities, false, true or 2. If it's False, display Auto-Bail as NO BAIL. If it's true, display AUTO BAIL. If 2, display DISCRETIONARY. Besides the Bail, display the full price of bail (don't worry about the 10% bond, skip that).
+- Below the entire table, in it's own seperate table, add a summary of: Total Min Time (Human Readable AND Minutes), Total Max Time (Human Readable AND Minutes), Total Points, Total Fine, Total Impound, Total Suspension, If they're to be offered bail or not (based on the auto-bail selectors, this column should be named Bail Status and you should have three options: ELIGIBLE, DISCRETIONARY and NOT ELIGIBLE) and what the bail cost is.
+
 
 ## Context:
 - The idea behind this Arrest Calculator is to assist people with the calculation of people's arrests.
