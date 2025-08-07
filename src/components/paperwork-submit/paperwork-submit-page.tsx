@@ -251,10 +251,7 @@ const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any)
         if (primaryOfficer?.department === 'Los Santos Police Department') {
             return 'CITY OF LOS SANTOS';
         }
-        if (primaryOfficer?.department === 'Los Santos County Sheriff\'s Department') {
-            return 'COUNTY OF LOS SANTOS';
-        }
-        return 'STATE OF SAN ANDREAS';
+        return 'COUNTY OF LOS SANTOS';
     };
 
     return (
