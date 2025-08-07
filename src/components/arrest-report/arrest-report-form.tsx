@@ -16,6 +16,7 @@ import {
   Paperclip,
   Video,
   FileText,
+  User,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { GeneralSection } from './general-section';
