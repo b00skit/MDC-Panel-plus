@@ -31,8 +31,10 @@ import {
   Map,
   Paperclip,
   Video,
+  FileText,
 } from 'lucide-react';
 import { Separator } from '../ui/separator';
+import { cn } from '@/lib/utils';
 
 const FormSection = ({
   title,
