@@ -1,0 +1,33 @@
+{
+    "Los Santos Police Department": [
+        "Police Officer I",
+        "Police Officer II",
+        "Police Officer III",
+        "Sergeant I",
+        "Sergeant II",
+        "Lieutenant",
+        "Captain",
+        "Commander",
+        "Deputy Chief",
+        "Assistant Chief",
+        "Chief of Police"
+    ],
+    "Los Santos County Sheriff's Department": [
+        "Deputy Sheriff",
+        "Deputy Sheriff, Bonus I",
+        "Deputy Sheriff, Bonus II",
+        "Sergeant",
+        "Lieutenant",
+        "Captain",
+        "Area Commander",
+        "Division Chief",
+        "Undersheriff",
+        "Sheriff"
+    ],
+    "San Andreas State Parks": [
+        "Park Ranger",
+        "Senior Park Ranger",
+        "Supervising Park Ranger",
+        "District Superintendent"
+    ]
+}

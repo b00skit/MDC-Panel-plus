@@ -1,10 +1,8 @@
-
 'use client';
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -13,28 +11,15 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  CalendarDays,
-  Clock,
-  Radio,
-  User,
-  Shield,
-  Badge,
-  Plus,
   MapPin,
   Map,
   Paperclip,
   Video,
   FileText,
 } from 'lucide-react';
-import { Separator } from '../ui/separator';
 import { cn } from '@/lib/utils';
+import { GeneralSection } from './general-section';
+import { OfficerSection } from './officer-section';
 
 const FormSection = ({
   title,
@@ -83,33 +68,6 @@ const InputField = ({
   </div>
 );
 
-const SelectField = ({
-  label,
-  id,
-  placeholder,
-  icon,
-  children,
-}: {
-  label: string;
-  id: string;
-  placeholder: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) => (
-  <div className="grid gap-2">
-    <Label htmlFor={id}>{label}</Label>
-    <div className="relative flex items-center">
-       <div className="absolute left-2.5 z-10">{icon}</div>
-      <Select>
-        <SelectTrigger id={id} className="pl-9">
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-        <SelectContent>{children}</SelectContent>
-      </Select>
-    </div>
-  </div>
-);
-
 const TextareaField = ({
   label,
   id,
@@ -139,63 +97,10 @@ const TextareaField = ({
 export function ArrestReportForm() {
   return (
     <div className="space-y-6">
-      <FormSection title="General Section" icon={<CalendarDays className="h-6 w-6" />}>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <InputField
-            label="Date"
-            id="date"
-            placeholder="DD/MMM/YYYY"
-            icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
-            type="date"
-          />
-          <InputField
-            label="Time"
-            id="time"
-            placeholder="HH:MM"
-            icon={<Clock className="h-4 w-4 text-muted-foreground" />}
-            type="time"
-          />
-          <InputField
-            label="Call Sign"
-            id="call-sign"
-            placeholder="CALL SIGN"
-            icon={<Radio className="h-4 w-4 text-muted-foreground" />}
-          />
-        </div>
-      </FormSection>
+      <GeneralSection />
+      <OfficerSection />
 
-      <FormSection title="Officer Section" icon={<User className="h-6 w-6" />}>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-            <InputField
-              label="Full Name"
-              id="officer-name"
-              placeholder="Isabella Attaway"
-              icon={<User className="h-4 w-4 text-muted-foreground" />}
-            />
-            <SelectField
-                label="Rank"
-                id="rank"
-                placeholder="Select Rank"
-                icon={<Shield className="h-4 w-4 text-muted-foreground" />}
-            >
-                <SelectItem value="sergeant">Sergeant</SelectItem>
-                <SelectItem value="officer">Officer</SelectItem>
-                <SelectItem value="deputy">Deputy</SelectItem>
-            </SelectField>
-            <InputField
-                label="Badge"
-                id="badge"
-                placeholder="177131"
-                icon={<Badge className="h-4 w-4 text-muted-foreground" />}
-            />
-             <div className="grid gap-2">
-                <Label>Options</Label>
-                <Button variant="outline"><Plus className="mr-2 h-4 w-4"/> Slot</Button>
-            </div>
-        </div>
-      </FormSection>
-
-       <FormSection title="Arrest Section" icon={<User className="h-6 w-6" />}>
+       <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
          <div className="space-y-6">
             <InputField
               label="Suspect's Full Name"
