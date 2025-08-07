@@ -248,8 +248,8 @@ const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any)
     
     const getReportHeader = () => {
         const primaryOfficer = officers?.[0];
-        if (primaryOfficer?.department === 'Los Santos Police Department') {
-            return 'CITY OF LOS SANTOS';
+        if (primaryOfficer?.department) {
+            return primaryOfficer.department.toUpperCase();
         }
         return 'COUNTY OF LOS SANTOS';
     };
