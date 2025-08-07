@@ -2,10 +2,30 @@ import type { ReactNode } from 'react';
 import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { SidebarNav } from './sidebar-nav';
 import Image from 'next/image';
+import { Separator } from '../ui/separator';
 
 type LayoutProps = {
   children: ReactNode;
 };
+
+function Footer() {
+    return (
+      <footer className="relative z-10 mt-auto py-6">
+        <Separator className="my-4 bg-transparent" />
+        <div className="container mx-auto flex flex-col items-center justify-center gap-4">
+            <Image 
+                src="/img/logos/MDC-Logo.svg"
+                width={80}
+                height={40}
+                alt="MDC Panel Logo"
+            />
+          <p className="text-center text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear() + 1} MDC Panel. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    );
+  }
 
 export function Layout({ children }: LayoutProps) {
   return (
@@ -23,7 +43,12 @@ export function Layout({ children }: LayoutProps) {
             className="opacity-5"
           />
         </div>
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10 flex min-h-screen flex-col">
+            <div className="flex-grow">
+                {children}
+            </div>
+            <Footer />
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
