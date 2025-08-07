@@ -9,9 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { Label } from '@/components/ui/label';
 import { PageHeader } from '@/components/dashboard/page-header';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Charge {
   id: string;
@@ -51,6 +65,7 @@ export function ArrestCalculatorPage() {
   const [penalCode, setPenalCode] = useState<PenalCode>({});
   const [charges, setCharges] = useState<SelectedCharge[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openChargeSelector, setOpenChargeSelector] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
@@ -90,7 +105,6 @@ export function ArrestCalculatorPage() {
     const newCharges = charges.map((charge) => {
       if (charge.uniqueId === uniqueId) {
         const updatedCharge = { ...charge, [field]: value };
-        // Reset dependent fields if chargeId changes
         if (field === 'chargeId') {
           updatedCharge.class = null;
           updatedCharge.offense = null;
@@ -107,6 +121,8 @@ export function ArrestCalculatorPage() {
     if (!chargeId) return null;
     return penalCode[chargeId] || null;
   };
+  
+  const penalCodeArray = Object.values(penalCode);
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -127,27 +143,75 @@ export function ArrestCalculatorPage() {
               <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Charge Dropdown */}
                 <div className="space-y-1.5 md:col-span-2">
-                  <Label htmlFor={`charge-${chargeRow.uniqueId}`}>Charge</Label>
-                  <Select
-                    value={chargeRow.chargeId || ''}
-                    onValueChange={(value) =>
-                      updateCharge(chargeRow.uniqueId, 'chargeId', value)
-                    }
-                  >
-                    <SelectTrigger id={`charge-${chargeRow.uniqueId}`}>
-                      <SelectValue placeholder="Select a charge..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.values(penalCode).map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          <span className={`${getTypeColor(c.type)} font-bold mr-2`}>
-                            {c.id}
-                          </span>
-                          {c.charge}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label>Charge</Label>
+                  <Popover open={openChargeSelector === chargeRow.uniqueId} onOpenChange={(isOpen) => setOpenChargeSelector(isOpen ? chargeRow.uniqueId : null)}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openChargeSelector === chargeRow.uniqueId}
+                        className="w-full justify-between"
+                        disabled={loading}
+                      >
+                        {chargeRow.chargeId
+                          ? (
+                            <span className="flex items-center">
+                              <span className={`${getTypeColor(penalCode[chargeRow.chargeId].type)} font-bold mr-2`}>
+                                {penalCode[chargeRow.chargeId].id}
+                              </span>
+                              {penalCode[chargeRow.chargeId].charge}
+                            </span>
+                          )
+                          : 'Select a charge...'}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command
+                        filter={(value, search) => {
+                          const charge = penalCodeArray.find(c => c.id === value);
+                          if (!charge) return 0;
+                          
+                          const term = search.toLowerCase();
+                          const chargeName = charge.charge.toLowerCase();
+                          const chargeId = charge.id;
+
+                          if (chargeName.includes(term) || chargeId.includes(term)) {
+                            return 1;
+                          }
+                          return 0;
+                        }}
+                      >
+                        <CommandInput placeholder="Search charge by name or ID..." />
+                        <CommandEmpty>No charge found.</CommandEmpty>
+                        <CommandList>
+                          <CommandGroup>
+                            {penalCodeArray.map((c) => (
+                              <CommandItem
+                                key={c.id}
+                                value={c.id}
+                                onSelect={(currentValue) => {
+                                  updateCharge(chargeRow.uniqueId, 'chargeId', currentValue === chargeRow.chargeId ? '' : currentValue);
+                                  setOpenChargeSelector(null);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    chargeRow.chargeId === c.id ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                <span className={`${getTypeColor(c.type)} font-bold mr-2`}>
+                                  {c.id}
+                                </span>
+                                {c.charge}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 {/* Class Dropdown */}
@@ -197,7 +261,7 @@ export function ArrestCalculatorPage() {
                   <Label htmlFor={`addition-${chargeRow.uniqueId}`}>Addition</Label>
                    <Select
                     value={chargeRow.addition || ''}
-                    onValueChange={(value) =>
+                    onValuecha_id={(value) =>
                       updateCharge(chargeRow.uniqueId, 'addition', value)
                     }
                     disabled={!chargeDetails}
