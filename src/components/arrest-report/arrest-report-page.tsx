@@ -16,8 +16,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '../ui/skeleton';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -72,20 +73,46 @@ const formatBailCost = (bailInfo: any) => {
 export function ArrestReportPage() {
   const { report, penalCode } = useChargeStore();
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     if (report.length === 0) {
       router.push('/arrest-calculator');
     }
   }, [report, router]);
 
-  if (report.length === 0 || !penalCode) {
+  if (!isClient || report.length === 0 || !penalCode) {
     return (
-        <div className="container mx-auto p-4 md:p-6 lg:p-8">
+        <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
             <PageHeader
                 title="Arrest Report"
-                description="No report data available. Please generate one from the calculator."
+                description="Loading report data..."
             />
+             <Card>
+                <CardHeader>
+                    <CardTitle>
+                        <Skeleton className="h-8 w-1/4" />
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-2">
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                    </div>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle>
+                        <Skeleton className="h-8 w-1/4" />
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Skeleton className="h-12 w-full" />
+                </CardContent>
+            </Card>
         </div>
     );
   }
@@ -331,3 +358,5 @@ export function ArrestReportPage() {
     </div>
   );
 }
+
+    
