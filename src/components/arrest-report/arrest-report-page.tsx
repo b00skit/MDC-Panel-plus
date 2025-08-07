@@ -247,18 +247,13 @@ export function ArrestReportPage() {
                             <TableCell>{row.addition}</TableCell>
                             <TableCell>{row.offense}</TableCell>
                             <TableCell>
-                            <Badge
-                                variant={
-                                chargeDetails.type === 'F'
-                                    ? 'destructive'
-                                    : chargeDetails.type === 'M'
-                                    ? 'secondary'
-                                    : 'default'
-                                }
-                                className={chargeDetails.type === 'M' ? 'bg-yellow-500 text-white' : ''}
-                            >
-                                {getType(chargeDetails.type)}
-                            </Badge>
+                                <span className={cn('font-bold', {
+                                    'text-red-500': chargeDetails.type === 'F',
+                                    'text-yellow-500': chargeDetails.type === 'M',
+                                    'text-green-500': chargeDetails.type === 'I',
+                                })}>
+                                    {getType(chargeDetails.type)}
+                                </span>
                             </TableCell>
                             <TableCell>{minTime}</TableCell>
                             <TableCell>{maxTime}</TableCell>
