@@ -16,10 +16,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <SidebarInset>
         <div className="absolute inset-0 z-0">
           <Image
-            src="/Logo-SanAndreasSealTransparent.png"
+            src="/img/logos/Logo-SanAndreasSealTransparent.png"
             alt="San Andreas Seal"
-            layout="fill"
-            objectFit="contain"
+            fill
+            style={{ objectFit: 'contain' }}
             className="opacity-10"
           />
         </div>
