@@ -20,7 +20,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             alt="San Andreas Seal"
             fill
             style={{ objectFit: 'contain' }}
-            className="opacity-10"
+            className="opacity-5"
           />
         </div>
         <div className="relative z-10">{children}</div>
