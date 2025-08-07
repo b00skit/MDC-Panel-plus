@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel, FileText } from 'lucide-react';
+import { LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel, FileText, BookOpen, Landmark, Puzzle } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 
@@ -80,6 +80,38 @@ export function SidebarNav() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive('/paperwork-generator')}>
+                <Link href="#">
+                    <FileText />
+                    <span>Paperwork Generator</span>
+                </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive('/simplified-penal-code')}>
+                <Link href="#">
+                    <BookOpen />
+                    <span>Simplified Penal Code</span>
+                </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive('/caselaw-legal-resources')}>
+                <Link href="#">
+                    <Landmark />
+                    <span>Caselaw & Legal Resources</span>
+                </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive('/placeholder')}>
+                <Link href="#">
+                    <Puzzle />
+                    <span>Placeholder</span>
+                </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
 
@@ -104,8 +136,8 @@ export function SidebarNav() {
           </SidebarMenuItem>
            <SidebarMenuItem>
             <SidebarMenuButton onClick={toggleTheme}>
-              {mounted && theme === 'light' ? <Sun /> : <Moon />}
-              <span>{mounted && theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
+              {mounted ? (theme === 'light' ? <Sun /> : <Moon />) : <Moon />}
+              <span>{mounted ? (theme === 'light' ? 'Light Mode' : 'Dark Mode') : 'Dark Mode'}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

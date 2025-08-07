@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -21,6 +22,13 @@ const modules: ModuleCardProps[] = [
     href: "/arrest-report",
     dataAiHint: "report document"
   },
+   {
+    title: "Paperwork Generator",
+    description: "Generate different types of paperwork.",
+    icon: <FileText className="w-8 h-8 text-primary" />,
+    href: "#",
+    dataAiHint: "document generator"
+  },
   {
     title: "Simplified Penal Code",
     description: "Browse a simplified version of the penal code.",
@@ -38,13 +46,6 @@ const modules: ModuleCardProps[] = [
   {
     title: "Placeholder Module",
     description: "This is a placeholder for a future module.",
-    icon: <Puzzle className="w-8 h-8 text-primary" />,
-    href: "#",
-    dataAiHint: "puzzle piece"
-  },
-  {
-    title: "Another Placeholder",
-    description: "This is another placeholder for a future module.",
     icon: <Puzzle className="w-8 h-8 text-primary" />,
     href: "#",
     dataAiHint: "puzzle piece"
