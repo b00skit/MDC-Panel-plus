@@ -20,6 +20,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import { ArrestReportForm } from './arrest-report-form';
+import { Button } from '../ui/button';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -73,6 +74,7 @@ const formatBailCost = (bailInfo: any) => {
 
 export function ArrestReportPage() {
   const { report, penalCode } = useChargeStore();
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -359,7 +361,21 @@ export function ArrestReportPage() {
       />
         {!isClient && renderSkeleton()}
         {hasReport && renderReport()}
-        {isClient && <ArrestReportForm />}
+        
+        {isClient && !hasReport && (
+            <Alert variant="secondary" className="mt-4">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>No Charges Selected</AlertTitle>
+                <AlertDescription className="space-y-4">
+                   <p>You must first select charges from the Arrest Calculator before you can create a report.</p>
+                   <Button onClick={() => router.push('/arrest-calculator')}>
+                        Go to Arrest Calculator
+                   </Button>
+                </AlertDescription>
+            </Alert>
+        )}
+        
+        {isClient && hasReport && <ArrestReportForm />}
     </div>
   );
 }
