@@ -16,6 +16,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -47,12 +48,19 @@ const formatTimeInMinutes = (time: { days: number; hours: number; min: number })
     return time.days * 1440 + time.hours * 60 + time.min;
 }
 
-const formatBail = (bailInfo: any) => {
-    if (bailInfo.auto === false) return 'NO BAIL';
-    if (bailInfo.auto === true) return 'AUTO BAIL';
-    if (bailInfo.auto === 2) return 'DISCRETIONARY';
-    return 'N/A';
+const BailStatusBadge = ({ bailInfo }: { bailInfo: any }) => {
+  if (bailInfo.auto === false) {
+    return <Badge variant="destructive">NO BAIL</Badge>;
+  }
+  if (bailInfo.auto === true) {
+    return <Badge className="bg-green-500 hover:bg-green-600 text-white">AUTO BAIL</Badge>;
+  }
+  if (bailInfo.auto === 2) {
+    return <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">DISCRETIONARY</Badge>;
+  }
+  return <Badge variant="secondary">N/A</Badge>;
 };
+
 
 const formatBailCost = (bailInfo: any) => {
     if (bailInfo.auto === false || bailInfo.cost === 0) return 'N/A';
@@ -259,7 +267,7 @@ export function ArrestReportPage() {
                             <TableCell>{impound ? `Yes | ${impound} Days` : 'No'}</TableCell>
                             <TableCell>{suspension ? `Yes | ${suspension} Days` : 'No'}</TableCell>
                             <TableCell>{chargeDetails.extra || 'N/A'}</TableCell>
-                            <TableCell>{formatBail(bailInfo)}</TableCell>
+                            <TableCell><BailStatusBadge bailInfo={bailInfo} /></TableCell>
                             <TableCell>{formatBailCost(bailInfo)}</TableCell>
                         </TableRow>
                     );
