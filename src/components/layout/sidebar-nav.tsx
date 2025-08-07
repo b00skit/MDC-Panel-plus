@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, LayoutGrid, Settings, LifeBuoy } from 'lucide-react';
+import { Shield, LayoutGrid, Settings, LifeBuoy } from 'lucide-react';
 
 import {
   SidebarHeader,
@@ -26,7 +26,7 @@ export function SidebarNav() {
       <SidebarHeader>
         <div className="flex items-center gap-2.5">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <Bot className="h-6 w-6 text-primary-foreground" />
+            <Shield className="h-6 w-6 text-primary-foreground" />
           </div>
           <span className="text-xl font-semibold font-headline">LEO Assistant+</span>
         </div>
