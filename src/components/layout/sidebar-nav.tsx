@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Shield, LayoutGrid, Settings, LifeBuoy, Sun, Moon } from 'lucide-react';
+import { Shield, LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import {
@@ -46,6 +46,14 @@ export function SidebarNav() {
               <Link href="/">
                 <LayoutGrid />
                 <span>Dashboard</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive('/arrest-calculator')}>
+              <Link href="/arrest-calculator">
+                <Gavel />
+                <span>Arrest Calculator</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
