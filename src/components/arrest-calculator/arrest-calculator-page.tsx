@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/command';
 import { Label } from '@/components/ui/label';
 import { PageHeader } from '@/components/dashboard/page-header';
-import { Plus, Trash2, ChevronsUpDown } from 'lucide-react';
+import { Plus, Trash2, ChevronsUpDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Charge {
@@ -153,7 +153,7 @@ export function ArrestCalculatorPage() {
                         className="w-full justify-between"
                         disabled={loading}
                       >
-                        {chargeRow.chargeId
+                        {chargeRow.chargeId && penalCode[chargeRow.chargeId]
                           ? (
                             <span className="flex items-center">
                               <span className={`${getTypeColor(penalCode[chargeRow.chargeId].type)} font-bold mr-2`}>
@@ -261,7 +261,7 @@ export function ArrestCalculatorPage() {
                   <Label htmlFor={`addition-${chargeRow.uniqueId}`}>Addition</Label>
                    <Select
                     value={chargeRow.addition || ''}
-                    onValuecha_id={(value) =>
+                    onValueChange={(value) =>
                       updateCharge(chargeRow.uniqueId, 'addition', value)
                     }
                     disabled={!chargeDetails}
