@@ -35,7 +35,7 @@ export function SidebarNav() {
         <div className="flex items-center gap-2.5">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/MDC-Panel-Favicon.svg"
+              src="/img/logos/MDC-Panel-Favicon.svg"
               width={40}
               height={40}
               alt="MDC Panel Logo"
