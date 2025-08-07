@@ -47,6 +47,7 @@ interface SelectedCharge {
   class: string | null;
   offense: string | null;
   addition: string | null;
+  category: string | null;
 }
 
 const getTypeClasses = (type: Charge['type']) => {
@@ -90,6 +91,7 @@ export function ArrestCalculatorPage() {
         class: null,
         offense: null,
         addition: null,
+        category: null,
       },
     ]);
   };
@@ -110,6 +112,7 @@ export function ArrestCalculatorPage() {
           updatedCharge.class = null;
           updatedCharge.offense = null;
           updatedCharge.addition = null;
+          updatedCharge.category = null;
         }
         return updatedCharge;
       }
@@ -135,13 +138,14 @@ export function ArrestCalculatorPage() {
       <div className="space-y-4">
         {charges.map((chargeRow) => {
           const chargeDetails = getChargeDetails(chargeRow.chargeId);
+          const isDrugCharge = !!chargeDetails?.drugs;
 
           return (
             <div
               key={chargeRow.uniqueId}
               className="flex items-end gap-2 p-4 border rounded-lg"
             >
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-2">
+              <div className={cn("flex-1 grid grid-cols-1 md:grid-cols-5 gap-2", isDrugCharge && "md:grid-cols-6")}>
                 {/* Charge Dropdown */}
                 <div className="space-y-1.5 md:col-span-2">
                   <Label>Charge</Label>
@@ -282,6 +286,29 @@ export function ArrestCalculatorPage() {
                     </SelectContent>
                   </Select>
                 </div>
+                
+                {/* Category Dropdown (for drug charges) */}
+                {isDrugCharge && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`category-${chargeRow.uniqueId}`}>Category</Label>
+                    <Select
+                      value={chargeRow.category || ''}
+                      onValueChange={(value) =>
+                        updateCharge(chargeRow.uniqueId, 'category', value)
+                      }
+                      disabled={!chargeDetails}
+                    >
+                      <SelectTrigger id={`category-${chargeRow.uniqueId}`} className="h-9">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {chargeDetails?.drugs && Object.entries(chargeDetails.drugs).map(([key, value]) => (
+                          <SelectItem key={key} value={value}>{value}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
               </div>
               <Button
