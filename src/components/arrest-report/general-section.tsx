@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { CalendarDays, Clock, Radio } from 'lucide-react';
+import { useFormStore } from '@/stores/form-store';
 
 const FormSection = ({
   title,
@@ -33,6 +34,7 @@ const InputField = ({
   type = 'text',
   value,
   onChange,
+  readOnly = false,
 }: {
   label: string;
   id: string;
@@ -41,6 +43,7 @@ const InputField = ({
   type?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  readOnly?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -52,6 +55,7 @@ const InputField = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        readOnly={readOnly}
         className="pl-9"
       />
     </div>
@@ -59,14 +63,14 @@ const InputField = ({
 );
 
 export function GeneralSection() {
-  const [currentDate, setCurrentDate] = useState('');
-  const [currentTime, setCurrentTime] = useState('');
+    const { general, setFormField } = useFormStore();
+  
+    useEffect(() => {
+        const now = new Date();
+        setFormField('general', 'date', format(now, 'dd/MMM/yyyy').toUpperCase());
+        setFormField('general', 'time', format(now, 'HH:mm'));
+    }, [setFormField]);
 
-  useEffect(() => {
-    const now = new Date();
-    setCurrentDate(format(now, 'dd/MMM/yyyy').toUpperCase());
-    setCurrentTime(format(now, 'HH:mm'));
-  }, []);
 
   return (
     <FormSection title="General Section" icon={<CalendarDays className="h-6 w-6" />}>
@@ -77,8 +81,8 @@ export function GeneralSection() {
           placeholder="DD/MMM/YYYY"
           icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
           type="text"
-          value={currentDate}
-          onChange={(e) => setCurrentDate(e.target.value)}
+          value={general.date}
+          readOnly
         />
         <InputField
           label="Time"
@@ -86,14 +90,16 @@ export function GeneralSection() {
           placeholder="HH:MM"
           icon={<Clock className="h-4 w-4 text-muted-foreground" />}
           type="text"
-          value={currentTime}
-          onChange={(e) => setCurrentTime(e.target.value)}
+          value={general.time}
+          readOnly
         />
         <InputField
           label="Call Sign"
           id="call-sign"
           placeholder="CALL SIGN"
           icon={<Radio className="h-4 w-4 text-muted-foreground" />}
+          value={general.callSign}
+          onChange={(e) => setFormField('general', 'callSign', e.target.value)}
         />
       </div>
     </FormSection>
