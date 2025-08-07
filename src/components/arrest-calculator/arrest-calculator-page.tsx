@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -29,28 +30,8 @@ import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useChargeStore, type SelectedCharge, type Charge, type PenalCode } from '@/stores/charge-store';
 
-interface Charge {
-  id: string;
-  charge: string;
-  type: 'F' | 'M' | 'I' | '?';
-  class: { A: boolean; B: boolean; C: boolean };
-  offence: { '1': boolean; '2': boolean; '3': boolean };
-  drugs?: Record<string, string>;
-}
-
-interface PenalCode {
-  [key: string]: Charge;
-}
-
-interface SelectedCharge {
-  uniqueId: number;
-  chargeId: string | null;
-  class: string | null;
-  offense: string | null;
-  addition: string | null;
-  category: string | null;
-}
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -66,17 +47,29 @@ const getTypeClasses = (type: Charge['type']) => {
 };
 
 export function ArrestCalculatorPage() {
-  const [penalCode, setPenalCode] = useState<PenalCode>({});
-  const [charges, setCharges] = useState<SelectedCharge[]>([]);
+  const router = useRouter();
+  const { 
+    charges, 
+    penalCode, 
+    setPenalCode, 
+    addCharge, 
+    removeCharge, 
+    updateCharge, 
+    setReport,
+    resetCharges,
+  } = useChargeStore();
+
   const [loading, setLoading] = useState(true);
   const [openChargeSelector, setOpenChargeSelector] = useState<number | null>(
     null
   );
 
   useEffect(() => {
+    // Reset charges when the component mounts to start with a clean slate
+    resetCharges();
     fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: PenalCode) => {
         setPenalCode(data);
         setLoading(false);
       })
@@ -84,53 +77,19 @@ export function ArrestCalculatorPage() {
         console.error('Failed to fetch penal code:', error);
         setLoading(false);
       });
-  }, []);
-
-  const addCharge = () => {
-    setCharges([
-      ...charges,
-      {
-        uniqueId: Date.now(),
-        chargeId: null,
-        class: null,
-        offense: null,
-        addition: null,
-        category: null,
-      },
-    ]);
-  };
-
-  const removeCharge = (uniqueId: number) => {
-    setCharges(charges.filter((charge) => charge.uniqueId !== uniqueId));
-  };
-
-  const updateCharge = (
-    uniqueId: number,
-    field: keyof SelectedCharge,
-    value: string
-  ) => {
-    const newCharges = charges.map((charge) => {
-      if (charge.uniqueId === uniqueId) {
-        const updatedCharge = { ...charge, [field]: value };
-        if (field === 'chargeId') {
-          updatedCharge.class = null;
-          updatedCharge.offense = null;
-          updatedCharge.addition = null;
-          updatedCharge.category = null;
-        }
-        return updatedCharge;
-      }
-      return charge;
-    });
-    setCharges(newCharges);
-  };
+  }, [setPenalCode, resetCharges]);
+  
+  const handleCalculate = () => {
+    setReport(charges);
+    router.push('/arrest-report');
+  }
 
   const getChargeDetails = (chargeId: string | null): Charge | null => {
-    if (!chargeId) return null;
+    if (!chargeId || !penalCode) return null;
     return penalCode[chargeId] || null;
   };
 
-  const penalCodeArray = Object.values(penalCode);
+  const penalCodeArray = useMemo(() => penalCode ? Object.values(penalCode) : [], [penalCode]);
 
   const showDrugChargeWarning = useMemo(() => {
     return charges.some(charge => {
@@ -179,7 +138,7 @@ export function ArrestCalculatorPage() {
                         className="w-full justify-between h-9"
                         disabled={loading}
                       >
-                        {chargeRow.chargeId && penalCode[chargeRow.chargeId] ? (
+                        {chargeRow.chargeId && penalCode && penalCode[chargeRow.chargeId] ? (
                           <span className="flex items-center">
                             <Badge
                               className={cn(
@@ -202,6 +161,7 @@ export function ArrestCalculatorPage() {
                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                       <Command
                         filter={(value, search) => {
+                           if (!penalCode) return 0;
                           const charge = penalCodeArray.find(
                             (c) => c.id === value
                           );
@@ -231,17 +191,19 @@ export function ArrestCalculatorPage() {
                                 onSelect={(currentValue) => {
                                   updateCharge(
                                     chargeRow.uniqueId,
-                                    'chargeId',
-                                    currentValue === chargeRow.chargeId
-                                      ? ''
-                                      : currentValue
+                                    {
+                                      chargeId: currentValue === chargeRow.chargeId ? '' : currentValue,
+                                      class: null,
+                                      offense: null,
+                                      addition: null,
+                                      category: null,
+                                    }
                                   );
                                   setOpenChargeSelector(null);
                                 }}
                                 disabled={c.type === '?'}
                                 className="flex items-center"
                               >
-                                <div className="w-6">
                                   <Check
                                     className={cn(
                                       'mr-2 h-4 w-4',
@@ -250,7 +212,6 @@ export function ArrestCalculatorPage() {
                                         : 'opacity-0'
                                     )}
                                   />
-                                </div>
                                 <Badge
                                   className={cn(
                                     'mr-2 rounded-sm px-1.5 py-0.5 text-xs',
@@ -275,7 +236,7 @@ export function ArrestCalculatorPage() {
                   <Select
                     value={chargeRow.class || ''}
                     onValueChange={(value) =>
-                      updateCharge(chargeRow.uniqueId, 'class', value)
+                      updateCharge(chargeRow.uniqueId, { class: value })
                     }
                     disabled={!chargeDetails}
                   >
@@ -302,7 +263,7 @@ export function ArrestCalculatorPage() {
                   <Select
                     value={chargeRow.offense || ''}
                     onValueChange={(value) =>
-                      updateCharge(chargeRow.uniqueId, 'offense', value)
+                      updateCharge(chargeRow.uniqueId, { offense: value })
                     }
                     disabled={!chargeDetails}
                   >
@@ -340,7 +301,7 @@ export function ArrestCalculatorPage() {
                   <Select
                     value={chargeRow.addition || ''}
                     onValueChange={(value) =>
-                      updateCharge(chargeRow.uniqueId, 'addition', value)
+                      updateCharge(chargeRow.uniqueId, { addition: value })
                     }
                     disabled={!chargeDetails}
                   >
@@ -373,7 +334,7 @@ export function ArrestCalculatorPage() {
                     <Select
                       value={chargeRow.category || ''}
                       onValueChange={(value) =>
-                        updateCharge(chargeRow.uniqueId, 'category', value)
+                        updateCharge(chargeRow.uniqueId, { category: value })
                       }
                       disabled={!chargeDetails}
                     >
@@ -410,11 +371,11 @@ export function ArrestCalculatorPage() {
         })}
 
         <div className="flex items-center gap-4 mt-4">
-          <Button onClick={addCharge} disabled={loading}>
+          <Button onClick={() => addCharge()} disabled={loading}>
             <Plus className="mr-2 h-4 w-4" /> Add Charge
           </Button>
 
-          <Button variant="default" disabled={charges.length === 0}>
+          <Button variant="default" disabled={charges.length === 0} onClick={handleCalculate}>
             Calculate Arrest
           </Button>
         </div>
