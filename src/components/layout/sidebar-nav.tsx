@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
 
 export function SidebarNav() {
   const pathname = usePathname();
@@ -35,9 +36,15 @@ export function SidebarNav() {
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
             <Shield className="h-6 w-6 text-primary-foreground" />
           </div>
-          <span className="text-xl font-semibold font-headline">
-            MDC Panel<span className="text-primary">+</span>
-          </span>
+           <div className="relative flex items-center">
+            <span className="text-xl font-semibold font-headline">MDC Panel</span>
+            <Badge 
+              variant="default" 
+              className="absolute -right-8 -top-2.5 rotate-[15deg] transform border-2 border-background px-1.5 py-0.5 text-xs font-bold"
+            >
+              PLUS
+            </Badge>
+          </div>
         </div>
       </SidebarHeader>
 
