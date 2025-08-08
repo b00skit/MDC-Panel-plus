@@ -242,14 +242,20 @@ export function AdvancedArrestReportForm() {
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
-                    <Input
+                    <Textarea
                         readOnly
-                        className="bg-muted"
+                        className="bg-muted min-h-[auto]"
                         value={
                             charges
-                            .map((c) => penalCode?.[c.chargeId!]?.charge || 'Unknown Charge')
-                            .join(', ') || 'No charges selected'
+                            .map((c) => {
+                                const details = penalCode?.[c.chargeId!];
+                                if (!details) return 'Unknown Charge';
+                                const typePrefix = `${details.type}${c.class}`;
+                                return `${typePrefix} ${details.id}. ${details.charge}`;
+                            })
+                            .join('\n') || 'No charges selected'
                         }
+                        rows={charges.length || 1}
                     />
                   </TableCell>
                 </TableRow>
