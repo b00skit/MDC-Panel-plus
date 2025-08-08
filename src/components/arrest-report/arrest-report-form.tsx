@@ -23,6 +23,7 @@ import { GeneralSection } from './general-section';
 import { OfficerSection } from './officer-section';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
+import { useToast } from '@/hooks/use-toast';
 
 const FormSection = ({
   title,
@@ -51,6 +52,7 @@ const InputField = ({
   className = '',
   value,
   onChange,
+  required = true,
 }: {
   label:string;
   id: string;
@@ -60,6 +62,7 @@ const InputField = ({
   className?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -72,6 +75,7 @@ const InputField = ({
         className={cn('pl-9', className)}
         value={value}
         onChange={onChange}
+        required={required}
       />
     </div>
   </div>
@@ -86,6 +90,7 @@ const TextareaField = ({
   className = '',
   value,
   onChange,
+  required = true,
 }: {
   label: string;
   id: string;
@@ -95,6 +100,7 @@ const TextareaField = ({
   className?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  required?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -106,6 +112,7 @@ const TextareaField = ({
         className={cn('pl-9 pt-3', className)}
         value={value}
         onChange={onChange}
+        required={required}
       />
     </div>
     {description && <p className="text-xs text-muted-foreground">{description}</p>}
@@ -115,14 +122,50 @@ const TextareaField = ({
 
 export function ArrestReportForm() {
   const router = useRouter();
+  const { toast } = useToast();
   const { formData, setFormField } = useFormStore();
-  const { officers } = useOfficerStore.getState();
+  const { officers } = useOfficerStore();
 
-  const handleSubmit = () => {
-    const { callSign, date, time } = useFormStore.getState().formData.general;
+  const validateForm = () => {
+    // General Section
+    if (!formData.general.callSign) return "Call Sign is required.";
+    
+    // Officer Section
+    for (const officer of officers) {
+        if (!officer.name || !officer.rank || !officer.badgeNumber || !officer.department) {
+            return `All fields for Officer ${officer.name || '(new officer)'} are required.`;
+        }
+    }
+
+    // Arrest Section
+    if (!formData.arrest.suspectName) return "Suspect's Full Name is required.";
+    if (!formData.arrest.narrative) return "Arrest Narrative is required.";
+
+    // Location Details
+    if (!formData.location.district) return "District is required.";
+    if (!formData.location.street) return "Street Name is required.";
+    
+    // Evidence Section
+    if (!formData.evidence.dashcam) return "Dashboard Camera narrative is required.";
+    // Supporting evidence is not mandatory
+
+    return null;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const validationError = validateForm();
+    if (validationError) {
+      toast({
+        title: 'Missing Information',
+        description: validationError,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const allFormData = {
         ...formData,
-        general: { callSign, date, time },
         officers: officers,
     };
     useFormStore.getState().setAll(allFormData);
@@ -130,7 +173,7 @@ export function ArrestReportForm() {
   };
 
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <GeneralSection />
       <OfficerSection />
 
@@ -194,6 +237,7 @@ export function ArrestReportForm() {
                 className="min-h-[150px]"
                 value={formData.evidence.supporting}
                 onChange={(e) => setFormField('evidence', 'supporting', e.target.value)}
+                required={false}
             />
             <TextareaField 
                 label="Dashboard Camera"
@@ -215,9 +259,9 @@ export function ArrestReportForm() {
       </FormSection>
 
       <div className="flex justify-end gap-4">
-          <Button variant="outline">Save as Draft</Button>
-          <Button onClick={handleSubmit}>Submit Report</Button>
+          <Button variant="outline" type="button">Save as Draft</Button>
+          <Button type="submit">Submit Report</Button>
       </div>
-    </div>
+    </form>
   );
 }

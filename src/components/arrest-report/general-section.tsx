@@ -35,6 +35,7 @@ const InputField = ({
   value,
   onChange,
   readOnly = false,
+  required = true,
 }: {
   label: string;
   id: string;
@@ -44,6 +45,7 @@ const InputField = ({
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
+  required?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -57,6 +59,7 @@ const InputField = ({
         onChange={onChange}
         readOnly={readOnly}
         className="pl-9"
+        required={required}
       />
     </div>
   </div>

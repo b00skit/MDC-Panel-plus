@@ -42,7 +42,7 @@ const FormSection = ({
             {icon}
             <CardTitle className="text-xl">{title}</CardTitle>
        </div>
-       <Button variant="outline" size="sm" onClick={useOfficerStore.getState().addOfficer}>
+       <Button variant="outline" size="sm" onClick={useOfficerStore.getState().addOfficer} type="button">
             <Plus className="mr-2 h-4 w-4" /> Add Officer
         </Button>
     </CardHeader>
@@ -57,6 +57,7 @@ const InputField = ({
   icon,
   value,
   onChange,
+  required = true,
 }: {
   label: string;
   id: string;
@@ -64,6 +65,7 @@ const InputField = ({
   icon: React.ReactNode;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -75,6 +77,7 @@ const InputField = ({
         className="pl-9"
         value={value}
         onChange={onChange}
+        required={required}
       />
     </div>
   </div>
@@ -88,6 +91,7 @@ const SelectField = ({
   value,
   onValueChange,
   children,
+  required = true,
 }: {
   label: string;
   id: string;
@@ -96,12 +100,13 @@ const SelectField = ({
   value: string;
   onValueChange: (value: string) => void;
   children: React.ReactNode;
+  required?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
     <div className="relative flex items-center">
       <div className="absolute left-2.5 z-10">{icon}</div>
-      <Select value={value} onValueChange={onValueChange}>
+      <Select value={value} onValueChange={onValueChange} required={required}>
         <SelectTrigger id={id} className="pl-9">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
@@ -174,7 +179,7 @@ export function OfficerSection() {
              </div>
              <div className="md:col-span-1">
                 {index > 0 && (
-                     <Button variant="ghost" size="icon" onClick={() => removeOfficer(officer.id)}>
+                     <Button variant="ghost" size="icon" onClick={() => removeOfficer(officer.id)} type="button">
                         <Trash2 className="h-5 w-5 text-red-500" />
                      </Button>
                 )}
