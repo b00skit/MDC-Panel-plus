@@ -19,7 +19,7 @@ import {
   SelectGroup,
   SelectLabel
 } from '@/components/ui/select';
-import { User, Shield, Badge, Plus, Trash2 } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useOfficerStore } from '@/stores/officer-store';
 
@@ -31,10 +31,12 @@ const FormSection = ({
   title,
   icon,
   children,
+  onAdd,
 }: {
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
+  onAdd: () => void;
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -42,7 +44,7 @@ const FormSection = ({
             {icon}
             <CardTitle className="text-xl">{title}</CardTitle>
        </div>
-       <Button variant="outline" size="sm" onClick={useOfficerStore.getState().addOfficer} type="button">
+       <Button variant="outline" size="sm" onClick={onAdd} type="button">
             <Plus className="mr-2 h-4 w-4" /> Add Officer
         </Button>
     </CardHeader>
@@ -58,6 +60,7 @@ const InputField = ({
   value,
   onChange,
   required = true,
+  isInvalid = false,
 }: {
   label: string;
   id: string;
@@ -66,6 +69,7 @@ const InputField = ({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -74,7 +78,10 @@ const InputField = ({
       <Input
         id={id}
         placeholder={placeholder}
-        className="pl-9"
+        className={cn(
+            'pl-9',
+            isInvalid && 'border-red-500 focus-visible:ring-red-500'
+        )}
         value={value}
         onChange={onChange}
         required={required}
@@ -92,6 +99,7 @@ const SelectField = ({
   onValueChange,
   children,
   required = true,
+  isInvalid = false,
 }: {
   label: string;
   id: string;
@@ -101,13 +109,14 @@ const SelectField = ({
   onValueChange: (value: string) => void;
   children: React.ReactNode;
   required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
     <div className="relative flex items-center">
       <div className="absolute left-2.5 z-10">{icon}</div>
       <Select value={value} onValueChange={onValueChange} required={required}>
-        <SelectTrigger id={id} className="pl-9">
+        <SelectTrigger id={id} className={cn('pl-9', isInvalid && 'border-red-500 focus-visible:ring-red-500')}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>{children}</SelectContent>
@@ -117,8 +126,8 @@ const SelectField = ({
 );
 
 
-export function OfficerSection() {
-  const { officers, updateOfficer, removeOfficer, setInitialOfficers } = useOfficerStore();
+export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
+  const { officers, updateOfficer, removeOfficer, setInitialOfficers, addOfficer } = useOfficerStore();
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
   useEffect(() => {
@@ -134,7 +143,7 @@ export function OfficerSection() {
   };
   
   return (
-    <FormSection title="Officer Section" icon={<User className="h-6 w-6" />}>
+    <FormSection title="Officer Section" icon={<User className="h-6 w-6" />} onAdd={addOfficer}>
       <div className="space-y-6">
         {officers.map((officer, index) => (
           <div key={officer.id} className="grid grid-cols-1 gap-6 md:grid-cols-12 items-end">
@@ -146,6 +155,7 @@ export function OfficerSection() {
                     icon={<User className="h-4 w-4 text-muted-foreground" />}
                     value={officer.name}
                     onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
+                    isInvalid={isSubmitted && !officer.name}
                 />
             </div>
              <div className="md:col-span-4">
@@ -156,6 +166,7 @@ export function OfficerSection() {
                     icon={<Shield className="h-4 w-4 text-muted-foreground" />}
                     value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
                     onValueChange={(value) => handleRankChange(officer.id, value)}
+                    isInvalid={isSubmitted && (!officer.rank || !officer.department)}
                 >
                     {Object.entries(deptRanks).map(([dept, ranks]) => (
                         <SelectGroup key={dept}>
@@ -172,9 +183,10 @@ export function OfficerSection() {
                     label="Badge"
                     id={`badge-${officer.id}`}
                     placeholder="177131"
-                    icon={<Badge className="h-4 w-4 text-muted-foreground" />}
+                    icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
                     value={officer.badgeNumber}
                     onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
+                    isInvalid={isSubmitted && !officer.badgeNumber}
                 />
              </div>
              <div className="md:col-span-1">

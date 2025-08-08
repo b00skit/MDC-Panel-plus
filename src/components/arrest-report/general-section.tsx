@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { CalendarDays, Clock, Radio } from 'lucide-react';
 import { useFormStore } from '@/stores/form-store';
+import { cn } from '@/lib/utils';
 
 const FormSection = ({
   title,
@@ -36,6 +37,7 @@ const InputField = ({
   onChange,
   readOnly = false,
   required = true,
+  isInvalid = false,
 }: {
   label: string;
   id: string;
@@ -46,6 +48,7 @@ const InputField = ({
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
   required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -58,14 +61,17 @@ const InputField = ({
         value={value}
         onChange={onChange}
         readOnly={readOnly}
-        className="pl-9"
+        className={cn(
+            'pl-9',
+            isInvalid && 'border-red-500 focus-visible:ring-red-500'
+        )}
         required={required}
       />
     </div>
   </div>
 );
 
-export function GeneralSection() {
+export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
     const { general, setFormField } = useFormStore(state => ({
         general: state.formData.general,
         setFormField: state.setFormField,
@@ -113,6 +119,7 @@ export function GeneralSection() {
           icon={<Radio className="h-4 w-4 text-muted-foreground" />}
           value={general?.callSign || ''}
           onChange={(e) => setFormField('general', 'callSign', e.target.value)}
+          isInvalid={isSubmitted && !general.callSign}
         />
       </div>
     </FormSection>

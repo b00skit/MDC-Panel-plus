@@ -1,5 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -53,6 +54,7 @@ const InputField = ({
   value,
   onChange,
   required = true,
+  isInvalid = false,
 }: {
   label:string;
   id: string;
@@ -63,6 +65,7 @@ const InputField = ({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -72,7 +75,11 @@ const InputField = ({
         id={id}
         type={type}
         placeholder={placeholder}
-        className={cn('pl-9', className)}
+        className={cn(
+            'pl-9',
+            isInvalid && 'border-red-500 focus-visible:ring-red-500',
+            className
+        )}
         value={value}
         onChange={onChange}
         required={required}
@@ -91,6 +98,7 @@ const TextareaField = ({
   value,
   onChange,
   required = true,
+  isInvalid = false,
 }: {
   label: string;
   id: string;
@@ -101,6 +109,7 @@ const TextareaField = ({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -109,7 +118,11 @@ const TextareaField = ({
       <Textarea
         id={id}
         placeholder={placeholder}
-        className={cn('pl-9 pt-3', className)}
+        className={cn(
+            'pl-9 pt-3',
+            isInvalid && 'border-red-500 focus-visible:ring-red-500',
+            className
+        )}
         value={value}
         onChange={onChange}
         required={required}
@@ -125,6 +138,7 @@ export function ArrestReportForm() {
   const { toast } = useToast();
   const { formData, setFormField } = useFormStore();
   const { officers } = useOfficerStore();
+  const [submitted, setSubmitted] = useState(false);
 
   const validateForm = () => {
     // General Section
@@ -154,6 +168,7 @@ export function ArrestReportForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
     const validationError = validateForm();
     if (validationError) {
       toast({
@@ -174,8 +189,8 @@ export function ArrestReportForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <GeneralSection />
-      <OfficerSection />
+      <GeneralSection isSubmitted={submitted} />
+      <OfficerSection isSubmitted={submitted}/>
 
        <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
          <div className="space-y-6">
@@ -186,6 +201,7 @@ export function ArrestReportForm() {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               value={formData.arrest.suspectName}
               onChange={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+              isInvalid={submitted && !formData.arrest.suspectName}
             />
             <TextareaField 
                 label="Arrest Narrative"
@@ -201,6 +217,7 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.arrest.narrative}
                   onChange={(e) => setFormField('arrest', 'narrative', e.target.value)}
+                  isInvalid={submitted && !formData.arrest.narrative}
             />
          </div>
       </FormSection>
@@ -214,6 +231,7 @@ export function ArrestReportForm() {
               icon={<MapPin className="h-4 w-4 text-muted-foreground" />}
               value={formData.location.district}
               onChange={(e) => setFormField('location', 'district', e.target.value)}
+              isInvalid={submitted && !formData.location.district}
             />
             <InputField
               label="Street Name"
@@ -222,6 +240,7 @@ export function ArrestReportForm() {
               icon={<Map className="h-4 w-4 text-muted-foreground" />}
               value={formData.location.street}
               onChange={(e) => setFormField('location', 'street', e.target.value)}
+              isInvalid={submitted && !formData.location.street}
             />
         </div>
       </FormSection>
@@ -254,6 +273,7 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.evidence.dashcam}
                   onChange={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+                  isInvalid={submitted && !formData.evidence.dashcam}
             />
         </div>
       </FormSection>
