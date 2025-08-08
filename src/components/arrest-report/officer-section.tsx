@@ -134,7 +134,8 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
     removeOfficer, 
     setInitialOfficers, 
     addOfficer,
-    alternativeCharacters
+    alternativeCharacters,
+    swapOfficer,
   } = useOfficerStore();
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
@@ -151,12 +152,7 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
   };
   
   const handlePillClick = (officerId: number, altChar: Officer) => {
-    updateOfficer(officerId, {
-      name: altChar.name,
-      rank: altChar.rank,
-      department: altChar.department,
-      badgeNumber: altChar.badgeNumber,
-    });
+    swapOfficer(officerId, altChar);
   }
 
   return (

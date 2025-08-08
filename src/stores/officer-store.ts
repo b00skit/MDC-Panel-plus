@@ -21,6 +21,7 @@ interface OfficerState {
   addAlternativeCharacter: () => void;
   removeAlternativeCharacter: (id: number) => void;
   updateAlternativeCharacter: (id: number, updatedFields: Partial<Omit<Officer, 'id'>>) => void;
+  swapOfficer: (officerId: number, altCharToUse: Officer) => void;
 }
 
 const getInitialOfficer = (): Officer => ({
@@ -149,6 +150,49 @@ export const useOfficerStore = create<OfficerState>()(
             return newState;
           });
         },
+
+        swapOfficer: (officerId: number, altCharToUse: Officer) => {
+            set(state => {
+              const officerToSwap = state.officers.find(o => o.id === officerId);
+              if (!officerToSwap) return state;
+      
+              // The character that will replace the officer in the form
+              const newOfficerData = {
+                id: officerToSwap.id, // Keep the same ID
+                name: altCharToUse.name,
+                rank: altCharToUse.rank,
+                department: altCharToUse.department,
+                badgeNumber: altCharToUse.badgeNumber,
+              };
+      
+              // The character that was in the form, to be moved to alternatives
+              const newAltCharData = {
+                id: altCharToUse.id, // Keep the same ID
+                name: officerToSwap.name,
+                rank: officerToSwap.rank,
+                department: officerToSwap.department,
+                badgeNumber: officerToSwap.badgeNumber,
+              };
+      
+              // Update officers list
+              const newOfficers = state.officers.map(o =>
+                o.id === officerId ? newOfficerData : o
+              );
+      
+              // Update alternative characters list
+              const newAlternativeCharacters = state.alternativeCharacters.map(ac =>
+                ac.id === altCharToUse.id ? newAltCharData : ac
+              );
+      
+              localStorage.setItem('alt-characters-storage', JSON.stringify(newAlternativeCharacters));
+
+              return {
+                ...state,
+                officers: newOfficers,
+                alternativeCharacters: newAlternativeCharacters,
+              };
+            });
+          },
       }),
       {
         name: 'officer-storage',
