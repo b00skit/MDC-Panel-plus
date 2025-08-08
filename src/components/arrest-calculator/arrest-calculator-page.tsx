@@ -103,6 +103,43 @@ export function ArrestCalculatorPage() {
         return !!details?.drugs;
     });
   }, [charges, penalCode]);
+  
+  const handleChargeSelect = (chargeRow: SelectedCharge, chargeId: string) => {
+    if (!penalCode) return;
+  
+    const isDeselecting = chargeRow.chargeId === chargeId;
+    if (isDeselecting) {
+      updateCharge(chargeRow.uniqueId, {
+        chargeId: null,
+        class: null,
+        offense: null,
+        addition: null,
+        category: null,
+      });
+      return;
+    }
+  
+    const chargeDetails = penalCode[chargeId];
+    if (!chargeDetails) return;
+  
+    let defaultClass: string | null = null;
+    if (chargeDetails.class?.A) defaultClass = 'A';
+    else if (chargeDetails.class?.B) defaultClass = 'B';
+    else if (chargeDetails.class?.C) defaultClass = 'C';
+  
+    let defaultOffense: string | null = null;
+    if (chargeDetails.offence?.['1']) defaultOffense = '1';
+    else if (chargeDetails.offence?.['2']) defaultOffense = '2';
+    else if (chargeDetails.offence?.['3']) defaultOffense = '3';
+  
+    updateCharge(chargeRow.uniqueId, {
+      chargeId: chargeId,
+      class: defaultClass,
+      offense: defaultOffense,
+      addition: 'Offender',
+      category: null, // Reset category on new charge selection
+    });
+  };
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -195,16 +232,7 @@ export function ArrestCalculatorPage() {
                                 key={c.id}
                                 value={c.id}
                                 onSelect={(currentValue) => {
-                                  updateCharge(
-                                    chargeRow.uniqueId,
-                                    {
-                                      chargeId: currentValue === chargeRow.chargeId ? '' : currentValue,
-                                      class: null,
-                                      offense: null,
-                                      addition: null,
-                                      category: null,
-                                    }
-                                  );
+                                  handleChargeSelect(chargeRow, currentValue);
                                   setOpenChargeSelector(null);
                                 }}
                                 disabled={c.type === '?'}
