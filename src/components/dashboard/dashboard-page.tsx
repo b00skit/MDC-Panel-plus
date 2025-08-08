@@ -33,7 +33,7 @@ const modules: ModuleCardProps[] = [
     title: "Simplified Penal Code",
     description: "Browse a simplified version of the penal code.",
     icon: <BookOpen className="w-8 h-8 text-primary" />,
-    href: "#",
+    href: "/simplified-penal-code",
     dataAiHint: "law book"
   },
   {

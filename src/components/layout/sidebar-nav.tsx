@@ -90,7 +90,7 @@ export function SidebarNav() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive('/simplified-penal-code')}>
-                <Link href="#">
+                <Link href="/simplified-penal-code">
                     <BookOpen />
                     <span>Simplified Penal Code</span>
                 </Link>
