@@ -28,10 +28,11 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2 } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
+import { Separator } from '../ui/separator';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -39,7 +40,15 @@ interface DeptRanks {
 
 export function SettingsPage() {
   const { toast } = useToast();
-  const { officers, updateOfficer, setInitialOfficers } = useOfficerStore();
+  const { 
+    officers, 
+    updateOfficer, 
+    setInitialOfficers,
+    alternativeCharacters,
+    addAlternativeCharacter,
+    updateAlternativeCharacter,
+    removeAlternativeCharacter,
+  } = useOfficerStore();
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
 
@@ -61,6 +70,10 @@ export function SettingsPage() {
       updateOfficer(defaultOfficer.id, { [field]: value });
     }
   };
+  
+  const handleAltOfficerChange = (id: number, field: string, value: string) => {
+    updateAlternativeCharacter(id, { [field]: value });
+  };
 
   const handleRankChange = (value: string) => {
     const [department, rank] = value.split('__');
@@ -69,11 +82,16 @@ export function SettingsPage() {
     }
   };
 
+  const handleAltRankChange = (id: number, value: string) => {
+    const [department, rank] = value.split('__');
+    updateAlternativeCharacter(id, { department, rank });
+  };
+
   const handleSave = () => {
     // The store automatically persists to localStorage on update
     toast({
       title: 'Settings Saved',
-      description: 'Your default officer information has been updated.',
+      description: 'Your officer information has been updated.',
     });
   };
 
@@ -172,15 +190,94 @@ export function SettingsPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-end">
-                  <Button onClick={handleSave}>Save Changes</Button>
-                </div>
               </>
             ) : (
               <p>Loading officer information...</p>
             )}
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Alternative Characters</CardTitle>
+            <CardDescription>
+              Manage up to 3 alternative characters for quick selection in reports.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {alternativeCharacters.map((altChar, index) => (
+              <div key={altChar.id} className="space-y-4">
+                 <div className="flex justify-between items-center">
+                    <Label className="text-lg font-medium">Character {index + 1}</Label>
+                    <Button variant="ghost" size="icon" onClick={() => removeAlternativeCharacter(altChar.id)}>
+                        <Trash2 className="h-4 w-4 text-red-500"/>
+                    </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label htmlFor={`alt-officer-name-${altChar.id}`}>Full Name</Label>
+                        <div className="relative flex items-center">
+                            <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                id={`alt-officer-name-${altChar.id}`}
+                                placeholder="John Doe"
+                                value={altChar.name}
+                                onChange={(e) => handleAltOfficerChange(altChar.id, 'name', e.target.value)}
+                                className="pl-9"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor={`alt-rank-${altChar.id}`}>Rank & Department</Label>
+                        <div className="relative flex items-center">
+                            <Shield className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                            <Select 
+                                value={altChar.department && altChar.rank ? `${altChar.department}__${altChar.rank}` : ''}
+                                onValueChange={(value) => handleAltRankChange(altChar.id, value)}>
+                                <SelectTrigger id={`alt-rank-${altChar.id}`} className="pl-9">
+                                    <SelectValue placeholder="Select Rank" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.entries(deptRanks).map(([dept, ranks]) => (
+                                        <SelectGroup key={dept}>
+                                            <SelectLabel>{dept}</SelectLabel>
+                                            {ranks.map((rank) => (
+                                                <SelectItem key={`${dept}-${rank}-${altChar.id}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor={`alt-badge-number-${altChar.id}`}>Badge Number</Label>
+                        <div className="relative flex items-center">
+                            <BadgeIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                id={`alt-badge-number-${altChar.id}`}
+                                placeholder="123456"
+                                value={altChar.badgeNumber}
+                                onChange={(e) => handleAltOfficerChange(altChar.id, 'badgeNumber', e.target.value)}
+                                className="pl-9"
+                            />
+                        </div>
+                    </div>
+                </div>
+                 {index < 2 && <Separator />}
+              </div>
+            ))}
+            {alternativeCharacters.length < 3 && (
+                <Button variant="outline" onClick={addAlternativeCharacter}>
+                    <Plus className="mr-2 h-4 w-4" /> Add Character
+                </Button>
+            )}
+          </CardContent>
+        </Card>
+        
+        <div className="flex justify-end">
+            <Button onClick={handleSave}>Save All Changes</Button>
+        </div>
 
         <Card>
             <CardHeader>

@@ -21,7 +21,8 @@ import {
 } from '@/components/ui/select';
 import { User, Shield, Badge as BadgeIcon, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useOfficerStore } from '@/stores/officer-store';
+import { useOfficerStore, Officer } from '@/stores/officer-store';
+import { Badge } from '@/components/ui/badge';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -127,7 +128,14 @@ const SelectField = ({
 
 
 export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
-  const { officers, updateOfficer, removeOfficer, setInitialOfficers, addOfficer } = useOfficerStore();
+  const { 
+    officers, 
+    updateOfficer, 
+    removeOfficer, 
+    setInitialOfficers, 
+    addOfficer,
+    alternativeCharacters
+  } = useOfficerStore();
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
   useEffect(() => {
@@ -142,59 +150,88 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
     updateOfficer(id, { department, rank });
   };
   
+  const handlePillClick = (officerId: number, altChar: Officer) => {
+    updateOfficer(officerId, {
+      name: altChar.name,
+      rank: altChar.rank,
+      department: altChar.department,
+      badgeNumber: altChar.badgeNumber,
+    });
+  }
+
   return (
     <FormSection title="Officer Section" icon={<User className="h-6 w-6" />} onAdd={addOfficer}>
       <div className="space-y-6">
         {officers.map((officer, index) => (
-          <div key={officer.id} className="grid grid-cols-1 gap-6 md:grid-cols-12 items-end">
-            <div className="md:col-span-4">
-                <InputField
-                    label="Full Name"
-                    id={`officer-name-${officer.id}`}
-                    placeholder="Isabella Attaway"
-                    icon={<User className="h-4 w-4 text-muted-foreground" />}
-                    value={officer.name}
-                    onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
-                    isInvalid={isSubmitted && !officer.name}
-                />
+          <div key={officer.id} className="p-4 border rounded-lg space-y-4">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-12 items-end">
+              <div className="md:col-span-4">
+                  <InputField
+                      label="Full Name"
+                      id={`officer-name-${officer.id}`}
+                      placeholder="Isabella Attaway"
+                      icon={<User className="h-4 w-4 text-muted-foreground" />}
+                      value={officer.name}
+                      onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
+                      isInvalid={isSubmitted && !officer.name}
+                  />
+              </div>
+              <div className="md:col-span-4">
+                  <SelectField
+                      label="Rank"
+                      id={`rank-${officer.id}`}
+                      placeholder="Select Rank"
+                      icon={<Shield className="h-4 w-4 text-muted-foreground" />}
+                      value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
+                      onValueChange={(value) => handleRankChange(officer.id, value)}
+                      isInvalid={isSubmitted && (!officer.rank || !officer.department)}
+                  >
+                      {Object.entries(deptRanks).map(([dept, ranks]) => (
+                          <SelectGroup key={dept}>
+                              <SelectLabel>{dept}</SelectLabel>
+                              {ranks.map((rank) => (
+                                  <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
+                              ))}
+                          </SelectGroup>
+                      ))}
+                  </SelectField>
+              </div>
+              <div className="md:col-span-3">
+                  <InputField
+                      label="Badge"
+                      id={`badge-${officer.id}`}
+                      placeholder="177131"
+                      icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
+                      value={officer.badgeNumber}
+                      onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
+                      isInvalid={isSubmitted && !officer.badgeNumber}
+                  />
+              </div>
+              <div className="md:col-span-1">
+                  {index > 0 && (
+                      <Button variant="ghost" size="icon" onClick={() => removeOfficer(officer.id)} type="button">
+                          <Trash2 className="h-5 w-5 text-red-500" />
+                      </Button>
+                  )}
+              </div>
             </div>
-             <div className="md:col-span-4">
-                <SelectField
-                    label="Rank"
-                    id={`rank-${officer.id}`}
-                    placeholder="Select Rank"
-                    icon={<Shield className="h-4 w-4 text-muted-foreground" />}
-                    value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
-                    onValueChange={(value) => handleRankChange(officer.id, value)}
-                    isInvalid={isSubmitted && (!officer.rank || !officer.department)}
-                >
-                    {Object.entries(deptRanks).map(([dept, ranks]) => (
-                        <SelectGroup key={dept}>
-                            <SelectLabel>{dept}</SelectLabel>
-                            {ranks.map((rank) => (
-                                <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
-                            ))}
-                        </SelectGroup>
-                    ))}
-                </SelectField>
-            </div>
-             <div className="md:col-span-3">
-                <InputField
-                    label="Badge"
-                    id={`badge-${officer.id}`}
-                    placeholder="177131"
-                    icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
-                    value={officer.badgeNumber}
-                    onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
-                    isInvalid={isSubmitted && !officer.badgeNumber}
-                />
-             </div>
-             <div className="md:col-span-1">
-                {index > 0 && (
-                     <Button variant="ghost" size="icon" onClick={() => removeOfficer(officer.id)} type="button">
-                        <Trash2 className="h-5 w-5 text-red-500" />
-                     </Button>
-                )}
+
+            <div className="flex flex-wrap gap-2">
+              {alternativeCharacters.filter(alt => alt.name).map((altChar) => {
+                const isSelected = officer.name === altChar.name && officer.badgeNumber === altChar.badgeNumber;
+                return (
+                  !isSelected && (
+                    <Badge 
+                      key={altChar.id}
+                      variant="outline"
+                      className="cursor-pointer hover:bg-accent"
+                      onClick={() => handlePillClick(officer.id, altChar)}
+                    >
+                      {altChar.name}
+                    </Badge>
+                  )
+                );
+              })}
             </div>
           </div>
         ))}
