@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { CirclePlus, Trash2, Calendar } from 'lucide-react';
+import { CirclePlus, Trash2, Calendar, Clock } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
@@ -88,14 +88,14 @@ export function AdvancedArrestReportForm() {
       fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
         .then(res => res.json())
         .then(data => {
-            const uniqueDistricts = [...new Set(data.districts || [])];
-            const uniqueStreets = [...new Set(data.streets || [])];
+            const uniqueDistricts = [...new Set((data.districts || []) as string[])];
+            const uniqueStreets = [...new Set((data.streets || []) as string[])];
             setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
         })
         .catch(err => console.error("Failed to fetch locations:", err));
       
        // Pre-fill date and time
-       setValue('incident.date', format(new Date(), 'yyyy-MM-dd'));
+       setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
        setValue('incident.time', format(new Date(), 'HH:mm'));
 
     }, []);
@@ -302,39 +302,18 @@ export function AdvancedArrestReportForm() {
                   </TableHead>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={1}>
-                     <Controller
-                        control={control}
-                        name="incident.date"
-                        render={({ field }) => (
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                    "w-full justify-start text-left font-normal",
-                                    !field.value && "text-muted-foreground"
-                                    )}
-                                >
-                                    <Calendar className="mr-2 h-4 w-4" />
-                                    {field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
-                                </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0">
-                                <CalendarComponent
-                                    mode="single"
-                                    selected={field.value ? new Date(field.value) : undefined}
-                                    onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
-                                    initialFocus
-                                />
-                                </PopoverContent>
-                            </Popover>
-                        )}
-                        />
-                  </TableCell>
-                  <TableCell colSpan={1}>
-                    <Input type="time" {...register("incident.time")} />
-                  </TableCell>
+                    <TableCell colSpan={1}>
+                        <div className="relative flex items-center">
+                            <Calendar className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="DD/MMM/YYYY" className="pl-9" {...register("incident.date")} />
+                        </div>
+                    </TableCell>
+                    <TableCell colSpan={1}>
+                        <div className="relative flex items-center">
+                            <Clock className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="HH:MM (24H)" className="pl-9" {...register("incident.time")} />
+                        </div>
+                    </TableCell>
                   <TableCell colSpan={3}>
                      <div className="flex gap-2">
                         <Controller
