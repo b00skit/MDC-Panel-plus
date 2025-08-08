@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useChargeStore } from '@/stores/charge-store';
@@ -23,6 +24,9 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '../ui/label';
+import { Switch } from '../ui/switch';
+import { useAdvancedReportStore } from '@/stores/advanced-report-store';
+import { AdvancedArrestReportForm } from './advanced-arrest-report-form';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -113,6 +117,7 @@ export function ArrestReportPage() {
   const { report, penalCode } = useChargeStore();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const { isAdvanced, toggleAdvanced } = useAdvancedReportStore();
 
   useEffect(() => {
     setIsClient(true);
@@ -430,6 +435,10 @@ export function ArrestReportPage() {
                     This tool is for informational purposes only and does not constitute legal advice. All calculations are based on the provided penal code and may not reflect all sentencing factors. Consult with a legal professional for official guidance.
                 </AlertDescription>
             </Alert>
+            <div className="flex items-center space-x-2">
+                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={toggleAdvanced} />
+                <Label htmlFor="advanced-mode">Enable Advanced Report</Label>
+            </div>
         </div>
     );
   }
@@ -456,7 +465,9 @@ export function ArrestReportPage() {
             </Alert>
         )}
         
-        {isClient && hasReport && <ArrestReportForm />}
+        {isClient && hasReport && (
+            isAdvanced ? <AdvancedArrestReportForm /> : <ArrestReportForm />
+        )}
     </div>
   );
 }
