@@ -32,8 +32,8 @@ export default function TermsOfServicePage() {
                 <strong>Country</strong> refers to: San Andreas
               </li>
               <li>
-                <strong>We</strong> (referred to as either "the Company", "We",
-                "Us" or "Our" in this Agreement) refers to LEO Assistant+.
+                <strong>We</strong> (referred to as either "the Developer", "We",
+                "Us" or "Our" in this Agreement) refers to booskit.dev.
               </li>
               <li>
                 <strong>Device</strong> means any device that can access the
@@ -43,12 +43,12 @@ export default function TermsOfServicePage() {
                 <strong>Service</strong> refers to the Website.
               </li>
               <li>
-                <strong>Website</strong> refers to LEO Assistant+, accessible
+                <strong>Website</strong> refers to MDC Panel+, accessible
                 from your current URL.
               </li>
               <li>
                 <strong>You</strong> means the individual accessing or using
-                the Service, or the company, or other legal entity on behalf
+                the Service, or the developer, or other legal entity on behalf
                 of which such individual is accessing or using the Service, as
                 applicable.
               </li>
@@ -84,10 +84,10 @@ export default function TermsOfServicePage() {
             </p>
             
             <h2 className="font-bold text-xl">User Conduct</h2>
-            <p>You agree not to use the Service for any unlawful purpose or any purpose prohibited under this clause. You agree not to use the Service in any way that could damage the Service, the services or the general business of the Company.</p>
+            <p>You agree not to use the Service for any unlawful purpose or any purpose prohibited under this clause. You agree not to use the Service in any way that could damage the Service, the services or the general business of the developer.</p>
             <ul className="list-disc pl-6 space-y-2">
                 <li>To harass, abuse, or threaten others or otherwise violate any person's legal rights.</li>
-                <li>To violate any intellectual property rights of the Company or any third party.</li>
+                <li>To violate any intellectual property rights of the Developer or any third party.</li>
                 <li>To upload or otherwise disseminate any computer viruses or other software that may damage the property of another.</li>
                 <li>To perpetrate any fraud.</li>
             </ul>
@@ -96,7 +96,7 @@ export default function TermsOfServicePage() {
             <p>
               The Service is provided to You "AS IS" and "AS AVAILABLE" and
               with all faults and defects without warranty of any kind. To the
-              maximum extent permitted under applicable law, the Company, on
+              maximum extent permitted under applicable law, the Developer, on
               its own behalf and on behalf of its Affiliates and its and
               their respective licensors and service providers, expressly
               disclaims all warranties, whether express, implied, statutory

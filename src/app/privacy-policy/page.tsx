@@ -31,12 +31,8 @@ export default function PrivacyPolicyPage() {
             <p>For the purposes of this Privacy Policy:</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <strong>Account</strong> means a unique account created for
-                You to access our Service or parts of our Service.
-              </li>
-              <li>
-                <strong>We</strong> (referred to as either "the Company", "We",
-                "Us" or "Our" in this Agreement) refers to LEO Assistant+.
+                <strong>We</strong> (referred to as either "the Developer", "We",
+                "Us" or "Our" in this Agreement) refers to booskit.dev.
               </li>
               <li>
                 <strong>Cookies</strong> are small files that are placed on
@@ -70,7 +66,7 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 <strong>You</strong> means the individual accessing or using
-                the Service, or the company, or other legal entity on behalf
+                the Service, or the developer, or other legal entity on behalf
                 of which such individual is accessing or using the Service, as
                 applicable.
               </li>
@@ -86,13 +82,10 @@ export default function PrivacyPolicyPage() {
             </ul>
 
              <h2 className="font-bold text-xl">Use of Your Personal Data</h2>
-            <p>The Company may use Personal Data for the following purposes:</p>
+            <p>The Developer may use Personal Data for the following purposes:</p>
             <ul className="list-disc pl-6 space-y-2">
                 <li>
                     <strong>To provide and maintain our Service</strong>, including to monitor the usage of our Service.
-                </li>
-                <li>
-                    <strong>To manage Your Account:</strong> to manage Your registration as a user of the Service. The Personal Data You provide can give You access to different functionalities of the Service that are available to You as a registered user.
                 </li>
             </ul>
             
