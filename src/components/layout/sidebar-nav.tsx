@@ -50,6 +50,8 @@ export function SidebarNav() {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
+  const siteName = config?.SITE_NAME.replace('+', '') || "MDC Panel";
+
   return (
     <>
       <SidebarHeader>
@@ -63,7 +65,7 @@ export function SidebarNav() {
             />
           </Link>
            <div className="flex items-baseline gap-1">
-            <span className="text-xl font-semibold font-headline">{config?.SITE_NAME || "MDC Panel+"}</span>
+            <span className="text-xl font-semibold font-headline">{siteName}</span>
             <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">+</span>
           </div>
         </div>
