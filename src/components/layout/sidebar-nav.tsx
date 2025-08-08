@@ -119,8 +119,8 @@ export function SidebarNav() {
         <Separator className="my-2" />
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="#">
+            <SidebarMenuButton asChild isActive={isActive('/settings')}>
+              <Link href="/settings">
                 <Settings />
                 <span>Settings</span>
               </Link>

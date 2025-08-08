@@ -1,0 +1,218 @@
+
+'use client';
+import { useState, useEffect } from 'react';
+import { PageHeader } from '@/components/dashboard/page-header';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel
+} from '@/components/ui/select';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from "@/components/ui/alert-dialog"
+import { useToast } from '@/hooks/use-toast';
+import { useOfficerStore } from '@/stores/officer-store';
+import { User, Shield, Badge as BadgeIcon, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useChargeStore } from '@/stores/charge-store';
+import { useFormStore } from '@/stores/form-store';
+
+interface DeptRanks {
+  [department: string]: string[];
+}
+
+export function SettingsPage() {
+  const { toast } = useToast();
+  const { officers, updateOfficer, setInitialOfficers } = useOfficerStore();
+  const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
+  const defaultOfficer = officers[0];
+
+  const resetCharges = useChargeStore(state => state.resetCharges);
+  const resetForm = useFormStore(state => state.reset);
+  const resetOfficers = useOfficerStore(state => state.setInitialOfficers);
+
+
+  useEffect(() => {
+    // Ensure the initial officer is loaded from localStorage
+    setInitialOfficers(); 
+    fetch('/data/dept_ranks.json')
+      .then((res) => res.json())
+      .then((data) => setDeptRanks(data));
+  }, [setInitialOfficers]);
+
+  const handleOfficerChange = (field: string, value: string) => {
+    if (defaultOfficer) {
+      updateOfficer(defaultOfficer.id, { [field]: value });
+    }
+  };
+
+  const handleRankChange = (value: string) => {
+    const [department, rank] = value.split('__');
+    if (defaultOfficer) {
+        updateOfficer(defaultOfficer.id, { department, rank });
+    }
+  };
+
+  const handleSave = () => {
+    // The store automatically persists to localStorage on update
+    toast({
+      title: 'Settings Saved',
+      description: 'Your default officer information has been updated.',
+    });
+  };
+
+  const handleClearData = () => {
+    try {
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // Reset stores to their initial states
+        resetCharges();
+        resetForm();
+        resetOfficers();
+        
+        toast({
+            title: 'Data Cleared',
+            description: 'All local and session data has been successfully cleared.',
+        });
+
+        // Optionally, reload the page to ensure a clean state
+        setTimeout(() => window.location.reload(), 1000);
+
+    } catch (error) {
+        toast({
+            title: 'Error',
+            description: 'Could not clear all site data.',
+            variant: 'destructive',
+          });
+    }
+  }
+
+  return (
+    <div className="container mx-auto p-4 md:p-6 lg:p-8">
+      <PageHeader
+        title="Settings"
+        description="Manage your application settings and data."
+      />
+      <div className="grid gap-8 mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Default Officer Information</CardTitle>
+            <CardDescription>
+              Set the default officer details that will be pre-filled in new arrest reports.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {defaultOfficer ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="officer-name">Full Name</Label>
+                    <div className="relative flex items-center">
+                        <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                        <Input
+                        id="officer-name"
+                        placeholder="Isabella Attaway"
+                        value={defaultOfficer.name}
+                        onChange={(e) => handleOfficerChange('name', e.target.value)}
+                        className="pl-9"
+                        />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="rank">Rank & Department</Label>
+                    <div className="relative flex items-center">
+                        <Shield className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                         <Select 
+                            value={defaultOfficer.department && defaultOfficer.rank ? `${defaultOfficer.department}__${defaultOfficer.rank}` : ''}
+                            onValueChange={handleRankChange}>
+                            <SelectTrigger id="rank" className="pl-9">
+                                <SelectValue placeholder="Select Rank" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {Object.entries(deptRanks).map(([dept, ranks]) => (
+                                    <SelectGroup key={dept}>
+                                        <SelectLabel>{dept}</SelectLabel>
+                                        {ranks.map((rank) => (
+                                            <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="badge-number">Badge Number</Label>
+                     <div className="relative flex items-center">
+                        <BadgeIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                        <Input
+                        id="badge-number"
+                        placeholder="177131"
+                        value={defaultOfficer.badgeNumber}
+                        onChange={(e) => handleOfficerChange('badgeNumber', e.target.value)}
+                        className="pl-9"
+                        />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={handleSave}>Save Changes</Button>
+                </div>
+              </>
+            ) : (
+              <p>Loading officer information...</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Data Management</CardTitle>
+                <CardDescription>
+                    Permanently delete all your stored data, including saved reports, charges, and default settings. This action cannot be undone.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="destructive">
+                            <Trash2 className="mr-2 h-4 w-4" /> Clear All Site Data
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete all your
+                            application data from your browser's storage.
+                        </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleClearData}>Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
