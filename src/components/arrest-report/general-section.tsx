@@ -101,7 +101,7 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
           icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
           type="text"
           value={general?.date || ''}
-          readOnly
+          onChange={(e) => setFormField('general', 'date', e.target.value)}
         />
         <InputField
           label="Time"
@@ -110,7 +110,7 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
           icon={<Clock className="h-4 w-4 text-muted-foreground" />}
           type="text"
           value={general?.time || ''}
-          readOnly
+          onChange={(e) => setFormField('general', 'time', e.target.value)}
         />
         <InputField
           label="Call Sign"
