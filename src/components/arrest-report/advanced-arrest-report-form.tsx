@@ -584,7 +584,9 @@ export function AdvancedArrestReportForm() {
                 </NarrativeSection>
                 
                  <NarrativeSection title="PHYSICAL EVIDENCE" presetFieldName="narrativePresets.evidence" control={control}>
-                    <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} />
+                    <Table>
+                        <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} />
+                    </Table>
                     <Controller name="narrative.evidence" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe physical evidence..." rows={5} />} />
                 </NarrativeSection>
 
