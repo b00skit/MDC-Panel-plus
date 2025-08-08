@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -25,6 +25,7 @@ import { OfficerSection } from './officer-section';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useToast } from '@/hooks/use-toast';
+import { Combobox } from '../ui/combobox';
 
 const FormSection = ({
   title,
@@ -139,10 +140,20 @@ export function ArrestReportForm() {
   const { formData, setFormField } = useFormStore();
   const { officers } = useOfficerStore();
   const [submitted, setSubmitted] = useState(false);
+  const [locations, setLocations] = useState<{districts: string[], streets: string[]}>({ districts: [], streets: []});
+
+  useEffect(() => {
+    fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+      .then(res => res.json())
+      .then(data => setLocations(data))
+      .catch(err => console.error("Failed to fetch locations:", err));
+  }, []);
 
   const validateForm = () => {
     // General Section
     if (!formData.general.callSign) return "Call Sign is required.";
+    if (!formData.general.date) return "Date is required.";
+    if (!formData.general.time) return "Time is required.";
     
     // Officer Section
     for (const officer of officers) {
@@ -224,24 +235,30 @@ export function ArrestReportForm() {
 
        <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <InputField
-              label="District"
-              id="district"
-              placeholder="District"
-              icon={<MapPin className="h-4 w-4 text-muted-foreground" />}
-              value={formData.location.district}
-              onChange={(e) => setFormField('location', 'district', e.target.value)}
-              isInvalid={submitted && !formData.location.district}
-            />
-            <InputField
-              label="Street Name"
-              id="street-name"
-              placeholder="Street Name"
-              icon={<Map className="h-4 w-4 text-muted-foreground" />}
-              value={formData.location.street}
-              onChange={(e) => setFormField('location', 'street', e.target.value)}
-              isInvalid={submitted && !formData.location.street}
-            />
+            <div className="grid gap-2">
+                <Label htmlFor="district">District</Label>
+                <Combobox
+                    options={locations.districts}
+                    value={formData.location.district}
+                    onChange={(value) => setFormField('location', 'district', value)}
+                    placeholder="Select or type a district"
+                    searchPlaceholder="Search districts..."
+                    emptyPlaceholder="No districts found."
+                    isInvalid={submitted && !formData.location.district}
+                />
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="street-name">Street Name</Label>
+                <Combobox
+                    options={locations.streets}
+                    value={formData.location.street}
+                    onChange={(value) => setFormField('location', 'street', value)}
+                    placeholder="Select or type a street"
+                    searchPlaceholder="Search streets..."
+                    emptyPlaceholder="No streets found."
+                    isInvalid={submitted && !formData.location.street}
+                />
+            </div>
         </div>
       </FormSection>
 
