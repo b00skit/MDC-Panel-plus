@@ -44,6 +44,7 @@ const formatTime = (time: any) => {
 };
 
 const formatBail = (bail: any) => {
+    if (!bail) return 'N/A';
     if (bail.auto === false) return 'No Bail';
     if (bail.auto === 2) return `Discretionary ($${bail.cost.toLocaleString()})`;
     if (bail.auto === true) return `Auto Bail ($${bail.cost.toLocaleString()})`;
