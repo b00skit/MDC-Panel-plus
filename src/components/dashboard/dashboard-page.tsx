@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { PageHeader } from './page-header';
 import { ModuleCard, type ModuleCardProps } from './module-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Gavel, FileText, BookOpen, Landmark, Puzzle } from 'lucide-react';
+import { Gavel, FileText, BookOpen, Landmark, Settings } from 'lucide-react';
 
 const modules: ModuleCardProps[] = [
   {
@@ -44,11 +44,11 @@ const modules: ModuleCardProps[] = [
     dataAiHint: "court building"
   },
   {
-    title: "Placeholder Module",
-    description: "This is a placeholder for a future module.",
-    icon: <Puzzle className="w-8 h-8 text-primary" />,
-    href: "#",
-    dataAiHint: "puzzle piece"
+    title: "Settings",
+    description: "Manage your application settings and data.",
+    icon: <Settings className="w-8 h-8 text-primary" />,
+    href: "/settings",
+    dataAiHint: "settings gear"
   },
 ];
 

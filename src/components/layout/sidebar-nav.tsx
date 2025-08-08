@@ -104,14 +104,6 @@ export function SidebarNav() {
                 </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/placeholder')}>
-                <Link href="#">
-                    <Puzzle />
-                    <span>Placeholder</span>
-                </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
 
