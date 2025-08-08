@@ -3,24 +3,25 @@ import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar'
 import { SidebarNav } from './sidebar-nav';
 import Image from 'next/image';
 import { Separator } from '../ui/separator';
+import { promises as fs } from 'fs';
+import path from 'path';
 
-type LayoutProps = {
-  children: ReactNode;
-};
+async function Footer() {
+    const file = await fs.readFile(path.join(process.cwd(), 'public/data/config.json'), 'utf8');
+    const config = JSON.parse(file);
 
-function Footer() {
     return (
       <footer className="relative z-10 mt-auto py-6">
         <Separator className="my-4 bg-transparent" />
         <div className="container mx-auto flex flex-col items-center justify-center gap-4">
             <Image 
-                src="/img/logos/MDC-Panel.svg"
+                src={config.SITE_LOGO}
                 width={80}
                 height={40}
                 alt="MDC Panel Logo"
             />
           <p className="text-center text-sm text-muted-foreground">
-            &copy; 2025-{new Date().getFullYear() + 1} MDC Panel+. All rights reserved.
+            &copy; 2025-{new Date().getFullYear() + 1} {config.SITE_NAME}. All rights reserved. Version: {config.SITE_VERSION}
           </p>
         </div>
       </footer>
