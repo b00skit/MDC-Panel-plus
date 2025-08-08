@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -16,8 +15,6 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 type Resource = {
     id: string;
@@ -126,31 +123,18 @@ const SkeletonGrid = ({ count = 3, CardComponent = Card }) => (
     </div>
 );
 
+type CaselawPageProps = {
+    initialResources: Resource[];
+    initialCaselaws: Caselaw[];
+    initialConfig: Config;
+}
 
-export function CaselawPage() {
-    const [resources, setResources] = useState<Resource[]>([]);
-    const [caselaws, setCaselaws] = useState<Caselaw[]>([]);
-    const [config, setConfig] = useState<Config | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+export function CaselawPage({ initialResources, initialCaselaws, initialConfig }: CaselawPageProps) {
+    const [resources] = useState<Resource[]>(initialResources);
+    const [caselaws] = useState<Caselaw[]>(initialCaselaws);
+    const [config] = useState<Config | null>(initialConfig);
+    const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-
-    useEffect(() => {
-        Promise.all([
-            fetch('/data/resources.json').then(res => res.json()),
-            fetch('/data/caselaws.json').then(res => res.json()),
-            fetch('/data/config.json').then(res => res.json())
-        ]).then(([resourcesData, caselawsData, configData]) => {
-            setResources(resourcesData.resources);
-            setCaselaws(caselawsData.caselaws);
-            setConfig(configData);
-            setLoading(false);
-        }).catch(err => {
-            console.error(err);
-            setError("Failed to load legal resources. Please try again later.");
-            setLoading(false);
-        });
-    }, []);
 
     const filteredCaselaws = useMemo(() => {
         if (!caselaws) return [];
@@ -170,7 +154,6 @@ export function CaselawPage() {
             />
 
             {loading ? <SkeletonGrid count={3} CardComponent={Card} /> :
-             error ? <p>{error}</p> :
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                  {resources.map(resource => <ResourceCard key={resource.id} resource={resource} config={config} />)}
              </div>
@@ -187,13 +170,12 @@ export function CaselawPage() {
                         className="w-full pl-10"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        disabled={loading || !!error}
+                        disabled={loading}
                     />
                 </div>
             </div>
 
             {loading ? <SkeletonGrid count={6} CardComponent={Card} /> :
-             error ? null :
              <div className="space-y-4">
                  {filteredCaselaws.length > 0 ? (
                      filteredCaselaws.map(law => <CaselawCard key={law.id} caselaw={law} />)
