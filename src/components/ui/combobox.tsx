@@ -64,6 +64,9 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         onChange(e.target.value);
     }
     
+    // Filter out duplicate options to prevent key errors
+    const uniqueOptions = React.useMemo(() => [...new Set(options)], [options]);
+
     return (
       <div className={cn('relative', className)} ref={ref}>
          <Popover open={open} onOpenChange={setOpen}>
@@ -84,7 +87,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                     <CommandList>
                         <CommandEmpty>{emptyPlaceholder}</CommandEmpty>
                         <CommandGroup>
-                        {options.map((option) => (
+                        {uniqueOptions.map((option) => (
                             <CommandItem
                             key={option}
                             value={option}
