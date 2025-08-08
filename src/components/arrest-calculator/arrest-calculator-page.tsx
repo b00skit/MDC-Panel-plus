@@ -31,7 +31,8 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useChargeStore, type SelectedCharge, type Charge, type PenalCode } from '@/stores/charge-store';
-
+import { useFormStore } from '@/stores/form-store';
+import { useOfficerStore } from '@/stores/officer-store';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -58,6 +59,9 @@ export function ArrestCalculatorPage() {
     setReport,
     resetCharges,
   } = useChargeStore();
+  const resetForm = useFormStore(state => state.reset);
+  const resetOfficers = useOfficerStore(state => state.setInitialOfficers);
+
 
   const [loading, setLoading] = useState(true);
   const [openChargeSelector, setOpenChargeSelector] = useState<number | null>(
@@ -81,6 +85,8 @@ export function ArrestCalculatorPage() {
   
   const handleCalculate = () => {
     setReport(charges);
+    resetForm();
+    resetOfficers();
     router.push('/arrest-report');
   }
 
