@@ -16,13 +16,12 @@ async function Footer() {
     const config = JSON.parse(file);
 
     return (
-      <footer className="relative z-10 mt-auto py-6">
-        <Separator className="my-4 bg-transparent" />
-        <div className="container mx-auto flex flex-col items-center justify-center gap-4">
+      <footer className="relative z-10 mt-auto py-4">
+        <div className="container mx-auto flex flex-col items-center justify-center gap-2">
             <Image 
                 src={config.SITE_LOGO}
-                width={80}
-                height={40}
+                width={60}
+                height={30}
                 alt="MDC Panel Logo"
             />
           <p className="text-center text-sm text-muted-foreground">
