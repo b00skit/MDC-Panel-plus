@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useChargeStore } from '@/stores/charge-store';
@@ -14,13 +13,16 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Clipboard } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import { ArrestReportForm } from './arrest-report-form';
 import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { Label } from '../ui/label';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -47,6 +49,16 @@ const formatTime = (time: { days: number; hours: number; min: number }) => {
   return `${parts.join(' ')} (${totalMinutes} mins)`;
 };
 
+const formatTimeSimple = (time: { days: number; hours: number; min: number }) => {
+    if (!time) return 'N/A';
+    const parts = [];
+    if (time.days > 0) parts.push(`${time.days} Day(s)`);
+    if (time.hours > 0) parts.push(`${time.hours} Hour(s)`);
+    if (time.min > 0) parts.push(`${time.min} Minute(s)`);
+    if (parts.length === 0) return 'N/A';
+    return parts.join(' ');
+  };
+
 const formatTimeInMinutes = (time: { days: number; hours: number; min: number }) => {
     if (!time) return 0;
     return time.days * 1440 + time.hours * 60 + time.min;
@@ -71,6 +83,32 @@ const formatBailCost = (bailInfo: any) => {
     const bond = bailInfo.cost * 0.1;
     return `$${bailInfo.cost.toLocaleString()} / $${bond.toLocaleString()} (10%)`;
 };
+
+const CopyableCard = ({ label, value }: { label: string, value: string | number }) => {
+    const { toast } = useToast();
+  
+    const handleCopy = () => {
+      navigator.clipboard.writeText(value.toString());
+      toast({
+        title: 'Copied to clipboard!',
+        description: `${label} value has been copied.`,
+      });
+    };
+  
+    return (
+      <Card>
+        <CardContent className="p-4">
+          <Label htmlFor={`copy-${label.toLowerCase().replace(' ', '-')}`}>{label}</Label>
+          <div className="flex items-center gap-2 mt-2">
+            <Input id={`copy-${label.toLowerCase().replace(' ', '-')}`} value={value} readOnly disabled />
+            <Button size="icon" variant="outline" onClick={handleCopy}>
+              <Clipboard className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
 export function ArrestReportPage() {
   const { report, penalCode } = useChargeStore();
@@ -233,15 +271,18 @@ export function ArrestReportPage() {
                             const typePrefix = `${chargeDetails.type}${row.class}`;
                             const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
                             
-                            const getTime = (timeObj: any) => {
+                            const getTime = (timeObj: any, simple = false) => {
                                 if(!timeObj) return 'N/A';
+                                let timeValue;
                                 if (isDrugCharge && row.category) {
-                                    return formatTime(timeObj[row.category]);
+                                    timeValue = timeObj[row.category];
+                                } else {
+                                    timeValue = timeObj;
                                 }
-                                return formatTime(timeObj);
+                                return simple ? formatTimeSimple(timeValue) : formatTime(timeValue);
                             }
-                            const minTime = getTime(chargeDetails.time);
-                            const maxTime = getTime(chargeDetails.maxtime);
+                            const minTime = getTime(chargeDetails.time, true);
+                            const maxTime = getTime(chargeDetails.maxtime, true);
 
                             const getFine = (fineObj: any) => {
                                 if (!fineObj) return '$0';
@@ -341,6 +382,13 @@ export function ArrestReportPage() {
                     </Table>
                 </CardContent>
             </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <CopyableCard label="Min Minutes" value={totals.minTime} />
+                <CopyableCard label="Max Minutes" value={totals.maxTime} />
+                <CopyableCard label="Total Fine" value={totals.fine} />
+                <CopyableCard label="Bail Cost" value={totals.bailCost} />
+            </div>
 
             <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
