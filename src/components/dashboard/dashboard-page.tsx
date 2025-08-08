@@ -40,7 +40,7 @@ const modules: ModuleCardProps[] = [
     title: "Caselaw & Legal Resources",
     description: "Access caselaw and other legal resources.",
     icon: <Landmark className="w-8 h-8 text-primary" />,
-    href: "#",
+    href: "/caselaw",
     dataAiHint: "court building"
   },
   {
