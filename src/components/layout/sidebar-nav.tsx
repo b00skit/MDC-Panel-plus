@@ -114,10 +114,10 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/caselaw-legal-resources')}>
-                <Link href="#">
+            <SidebarMenuButton asChild isActive={isActive('/caselaw')}>
+                <Link href="/caselaw">
                     <Landmark />
-                    <span>Caselaw & Legal Resources</span>
+                    <span>Caselaw &amp; Legal Resources</span>
                 </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -1,0 +1,31 @@
+{
+    "resources": [
+        {
+            "id": "penal-code",
+            "title": "San Andreas Penal Code",
+            "description": "Access the official San Andreas penal code.",
+            "icon": "BookOpen",
+            "type": "link",
+            "href": "URL_PENAL_CODE"
+        },
+        {
+            "id": "bail-schedule",
+            "title": "Bail Schedule",
+            "description": "View the official bail and bond schedule.",
+            "icon": "Landmark",
+            "type": "link",
+            "href": "URL_BAIL_SCHEDULE"
+        },
+        {
+            "id": "booking-rights",
+            "title": "Detainee Rights (Booking)",
+            "description": "Review key rights regarding searches and testing.",
+            "icon": "ShieldCheck",
+            "type": "dialog",
+            "content": {
+                "title": "Detainee Rights During Booking",
+                "body": "Upon arrest and during the booking process, detainees have specific rights regarding chemical tests and searches. Understanding these is crucial for due process.\n\n**Implied Consent (Blood/Breath Tests):**\nBy operating a motor vehicle, a driver has given 'implied consent' to a chemical test of their blood, breath, or urine to determine blood alcohol content (BAC) or drug presence if lawfully arrested for driving under the influence (DUI). Refusal to submit to this test has its own legal consequences, such as automatic license suspension.\n\n**Blood Draws:**\nA warrant is generally required to draw blood from a suspect who refuses a test, unless exigent circumstances (like the natural dissipation of alcohol in the bloodstream) make obtaining a warrant impractical. A suspect cannot be forced to submit to a blood draw without a warrant.\n\n**Searches Incident to Arrest:**\nDuring a lawful custodial arrest, an officer can conduct a full search of the arrestee's person and the area within their immediate control without a warrant. This is to ensure officer safety by finding weapons and to prevent the destruction of evidence.\n\nThis information is a general guideline and not a substitute for legal advice."
+            }
+        }
+    ]
+}
