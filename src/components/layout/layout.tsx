@@ -20,7 +20,7 @@ function Footer() {
                 alt="MDC Panel Logo"
             />
           <p className="text-center text-sm text-muted-foreground">
-            &copy; 2025-{new Date().getFullYear() + 1} MDC Panel. All rights reserved.
+            &copy; 2025-{new Date().getFullYear() + 1} MDC Panel+. All rights reserved.
           </p>
         </div>
       </footer>
