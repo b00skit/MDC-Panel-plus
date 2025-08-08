@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import {
   Card,
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { CirclePlus, Trash2, Calendar, Clock } from 'lucide-react';
+import { CirclePlus, Trash2, Calendar, Clock, ChevronsUpDown } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
@@ -30,25 +30,25 @@ import {
   SelectGroup,
   SelectLabel,
 } from '../ui/select';
-import { useAdvancedReportStore } from '@/stores/advanced-report-store';
+import { useAdvancedReportStore, FormState } from '@/stores/advanced-report-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Calendar as CalendarComponent } from '../ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
+import { EvidenceLog, NarrativeSection } from './narrative-sections';
 
 interface DeptRanks {
   [department: string]: string[];
 }
 
 export function AdvancedArrestReportForm() {
-    const { formData, setFormField, setFields, reset, addPerson, removePerson, addOfficer, removeOfficer } = useAdvancedReportStore();
+    const { formData, setFormField, setFields, reset, addPerson, removePerson, addOfficer, removeOfficer, addEvidenceLog, removeEvidenceLog } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
     const { officers: defaultOfficers, alternativeCharacters, swapOfficer } = useOfficerStore();
-    const { register, control, handleSubmit, watch, setValue, getValues } = useForm({
+    const { register, control, handleSubmit, watch, setValue, getValues } = useForm<FormState>({
         defaultValues: formData,
     });
     
@@ -61,14 +61,118 @@ export function AdvancedArrestReportForm() {
       control,
       name: 'officers'
     });
+    
+    const { fields: evidenceLogFields, append: appendEvidenceLog, remove: removeEvidenceLogField } = useFieldArray({
+        control,
+        name: 'evidenceLogs'
+    });
 
     const [locations, setLocations] = useState<{districts: string[], streets: string[]}>({ districts: [], streets: []});
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
+    const watchedFields = watch();
 
     useEffect(() => {
         reset(formData);
     }, [formData, reset]);
+    
+    useEffect(() => {
+        if (getValues('narrativePresets.source')) {
+            const officer = getValues('officers.0') || {};
+            const date = getValues('incident.date') || 'DATE';
+            const name = officer.name || 'NAME';
+            const serial = officer.badgeNumber || 'SERIAL';
+            const division = officer.divDetail || 'DIVISION';
+            const callsign = officer.callSign || 'CALLSIGN';
+            const isMarked = getValues('modifiers.markedUnit') ? 'marked' : 'unmarked';
+            const isSlicktop = getValues('modifiers.slicktop') ? ' slicktop' : '';
+            const uniform = getValues('modifiers.inG3Uniform') ? 'G3 uniform' : getValues('modifiers.inMetroUniform') ? 'metropolitan uniform' : 'uniform';
+    
+            const presetText = `On ${date}, I, ${officer.rank || 'RANK'} ${name} (#${serial}), assigned to ${division} Division, was deployed under Unit ${callsign}. I was wearing my department-issued ${uniform} and was openly displaying my badge of office on my uniform. I was driving a ${isMarked} black and white${isSlicktop}. At the start of watch, I conducted a check of my police vehicle and the blue, red, and amber emergency lights and siren were in good working order.
+
+`;
+            setValue('narrative.source', presetText);
+        }
+        if (getValues('narrativePresets.investigation')) {
+            const time = getValues('incident.time') || 'TIME';
+            const location = `${getValues('incident.locationDistrict')} ${getValues('incident.locationStreet')}`.trim() || 'LOCATION';
+            const vehicleColor = getValues('narrative.vehicleColor') || 'COLOR';
+            const vehicleModel = getValues('narrative.vehicleModel') || 'MODEL';
+            const vehiclePlate = getValues('narrative.vehiclePlate') ? `, San Andreas license plate ${getValues('narrative.vehiclePlate')}` : ', with no plates';
+    
+            const presetText = `At approximately ${time} hours, I was driving on ${location} when I observed a ${vehicleColor} ${vehicleModel}${vehiclePlate}.`;
+            setValue('narrative.investigation', presetText);
+        }
+        if (getValues('narrativePresets.arrest')) {
+            const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
+            const didMirandize = getValues('modifiers.wasSuspectMirandized');
+            const understoodRights = getValues('modifiers.didSuspectUnderstandRights');
+            const transported = getValues('modifiers.didYouTransport');
+            const chargeList = charges
+              .map(c => {
+                  const details = penalCode?.[c.chargeId!];
+                  if (!details) return 'Unknown Charge';
+                  const typePrefix = `${details.type}${c.class}`;
+                  return `${typePrefix} ${details.id}. ${details.charge}`;
+              }).join(', ');
+
+            let presetText = `${arresteeName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).\n`;
+            presetText += `${arresteeName} was arrested for ${chargeList}.\n`;
+            if (didMirandize) {
+                presetText += `I admonished ${arresteeName} utilizing my Field Officer’s Notebook, reading the following, verbatim: \n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?” ${arresteeName} responded ${understoodRights ? 'affirmatively' : 'negatively'}.\n`;
+            }
+            if (transported) {
+                presetText += `I transported ${arresteeName} to Mission Row Station.\n`;
+            }
+            setValue('narrative.arrest', presetText);
+        }
+        if (getValues('narrativePresets.photographs')) {
+            let presetText = '';
+            if (getValues('modifiers.doYouHaveAVideo')) presetText += `My Digital In-Car Video (DICV) was activated during this investigation - ${getValues('narrative.dicvsLink') || 'LINK'}\n`;
+            if (getValues('modifiers.didYouTakePhotographs')) presetText += `I took photographs using my Department-issued cell phone - ${getValues('narrative.photosLink') || 'LINK'}\n`;
+            if (getValues('modifiers.didYouObtainCctvFootage')) presetText += `I obtained closed-circuit television (CCTV) footage - ${getValues('narrative.cctvLink') || 'LINK'}\n`;
+            if (getValues('modifiers.thirdPartyVideoFootage')) presetText += `I obtained third party video footage - ${getValues('narrative.thirdPartyLink') || 'LINK'}\n`;
+            
+            setValue('narrative.photographs', presetText);
+        }
+        if (getValues('narrativePresets.booking')) {
+            const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
+            const booked = getValues('modifiers.didYouBook');
+            const onFile = getValues('modifiers.biometricsAlreadyOnFile');
+            
+            let presetText = '';
+            if (booked) {
+                presetText += `I booked ${arresteeName} on all of the charges listed under the ARREST sub-heading.\n`;
+            }
+            if (onFile) {
+                presetText += `${arresteeName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
+            }
+            setValue('narrative.booking', presetText);
+        }
+        if (getValues('narrativePresets.evidence')) {
+            const evidenceLogs = getValues('evidenceLogs');
+            let presetText = "I booked all evidence into the Mission Row Station property room.\n";
+            evidenceLogs?.forEach((log, index) => {
+                if (log.logNumber && log.description) {
+                    presetText += `Item ${index + 1} - ${log.logNumber} - ${log.description} (x${log.quantity || 1})\n`;
+                }
+            });
+            setValue('narrative.evidence', presetText);
+        }
+        if (getValues('narrativePresets.court')) {
+            const officer = getValues('officers.0') || {};
+            const presetText = `I, ${officer.rank || 'RANK'} ${officer.name || 'NAME'} #${officer.badgeNumber || 'SERIAL'}, can testify to the contents of this report.\n`;
+            setValue('narrative.court', presetText);
+        }
+        if (getValues('narrativePresets.additional')) {
+            const plea = getValues('narrative.plea') || 'Guilty';
+            const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
+            const presetText = `(( ${arresteeName} pleaded ${plea}. ))\n`;
+            setValue('narrative.additional', presetText);
+        }
+
+
+    }, [watchedFields, charges, penalCode, setValue]);
 
     useEffect(() => {
       // Pre-fill default officer from officerStore
@@ -95,8 +199,8 @@ export function AdvancedArrestReportForm() {
         .catch(err => console.error("Failed to fetch locations:", err));
       
        // Pre-fill date and time
-       setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
-       setValue('incident.time', format(new Date(), 'HH:mm'));
+       if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
+       if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
 
     }, []);
 
@@ -122,22 +226,13 @@ export function AdvancedArrestReportForm() {
 
     const handlePillClick = (officerIndex: number, altChar: any) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
-        
-        // This function will update the Zustand store, which in turn updates localStorage
         swapOfficer(currentOfficerInForm.id, altChar);
-    
-        // After the store is updated, we need to reflect this change in the react-hook-form state
-        // The altChar passed is the one we want to swap *in*
-        // The officer that was in the form is now in the altChar list in the store
-        
-        // Get the latest data from the store after swap to ensure UI consistency
         const updatedOfficersFromStore = useOfficerStore.getState().officers;
         const swappedInOfficer = updatedOfficersFromStore.find(o => o.id === currentOfficerInForm.id);
         
         if (swappedInOfficer) {
             setValue(`officers.${officerIndex}`, {
                 ...swappedInOfficer,
-                // Make sure to preserve fields not in the base officer model if needed
                 divDetail: getValues(`officers.${officerIndex}.divDetail`), 
             }, { shouldDirty: true });
         }
@@ -450,6 +545,73 @@ export function AdvancedArrestReportForm() {
                     </div>
                   </TableCell>
                 </TableRow>
+                
+                 <NarrativeSection title="SOURCE OF ACTIVITY" presetFieldName="narrativePresets.source" control={control}>
+                    <Controller name="narrative.source" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the source of the activity..." rows={5} />} />
+                </NarrativeSection>
+
+                <NarrativeSection title="INVESTIGATION" presetFieldName="narrativePresets.investigation" control={control}>
+                    <div className="grid grid-cols-3 gap-2 mb-2">
+                        <Input placeholder="VEHICLE COLOR" {...register('narrative.vehicleColor')} />
+                        <Input placeholder="VEHICLE MODEL" {...register('narrative.vehicleModel')} />
+                        <Input placeholder="VEHICLE PLATE" {...register('narrative.vehiclePlate')} />
+                    </div>
+                    <Controller name="narrative.investigation" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the investigation..." rows={5} />} />
+                </NarrativeSection>
+
+                <NarrativeSection title="ARREST" presetFieldName="narrativePresets.arrest" control={control}>
+                    <Controller name="narrative.arrest" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the arrest..." rows={5} />} />
+                </NarrativeSection>
+                
+                <NarrativeSection title="PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING" presetFieldName="narrativePresets.photographs" control={control}>
+                    {getValues('modifiers.doYouHaveAVideo') ? (
+                    <>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+                             <Input placeholder="DICVS Footage Link" {...register('narrative.dicvsLink')} />
+                             <Input placeholder="CCTV Footage Link" {...register('narrative.cctvLink')} />
+                             <Input placeholder="Photographs Link" {...register('narrative.photosLink')} />
+                             <Input placeholder="Third Party Footage Link" {...register('narrative.thirdPartyLink')} />
+                        </div>
+                        <Controller name="narrative.photographs" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe video or photographic evidence..." rows={5} />} />
+                    </>
+                     ) : (
+                        <Textarea placeholder="(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Do You Have A Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))" rows={3} />
+                     )}
+                </NarrativeSection>
+
+                <NarrativeSection title="BOOKING" presetFieldName="narrativePresets.booking" control={control}>
+                    <Controller name="narrative.booking" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe booking details..." rows={5} />} />
+                </NarrativeSection>
+                
+                 <NarrativeSection title="PHYSICAL EVIDENCE" presetFieldName="narrativePresets.evidence" control={control}>
+                    <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} />
+                    <Controller name="narrative.evidence" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe physical evidence..." rows={5} />} />
+                </NarrativeSection>
+
+                <NarrativeSection title="COURT INFORMATION" presetFieldName="narrativePresets.court" control={control}>
+                    <Controller name="narrative.court" control={control} render={({ field }) => <Textarea {...field} placeholder="Information for the court..." rows={5} />} />
+                </NarrativeSection>
+
+                 <NarrativeSection title="ADDITIONAL INFORMATION" presetFieldName="narrativePresets.additional" control={control}>
+                     <Controller
+                        name="narrative.plea"
+                        control={control}
+                        render={({ field }) => (
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <SelectTrigger className="mb-2">
+                                    <SelectValue placeholder="Select Plea..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Guilty">Guilty</SelectItem>
+                                    <SelectItem value="Not Guilty">Not Guilty</SelectItem>
+                                    <SelectItem value="No Contest">No Contest</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )}
+                        />
+                    <Controller name="narrative.additional" control={control} render={({ field }) => <Textarea {...field} placeholder="Additional information..." rows={5} />} />
+                </NarrativeSection>
+
               </TableBody>
             </Table>
           </div>

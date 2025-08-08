@@ -10,10 +10,16 @@ type Person = {
     gang: string;
 };
 
+type EvidenceLog = {
+    logNumber: string;
+    description: string;
+    quantity: string;
+}
+
 type FormOfficer = Omit<Officer, 'id'> & { id?: number; callSign?: string, divDetail?: string };
 
 
-interface FormState {
+export interface FormState {
     arrestee: {
         name: string;
         sex: string;
@@ -41,11 +47,22 @@ interface FormState {
         source: string;
         investigation: string;
         arrest: string;
+        photographs: string;
         booking: string;
         evidence: string;
         court: string;
         additional: string;
-    }
+        vehicleColor: string;
+        vehicleModel: string;
+        vehiclePlate: string;
+        dicvsLink: string;
+        cctvLink: string;
+        photosLink: string;
+        thirdPartyLink: string;
+        plea: string;
+    },
+    narrativePresets: Record<string, boolean>;
+    evidenceLogs: EvidenceLog[];
 }
 
 const getInitialState = (): FormState => ({
@@ -58,11 +75,39 @@ const getInitialState = (): FormState => ({
         date: '', time: '', locationDistrict: '', locationStreet: ''
     },
     officers: [],
-    modifiers: {},
+    modifiers: {
+        markedUnit: true,
+        slicktop: true,
+        inUniform: true,
+        inMetroUniform: false,
+        inG3Uniform: false,
+        wasSuspectInVehicle: false,
+        wasSuspectMirandized: true,
+        didSuspectUnderstandRights: true,
+        doYouHaveAVideo: true,
+        didYouTakePhotographs: true,
+        didYouObtainCctvFootage: false,
+        thirdPartyVideoFootage: false,
+        biometricsAlreadyOnFile: false,
+        didYouTransport: true,
+        didYouBook: true,
+    },
     narrative: {
-        source: '', investigation: '', arrest: '', booking: '', evidence: '',
-        court: '', additional: ''
-    }
+        source: '', investigation: '', arrest: '', photographs: '', booking: '', evidence: '',
+        court: '', additional: '', vehicleColor: '', vehicleModel: '', vehiclePlate: '',
+        dicvsLink: '', cctvLink: '', photosLink: '', thirdPartyLink: '', plea: 'Guilty'
+    },
+    narrativePresets: {
+        source: true,
+        investigation: true,
+        arrest: true,
+        photographs: true,
+        booking: true,
+        evidence: true,
+        court: true,
+        additional: true,
+    },
+    evidenceLogs: [],
 });
 
 
@@ -71,12 +116,18 @@ interface AdvancedReportState {
   toggleAdvanced: () => void;
   setAdvanced: (isAdvanced: boolean) => void;
   formData: FormState;
-  setFormField: <T extends keyof FormState>(section: T, field: keyof FormState[T], value: any) => void;
+  setFormField: <T extends keyof FormState, K extends keyof FormState[T]>(
+    section: T,
+    field: K,
+    value: any
+  ) => void;
   setFields: (fields: Partial<FormState>) => void;
   addPerson: () => void;
   removePerson: (index: number) => void;
   addOfficer: () => void;
   removeOfficer: (index: number) => void;
+  addEvidenceLog: () => void;
+  removeEvidenceLog: (index: number) => void;
   reset: (data?: FormState) => void;
 }
 
@@ -87,15 +138,26 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
       toggleAdvanced: () => set((state) => ({ isAdvanced: !state.isAdvanced })),
       setAdvanced: (isAdvanced) => set({ isAdvanced }),
       formData: getInitialState(),
-      setFormField: (section, field, value) => set(state => ({
-        formData: {
-            ...state.formData,
-            [section]: {
-                ...state.formData[section],
-                [field]: value,
-            }
+      setFormField: (section, field, value) => set(state => {
+        const currentSection = state.formData[section];
+        if (typeof currentSection === 'object' && currentSection !== null) {
+            return {
+                formData: {
+                    ...state.formData,
+                    [section]: {
+                        ...currentSection,
+                        [field]: value,
+                    },
+                },
+            };
         }
-      })),
+        return {
+            formData: {
+                ...state.formData,
+                [section]: value,
+            },
+        };
+      }),
       setFields: (fields) => set(state => ({
         formData: {
             ...state.formData,
@@ -113,6 +175,12 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
       })),
       removeOfficer: (index) => set(state => ({
         formData: { ...state.formData, officers: state.formData.officers.filter((_, i) => i !== index) }
+      })),
+      addEvidenceLog: () => set(state => ({
+        formData: { ...state.formData, evidenceLogs: [...state.formData.evidenceLogs, { logNumber: '', description: '', quantity: '1'}] }
+      })),
+      removeEvidenceLog: (index) => set(state => ({
+        formData: { ...state.formData, evidenceLogs: state.formData.evidenceLogs.filter((_, i) => i !== index) }
       })),
       reset: (data) => set({ formData: data || getInitialState() }),
     }),
