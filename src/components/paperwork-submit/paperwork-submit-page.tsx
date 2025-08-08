@@ -68,9 +68,8 @@ const BailStatusBadge = ({ bailInfo }: { bailInfo: any }) => {
 
 
 const formatBailCost = (bailInfo: any) => {
-    if (bailInfo.auto === false || bailInfo.cost === 0) return 'N/A';
-    const bond = bailInfo.cost * 0.1;
-    return `$${bailInfo.cost.toLocaleString()} / $${bond.toLocaleString()} (10%)`;
+    if (bailInfo.auto === false || !bailInfo.cost || bailInfo.cost === 0) return 'N/A';
+    return `$${bailInfo.cost.toLocaleString()}`;
 };
 
 const ChargesTable = ({ report, penalCode }: { report: any[], penalCode: any }) => (
@@ -92,9 +91,8 @@ const ChargesTable = ({ report, penalCode }: { report: any[], penalCode: any }) 
                     <TableHead>Fine</TableHead>
                     <TableHead>Impound</TableHead>
                     <TableHead>Suspension</TableHead>
-                    <TableHead>Extra</TableHead>
+                    <TableHead>Auto-Bail</TableHead>
                     <TableHead>Bail</TableHead>
-                    <TableHead>Bail / Bond</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -157,7 +155,6 @@ const ChargesTable = ({ report, penalCode }: { report: any[], penalCode: any }) 
                             <TableCell>{getFine(chargeDetails.fine)}</TableCell>
                             <TableCell>{impound ? `Yes | ${impound} Days` : 'No'}</TableCell>
                             <TableCell>{suspension ? `Yes | ${suspension} Days` : 'No'}</TableCell>
-                            <TableCell>{chargeDetails.extra || 'N/A'}</TableCell>
                             <TableCell><BailStatusBadge bailInfo={bailInfo} /></TableCell>
                             <TableCell>{formatBailCost(bailInfo)}</TableCell>
                         </TableRow>
@@ -621,7 +618,7 @@ export function PaperworkSubmitPage() {
         description="Review the calculated charges and the formatted arrest report below."
       />
         
-      {hasReport && (
+      {hasReport && totals && (
         <div className="space-y-6">
             <ChargesTable report={report} penalCode={penalCode} />
             <SummaryTable totals={totals} />

@@ -79,9 +79,8 @@ const BailStatusBadge = ({ bailInfo }: { bailInfo: any }) => {
 
 
 const formatBailCost = (bailInfo: any) => {
-    if (bailInfo.auto === false || bailInfo.cost === 0) return 'N/A';
-    const bond = bailInfo.cost * 0.1;
-    return `$${bailInfo.cost.toLocaleString()} / $${bond.toLocaleString()} (10%)`;
+    if (bailInfo.auto === false || !bailInfo.cost || bailInfo.cost === 0) return 'N/A';
+    return `$${bailInfo.cost.toLocaleString()}`;
 };
 
 const CopyableCard = ({ label, value }: { label: string, value: string | number }) => {
@@ -153,6 +152,16 @@ export function ArrestReportPage() {
 
   const renderReport = () => {
     if (!hasReport) return null;
+
+    const extras = report.map(row => {
+        const chargeDetails = penalCode[row.chargeId!];
+        if (chargeDetails && chargeDetails.extra && chargeDetails.extra !== 'N/A') {
+            const typePrefix = `${chargeDetails.type}${row.class}`;
+            const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
+            return { title, extra: chargeDetails.extra };
+        }
+        return null;
+    }).filter(Boolean);
 
     const totals = report.reduce(
         (acc, row) => {
@@ -256,9 +265,8 @@ export function ArrestReportPage() {
                             <TableHead>Fine</TableHead>
                             <TableHead>Impound</TableHead>
                             <TableHead>Suspension</TableHead>
-                            <TableHead>Extra</TableHead>
+                            <TableHead>Auto-Bail</TableHead>
                             <TableHead>Bail</TableHead>
-                            <TableHead>Bail / Bond</TableHead>
                         </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -324,7 +332,6 @@ export function ArrestReportPage() {
                                     <TableCell>{getFine(chargeDetails.fine)}</TableCell>
                                     <TableCell>{impound ? `Yes | ${impound} Days` : 'No'}</TableCell>
                                     <TableCell>{suspension ? `Yes | ${suspension} Days` : 'No'}</TableCell>
-                                    <TableCell>{chargeDetails.extra || 'N/A'}</TableCell>
                                     <TableCell><BailStatusBadge bailInfo={bailInfo} /></TableCell>
                                     <TableCell>{formatBailCost(bailInfo)}</TableCell>
                                 </TableRow>
@@ -334,6 +341,32 @@ export function ArrestReportPage() {
                     </Table>
                 </CardContent>
             </Card>
+
+            {extras && extras.length > 0 && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Stipulations</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Charge</TableHead>
+                                    <TableHead>Stipulation</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {extras.map((item, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell className="font-medium">{item!.title}</TableCell>
+                                        <TableCell>{item!.extra}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+            )}
             
             <Card>
                 <CardHeader>
