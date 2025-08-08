@@ -68,57 +68,49 @@ export function AdvancedArrestReportForm() {
     const [locations, setLocations] = useState<{districts: string[], streets: string[]}>({ districts: [], streets: []});
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
-    // Watch specific fields for presets
-    const watchSourcePreset = watch(['narrativePresets.source', 'officers.0', 'incident.date', 'modifiers.markedUnit', 'modifiers.slicktop', 'modifiers.inG3Uniform', 'modifiers.inMetroUniform']);
-    const watchInvestigationPreset = watch(['narrativePresets.investigation', 'incident.time', 'incident.locationDistrict', 'incident.locationStreet', 'narrative.vehicleColor', 'narrative.vehicleModel', 'narrative.vehiclePlate']);
-    const watchArrestPreset = watch(['narrativePresets.arrest', 'arrestee.name', 'modifiers.wasSuspectMirandized', 'modifiers.didSuspectUnderstandRights', 'modifiers.didYouTransport']);
-    const watchPhotographsPreset = watch(['narrativePresets.photographs', 'modifiers.doYouHaveAVideo', 'modifiers.didYouTakePhotographs', 'modifiers.didYouObtainCctvFootage', 'modifiers.thirdPartyVideoFootage', 'narrative.dicvsLink', 'narrative.photosLink', 'narrative.cctvLink', 'narrative.thirdPartyLink']);
-    const watchBookingPreset = watch(['narrativePresets.booking', 'arrestee.name', 'modifiers.didYouBook', 'modifiers.biometricsAlreadyOnFile']);
-    const watchEvidencePreset = watch(['narrativePresets.evidence', 'evidenceLogs']);
-    const watchCourtPreset = watch(['narrativePresets.court', 'officers.0']);
-    const watchAdditionalPreset = watch(['narrativePresets.additional', 'narrative.plea', 'arrestee.name']);
+    const allWatchedFields = watch();
 
-    useEffect(() => {
-        reset(formData);
-    }, [formData, reset]);
-    
     // Preset Effects
     useEffect(() => {
-        if (getValues('narrativePresets.source')) {
-            const officer = getValues('officers.0') || {};
-            const date = getValues('incident.date') || 'DATE';
+        if (allWatchedFields.narrativePresets?.source) {
+            const officer = allWatchedFields.officers?.[0] || {};
+            const date = allWatchedFields.incident?.date || 'DATE';
             const name = officer.name || 'NAME';
             const serial = officer.badgeNumber || 'SERIAL';
             const division = officer.divDetail || 'DIVISION';
             const callsign = officer.callSign || 'CALLSIGN';
-            const isMarked = getValues('modifiers.markedUnit') ? 'marked' : 'unmarked';
-            const isSlicktop = getValues('modifiers.slicktop') ? ' slicktop' : '';
-            const uniform = getValues('modifiers.inG3Uniform') ? 'G3 uniform' : getValues('modifiers.inMetroUniform') ? 'metropolitan uniform' : 'uniform';
+            const isMarked = allWatchedFields.modifiers?.markedUnit ? 'marked' : 'unmarked';
+            const isSlicktop = allWatchedFields.modifiers?.slicktop ? ' slicktop' : '';
+            const uniform = allWatchedFields.modifiers?.inG3Uniform ? 'G3 uniform' : allWatchedFields.modifiers?.inMetroUniform ? 'metropolitan uniform' : 'uniform';
     
             const presetText = `On ${date}, I, ${officer.rank || 'RANK'} ${name} (#${serial}), assigned to ${division} Division, was deployed under Unit ${callsign}. I was wearing my department-issued ${uniform} and was openly displaying my badge of office on my uniform. I was driving a ${isMarked} black and white${isSlicktop}. At the start of watch, I conducted a check of my police vehicle and the blue, red, and amber emergency lights and siren were in good working order.\n\n`;
-            setValue('narrative.source', presetText, { shouldDirty: true });
+            if (getValues('narrative.source') !== presetText) {
+                setValue('narrative.source', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchSourcePreset, setValue]);
+    }, [allWatchedFields.narrativePresets?.source, allWatchedFields.officers, allWatchedFields.incident?.date, allWatchedFields.modifiers?.markedUnit, allWatchedFields.modifiers?.slicktop, allWatchedFields.modifiers?.inG3Uniform, allWatchedFields.modifiers?.inMetroUniform, setValue, getValues]);
 
     useEffect(() => {
-        if (getValues('narrativePresets.investigation')) {
-            const time = getValues('incident.time') || 'TIME';
-            const location = `${getValues('incident.locationDistrict')} ${getValues('incident.locationStreet')}`.trim() || 'LOCATION';
-            const vehicleColor = getValues('narrative.vehicleColor') || 'COLOR';
-            const vehicleModel = getValues('narrative.vehicleModel') || 'MODEL';
-            const vehiclePlate = getValues('narrative.vehiclePlate') ? `, San Andreas license plate ${getValues('narrative.vehiclePlate')}` : ', with no plates';
+        if (allWatchedFields.narrativePresets?.investigation) {
+            const time = allWatchedFields.incident?.time || 'TIME';
+            const location = `${allWatchedFields.incident?.locationDistrict || ''} ${allWatchedFields.incident?.locationStreet || ''}`.trim() || 'LOCATION';
+            const vehicleColor = allWatchedFields.narrative?.vehicleColor || 'COLOR';
+            const vehicleModel = allWatchedFields.narrative?.vehicleModel || 'MODEL';
+            const vehiclePlate = allWatchedFields.narrative?.vehiclePlate ? `, San Andreas license plate ${allWatchedFields.narrative.vehiclePlate}` : ', with no plates';
     
             const presetText = `At approximately ${time} hours, I was driving on ${location} when I observed a ${vehicleColor} ${vehicleModel}${vehiclePlate}.`;
-            setValue('narrative.investigation', presetText, { shouldDirty: true });
+            if(getValues('narrative.investigation') !== presetText) {
+                setValue('narrative.investigation', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchInvestigationPreset, setValue]);
+    }, [allWatchedFields.narrativePresets?.investigation, allWatchedFields.incident?.time, allWatchedFields.incident?.locationDistrict, allWatchedFields.incident?.locationStreet, allWatchedFields.narrative?.vehicleColor, allWatchedFields.narrative?.vehicleModel, allWatchedFields.narrative?.vehiclePlate, setValue, getValues]);
 
     useEffect(() => {
-        if (getValues('narrativePresets.arrest')) {
-            const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
-            const didMirandize = getValues('modifiers.wasSuspectMirandized');
-            const understoodRights = getValues('modifiers.didSuspectUnderstandRights');
-            const transported = getValues('modifiers.didYouTransport');
+        if (allWatchedFields.narrativePresets?.arrest) {
+            const arresteeName = allWatchedFields.arrestee?.name || 'ARRESTEE';
+            const didMirandize = allWatchedFields.modifiers?.wasSuspectMirandized;
+            const understoodRights = allWatchedFields.modifiers?.didSuspectUnderstandRights;
+            const transported = allWatchedFields.modifiers?.didYouTransport;
             const chargeList = charges
               .map(c => {
                   const details = penalCode?.[c.chargeId!];
@@ -135,27 +127,31 @@ export function AdvancedArrestReportForm() {
             if (transported) {
                 presetText += `I transported ${arresteeName} to Mission Row Station.\n`;
             }
-            setValue('narrative.arrest', presetText, { shouldDirty: true });
+            if (getValues('narrative.arrest') !== presetText) {
+                setValue('narrative.arrest', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchArrestPreset, charges, penalCode, setValue]);
+    }, [allWatchedFields.narrativePresets?.arrest, allWatchedFields.arrestee?.name, allWatchedFields.modifiers?.wasSuspectMirandized, allWatchedFields.modifiers?.didSuspectUnderstandRights, allWatchedFields.modifiers?.didYouTransport, charges, penalCode, setValue, getValues]);
 
     useEffect(() => {
-        if (getValues('narrativePresets.photographs')) {
+        if (allWatchedFields.narrativePresets?.photographs) {
             let presetText = '';
-            if (getValues('modifiers.doYouHaveAVideo')) presetText += `My Digital In-Car Video (DICV) was activated during this investigation - ${getValues('narrative.dicvsLink') || 'LINK'}\n`;
-            if (getValues('modifiers.didYouTakePhotographs')) presetText += `I took photographs using my Department-issued cell phone - ${getValues('narrative.photosLink') || 'LINK'}\n`;
-            if (getValues('modifiers.didYouObtainCctvFootage')) presetText += `I obtained closed-circuit television (CCTV) footage - ${getValues('narrative.cctvLink') || 'LINK'}\n`;
-            if (getValues('modifiers.thirdPartyVideoFootage')) presetText += `I obtained third party video footage - ${getValues('narrative.thirdPartyLink') || 'LINK'}\n`;
+            if (allWatchedFields.modifiers?.doYouHaveAVideo) presetText += `My Digital In-Car Video (DICV) was activated during this investigation - ${allWatchedFields.narrative?.dicvsLink || 'LINK'}\n`;
+            if (allWatchedFields.modifiers?.didYouTakePhotographs) presetText += `I took photographs using my Department-issued cell phone - ${allWatchedFields.narrative?.photosLink || 'LINK'}\n`;
+            if (allWatchedFields.modifiers?.didYouObtainCctvFootage) presetText += `I obtained closed-circuit television (CCTV) footage - ${allWatchedFields.narrative?.cctvLink || 'LINK'}\n`;
+            if (allWatchedFields.modifiers?.thirdPartyVideoFootage) presetText += `I obtained third party video footage - ${allWatchedFields.narrative?.thirdPartyLink || 'LINK'}\n`;
             
-            setValue('narrative.photographs', presetText, { shouldDirty: true });
+            if (getValues('narrative.photographs') !== presetText) {
+                setValue('narrative.photographs', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchPhotographsPreset, setValue]);
-
+    }, [allWatchedFields.narrativePresets?.photographs, allWatchedFields.modifiers?.doYouHaveAVideo, allWatchedFields.modifiers?.didYouTakePhotographs, allWatchedFields.modifiers?.didYouObtainCctvFootage, allWatchedFields.modifiers?.thirdPartyVideoFootage, allWatchedFields.narrative?.dicvsLink, allWatchedFields.narrative?.photosLink, allWatchedFields.narrative?.cctvLink, allWatchedFields.narrative?.thirdPartyLink, setValue, getValues]);
+    
     useEffect(() => {
-        if (getValues('narrativePresets.booking')) {
-            const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
-            const booked = getValues('modifiers.didYouBook');
-            const onFile = getValues('modifiers.biometricsAlreadyOnFile');
+        if (allWatchedFields.narrativePresets?.booking) {
+            const arresteeName = allWatchedFields.arrestee?.name || 'ARRESTEE';
+            const booked = allWatchedFields.modifiers?.didYouBook;
+            const onFile = allWatchedFields.modifiers?.biometricsAlreadyOnFile;
             
             let presetText = '';
             if (booked) {
@@ -164,40 +160,47 @@ export function AdvancedArrestReportForm() {
             if (onFile) {
                 presetText += `${arresteeName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
             }
-            setValue('narrative.booking', presetText, { shouldDirty: true });
+            if (getValues('narrative.booking') !== presetText) {
+                setValue('narrative.booking', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchBookingPreset, setValue]);
-
+    }, [allWatchedFields.narrativePresets?.booking, allWatchedFields.arrestee?.name, allWatchedFields.modifiers?.didYouBook, allWatchedFields.modifiers?.biometricsAlreadyOnFile, setValue, getValues]);
+    
     useEffect(() => {
-        if (getValues('narrativePresets.evidence')) {
-            const evidenceLogs = getValues('evidenceLogs');
+        if (allWatchedFields.narrativePresets?.evidence) {
+            const evidenceLogs = allWatchedFields.evidenceLogs;
             let presetText = "I booked all evidence into the Mission Row Station property room.\n";
             evidenceLogs?.forEach((log, index) => {
                 if (log.logNumber && log.description) {
                     presetText += `Item ${index + 1} - ${log.logNumber} - ${log.description} (x${log.quantity || 1})\n`;
                 }
             });
-            setValue('narrative.evidence', presetText, { shouldDirty: true });
+            if (getValues('narrative.evidence') !== presetText) {
+                setValue('narrative.evidence', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchEvidencePreset, setValue]);
-
+    }, [allWatchedFields.narrativePresets?.evidence, allWatchedFields.evidenceLogs, setValue, getValues]);
+    
     useEffect(() => {
-        if (getValues('narrativePresets.court')) {
-            const officer = getValues('officers.0') || {};
+        if (allWatchedFields.narrativePresets?.court) {
+            const officer = allWatchedFields.officers?.[0] || {};
             const presetText = `I, ${officer.rank || 'RANK'} ${officer.name || 'NAME'} #${officer.badgeNumber || 'SERIAL'}, can testify to the contents of this report.\n`;
-            setValue('narrative.court', presetText, { shouldDirty: true });
+            if (getValues('narrative.court') !== presetText) {
+                setValue('narrative.court', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchCourtPreset, setValue]);
+    }, [allWatchedFields.narrativePresets?.court, allWatchedFields.officers, setValue, getValues]);
 
     useEffect(() => {
-        if (getValues('narrativePresets.additional')) {
-            const plea = getValues('narrative.plea') || 'Guilty';
-            const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
+        if (allWatchedFields.narrativePresets?.additional) {
+            const plea = allWatchedFields.narrative?.plea || 'Guilty';
+            const arresteeName = allWatchedFields.arrestee?.name || 'ARRESTEE';
             const presetText = `(( ${arresteeName} pleaded ${plea}. ))\n`;
-            setValue('narrative.additional', presetText, { shouldDirty: true });
+            if (getValues('narrative.additional') !== presetText) {
+                setValue('narrative.additional', presetText, { shouldDirty: true });
+            }
         }
-    }, [watchAdditionalPreset, setValue]);
-
+    }, [allWatchedFields.narrativePresets?.additional, allWatchedFields.narrative?.plea, allWatchedFields.arrestee?.name, setValue, getValues]);
 
     useEffect(() => {
       // Pre-fill default officer from officerStore
@@ -230,15 +233,20 @@ export function AdvancedArrestReportForm() {
     }, []);
 
     useEffect(() => {
-        const subscription = watch((value) => {
-          // Syncing div/detail to localStorage
-          if (value.officers && value.officers[0]) {
-            const officer = value.officers[0];
-            if (officer.badgeNumber && officer.divDetail) {
-              localStorage.setItem(`${officer.badgeNumber}-divDetail`, officer.divDetail);
+        reset(formData);
+    }, [formData, reset]);
+    
+    useEffect(() => {
+        const subscription = watch((value, { name, type }) => {
+            if (type === 'change') {
+                if (value.officers && value.officers[0] && (name?.startsWith('officers.0') || !name)) {
+                    const officer = value.officers[0];
+                    if (officer.badgeNumber && officer.divDetail) {
+                        localStorage.setItem(`${officer.badgeNumber}-divDetail`, officer.divDetail);
+                    }
+                }
+                setFields(value as FormState);
             }
-          }
-          setFields(value as any);
         });
         return () => subscription.unsubscribe();
     }, [watch, setFields]);
@@ -650,3 +658,5 @@ export function AdvancedArrestReportForm() {
     </form>
   );
 }
+
+    

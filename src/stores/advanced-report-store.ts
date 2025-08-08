@@ -116,71 +116,22 @@ interface AdvancedReportState {
   toggleAdvanced: () => void;
   setAdvanced: (isAdvanced: boolean) => void;
   formData: FormState;
-  setFormField: <T extends keyof FormState, K extends keyof FormState[T]>(
-    section: T,
-    field: K,
-    value: any
-  ) => void;
   setFields: (fields: Partial<FormState>) => void;
-  addPerson: () => void;
-  removePerson: (index: number) => void;
-  addOfficer: () => void;
-  removeOfficer: (index: number) => void;
-  addEvidenceLog: () => void;
-  removeEvidenceLog: (index: number) => void;
   reset: (data?: FormState) => void;
 }
 
 export const useAdvancedReportStore = create<AdvancedReportState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       isAdvanced: false,
       toggleAdvanced: () => set((state) => ({ isAdvanced: !state.isAdvanced })),
       setAdvanced: (isAdvanced) => set({ isAdvanced }),
       formData: getInitialState(),
-      setFormField: (section, field, value) => set(state => {
-        const currentSection = state.formData[section];
-        if (typeof currentSection === 'object' && currentSection !== null) {
-            return {
-                formData: {
-                    ...state.formData,
-                    [section]: {
-                        ...currentSection,
-                        [field]: value,
-                    },
-                },
-            };
-        }
-        return {
-            formData: {
-                ...state.formData,
-                [section]: value,
-            },
-        };
-      }),
       setFields: (fields) => set(state => ({
         formData: {
             ...state.formData,
             ...fields,
         }
-      })),
-      addPerson: () => set(state => ({
-        formData: { ...state.formData, persons: [...state.formData.persons, { name: '', sex: '', gang: ''}] }
-      })),
-      removePerson: (index) => set(state => ({
-        formData: { ...state.formData, persons: state.formData.persons.filter((_, i) => i !== index) }
-      })),
-      addOfficer: () => set(state => ({
-        formData: { ...state.formData, officers: [...state.formData.officers, { id: Date.now(), name: '', rank: '', badgeNumber: '', department: '', divDetail: '' }] }
-      })),
-      removeOfficer: (index) => set(state => ({
-        formData: { ...state.formData, officers: state.formData.officers.filter((_, i) => i !== index) }
-      })),
-      addEvidenceLog: () => set(state => ({
-        formData: { ...state.formData, evidenceLogs: [...state.formData.evidenceLogs, { logNumber: '', description: '', quantity: '1'}] }
-      })),
-      removeEvidenceLog: (index) => set(state => ({
-        formData: { ...state.formData, evidenceLogs: state.formData.evidenceLogs.filter((_, i) => i !== index) }
       })),
       reset: (data) => set({ formData: data || getInitialState() }),
     }),
@@ -190,3 +141,5 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
     }
   )
 );
+
+    
