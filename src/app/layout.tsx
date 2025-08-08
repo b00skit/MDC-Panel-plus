@@ -16,7 +16,7 @@ type SiteConfig = {
 // This function is marked as async because it fetches data.
 export async function generateMetadata(): Promise<Metadata> {
   const file = await fs.readFile(
-    path.join(process.cwd(), 'public/data/config.json'),
+    path.join(process.cwd(), 'data/config.json'),
     'utf8'
   );
   const config: SiteConfig = JSON.parse(file);
@@ -33,7 +33,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const file = await fs.readFile(
-    path.join(process.cwd(), 'public/data/config.json'),
+    path.join(process.cwd(), 'data/config.json'),
     'utf8'
   );
   const config: SiteConfig = JSON.parse(file);

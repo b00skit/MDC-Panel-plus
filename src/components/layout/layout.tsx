@@ -6,8 +6,12 @@ import { Separator } from '../ui/separator';
 import { promises as fs } from 'fs';
 import path from 'path';
 
+type LayoutProps = {
+  children: ReactNode;
+};
+
 async function Footer() {
-    const file = await fs.readFile(path.join(process.cwd(), 'public/data/config.json'), 'utf8');
+    const file = await fs.readFile(path.join(process.cwd(), 'data/config.json'), 'utf8');
     const config = JSON.parse(file);
 
     return (

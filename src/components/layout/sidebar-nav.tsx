@@ -32,9 +32,14 @@ export function SidebarNav() {
 
   useEffect(() => {
     setMounted(true);
-    fetch('/data/config.json')
-      .then((res) => res.json())
-      .then((data) => setConfig(data));
+    // This is now a simple example; in a real app, you'd likely
+    // get this data from a server-side context or API route.
+    // For this example, we'll just use a static object.
+    setConfig({
+      SITE_NAME: "MDC Panel+",
+      SITE_FAVICON: "/img/logos/MDC-Panel-Favicon.svg",
+      URL_GITHUB: "https://github.com/biscuitgtaw/MDC-Panel",
+    });
   }, []);
 
   const isActive = (path: string) => {
