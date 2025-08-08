@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import {
   Card,
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { CirclePlus, Trash2, Calendar, Clock, ChevronsUpDown } from 'lucide-react';
+import { CirclePlus, Trash2, Calendar, Clock } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
@@ -33,9 +33,7 @@ import {
 import { useAdvancedReportStore, FormState } from '@/stores/advanced-report-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { useOfficerStore } from '@/stores/officer-store';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
 import { EvidenceLog, NarrativeSection } from './narrative-sections';
@@ -45,10 +43,10 @@ interface DeptRanks {
 }
 
 export function AdvancedArrestReportForm() {
-    const { formData, setFormField, setFields, reset, addPerson, removePerson, addOfficer, removeOfficer, addEvidenceLog, removeEvidenceLog } = useAdvancedReportStore();
+    const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
     const { officers: defaultOfficers, alternativeCharacters, swapOfficer } = useOfficerStore();
-    const { register, control, handleSubmit, watch, setValue, getValues } = useForm<FormState>({
+    const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
     });
     
@@ -70,12 +68,21 @@ export function AdvancedArrestReportForm() {
     const [locations, setLocations] = useState<{districts: string[], streets: string[]}>({ districts: [], streets: []});
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
-    const watchedFields = watch();
+    // Watch specific fields for presets
+    const watchSourcePreset = watch(['narrativePresets.source', 'officers.0', 'incident.date', 'modifiers.markedUnit', 'modifiers.slicktop', 'modifiers.inG3Uniform', 'modifiers.inMetroUniform']);
+    const watchInvestigationPreset = watch(['narrativePresets.investigation', 'incident.time', 'incident.locationDistrict', 'incident.locationStreet', 'narrative.vehicleColor', 'narrative.vehicleModel', 'narrative.vehiclePlate']);
+    const watchArrestPreset = watch(['narrativePresets.arrest', 'arrestee.name', 'modifiers.wasSuspectMirandized', 'modifiers.didSuspectUnderstandRights', 'modifiers.didYouTransport']);
+    const watchPhotographsPreset = watch(['narrativePresets.photographs', 'modifiers.doYouHaveAVideo', 'modifiers.didYouTakePhotographs', 'modifiers.didYouObtainCctvFootage', 'modifiers.thirdPartyVideoFootage', 'narrative.dicvsLink', 'narrative.photosLink', 'narrative.cctvLink', 'narrative.thirdPartyLink']);
+    const watchBookingPreset = watch(['narrativePresets.booking', 'arrestee.name', 'modifiers.didYouBook', 'modifiers.biometricsAlreadyOnFile']);
+    const watchEvidencePreset = watch(['narrativePresets.evidence', 'evidenceLogs']);
+    const watchCourtPreset = watch(['narrativePresets.court', 'officers.0']);
+    const watchAdditionalPreset = watch(['narrativePresets.additional', 'narrative.plea', 'arrestee.name']);
 
     useEffect(() => {
         reset(formData);
     }, [formData, reset]);
     
+    // Preset Effects
     useEffect(() => {
         if (getValues('narrativePresets.source')) {
             const officer = getValues('officers.0') || {};
@@ -88,11 +95,12 @@ export function AdvancedArrestReportForm() {
             const isSlicktop = getValues('modifiers.slicktop') ? ' slicktop' : '';
             const uniform = getValues('modifiers.inG3Uniform') ? 'G3 uniform' : getValues('modifiers.inMetroUniform') ? 'metropolitan uniform' : 'uniform';
     
-            const presetText = `On ${date}, I, ${officer.rank || 'RANK'} ${name} (#${serial}), assigned to ${division} Division, was deployed under Unit ${callsign}. I was wearing my department-issued ${uniform} and was openly displaying my badge of office on my uniform. I was driving a ${isMarked} black and white${isSlicktop}. At the start of watch, I conducted a check of my police vehicle and the blue, red, and amber emergency lights and siren were in good working order.
-
-`;
-            setValue('narrative.source', presetText);
+            const presetText = `On ${date}, I, ${officer.rank || 'RANK'} ${name} (#${serial}), assigned to ${division} Division, was deployed under Unit ${callsign}. I was wearing my department-issued ${uniform} and was openly displaying my badge of office on my uniform. I was driving a ${isMarked} black and white${isSlicktop}. At the start of watch, I conducted a check of my police vehicle and the blue, red, and amber emergency lights and siren were in good working order.\n\n`;
+            setValue('narrative.source', presetText, { shouldDirty: true });
         }
+    }, [watchSourcePreset, setValue]);
+
+    useEffect(() => {
         if (getValues('narrativePresets.investigation')) {
             const time = getValues('incident.time') || 'TIME';
             const location = `${getValues('incident.locationDistrict')} ${getValues('incident.locationStreet')}`.trim() || 'LOCATION';
@@ -101,8 +109,11 @@ export function AdvancedArrestReportForm() {
             const vehiclePlate = getValues('narrative.vehiclePlate') ? `, San Andreas license plate ${getValues('narrative.vehiclePlate')}` : ', with no plates';
     
             const presetText = `At approximately ${time} hours, I was driving on ${location} when I observed a ${vehicleColor} ${vehicleModel}${vehiclePlate}.`;
-            setValue('narrative.investigation', presetText);
+            setValue('narrative.investigation', presetText, { shouldDirty: true });
         }
+    }, [watchInvestigationPreset, setValue]);
+
+    useEffect(() => {
         if (getValues('narrativePresets.arrest')) {
             const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
             const didMirandize = getValues('modifiers.wasSuspectMirandized');
@@ -124,8 +135,11 @@ export function AdvancedArrestReportForm() {
             if (transported) {
                 presetText += `I transported ${arresteeName} to Mission Row Station.\n`;
             }
-            setValue('narrative.arrest', presetText);
+            setValue('narrative.arrest', presetText, { shouldDirty: true });
         }
+    }, [watchArrestPreset, charges, penalCode, setValue]);
+
+    useEffect(() => {
         if (getValues('narrativePresets.photographs')) {
             let presetText = '';
             if (getValues('modifiers.doYouHaveAVideo')) presetText += `My Digital In-Car Video (DICV) was activated during this investigation - ${getValues('narrative.dicvsLink') || 'LINK'}\n`;
@@ -133,8 +147,11 @@ export function AdvancedArrestReportForm() {
             if (getValues('modifiers.didYouObtainCctvFootage')) presetText += `I obtained closed-circuit television (CCTV) footage - ${getValues('narrative.cctvLink') || 'LINK'}\n`;
             if (getValues('modifiers.thirdPartyVideoFootage')) presetText += `I obtained third party video footage - ${getValues('narrative.thirdPartyLink') || 'LINK'}\n`;
             
-            setValue('narrative.photographs', presetText);
+            setValue('narrative.photographs', presetText, { shouldDirty: true });
         }
+    }, [watchPhotographsPreset, setValue]);
+
+    useEffect(() => {
         if (getValues('narrativePresets.booking')) {
             const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
             const booked = getValues('modifiers.didYouBook');
@@ -147,8 +164,11 @@ export function AdvancedArrestReportForm() {
             if (onFile) {
                 presetText += `${arresteeName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
             }
-            setValue('narrative.booking', presetText);
+            setValue('narrative.booking', presetText, { shouldDirty: true });
         }
+    }, [watchBookingPreset, setValue]);
+
+    useEffect(() => {
         if (getValues('narrativePresets.evidence')) {
             const evidenceLogs = getValues('evidenceLogs');
             let presetText = "I booked all evidence into the Mission Row Station property room.\n";
@@ -157,22 +177,27 @@ export function AdvancedArrestReportForm() {
                     presetText += `Item ${index + 1} - ${log.logNumber} - ${log.description} (x${log.quantity || 1})\n`;
                 }
             });
-            setValue('narrative.evidence', presetText);
+            setValue('narrative.evidence', presetText, { shouldDirty: true });
         }
+    }, [watchEvidencePreset, setValue]);
+
+    useEffect(() => {
         if (getValues('narrativePresets.court')) {
             const officer = getValues('officers.0') || {};
             const presetText = `I, ${officer.rank || 'RANK'} ${officer.name || 'NAME'} #${officer.badgeNumber || 'SERIAL'}, can testify to the contents of this report.\n`;
-            setValue('narrative.court', presetText);
+            setValue('narrative.court', presetText, { shouldDirty: true });
         }
+    }, [watchCourtPreset, setValue]);
+
+    useEffect(() => {
         if (getValues('narrativePresets.additional')) {
             const plea = getValues('narrative.plea') || 'Guilty';
             const arresteeName = getValues('arrestee.name') || 'ARRESTEE';
             const presetText = `(( ${arresteeName} pleaded ${plea}. ))\n`;
-            setValue('narrative.additional', presetText);
+            setValue('narrative.additional', presetText, { shouldDirty: true });
         }
+    }, [watchAdditionalPreset, setValue]);
 
-
-    }, [watchedFields, charges, penalCode, setValue]);
 
     useEffect(() => {
       // Pre-fill default officer from officerStore
