@@ -432,11 +432,11 @@ export function ArrestReportPage() {
                 <CopyableCard label="Bail Cost" value={totals.bailCost} />
             </div>
 
-            <Alert variant="destructive">
+            <Alert variant="warning">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Disclaimer</AlertTitle>
                 <AlertDescription>
-                    This tool is for informational purposes only and does not constitute legal advice. All calculations are based on the provided penal code and may not reflect all sentencing factors. Consult with a legal professional for official guidance.
+                    This tool is to provide you assistance with your paperwork, the quality of your writing is your responsibility. You are still expected to provide truthful and detailed information. 
                 </AlertDescription>
             </Alert>
             <div className="flex items-center space-x-2">
