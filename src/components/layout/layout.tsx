@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Separator } from '../ui/separator';
 import { promises as fs } from 'fs';
 import path from 'path';
+import Link from 'next/link';
 
 type LayoutProps = {
   children: ReactNode;
@@ -27,6 +28,11 @@ async function Footer() {
           <p className="text-center text-sm text-muted-foreground">
             &copy; 2025-{new Date().getFullYear() + 1} {config.SITE_NAME}. All rights reserved. Version: {config.SITE_VERSION}
           </p>
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+              <Separator orientation="vertical" className="h-4" />
+              <Link href="/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
+          </div>
         </div>
       </footer>
     );
