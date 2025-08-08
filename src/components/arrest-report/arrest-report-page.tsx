@@ -16,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle, Clipboard } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import { ArrestReportForm } from './arrest-report-form';
@@ -124,6 +124,10 @@ export function ArrestReportPage() {
   }, []);
 
   const hasReport = isClient && report.length > 0 && !!penalCode;
+
+  const handleToggleAdvanced = useCallback(() => {
+    toggleAdvanced();
+  }, [toggleAdvanced]);
 
   const renderSkeleton = () => (
      <div className="space-y-6">
@@ -436,7 +440,7 @@ export function ArrestReportPage() {
                 </AlertDescription>
             </Alert>
             <div className="flex items-center space-x-2">
-                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={toggleAdvanced} />
+                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={handleToggleAdvanced} />
                 <Label htmlFor="advanced-mode">Enable Advanced Report</Label>
             </div>
         </div>
