@@ -87,7 +87,11 @@ export function AdvancedArrestReportForm() {
 
       fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
         .then(res => res.json())
-        .then(data => setLocations(data))
+        .then(data => {
+            const uniqueDistricts = [...new Set(data.districts || [])];
+            const uniqueStreets = [...new Set(data.streets || [])];
+            setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+        })
         .catch(err => console.error("Failed to fetch locations:", err));
       
        // Pre-fill date and time
@@ -117,18 +121,26 @@ export function AdvancedArrestReportForm() {
     };
 
     const handlePillClick = (officerIndex: number, altChar: any) => {
-        const currentOfficer = getValues(`officers.${officerIndex}`);
-        swapOfficer(currentOfficer.id, altChar); // This updates the officerStore
+        const currentOfficerInForm = getValues(`officers.${officerIndex}`);
         
-        // We need to manually update the form state after swap
-        const swappedInOfficer = altChar;
-        setValue(`officers.${officerIndex}`, {
-            ...currentOfficer, // keep the same ID for the form field array
-            name: swappedInOfficer.name,
-            rank: swappedInOfficer.rank,
-            badgeNumber: swappedInOfficer.badgeNumber,
-            department: swappedInOfficer.department,
-        });
+        // This function will update the Zustand store, which in turn updates localStorage
+        swapOfficer(currentOfficerInForm.id, altChar);
+    
+        // After the store is updated, we need to reflect this change in the react-hook-form state
+        // The altChar passed is the one we want to swap *in*
+        // The officer that was in the form is now in the altChar list in the store
+        
+        // Get the latest data from the store after swap to ensure UI consistency
+        const updatedOfficersFromStore = useOfficerStore.getState().officers;
+        const swappedInOfficer = updatedOfficersFromStore.find(o => o.id === currentOfficerInForm.id);
+        
+        if (swappedInOfficer) {
+            setValue(`officers.${officerIndex}`, {
+                ...swappedInOfficer,
+                // Make sure to preserve fields not in the base officer model if needed
+                divDetail: getValues(`officers.${officerIndex}.divDetail`), 
+            }, { shouldDirty: true });
+        }
     }
 
   return (
@@ -260,7 +272,7 @@ export function AdvancedArrestReportForm() {
                         <TableCell><Input placeholder={`NAME ${index + 1}`} {...register(`persons.${index}.name`)} /></TableCell>
                         <TableCell><Input placeholder="M / F / O" {...register(`persons.${index}.sex`)} maxLength={1}/></TableCell>
                         <TableCell colSpan={2}><Input placeholder="GANG / MONIKER / ALIAS IF KNOWN" {...register(`persons.${index}.gang`)} /></TableCell>
-                        <TableCell><Button variant="destructive" className="w-full" onClick={() => removePersonField(index)}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                        <TableCell><Button variant="destructive" className="w-full" type="button" onClick={() => removePersonField(index)}><Trash2 className="h-4 w-4" /></Button></TableCell>
                     </TableRow>
                  ))}
                 <TableRow>
@@ -360,7 +372,8 @@ export function AdvancedArrestReportForm() {
                   <TableHead className="bg-secondary">DIV/DETAIL</TableHead>
                 </TableRow>
                 {officerFields.map((field, index) => (
-                    <TableRow key={field.id}>
+                    <React.Fragment key={field.id}>
+                    <TableRow>
                         <TableCell>
                             <Controller
                                 control={control}
@@ -391,31 +404,33 @@ export function AdvancedArrestReportForm() {
                            {index > 0 && <Button variant="ghost" size="icon" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
                         </TableCell>
                     </TableRow>
+                    {index === 0 && alternativeCharacters.length > 0 && (
+                        <TableRow>
+                            <TableCell colSpan={5} className="p-2">
+                                <div className="flex flex-wrap gap-2">
+                                    {alternativeCharacters.filter(alt => alt.name).map((altChar) => {
+                                        const currentOfficer = getValues('officers.0');
+                                        const isSelected = currentOfficer?.badgeNumber === altChar.badgeNumber;
+                                        return (
+                                            !isSelected && (
+                                                <Badge 
+                                                    key={altChar.id}
+                                                    variant="outline"
+                                                    className="cursor-pointer hover:bg-accent"
+                                                    onClick={() => handlePillClick(0, altChar)}
+                                                >
+                                                    {altChar.name}
+                                                </Badge>
+                                            )
+                                        );
+                                    })}
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    )}
+                    </React.Fragment>
                 ))}
-                {alternativeCharacters.length > 0 && officerFields.length > 0 && (
-                 <TableRow>
-                    <TableCell colSpan={5} className="p-2">
-                        <div className="flex flex-wrap gap-2">
-                        {alternativeCharacters.filter(alt => alt.name).map((altChar) => {
-                            const currentOfficer = getValues('officers.0');
-                            const isSelected = currentOfficer?.name === altChar.name && currentOfficer?.badgeNumber === altChar.badgeNumber;
-                            return (
-                                !isSelected && (
-                                <Badge 
-                                    key={altChar.id}
-                                    variant="outline"
-                                    className="cursor-pointer hover:bg-accent"
-                                    onClick={() => handlePillClick(0, altChar)}
-                                >
-                                    {altChar.name}
-                                </Badge>
-                                )
-                            );
-                        })}
-                        </div>
-                    </TableCell>
-                    </TableRow>
-                )}
+                
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
                     <Button className="w-full" type="button" onClick={() => appendOfficer({ id: Date.now(), name: '', rank: '', badgeNumber: '', department: '', divDetail: '' })}>

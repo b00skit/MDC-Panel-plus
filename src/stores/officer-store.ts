@@ -1,3 +1,4 @@
+
 'use client';
 
 import create from 'zustand';
@@ -152,57 +153,57 @@ export const useOfficerStore = create<OfficerState>()(
         },
 
         swapOfficer: (officerId: number, altCharToUse: Officer) => {
-          set(state => {
-            const officerToSwap = state.officers.find(o => o.id === officerId);
-            if (!officerToSwap) return state;
-    
-            // The character that was in the form, to be moved to alternatives
-            const newAltCharData = {
-              id: altCharToUse.id, // Keep the alt char's original ID
-              name: officerToSwap.name,
-              rank: officerToSwap.rank,
-              department: officerToSwap.department,
-              badgeNumber: officerToSwap.badgeNumber,
-            };
-    
-            // The character that will replace the officer in the form
-            const newOfficerData = {
-              id: officerToSwap.id, // Keep the form officer's original ID
-              name: altCharToUse.name,
-              rank: altCharToUse.rank,
-              department: altCharToUse.department,
-              badgeNumber: altCharToUse.badgeNumber,
-            };
-    
-            // Update officers list
-            const newOfficers = state.officers.map(o =>
-              o.id === officerId ? newOfficerData : o
-            );
-    
-            // Update alternative characters list
-            const newAlternativeCharacters = state.alternativeCharacters.map(ac =>
-              ac.id === altCharToUse.id ? newAltCharData : ac
-            );
-    
-            // Persist changes to localStorage if they are defaults
-            const officerIndex = state.officers.findIndex(o => o.id === officerId);
-            if (officerIndex === 0) {
-                localStorage.setItem('initial-officer-storage', JSON.stringify(newOfficerData));
-            }
-            localStorage.setItem('alt-characters-storage', JSON.stringify(newAlternativeCharacters));
-
-            return {
-              ...state,
-              officers: newOfficers,
-              alternativeCharacters: newAlternativeCharacters,
-            };
-          });
-        },
+            set(state => {
+              const officerToSwapIndex = state.officers.findIndex(o => o.id === officerId);
+              if (officerToSwapIndex === -1) return state;
+      
+              const officerToSwap = state.officers[officerToSwapIndex];
+      
+              // The character that was in the form, to be moved to alternatives
+              const newAltCharData = {
+                id: altCharToUse.id, // Keep the alt char's original ID
+                name: officerToSwap.name,
+                rank: officerToSwap.rank,
+                department: officerToSwap.department,
+                badgeNumber: officerToSwap.badgeNumber,
+              };
+      
+              // The character that will replace the officer in the form
+              const newOfficerData = {
+                id: officerToSwap.id, // Keep the form officer's original ID
+                name: altCharToUse.name,
+                rank: altCharToUse.rank,
+                department: altCharToUse.department,
+                badgeNumber: altCharToUse.badgeNumber,
+              };
+      
+              // Update officers list
+              const newOfficers = [...state.officers];
+              newOfficers[officerToSwapIndex] = newOfficerData;
+      
+              // Update alternative characters list
+              const newAlternativeCharacters = state.alternativeCharacters.map(ac =>
+                ac.id === altCharToUse.id ? newAltCharData : ac
+              );
+      
+              // Persist changes to localStorage if they are defaults
+              if (officerToSwapIndex === 0) {
+                  localStorage.setItem('initial-officer-storage', JSON.stringify(newOfficerData));
+              }
+              localStorage.setItem('alt-characters-storage', JSON.stringify(newAlternativeCharacters));
+      
+              return {
+                ...state,
+                officers: newOfficers,
+                alternativeCharacters: newAlternativeCharacters,
+              };
+            });
+          },
       }),
       {
         name: 'officer-storage',
         storage: createJSONStorage(() => sessionStorage), // Use session storage for non-primary officers
-        partialize: (state) => ({ officers: state.officers }), // Only persist session officers
+        partialize: (state) => ({ officers: state.officers.slice(1) }), // Only persist non-default officers
       }
     )
   );
