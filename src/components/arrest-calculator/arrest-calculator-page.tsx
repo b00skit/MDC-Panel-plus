@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,6 +34,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useChargeStore, type SelectedCharge, type Charge, type PenalCode } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
+import { useToast } from '@/hooks/use-toast';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -49,6 +51,7 @@ const getTypeClasses = (type: Charge['type']) => {
 
 export function ArrestCalculatorPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const { 
     charges, 
     penalCode, 
@@ -68,6 +71,11 @@ export function ArrestCalculatorPage() {
     null
   );
 
+  const getChargeDetails = useCallback((chargeId: string | null): Charge | null => {
+    if (!chargeId || !penalCode) return null;
+    return penalCode[chargeId] || null;
+  }, [penalCode]);
+
   useEffect(() => {
     // Reset charges when the component mounts to start with a clean slate
     resetCharges();
@@ -84,16 +92,34 @@ export function ArrestCalculatorPage() {
   }, [setPenalCode, resetCharges]);
   
   const handleCalculate = () => {
+     for (const charge of charges) {
+      if (!charge.chargeId) {
+        toast({ title: "Incomplete Charge", description: "Please select a charge for all rows.", variant: "destructive" });
+        return;
+      }
+      if (!charge.class) {
+        toast({ title: "Incomplete Charge", description: `Please select a class for "${penalCode?.[charge.chargeId]?.charge}".`, variant: "destructive" });
+        return;
+      }
+      if (!charge.offense) {
+        toast({ title: "Incomplete Charge", description: `Please select an offense for "${penalCode?.[charge.chargeId]?.charge}".`, variant: "destructive" });
+        return;
+      }
+      if (!charge.addition) {
+        toast({ title: "Incomplete Charge", description: `Please select an addition for "${penalCode?.[charge.chargeId]?.charge}".`, variant: "destructive" });
+        return;
+      }
+      const chargeDetails = getChargeDetails(charge.chargeId);
+      if (chargeDetails?.drugs && !charge.category) {
+        toast({ title: "Incomplete Charge", description: `Please select a category for the drug charge "${chargeDetails.charge}".`, variant: "destructive" });
+        return;
+      }
+    }
     setReport(charges);
     resetForm();
     resetOfficers();
     router.push('/arrest-report');
   }
-
-  const getChargeDetails = (chargeId: string | null): Charge | null => {
-    if (!chargeId || !penalCode) return null;
-    return penalCode[chargeId] || null;
-  };
 
   const penalCodeArray = useMemo(() => penalCode ? Object.values(penalCode) : [], [penalCode]);
 
@@ -102,7 +128,7 @@ export function ArrestCalculatorPage() {
         const details = getChargeDetails(charge.chargeId);
         return !!details?.drugs;
     });
-  }, [charges, penalCode]);
+  }, [charges, getChargeDetails]);
   
   const handleChargeSelect = (chargeRow: SelectedCharge, chargeId: string) => {
     if (!penalCode) return;
@@ -273,6 +299,7 @@ export function ArrestCalculatorPage() {
                       updateCharge(chargeRow.uniqueId, { class: value })
                     }
                     disabled={!chargeDetails}
+                    required
                   >
                     <SelectTrigger id={`class-${chargeRow.uniqueId}`} className="h-9">
                       <SelectValue placeholder="Select class" />
@@ -300,6 +327,7 @@ export function ArrestCalculatorPage() {
                       updateCharge(chargeRow.uniqueId, { offense: value })
                     }
                     disabled={!chargeDetails}
+                    required
                   >
                     <SelectTrigger id={`offense-${chargeRow.uniqueId}`} className="h-9">
                       <SelectValue placeholder="Select offense" />
@@ -338,6 +366,7 @@ export function ArrestCalculatorPage() {
                       updateCharge(chargeRow.uniqueId, { addition: value })
                     }
                     disabled={!chargeDetails}
+                    required
                   >
                     <SelectTrigger
                       id={`addition-${chargeRow.uniqueId}`}
@@ -371,6 +400,7 @@ export function ArrestCalculatorPage() {
                         updateCharge(chargeRow.uniqueId, { category: value })
                       }
                       disabled={!chargeDetails}
+                      required
                     >
                       <SelectTrigger
                         id={`category-${chargeRow.uniqueId}`}
