@@ -166,7 +166,7 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
                   <InputField
                       label="Full Name"
                       id={`officer-name-${officer.id}`}
-                      placeholder="Isabella Attaway"
+                      placeholder="John Doe"
                       icon={<User className="h-4 w-4 text-muted-foreground" />}
                       value={officer.name}
                       onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
@@ -197,7 +197,7 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
                   <InputField
                       label="Badge"
                       id={`badge-${officer.id}`}
-                      placeholder="177131"
+                      placeholder="12345"
                       icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
                       value={officer.badgeNumber}
                       onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}

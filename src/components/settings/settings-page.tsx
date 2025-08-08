@@ -146,7 +146,7 @@ export function SettingsPage() {
                         <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                         <Input
                         id="officer-name"
-                        placeholder="Isabella Attaway"
+                        placeholder="John Doe"
                         value={defaultOfficer.name}
                         onChange={(e) => handleOfficerChange('name', e.target.value)}
                         className="pl-9"
@@ -182,7 +182,7 @@ export function SettingsPage() {
                         <BadgeIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                         <Input
                         id="badge-number"
-                        placeholder="177131"
+                        placeholder="12345"
                         value={defaultOfficer.badgeNumber}
                         onChange={(e) => handleOfficerChange('badgeNumber', e.target.value)}
                         className="pl-9"
