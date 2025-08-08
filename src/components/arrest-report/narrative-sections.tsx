@@ -65,7 +65,7 @@ interface EvidenceLogProps {
   }
   
   export const EvidenceLog: React.FC<EvidenceLogProps> = ({ fields, register, onRemove, onAdd }) => (
-    <>
+    <TableBody>
         <TableRow>
           <TableHead className="bg-secondary" colSpan={2}>EVIDENCE LOG NUMBER</TableHead>
           <TableHead className="bg-secondary" colSpan={2}>DESCRIPTION</TableHead>
@@ -90,6 +90,6 @@ interface EvidenceLogProps {
                 </Button>
             </TableCell>
         </TableRow>
-    </>
+    </TableBody>
   );
   
