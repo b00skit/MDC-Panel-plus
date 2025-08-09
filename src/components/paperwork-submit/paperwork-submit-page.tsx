@@ -1,3 +1,4 @@
+
 'use client';
 import { useChargeStore } from '@/stores/charge-store';
 import { PageHeader } from '@/components/dashboard/page-header';
@@ -12,12 +13,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, Clipboard } from 'lucide-react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useFormStore } from '@/stores/form-store';
+import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -240,7 +243,7 @@ const SummaryTable = ({ totals }: { totals: any }) => {
 };
 
 
-const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any) => {
+const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }: any) => {
     const { general, arrest, location, evidence, officers } = formData;
     const [header, setHeader] = useState('COUNTY OF LOS SANTOS');
 
@@ -468,6 +471,139 @@ const FormattedReport = ({ formData, report, penalCode, totals, innerRef }: any)
         </table>
     );
   };
+
+  const AdvancedFormattedReport = ({ formData, innerRef }: any) => {
+    const { arrestee, persons, incident, officers, narrative } = formData;
+    
+    // Helper to render text with line breaks
+    const renderWithBreaks = (text: string) => {
+        return text.split('\n').map((line, index) => (
+            <span key={index}>
+                {line}
+                <br />
+            </span>
+        ));
+    };
+
+    return (
+        <div ref={innerRef} style={{ padding: '2px', border: '1px solid #000', backgroundColor: 'white', width: '100%', maxWidth: '210mm', color: 'black', fontFamily: 'Arial, sans-serif' }}>
+            <h1 style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0' }}>
+                LOS SANTOS POLICE DEPARTMENT<br />ARREST REPORT
+            </h1>
+            <table border={1} cellPadding={2} style={{ width: '100%', borderCollapse: 'collapse', color: 'black' }}>
+                <tbody>
+                    <tr>
+                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>ARRESTEE NAME (FIRST, MIDDLE, LAST)</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>SEX (M/F/O)</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>HAIR</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>EYES</th>
+                    </tr>
+                    <tr>
+                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.name || 'N/A'}</td>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.sex || 'N/A'}</td>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.hair || 'N/A'}</td>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.eyes || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>RESIDENCE</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>AGE</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>HEIGHT</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>DESCENT</th>
+                    </tr>
+                    <tr>
+                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.residence || 'N/A'}</td>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.age || 'N/A'}</td>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.height || 'N/A'}</td>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.descent || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                        <th colSpan={3} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>CLOTHING</th>
+                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>PERSONAL ODDITIES</th>
+                    </tr>
+                    <tr>
+                        <td colSpan={3} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.clothing || 'N/A'}</td>
+                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.oddities || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                        <th colSpan={3} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>MONIKER / ALIAS</th>
+                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>GANG / CLUB</th>
+                    </tr>
+                    <tr>
+                        <td colSpan={3} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.alias || 'N/A'}</td>
+                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.gang || 'N/A'}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>PERSONS WITH SUBJECT</th></tr>
+                    <tr>
+                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>NAME (FIRST, MIDDLE, LAST)</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>SEX (M/F/O)</th>
+                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>GANG / MONIKER</th>
+                    </tr>
+                    {persons.map((person: any, index: number) => (
+                        <tr key={index}>
+                            <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{person.name || 'N/A'}</td>
+                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{person.sex || 'N/A'}</td>
+                            <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{person.gang || 'N/A'}</td>
+                        </tr>
+                    ))}
+                     <tr><th style={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>DATE</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>TIME</th>
+                        <th colSpan={3} style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSizse: '10px', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>LOCATION</th></tr>
+                    <tr>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{incident.date || 'N/A'}</td>
+                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{incident.time || 'N/A'}</td>
+                        <td colSpan={3} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{incident.locationStreet || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>OFFICER</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>SERIAL NO.</th>
+                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>CALLSIGN</th>
+                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>DIV / DETAIL</th>
+                    </tr>
+                    {officers.map((officer: any, index: number) => (
+                         <tr key={index}>
+                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.rank || 'N/A'} {officer.name || 'N/A'}</td>
+                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.badgeNumber || 'N/A'}</td>
+                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.callSign || 'N/A'}</td>
+                            <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.divDetail || 'N/A'}</td>
+                        </tr>
+                    ))}
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderTop: '2px solid black', borderBottom: 'none', backgroundColor: 'white' }}>SOURCE OF ACTIVITY</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.source || 'N/A')}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>INVESTIGATION</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.investigation || 'N/A')}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>ARREST</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.arrest || 'N/A')}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), AND DIGITAL IMAGING</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.photographs || 'N/A')}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>BOOKING</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.booking || 'N/A')}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>PHYSICAL EVIDENCE</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.evidence || 'N/A')}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>COURT INFORMATION</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.court || 'N/A')}</td>
+                    </tr>
+                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>ADDITIONAL</th></tr>
+                    <tr>
+                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.additional || 'N/A')}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    );
+};
   
 
 const getBailStatus = (totals: any) => {
@@ -491,165 +627,170 @@ const formatTotalTime = (totalMinutes: number) => {
     return `${parts.join(' ')} (${totalMinutes} mins)`;
 };
 
-export function PaperworkSubmitPage() {
-  const { report, penalCode } = useChargeStore();
-  const { formData } = useFormStore();
-  const [isClient, setIsClient] = useState(false);
-  const { toast } = useToast();
-  const reportRef = useRef<HTMLTableElement>(null);
-  const [reportHtml, setReportHtml] = useState('');
+function PaperworkSubmitContent() {
+    const { report, penalCode } = useChargeStore();
+    const { formData: basicFormData } = useFormStore();
+    const { formData: advancedFormData } = useAdvancedReportStore();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const hasReport = isClient && report.length > 0 && !!penalCode;
+    const searchParams = useSearchParams();
+    const reportType = searchParams.get('type') || 'basic';
+    
+    const [isClient, setIsClient] = useState(false);
+    const { toast } = useToast();
+    const reportRef = useRef<HTMLDivElement>(null);
+    const [reportHtml, setReportHtml] = useState('');
   
-  const totals = hasReport ? report.reduce(
-    (acc, row) => {
-      const chargeDetails = penalCode[row.chargeId!];
-      const isDrugCharge = !!chargeDetails.drugs;
-
-      const getTime = (timeObj: any) => {
-        if (!timeObj) return { days: 0, hours: 0, min: 0 };
-        if (isDrugCharge && row.category) {
-          return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
+    useEffect(() => {
+      setIsClient(true);
+    }, []);
+  
+    const isBasicReport = reportType === 'basic';
+    const formData = isBasicReport ? basicFormData : advancedFormData;
+    
+    const hasReport = isClient && report.length > 0 && !!penalCode;
+    
+    const totals = hasReport ? report.reduce(
+      (acc, row) => {
+        const chargeDetails = penalCode[row.chargeId!];
+        const isDrugCharge = !!chargeDetails.drugs;
+  
+        const getTime = (timeObj: any) => {
+          if (!timeObj) return { days: 0, hours: 0, min: 0 };
+          if (isDrugCharge && row.category) {
+            return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
+          }
+          return timeObj;
         }
-        return timeObj;
-      }
-      
-      const getFine = (fineObj: any) => {
-        if (!fineObj) return 0;
-        if(isDrugCharge && row.category) return fineObj[row.category] || 0;
-        return fineObj[row.offense!] || 0;
-      }
-
-      const minTime = getTime(chargeDetails.time);
-      const maxTime = getTime(chargeDetails.maxtime);
-
-      acc.minTime += formatTimeInMinutes(minTime);
-      acc.maxTime += formatTimeInMinutes(maxTime);
-      acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
-      acc.fine += getFine(chargeDetails.fine);
-      
-      const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
-      if (impound) acc.impound = true;
-
-      const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
-      if (suspension) acc.suspension = true;
-
-      const getBailAuto = () => {
-        if (typeof chargeDetails.bail.auto === 'object' && row.category) {
-            return chargeDetails.bail.auto[row.category];
-        }
-        return chargeDetails.bail.auto;
-      }
-
-      const bailAuto = getBailAuto();
-      if(bailAuto === false) acc.bailStatus.noBail = true;
-      if(bailAuto === 2) acc.bailStatus.discretionary = true;
-      if(bailAuto === true) acc.bailStatus.eligible = true;
-      
-      const getBailCost = () => {
-         if (typeof chargeDetails.bail.cost === 'object' && row.category) {
-            return chargeDetails.bail.cost[row.category];
-        }
-        return chargeDetails.bail.cost;
-      }
-      
-      if (bailAuto !== false) {
-        acc.bailCost += getBailCost() || 0;
-      }
-      
-      return acc;
-    },
-    { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
-  ) : null;
-
-  useEffect(() => {
-    if (reportRef.current) {
-        // A hack to remove the data-ref attributes from the rendered HTML
-        const clonedNode = reportRef.current.cloneNode(true) as HTMLElement;
-        clonedNode.querySelectorAll('[data-ref]').forEach(el => el.removeAttribute('data-ref'));
         
-        // A hack to remove react-specific attributes.
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = clonedNode.outerHTML;
-        tempDiv.querySelectorAll('*').forEach(el => {
-            for (const attr of el.attributes) {
-                if (attr.name.startsWith('data-') || attr.name === 'class') {
-                    el.removeAttribute(attr.name);
-                }
-            }
-        });
-
-        setReportHtml(tempDiv.innerHTML);
+        const getFine = (fineObj: any) => {
+          if (!fineObj) return 0;
+          if(isDrugCharge && row.category) return fineObj[row.category] || 0;
+          return fineObj[row.offense!] || 0;
+        }
+  
+        const minTime = getTime(chargeDetails.time);
+        const maxTime = getTime(chargeDetails.maxtime);
+  
+        acc.minTime += formatTimeInMinutes(minTime);
+        acc.maxTime += formatTimeInMinutes(maxTime);
+        acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
+        acc.fine += getFine(chargeDetails.fine);
+        
+        const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
+        if (impound) acc.impound = true;
+  
+        const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
+        if (suspension) acc.suspension = true;
+  
+        const getBailAuto = () => {
+          if (typeof chargeDetails.bail.auto === 'object' && row.category) {
+              return chargeDetails.bail.auto[row.category];
+          }
+          return chargeDetails.bail.auto;
+        }
+  
+        const bailAuto = getBailAuto();
+        if(bailAuto === false) acc.bailStatus.noBail = true;
+        if(bailAuto === 2) acc.bailStatus.discretionary = true;
+        if(bailAuto === true) acc.bailStatus.eligible = true;
+        
+        const getBailCost = () => {
+           if (typeof chargeDetails.bail.cost === 'object' && row.category) {
+              return chargeDetails.bail.cost[row.category];
+          }
+          return chargeDetails.bail.cost;
+        }
+        
+        if (bailAuto !== false) {
+          acc.bailCost += getBailCost() || 0;
+        }
+        
+        return acc;
+      },
+      { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
+    ) : null;
+  
+    useEffect(() => {
+        if (reportRef.current) {
+            setReportHtml(reportRef.current.outerHTML);
+        }
+    }, [formData, report, penalCode, totals, isClient, reportType]);
+  
+    const handleCopy = () => {
+        if (reportRef.current) {
+          navigator.clipboard.writeText(reportRef.current.outerHTML);
+          toast({
+            title: "Success",
+            description: "Arrest report HTML copied to clipboard.",
+            variant: "default",
+          })
+        }
+      };
+  
+    if (!isClient) {
+      return (
+          <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+              <Skeleton className="h-10 w-1/3" />
+              <Skeleton className="h-6 w-2/3" />
+              <div className="space-y-4">
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-48 w-full" />
+              </div>
+        </div>
+      );
     }
-  }, [formData, report, penalCode, totals, isClient]);
-
-  const handleCopy = () => {
-    if (reportRef.current) {
-      navigator.clipboard.writeText(reportHtml);
-      toast({
-        title: "Success",
-        description: "Arrest report HTML copied to clipboard.",
-        variant: "default",
-      })
-    }
-  };
-
-  if (!isClient) {
+  
     return (
-        <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-            <Skeleton className="h-10 w-1/3" />
-            <Skeleton className="h-6 w-2/3" />
-            <div className="space-y-4">
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-48 w-full" />
-            </div>
+      <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+        <PageHeader
+          title="Paperwork Submission"
+          description="Review the calculated charges and the formatted arrest report below."
+        />
+          
+        {hasReport && totals && (
+          <div className="space-y-6">
+              <ChargesTable report={report} penalCode={penalCode} />
+              <SummaryTable totals={totals} />
+              <Separator />
+              <div className='p-4 border rounded-lg bg-card'>
+                {isBasicReport ? (
+                    <BasicFormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} totals={totals} />
+                ) : (
+                    <AdvancedFormattedReport innerRef={reportRef} formData={formData} />
+                )}
+              </div>
+          </div>
+        )}
+  
+         <div className="space-y-4">
+          <div className="flex justify-end">
+              <Button onClick={handleCopy} disabled={!hasReport}>
+                  <Clipboard className="mr-2 h-4 w-4" />
+                  Copy Arrest Report
+              </Button>
+          </div>
+          <div className="space-y-2">
+              <label htmlFor="final-submission" className="font-medium">Final Submission Area (HTML)</label>
+              <Textarea 
+                  id="final-submission"
+                  placeholder="The HTML for the report will be generated here."
+                  className="min-h-[200px] font-mono text-xs"
+                  value={reportHtml}
+                  readOnly
+              />
+          </div>
+        </div>
+  
       </div>
     );
   }
 
-  return (
-    <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-      <PageHeader
-        title="Paperwork Submission"
-        description="Review the calculated charges and the formatted arrest report below."
-      />
-        
-      {hasReport && totals && (
-        <div className="space-y-6">
-            <ChargesTable report={report} penalCode={penalCode} />
-            <SummaryTable totals={totals} />
-            <Separator />
-            <div className='p-4 border rounded-lg bg-card'>
-              <FormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} totals={totals} />
-            </div>
-        </div>
-      )}
-
-       <div className="space-y-4">
-        <div className="flex justify-end">
-            <Button onClick={handleCopy} disabled={!hasReport}>
-                <Clipboard className="mr-2 h-4 w-4" />
-                Copy Arrest Report
-            </Button>
-        </div>
-        <div className="space-y-2">
-            <label htmlFor="final-submission" className="font-medium">Final Submission Area (HTML)</label>
-            <Textarea 
-                id="final-submission"
-                placeholder="The HTML for the report will be generated here."
-                className="min-h-[200px] font-mono text-xs"
-                value={reportHtml}
-                readOnly
-            />
-        </div>
-      </div>
-
-    </div>
-  );
+export function PaperworkSubmitPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <PaperworkSubmitContent />
+        </Suspense>
+    )
 }
 
     

@@ -202,11 +202,11 @@ export function ArrestReportForm() {
         officers: officers,
     };
     useFormStore.getState().setAll(allFormData);
-    router.push('/paperwork-submit');
+    router.push('/paperwork-submit?type=basic');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} onBlur={handleSubmit} className="space-y-6">
       <GeneralSection isSubmitted={submitted} />
       <OfficerSection isSubmitted={submitted}/>
 
@@ -313,3 +313,5 @@ export function ArrestReportForm() {
     </form>
   );
 }
+
+    

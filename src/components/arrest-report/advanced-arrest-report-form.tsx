@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -43,6 +44,7 @@ interface DeptRanks {
 }
 
 export function AdvancedArrestReportForm() {
+    const router = useRouter();
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
     const { officers: initialOfficers, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
@@ -74,6 +76,11 @@ export function AdvancedArrestReportForm() {
     const saveForm = useCallback(() => {
         setFields(getValues());
     }, [getValues, setFields]);
+
+    const handleFormSubmit = () => {
+        saveForm();
+        router.push('/paperwork-submit?type=advanced');
+    };
     
     // Auto-population from modifiers
     useEffect(() => {
@@ -440,7 +447,7 @@ export function AdvancedArrestReportForm() {
     };
 
   return (
-    <form onSubmit={handleSubmit(saveForm)} onBlur={saveForm}>
+    <form onSubmit={handleSubmit(handleFormSubmit)} onBlur={saveForm}>
       <Card className="overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -657,12 +664,12 @@ export function AdvancedArrestReportForm() {
                     <TableRow>
                         <TableCell>
                             <Controller
-                                name={`officers.${index}.rank`}
                                 control={control}
-                                render={({ field: { value, onChange, ...fieldProps } }) => (
+                                name={`officers.${index}.rank`}
+                                render={({ field }) => (
                                     <Select
-                                        value={getValues(`officers.${index}.department`) && value ? `${getValues(`officers.${index}.department`)}__${value}` : ''}
-                                        onValueChange={(val) => handleRankChange(index, val)}
+                                        onValueChange={(value) => handleRankChange(index, value)}
+                                        value={field.value && getValues(`officers.${index}.department`) ? `${getValues(`officers.${index}.department`)}__${field.value}`: ''}
                                     >
                                         <SelectTrigger><SelectValue placeholder="Select Rank" /></SelectTrigger>
                                         <SelectContent>
@@ -929,3 +936,5 @@ export function AdvancedArrestReportForm() {
     </form>
   );
 }
+
+    
