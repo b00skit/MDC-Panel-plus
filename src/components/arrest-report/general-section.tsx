@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -35,6 +36,7 @@ const InputField = ({
   type = 'text',
   value,
   onChange,
+  onBlur,
   readOnly = false,
   required = true,
   isInvalid = false,
@@ -46,6 +48,7 @@ const InputField = ({
   type?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
   required?: boolean;
   isInvalid?: boolean;
@@ -60,6 +63,7 @@ const InputField = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         readOnly={readOnly}
         className={cn(
             'pl-9',
@@ -88,7 +92,7 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
         if (!existingTime) {
             setFormField('general', 'time', format(now, 'HH:mm'));
         }
-    }, []);
+    }, [setFormField]);
 
 
   return (
@@ -102,6 +106,7 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
           type="text"
           value={general?.date || ''}
           onChange={(e) => setFormField('general', 'date', e.target.value)}
+          onBlur={(e) => setFormField('general', 'date', e.target.value)}
         />
         <InputField
           label="Time"
@@ -111,6 +116,7 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
           type="text"
           value={general?.time || ''}
           onChange={(e) => setFormField('general', 'time', e.target.value)}
+          onBlur={(e) => setFormField('general', 'time', e.target.value)}
         />
         <InputField
           label="Call Sign"
@@ -119,6 +125,7 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
           icon={<Radio className="h-4 w-4 text-muted-foreground" />}
           value={general?.callSign || ''}
           onChange={(e) => setFormField('general', 'callSign', e.target.value)}
+          onBlur={(e) => setFormField('general', 'callSign', e.target.value)}
           isInvalid={isSubmitted && !general.callSign}
         />
       </div>

@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import {
   Card,
@@ -70,6 +70,10 @@ export function AdvancedArrestReportForm() {
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
     const watchedFields = watch();
+
+    const saveForm = useCallback(() => {
+        setFields(getValues());
+    }, [getValues, setFields]);
     
     // Auto-population from modifiers
     useEffect(() => {
@@ -157,7 +161,7 @@ export function AdvancedArrestReportForm() {
 
      useEffect(() => {
         let arrestText = '';
-        const suspectName = getValues('arrestee.name') || '';
+        const suspectName = getValues('arrestee.name') || 'the suspect';
         if (watchedFields.modifiers?.wasSuspectMirandized) {
             const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
             arrestText += `I admonished ${suspectName} utilizing my Field Officer’s Notebook, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
@@ -225,7 +229,7 @@ export function AdvancedArrestReportForm() {
     
     useEffect(() => {
         let bookingText = '';
-        const suspectName = getValues('arrestee.name') || '';
+        const suspectName = getValues('arrestee.name') || 'the suspect';
         const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
 
         const bookingRank = getValues('narrative.bookingRank') || '';
@@ -263,7 +267,10 @@ export function AdvancedArrestReportForm() {
     useEffect(() => {
       // This effect runs once on mount to set up the form correctly.
       if (isInitialLoad.current) {
-        if (officerFields.length === 0) {
+        // Reset form with default values from store
+        reset(formData);
+
+        if (officerFields.length === 0 && initialOfficers.length > 0) {
             appendOfficer(initialOfficers[0] || { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' });
         }
         if (personFields.length === 0) {
@@ -275,7 +282,7 @@ export function AdvancedArrestReportForm() {
         
         isInitialLoad.current = false;
       }
-    }, [appendOfficer, appendPerson, getValues, setValue, officerFields.length, personFields.length, initialOfficers]);
+    }, [appendOfficer, appendPerson, getValues, setValue, officerFields.length, personFields.length, initialOfficers, reset, formData]);
 
 
     useEffect(() => {
@@ -314,7 +321,7 @@ export function AdvancedArrestReportForm() {
     }
 
   return (
-    <form onSubmit={handleSubmit((data) => setFields(data))}>
+    <form onSubmit={handleSubmit(saveForm)} onBlur={saveForm}>
       <Card className="overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -556,7 +563,7 @@ export function AdvancedArrestReportForm() {
                         <TableCell><Input placeholder="CALLSIGN" {...register(`officers.${index}.callSign`)} /></TableCell>
                         <TableCell className="flex items-center gap-1">
                           <Input placeholder="DIVISION / DETAIL" {...register(`officers.${index}.divDetail`)} />
-                           {index > 0 && <Button variant="ghost" size="icon" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
+                           {index > 0 && <Button variant="ghost" size="icon" type="button" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
                         </TableCell>
                     </TableRow>
                     {index === 0 && alternativeCharacters.length > 0 && (

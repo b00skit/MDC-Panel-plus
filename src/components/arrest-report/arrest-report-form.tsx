@@ -1,3 +1,4 @@
+
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -54,6 +55,7 @@ const InputField = ({
   className = '',
   value,
   onChange,
+  onBlur,
   required = true,
   isInvalid = false,
 }: {
@@ -65,6 +67,7 @@ const InputField = ({
   className?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   required?: boolean;
   isInvalid?: boolean;
 }) => (
@@ -83,6 +86,7 @@ const InputField = ({
         )}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         required={required}
       />
     </div>
@@ -98,6 +102,7 @@ const TextareaField = ({
   className = '',
   value,
   onChange,
+  onBlur,
   required = true,
   isInvalid = false,
 }: {
@@ -109,6 +114,7 @@ const TextareaField = ({
   className?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
   required?: boolean;
   isInvalid?: boolean;
 }) => (
@@ -126,6 +132,7 @@ const TextareaField = ({
         )}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         required={required}
       />
     </div>
@@ -212,6 +219,7 @@ export function ArrestReportForm() {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               value={formData.arrest.suspectName}
               onChange={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+              onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
               isInvalid={submitted && !formData.arrest.suspectName}
             />
             <TextareaField 
@@ -228,6 +236,7 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.arrest.narrative}
                   onChange={(e) => setFormField('arrest', 'narrative', e.target.value)}
+                  onBlur={(e) => setFormField('arrest', 'narrative', e.target.value)}
                   isInvalid={submitted && !formData.arrest.narrative}
             />
          </div>
@@ -273,6 +282,7 @@ export function ArrestReportForm() {
                 className="min-h-[150px]"
                 value={formData.evidence.supporting}
                 onChange={(e) => setFormField('evidence', 'supporting', e.target.value)}
+                onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
                 required={false}
             />
             <TextareaField 
@@ -290,6 +300,7 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.evidence.dashcam}
                   onChange={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+                  onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
                   isInvalid={submitted && !formData.evidence.dashcam}
             />
         </div>
