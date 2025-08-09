@@ -255,7 +255,7 @@ export function AdvancedArrestReportForm() {
         penalCode,
         setValue,
     ]);
-
+    
     useEffect(() => {
         let evidenceText = "I booked all evidence into the Mission Row Station property room.\n";
         const evidenceLogs = watchedFields.evidenceLogs || [];
