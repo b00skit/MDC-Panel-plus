@@ -122,10 +122,10 @@ export function ArrestReportPage() {
   useEffect(() => {
     setIsClient(true);
   }, []);
-
+  
   const handleToggleAdvanced = () => {
     toggleAdvanced();
-  }
+  };
 
   const hasReport = isClient && report.length > 0 && !!penalCode;
 
@@ -159,7 +159,7 @@ export function ArrestReportPage() {
   );
 
 
-  const renderReport = () => {
+  const renderReport = useCallback(() => {
     if (!hasReport) return null;
 
     const extras = report.map(row => {
@@ -445,7 +445,7 @@ export function ArrestReportPage() {
             </div>
         </div>
     );
-  }
+  }, [report, penalCode, hasReport, isAdvanced, handleToggleAdvanced])
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
@@ -474,4 +474,5 @@ export function ArrestReportPage() {
         )}
     </div>
   );
-}
+
+    
