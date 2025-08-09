@@ -90,9 +90,16 @@ export function AdvancedArrestReportForm() {
         }
     }, [
         watchedFields.narrativePresets?.source, 
-        watchedFields.officers, 
+        watchedFields.officers?.[0]?.rank,
+        watchedFields.officers?.[0]?.name,
+        watchedFields.officers?.[0]?.badgeNumber,
+        watchedFields.officers?.[0]?.divDetail,
+        watchedFields.officers?.[0]?.callSign,
         watchedFields.incident?.date, 
-        watchedFields.modifiers,
+        watchedFields.modifiers?.markedUnit,
+        watchedFields.modifiers?.slicktop,
+        watchedFields.modifiers?.inG3Uniform,
+        watchedFields.modifiers?.inMetroUniform,
         setValue, 
         getValues
     ]);
@@ -112,8 +119,12 @@ export function AdvancedArrestReportForm() {
         }
     }, [
         watchedFields.narrativePresets?.investigation,
-        watchedFields.incident, 
-        watchedFields.narrative, 
+        watchedFields.incident?.time, 
+        watchedFields.incident?.locationDistrict,
+        watchedFields.incident?.locationStreet,
+        watchedFields.narrative?.vehicleColor,
+        watchedFields.narrative?.vehicleModel,
+        watchedFields.narrative?.vehiclePlate, 
         setValue, 
         getValues
     ]);
@@ -147,7 +158,9 @@ export function AdvancedArrestReportForm() {
     }, [
         watchedFields.narrativePresets?.arrest,
         watchedFields.arrestee?.name,
-        watchedFields.modifiers,
+        watchedFields.modifiers?.wasSuspectMirandized,
+        watchedFields.modifiers?.didSuspectUnderstandRights,
+        watchedFields.modifiers?.didYouTransport,
         charges, 
         penalCode, 
         setValue, 
@@ -168,8 +181,14 @@ export function AdvancedArrestReportForm() {
         }
     }, [
         watchedFields.narrativePresets?.photographs,
-        watchedFields.modifiers,
-        watchedFields.narrative, 
+        watchedFields.modifiers?.doYouHaveAVideo,
+        watchedFields.modifiers?.didYouTakePhotographs,
+        watchedFields.modifiers?.didYouObtainCctvFootage,
+        watchedFields.modifiers?.thirdPartyVideoFootage,
+        watchedFields.narrative?.dicvsLink,
+        watchedFields.narrative?.photosLink,
+        watchedFields.narrative?.cctvLink,
+        watchedFields.narrative?.thirdPartyLink, 
         setValue, 
         getValues
     ]);
@@ -194,7 +213,8 @@ export function AdvancedArrestReportForm() {
     }, [
         watchedFields.narrativePresets?.booking,
         watchedFields.arrestee?.name,
-        watchedFields.modifiers, 
+        watchedFields.modifiers?.didYouBook,
+        watchedFields.modifiers?.biometricsAlreadyOnFile, 
         setValue, 
         getValues
     ]);
@@ -229,7 +249,9 @@ export function AdvancedArrestReportForm() {
         }
     }, [
         watchedFields.narrativePresets?.court,
-        watchedFields.officers, 
+        watchedFields.officers?.[0]?.rank,
+        watchedFields.officers?.[0]?.name,
+        watchedFields.officers?.[0]?.badgeNumber, 
         setValue, 
         getValues
     ]);
@@ -711,5 +733,3 @@ export function AdvancedArrestReportForm() {
     </form>
   );
 }
-
-    
