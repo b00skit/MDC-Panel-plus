@@ -133,7 +133,6 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
     {
       name: 'advanced-report-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ ...state, formData: { ...state.formData, officers: [] } }),
     }
   )
 );
