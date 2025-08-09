@@ -221,10 +221,10 @@ export function SidebarNav() {
                 <Bell />
                 <span>Announcements</span>
                 {unreadCount > 0 && (
-                    <SidebarMenuBadge>{unreadCount}</SidebarMenuBadge>
+                    <SidebarMenuBadge className="bg-destructive text-destructive-foreground">{unreadCount}</SidebarMenuBadge>
                 )}
                  {state === 'collapsed' && unreadCount > 0 && (
-                    <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-primary" />
+                    <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-destructive" />
                 )}
               </Link>
             </SidebarMenuButton>
