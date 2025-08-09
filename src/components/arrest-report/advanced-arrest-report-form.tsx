@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import {
   Card,
@@ -258,9 +258,14 @@ export function AdvancedArrestReportForm() {
     ]);
 
 
+    const isInitialLoad = useRef(true);
     useEffect(() => {
-        reset(formData); // This ensures the form is populated with store data on mount
-    }, [formData, reset]);
+        if (isInitialLoad.current) {
+            isInitialLoad.current = false;
+            return;
+        }
+        reset(formData);
+    }, [JSON.stringify(formData), reset]);
 
 
     useEffect(() => {
