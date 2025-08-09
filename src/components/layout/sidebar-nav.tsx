@@ -189,18 +189,14 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Github">
-              <Link
-                href={config?.URL_GITHUB || '#'}
-                target="_blank"
-                className="justify-between"
-              >
-                <div className="flex items-center gap-2">
-                  <Github />
-                  <span className="group-data-[state=collapsed]:hidden">Github</span>
-                </div>
-                <ExternalLink className="h-4 w-4 text-muted-foreground group-data-[state=collapsed]:hidden" />
-              </Link>
+             <SidebarMenuButton
+                asChild
+                tooltip="Github"
+             >
+                <Link href={config?.URL_GITHUB || '#'} target="_blank">
+                    <Github />
+                    <span>Github</span>
+                </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
