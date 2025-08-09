@@ -88,7 +88,17 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.source', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.source, allWatchedFields.officers, allWatchedFields.incident?.date, allWatchedFields.modifiers?.markedUnit, allWatchedFields.modifiers?.slicktop, allWatchedFields.modifiers?.inG3Uniform, allWatchedFields.modifiers?.inMetroUniform, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.source, 
+        allWatchedFields.officers, 
+        allWatchedFields.incident?.date, 
+        allWatchedFields.modifiers?.markedUnit, 
+        allWatchedFields.modifiers?.slicktop, 
+        allWatchedFields.modifiers?.inG3Uniform, 
+        allWatchedFields.modifiers?.inMetroUniform, 
+        setValue, 
+        getValues
+    ]);
 
     useEffect(() => {
         if (allWatchedFields.narrativePresets?.investigation) {
@@ -103,7 +113,17 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.investigation', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.investigation, allWatchedFields.incident?.time, allWatchedFields.incident?.locationDistrict, allWatchedFields.incident?.locationStreet, allWatchedFields.narrative?.vehicleColor, allWatchedFields.narrative?.vehicleModel, allWatchedFields.narrative?.vehiclePlate, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.investigation,
+        allWatchedFields.incident?.time, 
+        allWatchedFields.incident?.locationDistrict, 
+        allWatchedFields.incident?.locationStreet, 
+        allWatchedFields.narrative?.vehicleColor, 
+        allWatchedFields.narrative?.vehicleModel, 
+        allWatchedFields.narrative?.vehiclePlate, 
+        setValue, 
+        getValues
+    ]);
 
     useEffect(() => {
         if (allWatchedFields.narrativePresets?.arrest) {
@@ -131,7 +151,17 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.arrest', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.arrest, allWatchedFields.arrestee?.name, allWatchedFields.modifiers?.wasSuspectMirandized, allWatchedFields.modifiers?.didSuspectUnderstandRights, allWatchedFields.modifiers?.didYouTransport, charges, penalCode, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.arrest,
+        allWatchedFields.arrestee?.name,
+        allWatchedFields.modifiers?.wasSuspectMirandized,
+        allWatchedFields.modifiers?.didSuspectUnderstandRights,
+        allWatchedFields.modifiers?.didYouTransport,
+        charges, 
+        penalCode, 
+        setValue, 
+        getValues
+    ]);
 
     useEffect(() => {
         if (allWatchedFields.narrativePresets?.photographs) {
@@ -145,7 +175,19 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.photographs', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.photographs, allWatchedFields.modifiers?.doYouHaveAVideo, allWatchedFields.modifiers?.didYouTakePhotographs, allWatchedFields.modifiers?.didYouObtainCctvFootage, allWatchedFields.modifiers?.thirdPartyVideoFootage, allWatchedFields.narrative?.dicvsLink, allWatchedFields.narrative?.photosLink, allWatchedFields.narrative?.cctvLink, allWatchedFields.narrative?.thirdPartyLink, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.photographs,
+        allWatchedFields.modifiers?.doYouHaveAVideo, 
+        allWatchedFields.modifiers?.didYouTakePhotographs, 
+        allWatchedFields.modifiers?.didYouObtainCctvFootage, 
+        allWatchedFields.modifiers?.thirdPartyVideoFootage,
+        allWatchedFields.narrative?.dicvsLink, 
+        allWatchedFields.narrative?.photosLink, 
+        allWatchedFields.narrative?.cctvLink, 
+        allWatchedFields.narrative?.thirdPartyLink, 
+        setValue, 
+        getValues
+    ]);
     
     useEffect(() => {
         if (allWatchedFields.narrativePresets?.booking) {
@@ -164,7 +206,14 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.booking', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.booking, allWatchedFields.arrestee?.name, allWatchedFields.modifiers?.didYouBook, allWatchedFields.modifiers?.biometricsAlreadyOnFile, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.booking,
+        allWatchedFields.arrestee?.name,
+        allWatchedFields.modifiers?.didYouBook,
+        allWatchedFields.modifiers?.biometricsAlreadyOnFile, 
+        setValue, 
+        getValues
+    ]);
     
     useEffect(() => {
         if (allWatchedFields.narrativePresets?.evidence) {
@@ -179,7 +228,12 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.evidence', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.evidence, allWatchedFields.evidenceLogs, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.evidence,
+        allWatchedFields.evidenceLogs,
+        setValue, 
+        getValues
+    ]);
     
     useEffect(() => {
         if (allWatchedFields.narrativePresets?.court) {
@@ -189,7 +243,12 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.court', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.court, allWatchedFields.officers, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.court,
+        allWatchedFields.officers, 
+        setValue, 
+        getValues
+    ]);
 
     useEffect(() => {
         if (allWatchedFields.narrativePresets?.additional) {
@@ -200,35 +259,45 @@ export function AdvancedArrestReportForm() {
                 setValue('narrative.additional', presetText, { shouldDirty: true });
             }
         }
-    }, [allWatchedFields.narrativePresets?.additional, allWatchedFields.narrative?.plea, allWatchedFields.arrestee?.name, setValue, getValues]);
+    }, [
+        allWatchedFields.narrativePresets?.additional,
+        allWatchedFields.narrative?.plea,
+        allWatchedFields.arrestee?.name, 
+        setValue, 
+        getValues
+    ]);
 
     useEffect(() => {
-      // Pre-fill default officer from officerStore
-      if (defaultOfficers.length > 0 && officerFields.length === 0) {
-        const defaultOfficer = defaultOfficers[0];
-        const storedDivDetail = localStorage.getItem(`${defaultOfficer.badgeNumber}-divDetail`) || '';
-        appendOfficer({
-          ...defaultOfficer,
-          divDetail: storedDivDetail
-        });
-      }
-    
-      fetch('/data/dept_ranks.json')
-        .then((res) => res.json())
-        .then((data) => setDeptRanks(data));
+        // Pre-fill default officer from officerStore
+        if (defaultOfficers.length > 0 && officerFields.length === 0) {
+            const defaultOfficer = defaultOfficers[0];
+            const storedDivDetail = localStorage.getItem(`${defaultOfficer.badgeNumber}-divDetail`) || '';
+            appendOfficer({
+                ...defaultOfficer,
+                divDetail: storedDivDetail
+            });
+        }
 
-      fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
-        .then(res => res.json())
-        .then(data => {
-            const uniqueDistricts = [...new Set((data.districts || []) as string[])];
-            const uniqueStreets = [...new Set((data.streets || []) as string[])];
-            setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
-        })
-        .catch(err => console.error("Failed to fetch locations:", err));
+        if (personFields.length === 0) {
+            appendPerson({ name: '', sex: '', gang: '' });
+        }
+    
+        fetch('/data/dept_ranks.json')
+            .then((res) => res.json())
+            .then((data) => setDeptRanks(data));
+
+        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+            .then(res => res.json())
+            .then(data => {
+                const uniqueDistricts = [...new Set((data.districts || []) as string[])];
+                const uniqueStreets = [...new Set((data.streets || []) as string[])];
+                setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+            })
+            .catch(err => console.error("Failed to fetch locations:", err));
       
-       // Pre-fill date and time
-       if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
-       if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
+        // Pre-fill date and time
+        if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
+        if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
 
     }, []);
 
