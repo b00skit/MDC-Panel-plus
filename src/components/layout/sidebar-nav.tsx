@@ -17,6 +17,7 @@ import {
   Puzzle,
   ExternalLink,
   Github,
+  Bell,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -30,9 +31,11 @@ import {
   SidebarFooter,
   SidebarTrigger,
   useSidebar,
+  SidebarMenuBadge,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import announcementsData from '../../../data/announcements.json';
 
 type SiteConfig = {
   SITE_NAME: string;
@@ -46,6 +49,7 @@ export function SidebarNav() {
   const [mounted, setMounted] = useState(false);
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const { state } = useSidebar();
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     setMounted(true);
@@ -55,6 +59,25 @@ export function SidebarNav() {
       URL_GITHUB: 'https://github.com/biscuitgtaw/MDC-Panel',
     });
   }, []);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      if (typeof window !== 'undefined') {
+        const lastReadId = parseInt(localStorage.getItem('last_read_announcement') || '0', 10);
+        const newUnreadCount = announcementsData.announcements.filter(ann => ann.id > lastReadId).length;
+        setUnreadCount(newUnreadCount);
+      }
+    };
+    
+    handleStorageChange(); // Initial check
+    
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+        window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [pathname]);
+
 
   const isActive = (path: string) => {
     return pathname === path;
@@ -185,6 +208,24 @@ export function SidebarNav() {
               <Link href="/settings">
                 <Settings />
                 <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/announcements')}
+              tooltip="Announcements"
+            >
+              <Link href="/announcements">
+                <Bell />
+                <span>Announcements</span>
+                {unreadCount > 0 && (
+                    <SidebarMenuBadge>{unreadCount}</SidebarMenuBadge>
+                )}
+                 {state === 'collapsed' && unreadCount > 0 && (
+                    <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-primary" />
+                )}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
