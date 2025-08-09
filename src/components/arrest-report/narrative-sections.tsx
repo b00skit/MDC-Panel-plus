@@ -40,9 +40,10 @@ interface EvidenceLogProps {
     fields: FieldArrayWithId<FormState, "evidenceLogs", "id">[];
     onRemove: (index: number) => void;
     onAdd: () => void;
+    onKeyUp: () => void;
   }
   
-  export const EvidenceLog: React.FC<EvidenceLogProps> = ({ fields, register, onRemove, onAdd }) => (
+  export const EvidenceLog: React.FC<EvidenceLogProps> = ({ fields, register, onRemove, onAdd, onKeyUp }) => (
     <TableBody>
         <TableRow>
           <TableHead className="bg-secondary" colSpan={2}>EVIDENCE LOG NUMBER</TableHead>
@@ -51,11 +52,11 @@ interface EvidenceLogProps {
         </TableRow>
         {fields.map((field, index) => (
           <TableRow key={field.id}>
-            <TableCell colSpan={2}><Input placeholder="EL/2/LOGNO./YEAR" {...register(`evidenceLogs.${index}.logNumber`)} /></TableCell>
-            <TableCell colSpan={2}><Input placeholder={`DESCRIPTION OF ITEM ${index + 1}`} {...register(`evidenceLogs.${index}.description`)} /></TableCell>
+            <TableCell colSpan={2}><Input placeholder="EL/2/LOGNO./YEAR" {...register(`evidenceLogs.${index}.logNumber`)} onKeyUp={onKeyUp} /></TableCell>
+            <TableCell colSpan={2}><Input placeholder={`DESCRIPTION OF ITEM ${index + 1}`} {...register(`evidenceLogs.${index}.description`)} onKeyUp={onKeyUp} /></TableCell>
             <TableCell>
               <div className="flex items-center gap-1">
-                <Input placeholder="QUANTITY" {...register(`evidenceLogs.${index}.quantity`)} />
+                <Input placeholder="QUANTITY" {...register(`evidenceLogs.${index}.quantity`)} onKeyUp={onKeyUp}/>
                 <Button variant="ghost" size="icon" onClick={() => onRemove(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
               </div>
             </TableCell>

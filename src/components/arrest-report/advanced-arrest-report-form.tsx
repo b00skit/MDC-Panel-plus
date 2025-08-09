@@ -93,7 +93,7 @@ export function AdvancedArrestReportForm() {
         if (officers && officers.length > 1) {
             const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail); // Filter out empty partners
             if (partners.length > 0) {
-                const partnerDetails = partners.map(p => `${p.name || 'N/A'} (#${p.badgeNumber || 'N/A'}), assigned to ${p.divDetail || 'Division'}`);
+                const partnerDetails = partners.map(p => `${p.rank || ''} ${p.name || 'N/A'} (#${p.badgeNumber || 'N/A'}), assigned to ${p.divDetail || 'Division'}`);
 
                 let partnerStr = '';
                 if (partnerDetails.length === 1) {
@@ -198,7 +198,7 @@ export function AdvancedArrestReportForm() {
 
         const chargesList = charges.map(c => {
             const details = penalCode?.[c.chargeId!];
-            return details ? `${details.id}. ${details.charge}` : 'an unknown charge';
+            return details ? `${details.type}${c.class} ${details.id}. ${details.charge}` : 'an unknown charge';
         }).join(', ');
 
         arrestText += `\n${suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).`;
@@ -290,18 +290,27 @@ export function AdvancedArrestReportForm() {
     }, [JSON.stringify(watchedFields.evidenceLogs), setValue]);
 
     useEffect(() => {
-        const primaryOfficer = watchedFields.officers?.[0];
-        const rank = primaryOfficer?.rank || '';
-        const name = primaryOfficer?.name || '';
-        const badge = primaryOfficer?.badgeNumber || '';
-        const courtText = `I, ${rank} ${name} #${badge}, can testify to the contents of this report.`;
+        const officers = watchedFields.officers || [];
+        const primaryOfficer = officers[0];
+        let courtText = '';
+
+        if(primaryOfficer) {
+            const rank = primaryOfficer.rank || '';
+            const name = primaryOfficer.name || '';
+            const badge = primaryOfficer.badgeNumber || '';
+            courtText = `I, ${rank} ${name} #${badge}, can testify to the contents of this report.`;
+        }
+
+        if (officers.length > 1) {
+            officers.slice(1).forEach(officer => {
+                if(officer.name && officer.rank && officer.badgeNumber) {
+                    courtText += `\n${officer.rank} ${officer.name} #${officer.badgeNumber} can also testify to the contents of this report.`;
+                }
+            });
+        }
         setValue('narrative.court', courtText);
-    }, [
-        watchedFields.officers?.[0]?.rank,
-        watchedFields.officers?.[0]?.name,
-        watchedFields.officers?.[0]?.badgeNumber,
-        setValue
-    ]);
+    }, [JSON.stringify(watchedFields.officers), setValue]);
+
 
     useEffect(() => {
         const suspectName = watchedFields.arrestee?.name || 'suspect';
@@ -320,18 +329,20 @@ export function AdvancedArrestReportForm() {
       // This effect runs once on mount to set up the form correctly.
       if (isInitialLoad.current) {
 
-        // Reset form with default values from store
-        const { officers: initialOfficers } = useOfficerStore.getState();
-
         const populatedFormData = { ...formData };
         if (!populatedFormData.officers || populatedFormData.officers.length === 0) {
-            populatedFormData.officers = initialOfficers.length > 0 ? initialOfficers : [{ id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' }];
+            const { officers: initialOfficersFromStore } = useOfficerStore.getState();
+            populatedFormData.officers = initialOfficersFromStore.length > 0 ? initialOfficersFromStore : [{ id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' }];
         }
         if (!populatedFormData.persons || populatedFormData.persons.length === 0) {
             populatedFormData.persons = [{ name: '', sex: '', gang: '' }];
         }
         if(!populatedFormData.incident.date) populatedFormData.incident.date = format(new Date(), 'dd/MMM/yyyy').toUpperCase();
         if(!populatedFormData.incident.time) populatedFormData.incident.time = format(new Date(), 'HH:mm');
+        
+        if (!populatedFormData.evidenceLogs || populatedFormData.evidenceLogs.length === 0) {
+            populatedFormData.evidenceLogs = [{logNumber: '', description: '', quantity: '1'}];
+        }
 
         reset(populatedFormData);
         
@@ -371,7 +382,9 @@ export function AdvancedArrestReportForm() {
 
     const handleRankChange = (index: number, value: string) => {
         const [department, rank] = value.split('__');
-        updateOfficerField(index, { ...getValues(`officers.${index}`), department, rank });
+        setValue(`officers.${index}.department`, department, { shouldDirty: true });
+        setValue(`officers.${index}.rank`, rank, { shouldDirty: true });
+        saveForm();
     };
 
   return (
@@ -592,12 +605,12 @@ export function AdvancedArrestReportForm() {
                     <TableRow>
                         <TableCell>
                             <Controller
+                                name={`officers.${index}`}
                                 control={control}
-                                name={`officers.${index}.rank`}
-                                render={({ field: rankField }) => (
+                                render={({ field: { value, onChange, ...fieldProps } }) => (
                                     <Select
-                                        value={getValues(`officers.${index}.department`) && rankField.value ? `${getValues(`officers.${index}.department`)}__${rankField.value}` : ''}
-                                        onValueChange={(value) => handleRankChange(index, value)}
+                                        value={value?.department && value?.rank ? `${value.department}__${value.rank}` : ''}
+                                        onValueChange={(val) => handleRankChange(index, val)}
                                     >
                                         <SelectTrigger><SelectValue placeholder="Select Rank" /></SelectTrigger>
                                         <SelectContent>
@@ -737,7 +750,7 @@ export function AdvancedArrestReportForm() {
                 
                  <NarrativeSection title="PHYSICAL EVIDENCE">
                     <Table>
-                        <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} />
+                        <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} onKeyUp={saveForm} />
                     </Table>
                     <Controller name="narrative.evidence" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe physical evidence..." rows={3} />} />
                 </NarrativeSection>
