@@ -297,7 +297,10 @@ export function AdvancedArrestReportForm() {
     useEffect(() => {
       // This effect runs once on mount to set up the form correctly.
       if (isInitialLoad.current) {
-        
+
+        // Reset form with default values from store
+        const { officers: initialOfficers } = useOfficerStore.getState();
+
         const populatedFormData = { ...formData };
         if (!populatedFormData.officers || populatedFormData.officers.length === 0) {
             populatedFormData.officers = initialOfficers.length > 0 ? initialOfficers : [{ id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' }];
@@ -312,7 +315,7 @@ export function AdvancedArrestReportForm() {
         
         isInitialLoad.current = false;
       }
-    }, [reset, formData, initialOfficers]);
+    }, [reset, formData]);
 
     const handlePillClick = (officerIndex: number, altChar: Officer) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
