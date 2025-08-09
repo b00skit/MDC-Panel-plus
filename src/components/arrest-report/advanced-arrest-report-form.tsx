@@ -93,7 +93,7 @@ export function AdvancedArrestReportForm() {
         if (officers && officers.length > 1) {
             const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail); // Filter out empty partners
             if (partners.length > 0) {
-                const partnerDetails = partners.map(p => `(#${p.badgeNumber || 'N/A'}), assigned to ${p.divDetail || 'Division'}`);
+                const partnerDetails = partners.map(p => `${p.name || 'N/A'} (#${p.badgeNumber || 'N/A'}), assigned to ${p.divDetail || 'Division'}`);
 
                 let partnerStr = '';
                 if (partnerDetails.length === 1) {
