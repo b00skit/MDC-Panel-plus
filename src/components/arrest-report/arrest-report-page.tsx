@@ -125,10 +125,6 @@ export function ArrestReportPage() {
 
   const hasReport = isClient && report.length > 0 && !!penalCode;
 
-  const handleToggleAdvanced = useCallback(() => {
-    toggleAdvanced();
-  }, [toggleAdvanced]);
-
   const renderSkeleton = () => (
      <div className="space-y-6">
          <Card>
@@ -440,7 +436,7 @@ export function ArrestReportPage() {
                 </AlertDescription>
             </Alert>
             <div className="flex items-center space-x-2">
-                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={handleToggleAdvanced} />
+                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={toggleAdvanced} />
                 <Label htmlFor="advanced-mode">Enable Advanced Report</Label>
             </div>
         </div>
