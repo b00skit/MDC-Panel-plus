@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertTriangle, Clipboard } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertTriangle, Clipboard, Info } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -486,7 +487,7 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
         ));
     };
 
-    const cellStyle = { fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman', serif" };
+    const cellStyle = { fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman', serif" };
     const headerCellStyle = { fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' };
     const sectionHeaderStyle = { fontWeight: 'bold', fontSize: '10px', borderTop: '2px solid black', borderBottom: 'none', backgroundColor: 'white' };
 
@@ -545,9 +546,9 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
                     </tr>
                     {persons.map((person: any, index: number) => (
                         <tr key={index}>
-                            <td colSpan={2} style={{...cellStyle, color: 'black' }}>{person.name || 'N/A'}</td>
-                            <td style={{...cellStyle, color: 'black' }}>{person.sex || 'N/A'}</td>
-                            <td colSpan={2} style={{...cellStyle, color: 'black' }}>{person.gang || 'N/A'}</td>
+                            <td colSpan={2} style={{...cellStyle, color: 'black', fontFamily: "'Times New Roman', serif" }}>{person.name || 'N/A'}</td>
+                            <td style={{...cellStyle, color: 'black', fontFamily: "'Times New Roman', serif" }}>{person.sex || 'N/A'}</td>
+                            <td colSpan={2} style={{...cellStyle, color: 'black', fontFamily: "'Times New Roman', serif" }}>{person.gang || 'N/A'}</td>
                         </tr>
                     ))}
                      <tr><th style={{...headerCellStyle, ...sectionHeaderStyle}}>DATE</th>
@@ -751,6 +752,14 @@ function PaperworkSubmitContent() {
           title="Paperwork Submission"
           description="Review the calculated charges and the formatted arrest report below."
         />
+        
+        <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
+                The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC.
+            </AlertDescription>
+        </Alert>
           
         {hasReport && totals && (
           <div className="space-y-6">
@@ -797,3 +806,5 @@ export function PaperworkSubmitPage() {
         </Suspense>
     )
 }
+
+    
