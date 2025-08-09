@@ -123,10 +123,6 @@ export function ArrestReportPage() {
     setIsClient(true);
   }, []);
   
-  const handleToggleAdvanced = () => {
-    toggleAdvanced();
-  };
-
   const hasReport = isClient && report.length > 0 && !!penalCode;
 
   const renderSkeleton = () => (
@@ -431,21 +427,9 @@ export function ArrestReportPage() {
                 <CopyableCard label="Total Fine" value={totals.fine} />
                 <CopyableCard label="Bail Cost" value={totals.bailCost} />
             </div>
-
-            <Alert variant="warning">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Disclaimer</AlertTitle>
-                <AlertDescription>
-                    This tool is to provide you assistance with your paperwork, the quality of your writing is your responsibility. You are still expected to provide truthful and detailed information. 
-                </AlertDescription>
-            </Alert>
-            <div className="flex items-center space-x-2">
-                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={handleToggleAdvanced} />
-                <Label htmlFor="advanced-mode">Enable Advanced Report</Label>
-            </div>
         </div>
     );
-  }, [report, penalCode, hasReport, isAdvanced, handleToggleAdvanced])
+  }, [report, penalCode, hasReport]);
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
@@ -454,7 +438,22 @@ export function ArrestReportPage() {
         description={hasReport ? "A summary of the calculated charges and report form." : "Create a new arrest report."}
       />
         {!isClient && renderSkeleton()}
-        {hasReport && renderReport()}
+        {hasReport && (
+            <>
+                {renderReport()}
+                <Alert variant="warning">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Disclaimer</AlertTitle>
+                    <AlertDescription>
+                        This tool is to provide you assistance with your paperwork, the quality of your writing is your responsibility. You are still expected to provide truthful and detailed information. 
+                    </AlertDescription>
+                </Alert>
+                <div className="flex items-center space-x-2">
+                    <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={toggleAdvanced} />
+                    <Label htmlFor="advanced-mode">Enable Advanced Report</Label>
+                </div>
+            </>
+        )}
         
         {isClient && !hasReport && (
             <Alert variant="secondary" className="mt-4">
@@ -474,5 +473,4 @@ export function ArrestReportPage() {
         )}
     </div>
   );
-
-    
+}
