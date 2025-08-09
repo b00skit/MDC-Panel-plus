@@ -44,7 +44,7 @@ interface DeptRanks {
 export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: defaultOfficers, alternativeCharacters, swapOfficer, addOfficer: addOfficerToStore } = useOfficerStore();
+    const { officers: defaultOfficers, alternativeCharacters, swapOfficer } = useOfficerStore();
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
     });
@@ -603,7 +603,7 @@ export function AdvancedArrestReportForm() {
                 
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
-                    <Button className="w-full" type="button" onClick={addOfficerToStore}>
+                    <Button className="w-full" type="button" onClick={() => appendOfficer({ name: '', rank: '', department: '', badgeNumber: '', callSign: '', divDetail: '' })}>
                       <CirclePlus className="mr-2 h-4 w-4" /> ADD OFFICER
                     </Button>
                   </TableCell>
