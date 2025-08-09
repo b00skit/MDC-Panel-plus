@@ -93,7 +93,7 @@ export function AdvancedArrestReportForm() {
         if (officers && officers.length > 1) {
             const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail); // Filter out empty partners
             if (partners.length > 0) {
-                const partnerDetails = partners.map(p => `${p.rank || ''} ${p.name || 'N/A'} (#${p.badgeNumber || 'N/A'}), assigned to ${p.divDetail || 'Division'}`);
+                const partnerDetails = partners.map(p => `${p.rank || ''} ${p.name || ''} (#${p.badgeNumber || ''}), assigned to ${p.divDetail || ''}`);
 
                 let partnerStr = '';
                 if (partnerDetails.length === 1) {
@@ -204,7 +204,7 @@ export function AdvancedArrestReportForm() {
         arrestText += `\n${suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).`;
         arrestText += `\n${suspectName} was arrested for ${chargesList || 'the aforementioned charges'}.`;
 
-        setValue('narrative.arrest', arrestText.trim() || 'N/A');
+        setValue('narrative.arrest', arrestText.trim() || '');
     }, [
         watchedFields.modifiers?.wasSuspectMirandized, 
         watchedFields.modifiers?.didSuspectUnderstandRights,
@@ -232,7 +232,7 @@ export function AdvancedArrestReportForm() {
             photosText += `I obtained third party video footage - ${watchedFields.narrative?.thirdPartyLink || ''}\n`;
         }
 
-        setValue('narrative.photographs', photosText.trim() || 'N/A');
+        setValue('narrative.photographs', photosText.trim() || '');
     }, [
         watchedFields.modifiers?.doYouHaveAVideo,
         watchedFields.modifiers?.didYouTakePhotographs,
@@ -283,7 +283,7 @@ export function AdvancedArrestReportForm() {
         const evidenceLogs = watchedFields.evidenceLogs || [];
         evidenceLogs.forEach((log, index) => {
             if(log.logNumber || log.description || log.quantity) {
-                 evidenceText += `Item ${index + 1} - ${log.logNumber || 'N/A'} - ${log.description || 'N/A'} (x${log.quantity || '1'})\n`;
+                 evidenceText += `Item ${index + 1} - ${log.logNumber || ''} - ${log.description || ''} (x${log.quantity || ''})\n`;
             }
         });
         setValue('narrative.evidence', evidenceText.trim());
