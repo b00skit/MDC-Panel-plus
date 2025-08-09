@@ -205,8 +205,16 @@ export function ArrestReportForm() {
     router.push('/paperwork-submit?type=basic');
   };
 
+  const saveToStore = () => {
+    const allFormData = {
+        ...formData,
+        officers: officers,
+    };
+    useFormStore.getState().setAll(allFormData);
+  }
+
   return (
-    <form onSubmit={handleSubmit} onBlur={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} onBlur={saveToStore} className="space-y-6">
       <GeneralSection isSubmitted={submitted} />
       <OfficerSection isSubmitted={submitted}/>
 
@@ -219,7 +227,6 @@ export function ArrestReportForm() {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               value={formData.arrest.suspectName}
               onChange={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-              onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
               isInvalid={submitted && !formData.arrest.suspectName}
             />
             <TextareaField 
@@ -235,7 +242,6 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.arrest.narrative}
                   onChange={(e) => setFormField('arrest', 'narrative', e.target.value)}
-                  onBlur={(e) => setFormField('arrest', 'narrative', e.target.value)}
                   isInvalid={submitted && !formData.arrest.narrative}
             />
          </div>
@@ -281,7 +287,6 @@ export function ArrestReportForm() {
                 className="min-h-[150px]"
                 value={formData.evidence.supporting}
                 onChange={(e) => setFormField('evidence', 'supporting', e.target.value)}
-                onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
                 required={false}
             />
             <TextareaField 
@@ -299,18 +304,15 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.evidence.dashcam}
                   onChange={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-                  onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
                   isInvalid={submitted && !formData.evidence.dashcam}
             />
         </div>
       </FormSection>
 
       <div className="flex justify-end gap-4">
-          <Button variant="outline" type="button">Save as Draft</Button>
+          <Button variant="outline" type="button" onClick={saveToStore}>Save as Draft</Button>
           <Button type="submit">Submit Report</Button>
       </div>
     </form>
   );
 }
-
-    
