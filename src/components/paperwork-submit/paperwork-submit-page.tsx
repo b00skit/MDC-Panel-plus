@@ -476,7 +476,8 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
     const { arrestee, persons, incident, officers, narrative } = formData;
     
     // Helper to render text with line breaks
-    const renderWithBreaks = (text: string) => {
+    const renderWithBreaks = (text: string | undefined) => {
+        if (!text) return 'N/A';
         return text.split('\n').map((line, index) => (
             <span key={index}>
                 {line}
@@ -484,6 +485,10 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
             </span>
         ));
     };
+
+    const cellStyle = { fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman', serif" };
+    const headerCellStyle = { fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' };
+    const sectionHeaderStyle = { fontWeight: 'bold', fontSize: '10px', borderTop: '2px solid black', borderBottom: 'none', backgroundColor: 'white' };
 
     return (
         <div ref={innerRef} style={{ padding: '2px', border: '1px solid #000', backgroundColor: 'white', width: '100%', maxWidth: '210mm', color: 'black', fontFamily: 'Arial, sans-serif' }}>
@@ -493,111 +498,111 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
             <table border={1} cellPadding={2} style={{ width: '100%', borderCollapse: 'collapse', color: 'black' }}>
                 <tbody>
                     <tr>
-                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>ARRESTEE NAME (FIRST, MIDDLE, LAST)</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>SEX (M/F/O)</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>HAIR</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>EYES</th>
+                        <th colSpan={2} style={headerCellStyle}>ARRESTEE NAME (FIRST, MIDDLE, LAST)</th>
+                        <th style={headerCellStyle}>SEX (M/F/O)</th>
+                        <th style={headerCellStyle}>HAIR</th>
+                        <th style={headerCellStyle}>EYES</th>
                     </tr>
                     <tr>
-                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.name || 'N/A'}</td>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.sex || 'N/A'}</td>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.hair || 'N/A'}</td>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.eyes || 'N/A'}</td>
+                        <td colSpan={2} style={cellStyle}>{arrestee.name || 'N/A'}</td>
+                        <td style={cellStyle}>{arrestee.sex || 'N/A'}</td>
+                        <td style={cellStyle}>{arrestee.hair || 'N/A'}</td>
+                        <td style={cellStyle}>{arrestee.eyes || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>RESIDENCE</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>AGE</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>HEIGHT</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>DESCENT</th>
+                        <th colSpan={2} style={headerCellStyle}>RESIDENCE</th>
+                        <th style={headerCellStyle}>AGE</th>
+                        <th style={headerCellStyle}>HEIGHT</th>
+                        <th style={headerCellStyle}>DESCENT</th>
                     </tr>
                     <tr>
-                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.residence || 'N/A'}</td>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.age || 'N/A'}</td>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.height || 'N/A'}</td>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.descent || 'N/A'}</td>
+                        <td colSpan={2} style={cellStyle}>{arrestee.residence || 'N/A'}</td>
+                        <td style={cellStyle}>{arrestee.age || 'N/A'}</td>
+                        <td style={cellStyle}>{arrestee.height || 'N/A'}</td>
+                        <td style={cellStyle}>{arrestee.descent || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th colSpan={3} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>CLOTHING</th>
-                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>PERSONAL ODDITIES</th>
+                        <th colSpan={3} style={headerCellStyle}>CLOTHING</th>
+                        <th colSpan={2} style={headerCellStyle}>PERSONAL ODDITIES</th>
                     </tr>
                     <tr>
-                        <td colSpan={3} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.clothing || 'N/A'}</td>
-                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.oddities || 'N/A'}</td>
+                        <td colSpan={3} style={cellStyle}>{arrestee.clothing || 'N/A'}</td>
+                        <td colSpan={2} style={cellStyle}>{arrestee.oddities || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th colSpan={3} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>MONIKER / ALIAS</th>
-                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>GANG / CLUB</th>
+                        <th colSpan={3} style={headerCellStyle}>MONIKER / ALIAS</th>
+                        <th colSpan={2} style={headerCellStyle}>GANG / CLUB</th>
                     </tr>
                     <tr>
-                        <td colSpan={3} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.alias || 'N/A'}</td>
-                        <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{arrestee.gang || 'N/A'}</td>
+                        <td colSpan={3} style={cellStyle}>{arrestee.alias || 'N/A'}</td>
+                        <td colSpan={2} style={cellStyle}>{arrestee.gang || 'N/A'}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>PERSONS WITH SUBJECT</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>PERSONS WITH SUBJECT</th></tr>
                     <tr>
-                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>NAME (FIRST, MIDDLE, LAST)</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>SEX (M/F/O)</th>
-                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>GANG / MONIKER</th>
+                        <th colSpan={2} style={headerCellStyle}>NAME (FIRST, MIDDLE, LAST)</th>
+                        <th style={headerCellStyle}>SEX (M/F/O)</th>
+                        <th colSpan={2} style={headerCellStyle}>GANG / MONIKER</th>
                     </tr>
                     {persons.map((person: any, index: number) => (
                         <tr key={index}>
-                            <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{person.name || 'N/A'}</td>
-                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{person.sex || 'N/A'}</td>
-                            <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{person.gang || 'N/A'}</td>
+                            <td colSpan={2} style={{...cellStyle, color: 'black' }}>{person.name || 'N/A'}</td>
+                            <td style={{...cellStyle, color: 'black' }}>{person.sex || 'N/A'}</td>
+                            <td colSpan={2} style={{...cellStyle, color: 'black' }}>{person.gang || 'N/A'}</td>
                         </tr>
                     ))}
-                     <tr><th style={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>DATE</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>TIME</th>
-                        <th colSpan={3} style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSizse: '10px', borderBottom: 'none', borderTop: '2px solid black', backgroundColor: 'white' }}>LOCATION</th></tr>
+                     <tr><th style={{...headerCellStyle, ...sectionHeaderStyle}}>DATE</th>
+                        <th style={{...headerCellStyle, ...sectionHeaderStyle}}>TIME</th>
+                        <th colSpan={3} style={{...headerCellStyle, ...sectionHeaderStyle, textTransform: 'uppercase' }}>LOCATION</th></tr>
                     <tr>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{incident.date || 'N/A'}</td>
-                        <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{incident.time || 'N/A'}</td>
-                        <td colSpan={3} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'" }}>{incident.locationStreet || 'N/A'}</td>
+                        <td style={cellStyle}>{incident.date || 'N/A'}</td>
+                        <td style={cellStyle}>{incident.time || 'N/A'}</td>
+                        <td colSpan={3} style={cellStyle}>{incident.locationStreet || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>OFFICER</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>SERIAL NO.</th>
-                        <th style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>CALLSIGN</th>
-                        <th colSpan={2} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>DIV / DETAIL</th>
+                        <th style={headerCellStyle}>OFFICER</th>
+                        <th style={headerCellStyle}>SERIAL NO.</th>
+                        <th style={headerCellStyle}>CALLSIGN</th>
+                        <th colSpan={2} style={headerCellStyle}>DIV / DETAIL</th>
                     </tr>
                     {officers.map((officer: any, index: number) => (
                          <tr key={index}>
-                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.rank || 'N/A'} {officer.name || 'N/A'}</td>
-                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.badgeNumber || 'N/A'}</td>
-                            <td style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.callSign || 'N/A'}</td>
-                            <td colSpan={2} style={{ fontSize: '14px', textTransform: 'uppercase', borderTop: 'none', color: 'black' }}>{officer.divDetail || 'N/A'}</td>
+                            <td style={cellStyle}>{officer.rank || 'N/A'} {officer.name || 'N/A'}</td>
+                            <td style={cellStyle}>{officer.badgeNumber || 'N/A'}</td>
+                            <td style={cellStyle}>{officer.callSign || 'N/A'}</td>
+                            <td colSpan={2} style={cellStyle}>{officer.divDetail || 'N/A'}</td>
                         </tr>
                     ))}
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderTop: '2px solid black', borderBottom: 'none', backgroundColor: 'white' }}>SOURCE OF ACTIVITY</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>SOURCE OF ACTIVITY</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.source || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.source)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>INVESTIGATION</th></tr>
+                    <tr><th colSpan={5} style={headerCellStyle}>INVESTIGATION</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.investigation || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.investigation)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>ARREST</th></tr>
+                    <tr><th colSpan={5} style={headerCellStyle}>ARREST</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.arrest || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.arrest)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), AND DIGITAL IMAGING</th></tr>
+                    <tr><th colSpan={5} style={headerCellStyle}>PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), AND DIGITAL IMAGING</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.photographs || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.photographs)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>BOOKING</th></tr>
+                    <tr><th colSpan={5} style={headerCellStyle}>BOOKING</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.booking || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.booking)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>PHYSICAL EVIDENCE</th></tr>
+                    <tr><th colSpan={5} style={headerCellStyle}>PHYSICAL EVIDENCE</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.evidence || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.evidence)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>COURT INFORMATION</th></tr>
+                    <tr><th colSpan={5} style={headerCellStyle}>COURT INFORMATION</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.court || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.court)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={{ fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white' }}>ADDITIONAL</th></tr>
+                    <tr><th colSpan={5} style={headerCellStyle}>ADDITIONAL</th></tr>
                     <tr>
-                        <td colSpan={5} style={{ fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman'", whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.additional || 'N/A')}</td>
+                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.additional)}</td>
                     </tr>
                 </tbody>
             </table>
@@ -792,5 +797,3 @@ export function PaperworkSubmitPage() {
         </Suspense>
     )
 }
-
-    
