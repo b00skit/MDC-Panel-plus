@@ -123,6 +123,10 @@ export function ArrestReportPage() {
     setIsClient(true);
   }, []);
 
+  const handleToggleAdvanced = () => {
+    toggleAdvanced();
+  }
+
   const hasReport = isClient && report.length > 0 && !!penalCode;
 
   const renderSkeleton = () => (
@@ -436,7 +440,7 @@ export function ArrestReportPage() {
                 </AlertDescription>
             </Alert>
             <div className="flex items-center space-x-2">
-                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={toggleAdvanced} />
+                <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={handleToggleAdvanced} />
                 <Label htmlFor="advanced-mode">Enable Advanced Report</Label>
             </div>
         </div>
