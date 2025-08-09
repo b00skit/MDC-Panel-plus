@@ -32,6 +32,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 type SiteConfig = {
   SITE_NAME: string;
@@ -196,7 +197,7 @@ export function SidebarNav() {
               >
                 <div className="flex items-center gap-2">
                   <Github />
-                  <span>Github</span>
+                  <span className="group-data-[state=collapsed]:hidden">Github</span>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground group-data-[state=collapsed]:hidden" />
               </Link>
