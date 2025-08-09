@@ -28,6 +28,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 
@@ -42,12 +43,10 @@ export function SidebarNav() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [config, setConfig] = useState<SiteConfig | null>(null);
+  const { state } = useSidebar();
 
   useEffect(() => {
     setMounted(true);
-    // This is now a simple example; in a real app, you'd likely
-    // get this data from a server-side context or API route.
-    // For this example, we'll just use a static object.
     setConfig({
       SITE_NAME: 'MDC Panel+',
       SITE_FAVICON: '/img/logos/MDC-Panel-Favicon.svg',
@@ -80,14 +79,16 @@ export function SidebarNav() {
                 alt="MDC Panel Logo"
               />
             </Link>
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl font-semibold font-headline">
-                {siteName}
-              </span>
-              <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">
-                +
-              </span>
-            </div>
+            {state === 'expanded' && (
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-semibold font-headline">
+                  {siteName}
+                </span>
+                <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">
+                  +
+                </span>
+              </div>
+            )}
           </div>
           <SidebarTrigger />
         </div>
