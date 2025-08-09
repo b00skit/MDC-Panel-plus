@@ -94,6 +94,11 @@ export function ArrestCalculatorPage() {
   }, [setPenalCode, resetCharges]);
   
   const handleCalculate = () => {
+     if (charges.length === 0) {
+      toast({ title: "No Charges", description: "Please add at least one charge.", variant: "destructive" });
+      return;
+    }
+
      for (const charge of charges) {
       if (!charge.chargeId) {
         toast({ title: "Incomplete Charge", description: "Please select a charge for all rows.", variant: "destructive" });
@@ -119,8 +124,7 @@ export function ArrestCalculatorPage() {
     }
     setReport(charges);
     resetForm();
-    // Do not reset the advanced form here, as it clears the field arrays before the component can react.
-    // The AdvancedArrestReportForm component will handle its own initialization.
+    resetAdvancedForm();
     resetOfficers();
     router.push('/arrest-report');
   }
@@ -464,3 +468,5 @@ export function ArrestCalculatorPage() {
     </div>
   );
 }
+
+    
