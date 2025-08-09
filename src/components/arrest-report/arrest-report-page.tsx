@@ -26,7 +26,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
-import { useOfficerStore } from '@/stores/officer-store';
 import { AdvancedArrestReportForm } from './advanced-arrest-report-form';
 
 const getType = (type: string | undefined) => {
@@ -118,16 +117,7 @@ export function ArrestReportPage() {
   const { report, penalCode } = useChargeStore();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
-  const { isAdvanced, toggleAdvanced, reset: resetAdvancedForm } = useAdvancedReportStore();
-  const { setInitialOfficers: resetOfficers } = useOfficerStore();
-
-  const handleAdvancedToggle = () => {
-    if (!isAdvanced) {
-      resetOfficers();
-      resetAdvancedForm();
-    }
-    toggleAdvanced();
-  };
+  const { isAdvanced, toggleAdvanced } = useAdvancedReportStore();
 
   useEffect(() => {
     setIsClient(true);
@@ -459,7 +449,7 @@ export function ArrestReportPage() {
                     </AlertDescription>
                 </Alert>
                 <div className="flex items-center space-x-2">
-                    <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={handleAdvancedToggle} />
+                    <Switch id="advanced-mode" checked={isAdvanced} onCheckedChange={toggleAdvanced} />
                     <Label htmlFor="advanced-mode">Enable Advanced Report</Label>
                 </div>
             </>

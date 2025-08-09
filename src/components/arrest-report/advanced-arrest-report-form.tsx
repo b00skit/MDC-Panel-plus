@@ -296,7 +296,9 @@ export function AdvancedArrestReportForm() {
     }, [getValues, setValue]);
     
     useEffect(() => {
-        const subscription = watch((value) => {
+        const subscription = watch((value, { type }) => {
+            if (!type) return; // Prevent feedback loop from form reset
+
             const currentOfficers = value.officers;
             if (currentOfficers && currentOfficers[0]) {
                 const officer = currentOfficers[0];
