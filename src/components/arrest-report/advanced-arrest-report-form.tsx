@@ -45,7 +45,7 @@ interface DeptRanks {
 export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
-    const { alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
+    const { officers: initialOfficers, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
@@ -265,7 +265,7 @@ export function AdvancedArrestReportForm() {
             }
         });
         setValue('narrative.evidence', evidenceText.trim());
-    }, [watchedFields.evidenceLogs, setValue]);
+    }, [watchedFields, setValue]);
 
     useEffect(() => {
         const primaryOfficer = watchedFields.officers?.[0];
@@ -297,8 +297,6 @@ export function AdvancedArrestReportForm() {
     useEffect(() => {
       // This effect runs once on mount to set up the form correctly.
       if (isInitialLoad.current) {
-        // Reset form with default values from store
-        const { officers: initialOfficers } = useOfficerStore.getState();
         
         const populatedFormData = { ...formData };
         if (!populatedFormData.officers || populatedFormData.officers.length === 0) {
@@ -314,7 +312,7 @@ export function AdvancedArrestReportForm() {
         
         isInitialLoad.current = false;
       }
-    }, [reset, formData]);
+    }, [reset, formData, initialOfficers]);
 
     const handlePillClick = (officerIndex: number, altChar: Officer) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
