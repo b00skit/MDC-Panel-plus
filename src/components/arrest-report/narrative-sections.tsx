@@ -3,21 +3,17 @@
 
 import { Controller, Control, FieldValues, Path, UseFormRegister, FieldArrayWithId } from 'react-hook-form';
 import { TableRow, TableHead, TableCell, TableBody } from '../ui/table';
-import { Checkbox } from '../ui/checkbox';
-import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Trash2, CirclePlus } from 'lucide-react';
 import { FormState } from '@/stores/advanced-report-store';
 
-interface NarrativeSectionProps<T extends FieldValues> {
+interface NarrativeSectionProps {
     title: string;
-    presetFieldName: Path<T>;
-    control: Control<T>;
     children: React.ReactNode;
 }
 
-export const NarrativeSection = <T extends FieldValues>({ title, presetFieldName, control, children }: NarrativeSectionProps<T>) => {
+export const NarrativeSection = ({ title, children }: NarrativeSectionProps) => {
     return (
       <>
         <TableRow className="h-3" />
@@ -25,24 +21,6 @@ export const NarrativeSection = <T extends FieldValues>({ title, presetFieldName
           <TableHead className="bg-secondary gap-x-2" colSpan={5}>
             <div className="flex flex-wrap justify-center items-center relative">
               <a>{title}</a>
-              <div className="flex items-center my-1 mr-2 absolute right-0">
-                 <Controller
-                    name={presetFieldName}
-                    control={control}
-                    render={({ field }) => (
-                        <>
-                            <Label htmlFor={presetFieldName} className="select-none text-sm font-medium mr-1 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                Enable Preset?
-                            </Label>
-                            <Checkbox
-                                id={presetFieldName}
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                            />
-                        </>
-                    )}
-                    />
-              </div>
             </div>
           </TableHead>
         </TableRow>

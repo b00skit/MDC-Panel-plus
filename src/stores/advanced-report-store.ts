@@ -60,8 +60,11 @@ export interface FormState {
         photosLink: string;
         thirdPartyLink: string;
         plea: string;
+        transportingRank: string;
+        transportingName: string;
+        bookingRank: string;
+        bookingName: string;
     },
-    narrativePresets: Record<string, boolean>;
     evidenceLogs: EvidenceLog[];
 }
 
@@ -70,22 +73,23 @@ const getInitialState = (): FormState => ({
         name: '', sex: '', hair: '', eyes: '', residence: '', age: '', height: '',
         descent: '', clothing: '', oddities: '', alias: '', gang: ''
     },
-    persons: [{ name: '', sex: '', gang: '' }],
+    persons: [],
     incident: {
         date: '', time: '', locationDistrict: '', locationStreet: ''
     },
     officers: [],
     modifiers: {
         markedUnit: true,
-        slicktop: true,
+        slicktop: false,
         inUniform: true,
+        undercover: false,
         inMetroUniform: false,
         inG3Uniform: false,
         wasSuspectInVehicle: false,
         wasSuspectMirandized: true,
         didSuspectUnderstandRights: true,
-        doYouHaveAVideo: true,
-        didYouTakePhotographs: true,
+        doYouHaveAVideo: false,
+        didYouTakePhotographs: false,
         didYouObtainCctvFootage: false,
         thirdPartyVideoFootage: false,
         biometricsAlreadyOnFile: false,
@@ -95,17 +99,8 @@ const getInitialState = (): FormState => ({
     narrative: {
         source: '', investigation: '', arrest: '', photographs: '', booking: '', evidence: '',
         court: '', additional: '', vehicleColor: '', vehicleModel: '', vehiclePlate: '',
-        dicvsLink: '', cctvLink: '', photosLink: '', thirdPartyLink: '', plea: 'Guilty'
-    },
-    narrativePresets: {
-        source: true,
-        investigation: true,
-        arrest: true,
-        photographs: true,
-        booking: true,
-        evidence: true,
-        court: true,
-        additional: true,
+        dicvsLink: '', cctvLink: '', photosLink: '', thirdPartyLink: '', plea: 'Guilty',
+        transportingRank: '', transportingName: '', bookingRank: '', bookingName: ''
     },
     evidenceLogs: [],
 });
@@ -138,6 +133,7 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
     {
       name: 'advanced-report-storage',
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ ...state, formData: { ...state.formData, officers: [] } }),
     }
   )
 );

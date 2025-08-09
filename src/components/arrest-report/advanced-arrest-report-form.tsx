@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -44,7 +45,7 @@ interface DeptRanks {
 export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: defaultOfficers, alternativeCharacters, swapOfficer, addOfficer: addOfficerToStore } = useOfficerStore();
+    const { officers, alternativeCharacters, swapOfficer, addOfficer, removeOfficer: removeOfficerFromStore } = useOfficerStore();
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
     });
@@ -68,118 +69,121 @@ export function AdvancedArrestReportForm() {
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
     const watchedFields = watch();
-
-    // Preset Effects
-    useEffect(() => {
-        if (watchedFields.narrativePresets?.source) {
-            const officer = watchedFields.officers?.[0] || {};
-            const date = watchedFields.incident?.date || 'DATE';
-            const name = officer.name || 'NAME';
-            const serial = officer.badgeNumber || 'SERIAL';
-            const division = officer.divDetail || 'DIVISION';
-            const callsign = officer.callSign || 'CALLSIGN';
-            const isMarked = watchedFields.modifiers?.markedUnit ? 'marked' : 'unmarked';
-            const isSlicktop = watchedFields.modifiers?.slicktop ? ' slicktop' : '';
-            const uniform = watchedFields.modifiers?.inG3Uniform ? 'G3 uniform' : watchedFields.modifiers?.inMetroUniform ? 'metropolitan uniform' : 'uniform';
     
-            const presetText = `On ${date}, I, ${officer.rank || 'RANK'} ${name} (#${serial}), assigned to ${division} Division, was deployed under Unit ${callsign}. I was wearing my department-issued ${uniform} and was openly displaying my badge of office on my uniform. I was driving a ${isMarked} black and white${isSlicktop}. At the start of watch, I conducted a check of my police vehicle and the blue, red, and amber emergency lights and siren were in good working order.\n\n`;
-            if (getValues('narrative.source') !== presetText) {
-                setValue('narrative.source', presetText, { shouldDirty: true });
+    // Auto-population from modifiers
+    useEffect(() => {
+        let sourceText = '';
+        
+        // Vehicle part
+        if (watchedFields.modifiers?.markedUnit) {
+            if (watchedFields.modifiers?.slicktop) {
+                sourceText += 'I was driving a marked black and white slicktop. ';
+            } else {
+                sourceText += 'I was driving a marked black and white with a rooftop light bar. ';
+            }
+        } else {
+            sourceText += 'I was driving an unmarked vehicle. ';
+        }
+
+        // Uniform part
+        if (watchedFields.modifiers?.inUniform) {
+             if (watchedFields.modifiers?.inG3Uniform) {
+                sourceText += 'I was wearing my department-issued metropolitan G3 uniform and was openly displaying my badge of office on my uniform.';
+            } else if (watchedFields.modifiers?.inMetroUniform) {
+                sourceText += 'I was wearing my department-issued metropolitan BDU uniform and was openly displaying my badge of office on my uniform.';
+            } else {
+                sourceText += 'I was wearing my department-issued patrol uniform and was openly displaying my badge of office on my uniform.';
+            }
+        } else {
+            if (watchedFields.modifiers?.undercover) {
+                 sourceText += 'I was wearing plain clothes.';
+            } else {
+                 sourceText += 'I was wearing plain clothes and was openly displaying my badge.';
             }
         }
+        
+        setValue('narrative.source', sourceText.trim());
+
     }, [
-        watchedFields.narrativePresets?.source, 
-        watchedFields.officers?.[0]?.rank,
-        watchedFields.officers?.[0]?.name,
-        watchedFields.officers?.[0]?.badgeNumber,
-        watchedFields.officers?.[0]?.divDetail,
-        watchedFields.officers?.[0]?.callSign,
-        watchedFields.incident?.date, 
-        watchedFields.modifiers?.markedUnit,
-        watchedFields.modifiers?.slicktop,
-        watchedFields.modifiers?.inG3Uniform,
-        watchedFields.modifiers?.inMetroUniform,
-        setValue, 
-        getValues
+        watchedFields.modifiers?.markedUnit, 
+        watchedFields.modifiers?.slicktop, 
+        watchedFields.modifiers?.inUniform, 
+        watchedFields.modifiers?.undercover, 
+        watchedFields.modifiers?.inMetroUniform, 
+        watchedFields.modifiers?.inG3Uniform, 
+        setValue
     ]);
 
     useEffect(() => {
-        if (watchedFields.narrativePresets?.investigation) {
-            const time = watchedFields.incident?.time || 'TIME';
-            const location = `${watchedFields.incident?.locationDistrict || ''} ${watchedFields.incident?.locationStreet || ''}`.trim() || 'LOCATION';
-            const vehicleColor = watchedFields.narrative?.vehicleColor || 'COLOR';
-            const vehicleModel = watchedFields.narrative?.vehicleModel || 'MODEL';
-            const vehiclePlate = watchedFields.narrative?.vehiclePlate ? `, San Andreas license plate ${watchedFields.narrative.vehiclePlate}` : ', with no plates';
-    
-            const presetText = `At approximately ${time} hours, I was driving on ${location} when I observed a ${vehicleColor} ${vehicleModel}${vehiclePlate}.`;
-            if(getValues('narrative.investigation') !== presetText) {
-                setValue('narrative.investigation', presetText, { shouldDirty: true });
-            }
+        let investigationText = '';
+        const time = getValues('incident.time') || '<time>';
+        const street = getValues('incident.locationStreet') || '<street>';
+
+        if(watchedFields.modifiers?.wasSuspectInVehicle) {
+            const color = getValues('narrative.vehicleColor') || '<VEHICLE COLOR>';
+            const model = getValues('narrative.vehicleModel') || '<VEHICLE MODEL>';
+            const plate = getValues('narrative.vehiclePlate') ? `with ${getValues('narrative.vehiclePlate')} plates` : 'with no plates';
+            investigationText = `At approximately ${time} hours, I was driving on ${street} when I observed a ${color} ${model}, ${plate}.`;
+        } else {
+            investigationText = `At approximately ${time} hours, I was driving on ${street}`;
         }
+        setValue('narrative.investigation', investigationText);
     }, [
-        watchedFields.narrativePresets?.investigation,
-        watchedFields.incident?.time, 
-        watchedFields.incident?.locationDistrict,
+        watchedFields.modifiers?.wasSuspectInVehicle,
+        watchedFields.incident?.time,
         watchedFields.incident?.locationStreet,
         watchedFields.narrative?.vehicleColor,
         watchedFields.narrative?.vehicleModel,
-        watchedFields.narrative?.vehiclePlate, 
-        setValue, 
+        watchedFields.narrative?.vehiclePlate,
+        setValue,
         getValues
     ]);
 
-    useEffect(() => {
-        if (watchedFields.narrativePresets?.arrest) {
-            const arresteeName = watchedFields.arrestee?.name || 'ARRESTEE';
-            const didMirandize = watchedFields.modifiers?.wasSuspectMirandized;
-            const understoodRights = watchedFields.modifiers?.didSuspectUnderstandRights;
-            const transported = watchedFields.modifiers?.didYouTransport;
-            const chargeList = charges
-              .map(c => {
-                  const details = penalCode?.[c.chargeId!];
-                  if (!details) return 'Unknown Charge';
-                  const typePrefix = `${details.type}${c.class}`;
-                  return `${typePrefix} ${details.id}. ${details.charge}`;
-              }).join(', ');
-
-            let presetText = `${arresteeName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).\n`;
-            presetText += `${arresteeName} was arrested for ${chargeList}.\n`;
-            if (didMirandize) {
-                presetText += `I admonished ${arresteeName} utilizing my Field Officer’s Notebook, reading the following, verbatim: \n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?” ${arresteeName} responded ${understoodRights ? 'affirmatively' : 'negatively'}.\n`;
-            }
-            if (transported) {
-                presetText += `I transported ${arresteeName} to Mission Row Station.\n`;
-            }
-            if (getValues('narrative.arrest') !== presetText) {
-                setValue('narrative.arrest', presetText, { shouldDirty: true });
-            }
+     useEffect(() => {
+        let arrestText = '';
+        const name = getValues('arrestee.name') || '<name>';
+        if (watchedFields.modifiers?.wasSuspectMirandized) {
+            const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
+            arrestText += `I admonished ${name} utilizing my Field Officer’s Notebook, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${name} responded ${understood}.`;
         }
+
+        const transportingRank = getValues('narrative.transportingRank') || '<Rank>';
+        const transportingName = getValues('narrative.transportingName') || '<Name of Transporting Officer>';
+        const suspectName = getValues('arrestee.name') || '<suspect>';
+        if (watchedFields.modifiers?.didYouTransport) {
+            arrestText += `\nI transported ${suspectName} to Mission Row Station.`;
+        } else {
+            arrestText += `\n${transportingRank} ${transportingName} transported ${suspectName} to Mission Row Station.`;
+        }
+        setValue('narrative.arrest', arrestText.trim() || 'N/A');
     }, [
-        watchedFields.narrativePresets?.arrest,
-        watchedFields.arrestee?.name,
-        watchedFields.modifiers?.wasSuspectMirandized,
+        watchedFields.modifiers?.wasSuspectMirandized, 
         watchedFields.modifiers?.didSuspectUnderstandRights,
         watchedFields.modifiers?.didYouTransport,
-        charges, 
-        penalCode, 
-        setValue, 
+        watchedFields.arrestee?.name,
+        watchedFields.narrative?.transportingRank,
+        watchedFields.narrative?.transportingName,
+        setValue,
         getValues
     ]);
 
     useEffect(() => {
-        if (watchedFields.narrativePresets?.photographs) {
-            let presetText = '';
-            if (watchedFields.modifiers?.doYouHaveAVideo) presetText += `My Digital In-Car Video (DICV) was activated during this investigation - ${watchedFields.narrative?.dicvsLink || 'LINK'}\n`;
-            if (watchedFields.modifiers?.didYouTakePhotographs) presetText += `I took photographs using my Department-issued cell phone - ${watchedFields.narrative?.photosLink || 'LINK'}\n`;
-            if (watchedFields.modifiers?.didYouObtainCctvFootage) presetText += `I obtained closed-circuit television (CCTV) footage - ${watchedFields.narrative?.cctvLink || 'LINK'}\n`;
-            if (watchedFields.modifiers?.thirdPartyVideoFootage) presetText += `I obtained third party video footage - ${watchedFields.narrative?.thirdPartyLink || 'LINK'}\n`;
-            
-            if (getValues('narrative.photographs') !== presetText) {
-                setValue('narrative.photographs', presetText, { shouldDirty: true });
-            }
+        let photosText = '';
+        if (watchedFields.modifiers?.doYouHaveAVideo) {
+            photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${getValues('narrative.dicvsLink') || ''}\n`;
         }
+        if (watchedFields.modifiers?.didYouTakePhotographs) {
+            photosText += `I took photographs using my Department-issued cell phone - ${getValues('narrative.photosLink') || ''}\n`;
+        }
+        if (watchedFields.modifiers?.didYouObtainCctvFootage) {
+            photosText += `I obtained closed-circuit television (CCTV) footage - ${getValues('narrative.cctvLink') || ''}\n`;
+        }
+        if (watchedFields.modifiers?.thirdPartyVideoFootage) {
+            photosText += `I obtained third party video footage - ${getValues('narrative.thirdPartyLink') || ''}\n`;
+        }
+
+        setValue('narrative.photographs', photosText.trim() || 'N/A');
     }, [
-        watchedFields.narrativePresets?.photographs,
         watchedFields.modifiers?.doYouHaveAVideo,
         watchedFields.modifiers?.didYouTakePhotographs,
         watchedFields.modifiers?.didYouObtainCctvFootage,
@@ -187,96 +191,56 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.dicvsLink,
         watchedFields.narrative?.photosLink,
         watchedFields.narrative?.cctvLink,
-        watchedFields.narrative?.thirdPartyLink, 
-        setValue, 
+        watchedFields.narrative?.thirdPartyLink,
+        setValue,
         getValues
     ]);
     
     useEffect(() => {
-        if (watchedFields.narrativePresets?.booking) {
-            const arresteeName = watchedFields.arrestee?.name || 'ARRESTEE';
-            const booked = watchedFields.modifiers?.didYouBook;
-            const onFile = watchedFields.modifiers?.biometricsAlreadyOnFile;
-            
-            let presetText = '';
-            if (booked) {
-                presetText += `I booked ${arresteeName} on all of the charges listed under the ARREST sub-heading.\n`;
-            }
-            if (onFile) {
-                presetText += `${arresteeName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
-            }
-            if (getValues('narrative.booking') !== presetText) {
-                setValue('narrative.booking', presetText, { shouldDirty: true });
+        let bookingText = '';
+        const suspectName = getValues('arrestee.name') || '<suspect>';
+        const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
+
+        const bookingRank = getValues('narrative.bookingRank') || '<Rank>';
+        const bookingName = getValues('narrative.bookingName') || '<Name of Booking Officer>';
+
+        const booker = watchedFields.modifiers?.didYouBook ? 'I' : `${bookingRank} ${bookingName}`;
+        const bookerPossessive = watchedFields.modifiers?.didYouBook ? 'my' : `${bookingRank} ${bookingName}'s`;
+
+        if (watchedFields.modifiers?.biometricsAlreadyOnFile) {
+            bookingText = `${suspectName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
+        } else {
+            bookingText += `${booker} booked ${suspectName} on all of the charges listed under the ARREST sub-heading.\n`;
+            bookingText += `During booking, ${booker} took 10 fingerprint samples from ${suspectName} and entered them into the Automated Fingerprint Identification System (AFIS).\n`;
+            if (isFelony) {
+                bookingText += `As ${suspectName} was booked on a felony charge, ${booker} took a Bode SecurSwab 2 Deoxyribonucleic acid (DNA) profile from him.\n`;
+                bookingText += `${booker} submitted this profile to the Combined DNA Index System (CODIS).`;
             }
         }
+        setValue('narrative.booking', bookingText.trim());
+
     }, [
-        watchedFields.narrativePresets?.booking,
-        watchedFields.arrestee?.name,
         watchedFields.modifiers?.didYouBook,
-        watchedFields.modifiers?.biometricsAlreadyOnFile, 
-        setValue, 
-        getValues
-    ]);
-    
-    useEffect(() => {
-        if (watchedFields.narrativePresets?.evidence) {
-            const evidenceLogs = watchedFields.evidenceLogs;
-            let presetText = "I booked all evidence into the Mission Row Station property room.\n";
-            evidenceLogs?.forEach((log, index) => {
-                if (log.logNumber && log.description) {
-                    presetText += `Item ${index + 1} - ${log.logNumber} - ${log.description} (x${log.quantity || 1})\n`;
-                }
-            });
-            if (getValues('narrative.evidence') !== presetText) {
-                setValue('narrative.evidence', presetText, { shouldDirty: true });
-            }
-        }
-    }, [
-        watchedFields.narrativePresets?.evidence,
-        watchedFields.evidenceLogs,
-        setValue, 
-        getValues
-    ]);
-    
-    useEffect(() => {
-        if (watchedFields.narrativePresets?.court) {
-            const officer = watchedFields.officers?.[0] || {};
-            const presetText = `I, ${officer.rank || 'RANK'} ${officer.name || 'NAME'} #${officer.badgeNumber || 'SERIAL'}, can testify to the contents of this report.\n`;
-            if (getValues('narrative.court') !== presetText) {
-                setValue('narrative.court', presetText, { shouldDirty: true });
-            }
-        }
-    }, [
-        watchedFields.narrativePresets?.court,
-        watchedFields.officers?.[0]?.rank,
-        watchedFields.officers?.[0]?.name,
-        watchedFields.officers?.[0]?.badgeNumber, 
-        setValue, 
+        watchedFields.modifiers?.biometricsAlreadyOnFile,
+        watchedFields.arrestee?.name,
+        watchedFields.narrative?.bookingRank,
+        watchedFields.narrative?.bookingName,
+        charges,
+        penalCode,
+        setValue,
         getValues
     ]);
 
+
     useEffect(() => {
-        if (watchedFields.narrativePresets?.additional) {
-            const plea = watchedFields.narrative?.plea || 'Guilty';
-            const arresteeName = watchedFields.arrestee?.name || 'ARRESTEE';
-            const presetText = `(( ${arresteeName} pleaded ${plea}. ))\n`;
-            if (getValues('narrative.additional') !== presetText) {
-                setValue('narrative.additional', presetText, { shouldDirty: true });
-            }
-        }
-    }, [
-        watchedFields.narrativePresets?.additional,
-        watchedFields.narrative?.plea,
-        watchedFields.arrestee?.name, 
-        setValue, 
-        getValues
-    ]);
-    
-    useEffect(() => {
-      if (getValues('officers').length === 0) {
-        addOfficerToStore();
+      reset(formData); // This ensures the form is populated with store data on mount
+      if (officers.length === 0) {
+        addOfficer();
       }
-      
+      if (personFields.length === 0) {
+        appendPerson({ name: '', sex: '', gang: '' });
+      }
+
       fetch('/data/dept_ranks.json')
           .then((res) => res.json())
           .then((data) => setDeptRanks(data));
@@ -296,19 +260,24 @@ export function AdvancedArrestReportForm() {
     }, []);
     
     useEffect(() => {
-        const subscription = watch((value) => {
+        const subscription = watch((value, { name, type }) => {
             const currentOfficers = value.officers;
-            if (currentOfficers && currentOfficers[0]) {
+            if (currentOfficers && currentOfficers.length > 0 && currentOfficers[0]) {
                 const officer = currentOfficers[0];
-                if (officer.badgeNumber && officer.divDetail) {
-                    localStorage.setItem(`${officer.badgeNumber}-divDetail`, officer.divDetail);
-                }
+                 if (officer.badgeNumber && officer.divDetail) {
+                     localStorage.setItem(`${officer.badgeNumber}-divDetail`, officer.divDetail);
+                 }
             }
-            setFields(value as FormState);
+             setFields(value as FormState);
         });
         return () => subscription.unsubscribe();
     }, [watch, setFields]);
     
+    // Sync zustand officer state with react-hook-form state
+    useEffect(() => {
+        reset({ ...getValues(), officers });
+    }, [officers]);
+
     const handleRankChange = (index: number, value: string) => {
         const [department, rank] = value.split('__');
         setValue(`officers.${index}.department`, department);
@@ -318,14 +287,10 @@ export function AdvancedArrestReportForm() {
     const handlePillClick = (officerIndex: number, altChar: any) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
         swapOfficer(currentOfficerInForm.id, altChar);
-        const swappedInOfficer = useOfficerStore.getState().officers.find(o => o.id === currentOfficerInForm.id);
-        
-        if (swappedInOfficer) {
-            setValue(`officers.${officerIndex}`, {
-                ...swappedInOfficer,
-                divDetail: getValues(`officers.${officerIndex}.divDetail`), 
-            }, { shouldDirty: true });
-        }
+    }
+    
+    const onAddOfficerClick = () => {
+        addOfficer();
     }
 
   return (
@@ -571,7 +536,7 @@ export function AdvancedArrestReportForm() {
                         <TableCell><Input placeholder="CALLSIGN" {...register(`officers.${index}.callSign`)} /></TableCell>
                         <TableCell className="flex items-center gap-1">
                           <Input placeholder="DIVISION / DETAIL" {...register(`officers.${index}.divDetail`)} />
-                           {index > 0 && <Button variant="ghost" size="icon" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
+                           {index > 0 && <Button variant="ghost" size="icon" onClick={() => removeOfficerFromStore(field.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
                         </TableCell>
                     </TableRow>
                     {index === 0 && alternativeCharacters.length > 0 && (
@@ -580,7 +545,8 @@ export function AdvancedArrestReportForm() {
                                 <div className="flex flex-wrap gap-2">
                                     {alternativeCharacters.filter(alt => alt.name).map((altChar) => {
                                         const currentOfficer = getValues('officers.0');
-                                        const isSelected = currentOfficer?.badgeNumber === altChar.badgeNumber;
+                                        if (!currentOfficer) return null;
+                                        const isSelected = currentOfficer.badgeNumber === altChar.badgeNumber;
                                         return (
                                             !isSelected && (
                                                 <Badge 
@@ -603,7 +569,7 @@ export function AdvancedArrestReportForm() {
                 
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
-                    <Button className="w-full" type="button" onClick={addOfficerToStore}>
+                    <Button className="w-full" type="button" onClick={onAddOfficerClick}>
                       <CirclePlus className="mr-2 h-4 w-4" /> ADD OFFICER
                     </Button>
                   </TableCell>
@@ -616,80 +582,95 @@ export function AdvancedArrestReportForm() {
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={5} className="bg-muted p-1">
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 items-center justify-center">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-2 gap-y-2 p-2">
                         <div className="flex items-center space-x-2"><Controller name="modifiers.markedUnit" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="markedUnit" />} /><Label htmlFor="markedUnit">Marked Unit?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.slicktop" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="slicktop" />} /><Label htmlFor="slicktop">Slicktop?</Label></div>
+                        {watchedFields.modifiers?.markedUnit && <div className="flex items-center space-x-2"><Controller name="modifiers.slicktop" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="slicktop" />} /><Label htmlFor="slicktop">Slicktop?</Label></div>}
                         <div className="flex items-center space-x-2"><Controller name="modifiers.inUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inUniform" />} /><Label htmlFor="inUniform">In Uniform?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.inMetroUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inMetroUniform" />} /><Label htmlFor="inMetroUniform">In Metro Uniform?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.inG3Uniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inG3Uniform" />} /><Label htmlFor="inG3Uniform">In G3 Uniform?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectInVehicle" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectInVehicle" />} /><Label htmlFor="wasSuspectInVehicle">Was Suspect In Vehicle?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectMirandized" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectMirandized" />} /><Label htmlFor="wasSuspectMirandized">Was Suspect Mirandized?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.didSuspectUnderstandRights" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didSuspectUnderstandRights" />} /><Label htmlFor="didSuspectUnderstandRights">Did Suspect Understand Rights?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.doYouHaveAVideo" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="doYouHaveAVideo" />} /><Label htmlFor="doYouHaveAVideo">Do You Have A Video?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouTakePhotographs" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouTakePhotographs" />} /><Label htmlFor="didYouTakePhotographs">Did You Take Photographs?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouObtainCctvFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouObtainCctvFootage" />} /><Label htmlFor="didYouObtainCctvFootage">Did You Obtain CCTV Footage?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.thirdPartyVideoFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="thirdPartyVideoFootage" />} /><Label htmlFor="thirdPartyVideoFootage">Third Party Video Footage?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.biometricsAlreadyOnFile" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="biometricsAlreadyOnFile" />} /><Label htmlFor="biometricsAlreadyOnFile">Biometrics Already On File?</Label></div>
+                        {!watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.undercover" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="undercover" />} /><Label htmlFor="undercover">Undercover?</Label></div>}
+                        {watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inMetroUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inMetroUniform" />} /><Label htmlFor="inMetroUniform">In Metro Uniform?</Label></div>}
+                        {watchedFields.modifiers?.inMetroUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inG3Uniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inG3Uniform" />} /><Label htmlFor="inG3Uniform">In G3 Uniform?</Label></div>}
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectInVehicle" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectInVehicle" />} /><Label htmlFor="wasSuspectInVehicle">Suspect In Vehicle?</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectMirandized" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectMirandized" />} /><Label htmlFor="wasSuspectMirandized">Mirandized?</Label></div>
+                        {watchedFields.modifiers?.wasSuspectMirandized && <div className="flex items-center space-x-2"><Controller name="modifiers.didSuspectUnderstandRights" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didSuspectUnderstandRights" />} /><Label htmlFor="didSuspectUnderstandRights">Understood Rights?</Label></div>}
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.doYouHaveAVideo" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="doYouHaveAVideo" />} /><Label htmlFor="doYouHaveAVideo">Video?</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouTakePhotographs" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouTakePhotographs" />} /><Label htmlFor="didYouTakePhotographs">Photographs?</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouObtainCctvFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouObtainCctvFootage" />} /><Label htmlFor="didYouObtainCctvFootage">CCTV?</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.thirdPartyVideoFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="thirdPartyVideoFootage" />} /><Label htmlFor="thirdPartyVideoFootage">3rd Party Video?</Label></div>
                         <div className="flex items-center space-x-2"><Controller name="modifiers.didYouTransport" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouTransport" />} /><Label htmlFor="didYouTransport">Did You Transport?</Label></div>
                         <div className="flex items-center space-x-2"><Controller name="modifiers.didYouBook" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouBook" />} /><Label htmlFor="didYouBook">Did You Book?</Label></div>
+                        {watchedFields.modifiers?.didYouBook && <div className="flex items-center space-x-2"><Controller name="modifiers.biometricsAlreadyOnFile" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="biometricsAlreadyOnFile" />} /><Label htmlFor="biometricsAlreadyOnFile">Biometrics On File?</Label></div>}
                     </div>
                   </TableCell>
                 </TableRow>
                 
-                 <NarrativeSection title="SOURCE OF ACTIVITY" presetFieldName="narrativePresets.source" control={control}>
-                    <Controller name="narrative.source" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the source of the activity..." rows={5} />} />
+                <NarrativeSection title="SOURCE OF ACTIVITY">
+                    <Controller name="narrative.source" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the source of the activity..." rows={3} />} />
                 </NarrativeSection>
 
-                <NarrativeSection title="INVESTIGATION" presetFieldName="narrativePresets.investigation" control={control}>
-                    <div className="grid grid-cols-3 gap-2 mb-2">
-                        <Input placeholder="VEHICLE COLOR" {...register('narrative.vehicleColor')} />
-                        <Input placeholder="VEHICLE MODEL" {...register('narrative.vehicleModel')} />
-                        <Input placeholder="VEHICLE PLATE" {...register('narrative.vehiclePlate')} />
-                    </div>
-                    <Controller name="narrative.investigation" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the investigation..." rows={5} />} />
+                <NarrativeSection title="INVESTIGATION">
+                    {watchedFields.modifiers?.wasSuspectInVehicle &&
+                        <div className="grid grid-cols-3 gap-2 mb-2">
+                            <Input placeholder="VEHICLE COLOR" {...register('narrative.vehicleColor')} />
+                            <Input placeholder="VEHICLE MODEL" {...register('narrative.vehicleModel')} />
+                            <Input placeholder="VEHICLE PLATE" {...register('narrative.vehiclePlate')} />
+                        </div>
+                    }
+                    <Controller name="narrative.investigation" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the investigation..." rows={3} />} />
                 </NarrativeSection>
 
-                <NarrativeSection title="ARREST" presetFieldName="narrativePresets.arrest" control={control}>
-                    <Controller name="narrative.arrest" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the arrest..." rows={5} />} />
+                <NarrativeSection title="ARREST">
+                    {!watchedFields.modifiers?.didYouTransport && (
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                            <Input placeholder="TRANSPORTING OFFICER RANK" {...register('narrative.transportingRank')} />
+                            <Input placeholder="TRANSPORTING OFFICER NAME" {...register('narrative.transportingName')} />
+                        </div>
+                    )}
+                    <Controller name="narrative.arrest" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the arrest..." rows={3} />} />
                 </NarrativeSection>
                 
-                <NarrativeSection title="PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING" presetFieldName="narrativePresets.photographs" control={control}>
-                    {getValues('modifiers.doYouHaveAVideo') ? (
+                <NarrativeSection title="PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING">
+                    {watchedFields.modifiers?.doYouHaveAVideo || watchedFields.modifiers?.didYouTakePhotographs || watchedFields.modifiers?.didYouObtainCctvFootage || watchedFields.modifiers?.thirdPartyVideoFootage ? (
                     <>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
-                             <Input placeholder="DICVS Footage Link" {...register('narrative.dicvsLink')} />
-                             <Input placeholder="CCTV Footage Link" {...register('narrative.cctvLink')} />
-                             <Input placeholder="Photographs Link" {...register('narrative.photosLink')} />
-                             <Input placeholder="Third Party Footage Link" {...register('narrative.thirdPartyLink')} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
+                             {watchedFields.modifiers.doYouHaveAVideo && <Input placeholder="DICVS Footage Link" {...register('narrative.dicvsLink')} />}
+                             {watchedFields.modifiers.didYouTakePhotographs && <Input placeholder="Photographs Link" {...register('narrative.photosLink')} />}
+                             {watchedFields.modifiers.didYouObtainCctvFootage && <Input placeholder="CCTV Footage Link" {...register('narrative.cctvLink')} />}
+                             {watchedFields.modifiers.thirdPartyVideoFootage && <Input placeholder="Third Party Footage Link" {...register('narrative.thirdPartyLink')} />}
                         </div>
-                        <Controller name="narrative.photographs" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe video or photographic evidence..." rows={5} />} />
+                        <Controller name="narrative.photographs" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe video or photographic evidence..." rows={3} />} />
                     </>
                      ) : (
                         <Textarea placeholder="(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Do You Have A Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))" rows={3} />
                      )}
                 </NarrativeSection>
 
-                <NarrativeSection title="BOOKING" presetFieldName="narrativePresets.booking" control={control}>
-                    <Controller name="narrative.booking" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe booking details..." rows={5} />} />
+                <NarrativeSection title="BOOKING">
+                    {!watchedFields.modifiers?.didYouBook && (
+                         <div className="grid grid-cols-2 gap-2 mb-2">
+                            <Input placeholder="BOOKING OFFICER RANK" {...register('narrative.bookingRank')} />
+                            <Input placeholder="BOOKING OFFICER NAME" {...register('narrative.bookingName')} />
+                        </div>
+                    )}
+                    <Controller name="narrative.booking" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe booking details..." rows={3} />} />
                 </NarrativeSection>
                 
-                 <NarrativeSection title="PHYSICAL EVIDENCE" presetFieldName="narrativePresets.evidence" control={control}>
+                 <NarrativeSection title="PHYSICAL EVIDENCE">
                     <Table>
                         <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} />
                     </Table>
-                    <Controller name="narrative.evidence" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe physical evidence..." rows={5} />} />
+                    <Controller name="narrative.evidence" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe physical evidence..." rows={3} />} />
                 </NarrativeSection>
 
-                <NarrativeSection title="COURT INFORMATION" presetFieldName="narrativePresets.court" control={control}>
-                    <Controller name="narrative.court" control={control} render={({ field }) => <Textarea {...field} placeholder="Information for the court..." rows={5} />} />
+                <NarrativeSection title="COURT INFORMATION">
+                    <Controller name="narrative.court" control={control} render={({ field }) => <Textarea {...field} placeholder="Information for the court..." rows={3} />} />
                 </NarrativeSection>
 
-                 <NarrativeSection title="ADDITIONAL INFORMATION" presetFieldName="narrativePresets.additional" control={control}>
+                 <NarrativeSection title="ADDITIONAL INFORMATION">
                      <Controller
                         name="narrative.plea"
                         control={control}
                         render={({ field }) => (
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value}>
                                 <SelectTrigger className="mb-2">
                                     <SelectValue placeholder="Select Plea..." />
                                 </SelectTrigger>
@@ -701,9 +682,8 @@ export function AdvancedArrestReportForm() {
                             </Select>
                         )}
                         />
-                    <Controller name="narrative.additional" control={control} render={({ field }) => <Textarea {...field} placeholder="Additional information..." rows={5} />} />
+                    <Controller name="narrative.additional" control={control} render={({ field }) => <Textarea {...field} placeholder="Additional information..." rows={3} />} />
                 </NarrativeSection>
-
               </TableBody>
             </Table>
           </div>
