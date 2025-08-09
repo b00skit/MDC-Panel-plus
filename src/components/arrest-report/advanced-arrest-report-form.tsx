@@ -44,7 +44,7 @@ interface DeptRanks {
 export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: defaultOfficers, alternativeCharacters, swapOfficer, addOfficer: addOfficerToStore } = useOfficerStore();
+    const { officers: defaultOfficers, alternativeCharacters, swapOfficer } = useOfficerStore();
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
     });
@@ -68,6 +68,10 @@ export function AdvancedArrestReportForm() {
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
     const watchedFields = watch();
+
+    useEffect(() => {
+        reset(formData);
+    }, [formData, reset]);
 
     // Preset Effects
     useEffect(() => {
@@ -273,10 +277,6 @@ export function AdvancedArrestReportForm() {
     ]);
     
     useEffect(() => {
-      if (getValues('officers').length === 0) {
-        addOfficerToStore();
-      }
-      
       fetch('/data/dept_ranks.json')
           .then((res) => res.json())
           .then((data) => setDeptRanks(data));
@@ -293,10 +293,12 @@ export function AdvancedArrestReportForm() {
       if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
       if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
   
-    }, []);
+    }, [getValues, setValue]);
     
     useEffect(() => {
-        const subscription = watch((value) => {
+        const subscription = watch((value, { type }) => {
+            if (!type) return; // Prevent feedback loop from form reset
+
             const currentOfficers = value.officers;
             if (currentOfficers && currentOfficers[0]) {
                 const officer = currentOfficers[0];
@@ -603,7 +605,7 @@ export function AdvancedArrestReportForm() {
                 
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
-                    <Button className="w-full" type="button" onClick={addOfficerToStore}>
+                    <Button className="w-full" type="button" onClick={() => appendOfficer({ name: '', rank: '', department: '', badgeNumber: '', callSign: '', divDetail: '' })}>
                       <CirclePlus className="mr-2 h-4 w-4" /> ADD OFFICER
                     </Button>
                   </TableCell>
