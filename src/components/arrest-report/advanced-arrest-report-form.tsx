@@ -45,7 +45,7 @@ interface DeptRanks {
 export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: initialOfficers, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
+    const { alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
@@ -56,7 +56,7 @@ export function AdvancedArrestReportForm() {
       name: 'persons'
     });
 
-    const { fields: officerFields, append: appendOfficer, remove: removeOfficerField, update: updateOfficerField, swap: swapOfficerField } = useFieldArray({
+    const { fields: officerFields, append: appendOfficer, remove: removeOfficerField, update: updateOfficerField } = useFieldArray({
       control,
       name: 'officers'
     });
@@ -77,8 +77,8 @@ export function AdvancedArrestReportForm() {
     
     // Auto-population from modifiers
     useEffect(() => {
-        const date = getValues('incident.date') || '09/AUG/2025';
-        const primaryOfficer = getValues('officers.0');
+        const primaryOfficer = watchedFields.officers?.[0];
+        const date = watchedFields.incident?.date || '09/AUG/2025';
         const rank = primaryOfficer?.rank || '';
         const name = primaryOfficer?.name || '';
         const badge = primaryOfficer?.badgeNumber || '';
@@ -131,18 +131,17 @@ export function AdvancedArrestReportForm() {
         watchedFields.officers?.[0]?.divDetail,
         watchedFields.officers?.[0]?.callSign,
         setValue,
-        getValues,
     ]);
 
     useEffect(() => {
         let investigationText = '';
-        const time = getValues('incident.time') || '';
-        const street = getValues('incident.locationStreet') || '';
+        const time = watchedFields.incident?.time || '';
+        const street = watchedFields.incident?.locationStreet || '';
 
         if(watchedFields.modifiers?.wasSuspectInVehicle) {
-            const color = getValues('narrative.vehicleColor') || '';
-            const model = getValues('narrative.vehicleModel') || '';
-            const plate = getValues('narrative.vehiclePlate') ? `with ${getValues('narrative.vehiclePlate')} plates` : 'with no plates';
+            const color = watchedFields.narrative?.vehicleColor || '';
+            const model = watchedFields.narrative?.vehicleModel || '';
+            const plate = watchedFields.narrative?.vehiclePlate ? `with ${watchedFields.narrative.vehiclePlate} plates` : 'with no plates';
             investigationText = `At approximately ${time} hours, I was driving on ${street} when I observed a ${color} ${model}, ${plate}.`;
         } else {
             investigationText = `At approximately ${time} hours, I was driving on ${street}`;
@@ -156,19 +155,18 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.vehicleModel,
         watchedFields.narrative?.vehiclePlate,
         setValue,
-        getValues
     ]);
 
      useEffect(() => {
         let arrestText = '';
-        const suspectName = getValues('arrestee.name') || 'the suspect';
+        const suspectName = watchedFields.arrestee?.name || 'the suspect';
         if (watchedFields.modifiers?.wasSuspectMirandized) {
             const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
             arrestText += `I admonished ${suspectName} utilizing my Field Officer’s Notebook, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
         }
 
-        const transportingRank = getValues('narrative.transportingRank') || '';
-        const transportingName = getValues('narrative.transportingName') || '';
+        const transportingRank = watchedFields.narrative?.transportingRank || '';
+        const transportingName = watchedFields.narrative?.transportingName || '';
         
         if (watchedFields.modifiers?.didYouTransport) {
             arrestText += `\nI transported ${suspectName} to Mission Row Station.`;
@@ -195,22 +193,21 @@ export function AdvancedArrestReportForm() {
         charges,
         penalCode,
         setValue,
-        getValues
     ]);
 
     useEffect(() => {
         let photosText = '';
         if (watchedFields.modifiers?.doYouHaveAVideo) {
-            photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${getValues('narrative.dicvsLink') || ''}\n`;
+            photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${watchedFields.narrative?.dicvsLink || ''}\n`;
         }
         if (watchedFields.modifiers?.didYouTakePhotographs) {
-            photosText += `I took photographs using my Department-issued cell phone - ${getValues('narrative.photosLink') || ''}\n`;
+            photosText += `I took photographs using my Department-issued cell phone - ${watchedFields.narrative?.photosLink || ''}\n`;
         }
         if (watchedFields.modifiers?.didYouObtainCctvFootage) {
-            photosText += `I obtained closed-circuit television (CCTV) footage - ${getValues('narrative.cctvLink') || ''}\n`;
+            photosText += `I obtained closed-circuit television (CCTV) footage - ${watchedFields.narrative?.cctvLink || ''}\n`;
         }
         if (watchedFields.modifiers?.thirdPartyVideoFootage) {
-            photosText += `I obtained third party video footage - ${getValues('narrative.thirdPartyLink') || ''}\n`;
+            photosText += `I obtained third party video footage - ${watchedFields.narrative?.thirdPartyLink || ''}\n`;
         }
 
         setValue('narrative.photographs', photosText.trim() || 'N/A');
@@ -224,19 +221,17 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.cctvLink,
         watchedFields.narrative?.thirdPartyLink,
         setValue,
-        getValues
     ]);
     
     useEffect(() => {
         let bookingText = '';
-        const suspectName = getValues('arrestee.name') || 'the suspect';
+        const suspectName = watchedFields.arrestee?.name || 'the suspect';
         const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
 
-        const bookingRank = getValues('narrative.bookingRank') || '';
-        const bookingName = getValues('narrative.bookingName') || '';
+        const bookingRank = watchedFields.narrative?.bookingRank || '';
+        const bookingName = watchedFields.narrative?.bookingName || '';
 
         const booker = watchedFields.modifiers?.didYouBook ? 'I' : `${bookingRank} ${bookingName}`;
-        const bookerPossessive = watchedFields.modifiers?.didYouBook ? 'my' : `${bookingRank} ${bookingName}'s`;
 
         if (watchedFields.modifiers?.biometricsAlreadyOnFile) {
             bookingText = `${suspectName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
@@ -259,7 +254,42 @@ export function AdvancedArrestReportForm() {
         charges,
         penalCode,
         setValue,
-        getValues
+    ]);
+
+    useEffect(() => {
+        let evidenceText = "I booked all evidence into the Mission Row Station property room.\n";
+        const evidenceLogs = watchedFields.evidenceLogs || [];
+        evidenceLogs.forEach((log, index) => {
+            if(log.logNumber || log.description || log.quantity) {
+                 evidenceText += `Item ${index + 1} - ${log.logNumber || 'N/A'} - ${log.description || 'N/A'} (x${log.quantity || '1'})\n`;
+            }
+        });
+        setValue('narrative.evidence', evidenceText.trim());
+    }, [watchedFields.evidenceLogs, setValue]);
+
+    useEffect(() => {
+        const primaryOfficer = watchedFields.officers?.[0];
+        const rank = primaryOfficer?.rank || '';
+        const name = primaryOfficer?.name || '';
+        const badge = primaryOfficer?.badgeNumber || '';
+        const courtText = `I, ${rank} ${name} #${badge}, can testify to the contents of this report.`;
+        setValue('narrative.court', courtText);
+    }, [
+        watchedFields.officers?.[0]?.rank,
+        watchedFields.officers?.[0]?.name,
+        watchedFields.officers?.[0]?.badgeNumber,
+        setValue
+    ]);
+
+    useEffect(() => {
+        const suspectName = watchedFields.arrestee?.name || 'suspect';
+        const plea = watchedFields.narrative?.plea || 'Guilty';
+        const additionalText = `(( ${suspectName} pled ${plea}. ))`;
+        setValue('narrative.additional', additionalText);
+    }, [
+        watchedFields.arrestee?.name,
+        watchedFields.narrative?.plea,
+        setValue
     ]);
 
 
@@ -268,22 +298,38 @@ export function AdvancedArrestReportForm() {
       // This effect runs once on mount to set up the form correctly.
       if (isInitialLoad.current) {
         // Reset form with default values from store
-        reset(formData);
-
-        if (officerFields.length === 0 && initialOfficers.length > 0) {
-            appendOfficer(initialOfficers[0] || { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' });
-        }
-        if (personFields.length === 0) {
-            appendPerson({ name: '', sex: '', gang: '' });
-        }
+        const { officers: initialOfficers } = useOfficerStore.getState();
         
-        if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
-        if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
+        const populatedFormData = { ...formData };
+        if (!populatedFormData.officers || populatedFormData.officers.length === 0) {
+            populatedFormData.officers = initialOfficers.length > 0 ? initialOfficers : [{ id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' }];
+        }
+        if (!populatedFormData.persons || populatedFormData.persons.length === 0) {
+            populatedFormData.persons = [{ name: '', sex: '', gang: '' }];
+        }
+        if(!populatedFormData.incident.date) populatedFormData.incident.date = format(new Date(), 'dd/MMM/yyyy').toUpperCase();
+        if(!populatedFormData.incident.time) populatedFormData.incident.time = format(new Date(), 'HH:mm');
+
+        reset(populatedFormData);
         
         isInitialLoad.current = false;
       }
-    }, [appendOfficer, appendPerson, getValues, setValue, officerFields.length, personFields.length, initialOfficers, reset, formData]);
+    }, [reset, formData]);
 
+    const handlePillClick = (officerIndex: number, altChar: Officer) => {
+        const currentOfficerInForm = getValues(`officers.${officerIndex}`);
+        swapOfficerInStore(currentOfficerInForm.id!, altChar);
+
+        const swappedOfficer = useOfficerStore.getState().officers.find(o => o.id === currentOfficerInForm.id);
+        if (swappedOfficer) {
+            updateOfficerField(officerIndex, swappedOfficer);
+        }
+        saveForm(); 
+    }
+    
+    const onAddOfficerClick = () => {
+        appendOfficer({ name: '', rank: '', department: '', badgeNumber: '' });
+    }
 
     useEffect(() => {
         fetch('/data/dept_ranks.json')
@@ -304,21 +350,6 @@ export function AdvancedArrestReportForm() {
         const [department, rank] = value.split('__');
         updateOfficerField(index, { ...getValues(`officers.${index}`), department, rank });
     };
-
-    const handlePillClick = (officerIndex: number, altChar: Officer) => {
-        const currentOfficerInForm = getValues(`officers.${officerIndex}`);
-        swapOfficerInStore(currentOfficerInForm.id, altChar);
-
-        // Directly update the form state after swapping in the store
-        const swappedOfficer = useOfficerStore.getState().officers.find(o => o.id === currentOfficerInForm.id);
-        if (swappedOfficer) {
-            updateOfficerField(officerIndex, swappedOfficer);
-        }
-    }
-    
-    const onAddOfficerClick = () => {
-        appendOfficer({ id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' });
-    }
 
   return (
     <form onSubmit={handleSubmit(saveForm)} onBlur={saveForm}>
