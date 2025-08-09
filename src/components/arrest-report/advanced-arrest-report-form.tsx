@@ -119,8 +119,12 @@ export function AdvancedArrestReportForm() {
         watchedFields.modifiers?.undercover, 
         watchedFields.modifiers?.inMetroUniform, 
         watchedFields.modifiers?.inG3Uniform, 
-        watchedFields.incident,
-        watchedFields.officers,
+        watchedFields.incident?.date,
+        watchedFields.officers?.[0]?.rank,
+        watchedFields.officers?.[0]?.name,
+        watchedFields.officers?.[0]?.badgeNumber,
+        watchedFields.officers?.[0]?.divDetail,
+        watchedFields.officers?.[0]?.callSign,
         setValue,
         getValues,
     ]);
@@ -261,7 +265,7 @@ export function AdvancedArrestReportForm() {
 
     useEffect(() => {
       // This effect runs once on mount to set up the form correctly.
-      if (officers.length === 0) {
+      if (officerFields.length === 0) {
         addOfficer(); 
       }
       if (personFields.length === 0) {
