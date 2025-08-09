@@ -75,13 +75,13 @@ export function AdvancedArrestReportForm() {
     useEffect(() => {
         const date = getValues('incident.date') || '09/AUG/2025';
         const primaryOfficer = getValues('officers.0');
-        const rank = primaryOfficer?.rank || 'Officer';
-        const name = primaryOfficer?.name || 'Laura Meredith';
-        const badge = primaryOfficer?.badgeNumber || '#114466';
-        const divDetail = primaryOfficer?.divDetail || 'Davis Division';
-        const callsign = primaryOfficer?.callSign || '280C';
+        const rank = primaryOfficer?.rank || '';
+        const name = primaryOfficer?.name || '';
+        const badge = primaryOfficer?.badgeNumber || '';
+        const divDetail = primaryOfficer?.divDetail || '';
+        const callsign = primaryOfficer?.callSign || '';
 
-        let sourceText = `On ${date}, I, ${rank} ${name} (${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+        let sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
         
         // Vehicle part
         if (watchedFields.modifiers?.markedUnit) {
@@ -132,12 +132,12 @@ export function AdvancedArrestReportForm() {
 
     useEffect(() => {
         let investigationText = '';
-        const time = getValues('incident.time') || '<time>';
-        const street = getValues('incident.locationStreet') || '<street>';
+        const time = getValues('incident.time') || '';
+        const street = getValues('incident.locationStreet') || '';
 
         if(watchedFields.modifiers?.wasSuspectInVehicle) {
-            const color = getValues('narrative.vehicleColor') || '<VEHICLE COLOR>';
-            const model = getValues('narrative.vehicleModel') || '<VEHICLE MODEL>';
+            const color = getValues('narrative.vehicleColor') || '';
+            const model = getValues('narrative.vehicleModel') || '';
             const plate = getValues('narrative.vehiclePlate') ? `with ${getValues('narrative.vehiclePlate')} plates` : 'with no plates';
             investigationText = `At approximately ${time} hours, I was driving on ${street} when I observed a ${color} ${model}, ${plate}.`;
         } else {
@@ -157,14 +157,14 @@ export function AdvancedArrestReportForm() {
 
      useEffect(() => {
         let arrestText = '';
-        const suspectName = getValues('arrestee.name') || 'John Doe';
+        const suspectName = getValues('arrestee.name') || '';
         if (watchedFields.modifiers?.wasSuspectMirandized) {
             const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
             arrestText += `I admonished ${suspectName} utilizing my Field Officer’s Notebook, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
         }
 
-        const transportingRank = getValues('narrative.transportingRank') || '<Rank>';
-        const transportingName = getValues('narrative.transportingName') || '<Name of Transporting Officer>';
+        const transportingRank = getValues('narrative.transportingRank') || '';
+        const transportingName = getValues('narrative.transportingName') || '';
         
         if (watchedFields.modifiers?.didYouTransport) {
             arrestText += `\nI transported ${suspectName} to Mission Row Station.`;
@@ -225,11 +225,11 @@ export function AdvancedArrestReportForm() {
     
     useEffect(() => {
         let bookingText = '';
-        const suspectName = getValues('arrestee.name') || '<suspect>';
+        const suspectName = getValues('arrestee.name') || '';
         const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
 
-        const bookingRank = getValues('narrative.bookingRank') || '<Rank>';
-        const bookingName = getValues('narrative.bookingName') || '<Name of Booking Officer>';
+        const bookingRank = getValues('narrative.bookingRank') || '';
+        const bookingName = getValues('narrative.bookingName') || '';
 
         const booker = watchedFields.modifiers?.didYouBook ? 'I' : `${bookingRank} ${bookingName}`;
         const bookerPossessive = watchedFields.modifiers?.didYouBook ? 'my' : `${bookingRank} ${bookingName}'s`;
