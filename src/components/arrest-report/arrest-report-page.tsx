@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useChargeStore } from '@/stores/charge-store';
@@ -474,3 +475,5 @@ export function ArrestReportPage() {
     </div>
   );
 }
+
+    

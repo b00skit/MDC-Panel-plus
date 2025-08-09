@@ -32,7 +32,7 @@ import {
 } from '../ui/select';
 import { useAdvancedReportStore, FormState } from '@/stores/advanced-report-store';
 import { useChargeStore } from '@/stores/charge-store';
-import { useOfficerStore } from '@/stores/officer-store';
+import { useOfficerStore, Officer } from '@/stores/officer-store';
 import { format } from 'date-fns';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
@@ -45,7 +45,7 @@ interface DeptRanks {
 export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
-    const { officers, alternativeCharacters, swapOfficer, addOfficer, removeOfficer: removeOfficerFromStore } = useOfficerStore();
+    const { officers: initialOfficers, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
     });
@@ -55,7 +55,7 @@ export function AdvancedArrestReportForm() {
       name: 'persons'
     });
 
-    const { fields: officerFields, append: appendOfficer, remove: removeOfficerField } = useFieldArray({
+    const { fields: officerFields, append: appendOfficer, remove: removeOfficerField, update: updateOfficerField, swap: swapOfficerField } = useFieldArray({
       control,
       name: 'officers'
     });
@@ -266,7 +266,7 @@ export function AdvancedArrestReportForm() {
     useEffect(() => {
       // This effect runs once on mount to set up the form correctly.
       if (officerFields.length === 0) {
-        addOfficer(); 
+        appendOfficer(initialOfficers[0] || { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' });
       }
       if (personFields.length === 0) {
         appendPerson({ name: '', sex: '', gang: '' });
@@ -288,42 +288,28 @@ export function AdvancedArrestReportForm() {
       if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
       if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
   
-    }, [getValues, setValue]);
+    }, [appendOfficer, appendPerson, getValues, officerFields.length, personFields.length, setValue, initialOfficers]);
     
     useEffect(() => {
-        const subscription = watch((value, { name, type }) => {
-            const currentOfficers = value.officers;
-            if (currentOfficers && currentOfficers.length > 0 && currentOfficers[0]) {
-                const officer = currentOfficers[0];
-                 if (officer.badgeNumber && officer.divDetail) {
-                     localStorage.setItem(`${officer.badgeNumber}-divDetail`, officer.divDetail);
-                 }
-            }
+        const subscription = watch((value) => {
              setFields(value as FormState);
         });
         return () => subscription.unsubscribe();
     }, [watch, setFields]);
     
-    // Sync zustand officer state with react-hook-form state
-    useEffect(() => {
-        if(officers.length > 0) {
-            setValue('officers', officers);
-        }
-    }, [officers, setValue]);
 
     const handleRankChange = (index: number, value: string) => {
         const [department, rank] = value.split('__');
-        setValue(`officers.${index}.department`, department);
-        setValue(`officers.${index}.rank`, rank);
+        updateOfficerField(index, { ...getValues(`officers.${index}`), department, rank });
     };
 
-    const handlePillClick = (officerIndex: number, altChar: any) => {
+    const handlePillClick = (officerIndex: number, altChar: Officer) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
-        swapOfficer(currentOfficerInForm.id, altChar);
+        swapOfficerInStore(currentOfficerInForm.id, altChar);
     }
     
     const onAddOfficerClick = () => {
-        addOfficer();
+        appendOfficer({ id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' });
     }
 
   return (
@@ -569,7 +555,7 @@ export function AdvancedArrestReportForm() {
                         <TableCell><Input placeholder="CALLSIGN" {...register(`officers.${index}.callSign`)} /></TableCell>
                         <TableCell className="flex items-center gap-1">
                           <Input placeholder="DIVISION / DETAIL" {...register(`officers.${index}.divDetail`)} />
-                           {index > 0 && <Button variant="ghost" size="icon" onClick={() => removeOfficerFromStore(field.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
+                           {index > 0 && <Button variant="ghost" size="icon" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
                         </TableCell>
                     </TableRow>
                     {index === 0 && alternativeCharacters.length > 0 && (
@@ -728,5 +714,8 @@ export function AdvancedArrestReportForm() {
     </form>
   );
 }
+
+    
+
 
     
