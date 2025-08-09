@@ -66,6 +66,26 @@ export interface FormState {
         bookingName: string;
     },
     evidenceLogs: EvidenceLog[];
+    presets: {
+        source: boolean;
+        investigation: boolean;
+        arrest: boolean;
+        photographs: boolean;
+        booking: boolean;
+        evidence: boolean;
+        court: boolean;
+        additional: boolean;
+    };
+    userModified: {
+        source: boolean;
+        investigation: boolean;
+        arrest: boolean;
+        photographs: boolean;
+        booking: boolean;
+        evidence: boolean;
+        court: boolean;
+        additional: boolean;
+    };
 }
 
 const getInitialState = (): FormState => ({
@@ -103,6 +123,26 @@ const getInitialState = (): FormState => ({
         transportingRank: '', transportingName: '', bookingRank: '', bookingName: ''
     },
     evidenceLogs: [],
+    presets: {
+        source: true,
+        investigation: true,
+        arrest: true,
+        photographs: true,
+        booking: true,
+        evidence: true,
+        court: true,
+        additional: true,
+    },
+    userModified: {
+        source: false,
+        investigation: false,
+        arrest: false,
+        photographs: false,
+        booking: false,
+        evidence: false,
+        court: false,
+        additional: false,
+    },
 });
 
 

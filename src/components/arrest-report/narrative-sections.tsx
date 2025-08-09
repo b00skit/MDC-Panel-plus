@@ -7,20 +7,29 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Trash2, CirclePlus } from 'lucide-react';
 import { FormState } from '@/stores/advanced-report-store';
+import { Checkbox } from '../ui/checkbox';
+import { Label } from '../ui/label';
 
 interface NarrativeSectionProps {
     title: string;
     children: React.ReactNode;
+    presetName: keyof FormState['presets'];
+    isChecked: boolean;
+    onToggle: () => void;
 }
 
-export const NarrativeSection = ({ title, children }: NarrativeSectionProps) => {
+export const NarrativeSection = ({ title, children, presetName, isChecked, onToggle }: NarrativeSectionProps) => {
     return (
       <>
         <TableRow className="h-3" />
         <TableRow>
           <TableHead className="bg-secondary gap-x-2" colSpan={5}>
-            <div className="flex flex-wrap justify-center items-center relative">
+            <div className="flex flex-wrap justify-between items-center relative">
               <a>{title}</a>
+              <div className="flex items-center space-x-2">
+                <Checkbox id={`preset-${presetName}`} checked={isChecked} onCheckedChange={onToggle} />
+                <Label htmlFor={`preset-${presetName}`} className="text-sm font-medium">Enable Preset?</Label>
+              </div>
             </div>
           </TableHead>
         </TableRow>

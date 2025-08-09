@@ -79,7 +79,7 @@ export function AdvancedArrestReportForm() {
     useEffect(() => {
         const officers = watchedFields.officers;
         const primaryOfficer = officers?.[0];
-        if (!primaryOfficer) return;
+        if (!primaryOfficer || !watchedFields.presets?.source) return;
 
         const date = watchedFields.incident?.date || '09/AUG/2025';
         const rank = primaryOfficer.rank || '';
@@ -152,10 +152,12 @@ export function AdvancedArrestReportForm() {
         watchedFields.modifiers?.inG3Uniform, 
         watchedFields.incident?.date,
         JSON.stringify(watchedFields.officers),
+        watchedFields.presets?.source,
         setValue,
     ]);
 
     useEffect(() => {
+        if (!watchedFields.presets?.investigation) return;
         let investigationText = '';
         const time = watchedFields.incident?.time || '';
         const street = watchedFields.incident?.locationStreet || '';
@@ -176,10 +178,12 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.vehicleColor,
         watchedFields.narrative?.vehicleModel,
         watchedFields.narrative?.vehiclePlate,
+        watchedFields.presets?.investigation,
         setValue,
     ]);
 
      useEffect(() => {
+        if (!watchedFields.presets?.arrest) return;
         let arrestText = '';
         const suspectName = watchedFields.arrestee?.name || 'the suspect';
         if (watchedFields.modifiers?.wasSuspectMirandized) {
@@ -214,10 +218,12 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.transportingName,
         charges,
         penalCode,
+        watchedFields.presets?.arrest,
         setValue,
     ]);
 
     useEffect(() => {
+        if (!watchedFields.presets?.photographs) return;
         let photosText = '';
         if (watchedFields.modifiers?.doYouHaveAVideo) {
             photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${watchedFields.narrative?.dicvsLink || ''}\n`;
@@ -242,10 +248,12 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.photosLink,
         watchedFields.narrative?.cctvLink,
         watchedFields.narrative?.thirdPartyLink,
+        watchedFields.presets?.photographs,
         setValue,
     ]);
     
     useEffect(() => {
+        if (!watchedFields.presets?.booking) return;
         let bookingText = '';
         const suspectName = watchedFields.arrestee?.name || 'the suspect';
         const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
@@ -275,10 +283,12 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.bookingName,
         charges,
         penalCode,
+        watchedFields.presets?.booking,
         setValue,
     ]);
     
     useEffect(() => {
+        if (!watchedFields.presets?.evidence) return;
         let evidenceText = "I booked all evidence into the Mission Row Station property room.\n";
         const evidenceLogs = watchedFields.evidenceLogs || [];
         evidenceLogs.forEach((log, index) => {
@@ -287,9 +297,10 @@ export function AdvancedArrestReportForm() {
             }
         });
         setValue('narrative.evidence', evidenceText.trim());
-    }, [JSON.stringify(watchedFields.evidenceLogs), setValue]);
+    }, [JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, setValue]);
 
     useEffect(() => {
+        if (!watchedFields.presets?.court) return;
         const officers = watchedFields.officers || [];
         const primaryOfficer = officers[0];
         let courtText = '';
@@ -309,10 +320,11 @@ export function AdvancedArrestReportForm() {
             });
         }
         setValue('narrative.court', courtText);
-    }, [JSON.stringify(watchedFields.officers), setValue]);
+    }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, setValue]);
 
 
     useEffect(() => {
+        if (!watchedFields.presets?.additional) return;
         const suspectName = watchedFields.arrestee?.name || 'suspect';
         const plea = watchedFields.narrative?.plea || 'Guilty';
         const additionalText = `(( ${suspectName} pled ${plea}. ))`;
@@ -320,9 +332,30 @@ export function AdvancedArrestReportForm() {
     }, [
         watchedFields.arrestee?.name,
         watchedFields.narrative?.plea,
+        watchedFields.presets?.additional,
         setValue
     ]);
 
+    const handlePresetToggle = (preset: keyof FormState['presets']) => {
+        const isEnabled = !getValues(`presets.${preset}`);
+        setValue(`presets.${preset}`, isEnabled);
+        
+        // If disabling, clear the field only if user hasn't modified it
+        if (!isEnabled && !getValues(`userModified.${preset}`)) {
+            setValue(`narrative.${preset}`, '');
+        }
+        // If enabling, it will be populated by the respective useEffect
+        saveForm();
+    };
+
+    const handleTextareaChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement>,
+        field: keyof FormState['narrative']
+    ) => {
+        setValue(`narrative.${field}`, e.target.value);
+        setValue(`userModified.${field}`, true);
+        saveForm();
+    };
 
     const isInitialLoad = useRef(true);
     useEffect(() => {
@@ -605,11 +638,11 @@ export function AdvancedArrestReportForm() {
                     <TableRow>
                         <TableCell>
                             <Controller
-                                name={`officers.${index}`}
+                                name={`officers.${index}.rank`}
                                 control={control}
                                 render={({ field: { value, onChange, ...fieldProps } }) => (
                                     <Select
-                                        value={value?.department && value?.rank ? `${value.department}__${value.rank}` : ''}
+                                        value={getValues(`officers.${index}.department`) && value ? `${getValues(`officers.${index}.department`)}__${value}` : ''}
                                         onValueChange={(val) => handleRankChange(index, val)}
                                     >
                                         <SelectTrigger><SelectValue placeholder="Select Rank" /></SelectTrigger>
@@ -697,11 +730,26 @@ export function AdvancedArrestReportForm() {
                   </TableCell>
                 </TableRow>
                 
-                <NarrativeSection title="SOURCE OF ACTIVITY">
-                    <Controller name="narrative.source" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the source of the activity..." rows={3} />} />
+                <NarrativeSection
+                    title="SOURCE OF ACTIVITY"
+                    presetName="source"
+                    isChecked={watchedFields.presets?.source}
+                    onToggle={() => handlePresetToggle('source')}
+                >
+                    <Textarea
+                        value={watchedFields.narrative?.source}
+                        onChange={(e) => handleTextareaChange(e, 'source')}
+                        placeholder="Describe the source of the activity..."
+                        rows={3}
+                    />
                 </NarrativeSection>
 
-                <NarrativeSection title="INVESTIGATION">
+                <NarrativeSection
+                    title="INVESTIGATION"
+                    presetName="investigation"
+                    isChecked={watchedFields.presets?.investigation}
+                    onToggle={() => handlePresetToggle('investigation')}
+                >
                     {watchedFields.modifiers?.wasSuspectInVehicle &&
                         <div className="grid grid-cols-3 gap-2 mb-2">
                             <Input placeholder="VEHICLE COLOR" {...register('narrative.vehicleColor')} />
@@ -709,20 +757,40 @@ export function AdvancedArrestReportForm() {
                             <Input placeholder="VEHICLE PLATE" {...register('narrative.vehiclePlate')} />
                         </div>
                     }
-                    <Controller name="narrative.investigation" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the investigation..." rows={3} />} />
+                    <Textarea
+                        value={watchedFields.narrative?.investigation}
+                        onChange={(e) => handleTextareaChange(e, 'investigation')}
+                        placeholder="Describe the investigation..."
+                        rows={3}
+                    />
                 </NarrativeSection>
 
-                <NarrativeSection title="ARREST">
+                <NarrativeSection
+                    title="ARREST"
+                    presetName="arrest"
+                    isChecked={watchedFields.presets?.arrest}
+                    onToggle={() => handlePresetToggle('arrest')}
+                >
                     {!watchedFields.modifiers?.didYouTransport && (
                         <div className="grid grid-cols-2 gap-2 mb-2">
                             <Input placeholder="TRANSPORTING OFFICER RANK" {...register('narrative.transportingRank')} />
                             <Input placeholder="TRANSPORTING OFFICER NAME" {...register('narrative.transportingName')} />
                         </div>
                     )}
-                    <Controller name="narrative.arrest" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe the arrest..." rows={3} />} />
+                    <Textarea
+                        value={watchedFields.narrative?.arrest}
+                        onChange={(e) => handleTextareaChange(e, 'arrest')}
+                        placeholder="Describe the arrest..."
+                        rows={3}
+                    />
                 </NarrativeSection>
                 
-                <NarrativeSection title="PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING">
+                <NarrativeSection
+                    title="PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING"
+                    presetName="photographs"
+                    isChecked={watchedFields.presets?.photographs}
+                    onToggle={() => handlePresetToggle('photographs')}
+                >
                     {watchedFields.modifiers?.doYouHaveAVideo || watchedFields.modifiers?.didYouTakePhotographs || watchedFields.modifiers?.didYouObtainCctvFootage || watchedFields.modifiers?.thirdPartyVideoFootage ? (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
@@ -731,35 +799,75 @@ export function AdvancedArrestReportForm() {
                              {watchedFields.modifiers.didYouObtainCctvFootage && <Input placeholder="CCTV Footage Link" {...register('narrative.cctvLink')} />}
                              {watchedFields.modifiers.thirdPartyVideoFootage && <Input placeholder="Third Party Footage Link" {...register('narrative.thirdPartyLink')} />}
                         </div>
-                        <Controller name="narrative.photographs" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe video or photographic evidence..." rows={3} />} />
+                        <Textarea
+                            value={watchedFields.narrative?.photographs}
+                            onChange={(e) => handleTextareaChange(e, 'photographs')}
+                            placeholder="Describe video or photographic evidence..."
+                            rows={3}
+                        />
                     </>
                      ) : (
                         <Textarea placeholder="(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Do You Have A Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))" rows={3} />
                      )}
                 </NarrativeSection>
 
-                <NarrativeSection title="BOOKING">
+                <NarrativeSection
+                    title="BOOKING"
+                    presetName="booking"
+                    isChecked={watchedFields.presets?.booking}
+                    onToggle={() => handlePresetToggle('booking')}
+                >
                     {!watchedFields.modifiers?.didYouBook && (
                          <div className="grid grid-cols-2 gap-2 mb-2">
                             <Input placeholder="BOOKING OFFICER RANK" {...register('narrative.bookingRank')} />
                             <Input placeholder="BOOKING OFFICER NAME" {...register('narrative.bookingName')} />
                         </div>
                     )}
-                    <Controller name="narrative.booking" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe booking details..." rows={3} />} />
+                    <Textarea
+                        value={watchedFields.narrative?.booking}
+                        onChange={(e) => handleTextareaChange(e, 'booking')}
+                        placeholder="Describe booking details..."
+                        rows={3}
+                    />
                 </NarrativeSection>
                 
-                 <NarrativeSection title="PHYSICAL EVIDENCE">
+                 <NarrativeSection
+                    title="PHYSICAL EVIDENCE"
+                    presetName="evidence"
+                    isChecked={watchedFields.presets?.evidence}
+                    onToggle={() => handlePresetToggle('evidence')}
+                 >
                     <Table>
                         <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} onKeyUp={saveForm} />
                     </Table>
-                    <Controller name="narrative.evidence" control={control} render={({ field }) => <Textarea {...field} placeholder="Describe physical evidence..." rows={3} />} />
+                    <Textarea
+                        value={watchedFields.narrative?.evidence}
+                        onChange={(e) => handleTextareaChange(e, 'evidence')}
+                        placeholder="Describe physical evidence..."
+                        rows={3}
+                    />
                 </NarrativeSection>
 
-                <NarrativeSection title="COURT INFORMATION">
-                    <Controller name="narrative.court" control={control} render={({ field }) => <Textarea {...field} placeholder="Information for the court..." rows={3} />} />
+                <NarrativeSection
+                    title="COURT INFORMATION"
+                    presetName="court"
+                    isChecked={watchedFields.presets?.court}
+                    onToggle={() => handlePresetToggle('court')}
+                >
+                    <Textarea
+                        value={watchedFields.narrative?.court}
+                        onChange={(e) => handleTextareaChange(e, 'court')}
+                        placeholder="Information for the court..."
+                        rows={3}
+                    />
                 </NarrativeSection>
 
-                 <NarrativeSection title="ADDITIONAL INFORMATION">
+                 <NarrativeSection
+                    title="ADDITIONAL INFORMATION"
+                    presetName="additional"
+                    isChecked={watchedFields.presets?.additional}
+                    onToggle={() => handlePresetToggle('additional')}
+                 >
                      <Controller
                         name="narrative.plea"
                         control={control}
@@ -776,7 +884,12 @@ export function AdvancedArrestReportForm() {
                             </Select>
                         )}
                         />
-                    <Controller name="narrative.additional" control={control} render={({ field }) => <Textarea {...field} placeholder="Additional information..." rows={3} />} />
+                    <Textarea
+                        value={watchedFields.narrative?.additional}
+                        onChange={(e) => handleTextareaChange(e, 'additional')}
+                        placeholder="Additional information..."
+                        rows={3}
+                    />
                 </NarrativeSection>
               </TableBody>
             </Table>
