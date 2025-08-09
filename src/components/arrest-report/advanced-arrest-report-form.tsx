@@ -80,6 +80,8 @@ export function AdvancedArrestReportForm() {
         const officers = watchedFields.officers;
         const primaryOfficer = officers?.[0];
         if (!primaryOfficer || !watchedFields.presets?.source) return;
+        if (watchedFields.userModified?.source) return;
+
 
         const date = watchedFields.incident?.date || '09/AUG/2025';
         const rank = primaryOfficer.rank || '';
@@ -153,11 +155,13 @@ export function AdvancedArrestReportForm() {
         watchedFields.incident?.date,
         JSON.stringify(watchedFields.officers),
         watchedFields.presets?.source,
+        watchedFields.userModified?.source,
         setValue,
     ]);
 
     useEffect(() => {
         if (!watchedFields.presets?.investigation) return;
+        if (watchedFields.userModified?.investigation) return;
         let investigationText = '';
         const time = watchedFields.incident?.time || '';
         const street = watchedFields.incident?.locationStreet || '';
@@ -179,11 +183,13 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.vehicleModel,
         watchedFields.narrative?.vehiclePlate,
         watchedFields.presets?.investigation,
+        watchedFields.userModified?.investigation,
         setValue,
     ]);
 
      useEffect(() => {
         if (!watchedFields.presets?.arrest) return;
+        if (watchedFields.userModified?.arrest) return;
         let arrestText = '';
         const suspectName = watchedFields.arrestee?.name || 'the suspect';
         if (watchedFields.modifiers?.wasSuspectMirandized) {
@@ -219,11 +225,13 @@ export function AdvancedArrestReportForm() {
         charges,
         penalCode,
         watchedFields.presets?.arrest,
+        watchedFields.userModified?.arrest,
         setValue,
     ]);
 
     useEffect(() => {
         if (!watchedFields.presets?.photographs) return;
+        if (watchedFields.userModified?.photographs) return;
         let photosText = '';
         if (watchedFields.modifiers?.doYouHaveAVideo) {
             photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${watchedFields.narrative?.dicvsLink || ''}\n`;
@@ -249,11 +257,13 @@ export function AdvancedArrestReportForm() {
         watchedFields.narrative?.cctvLink,
         watchedFields.narrative?.thirdPartyLink,
         watchedFields.presets?.photographs,
+        watchedFields.userModified?.photographs,
         setValue,
     ]);
     
     useEffect(() => {
         if (!watchedFields.presets?.booking) return;
+        if (watchedFields.userModified?.booking) return;
         let bookingText = '';
         const suspectName = watchedFields.arrestee?.name || 'the suspect';
         const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
@@ -284,11 +294,13 @@ export function AdvancedArrestReportForm() {
         charges,
         penalCode,
         watchedFields.presets?.booking,
+        watchedFields.userModified?.booking,
         setValue,
     ]);
     
     useEffect(() => {
         if (!watchedFields.presets?.evidence) return;
+        if (watchedFields.userModified?.evidence) return;
         let evidenceText = "I booked all evidence into the Mission Row Station property room.\n";
         const evidenceLogs = watchedFields.evidenceLogs || [];
         evidenceLogs.forEach((log, index) => {
@@ -297,10 +309,11 @@ export function AdvancedArrestReportForm() {
             }
         });
         setValue('narrative.evidence', evidenceText.trim());
-    }, [JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, setValue]);
+    }, [JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, setValue]);
 
     useEffect(() => {
         if (!watchedFields.presets?.court) return;
+        if (watchedFields.userModified?.court) return;
         const officers = watchedFields.officers || [];
         const primaryOfficer = officers[0];
         let courtText = '';
@@ -320,11 +333,12 @@ export function AdvancedArrestReportForm() {
             });
         }
         setValue('narrative.court', courtText);
-    }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, setValue]);
+    }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, watchedFields.userModified?.court, setValue]);
 
 
     useEffect(() => {
         if (!watchedFields.presets?.additional) return;
+        if (watchedFields.userModified?.additional) return;
         const suspectName = watchedFields.arrestee?.name || 'suspect';
         const plea = watchedFields.narrative?.plea || 'Guilty';
         const additionalText = `(( ${suspectName} pled ${plea}. ))`;
@@ -333,6 +347,7 @@ export function AdvancedArrestReportForm() {
         watchedFields.arrestee?.name,
         watchedFields.narrative?.plea,
         watchedFields.presets?.additional,
+        watchedFields.userModified?.additional,
         setValue
     ]);
 
@@ -340,20 +355,24 @@ export function AdvancedArrestReportForm() {
         const isEnabled = !getValues(`presets.${preset}`);
         setValue(`presets.${preset}`, isEnabled);
         
-        // If disabling, clear the field only if user hasn't modified it
         if (!isEnabled && !getValues(`userModified.${preset}`)) {
             setValue(`narrative.${preset}`, '');
         }
-        // If enabling, it will be populated by the respective useEffect
         saveForm();
     };
 
     const handleTextareaChange = (
         e: React.ChangeEvent<HTMLTextAreaElement>,
-        field: keyof FormState['narrative']
+        field: keyof FormState['narrative'] & keyof FormState['userModified']
     ) => {
-        setValue(`narrative.${field}`, e.target.value);
-        setValue(`userModified.${field}`, true);
+        const value = e.target.value;
+        setValue(`narrative.${field}`, value);
+        
+        if (value) {
+            setValue(`userModified.${field}`, true);
+        } else {
+            setValue(`userModified.${field}`, false);
+        }
         saveForm();
     };
 
@@ -733,7 +752,8 @@ export function AdvancedArrestReportForm() {
                 <NarrativeSection
                     title="SOURCE OF ACTIVITY"
                     presetName="source"
-                    isChecked={watchedFields.presets?.source}
+                    isChecked={!!watchedFields.presets?.source}
+                    isUserModified={!!watchedFields.userModified?.source}
                     onToggle={() => handlePresetToggle('source')}
                 >
                     <Textarea
@@ -747,7 +767,8 @@ export function AdvancedArrestReportForm() {
                 <NarrativeSection
                     title="INVESTIGATION"
                     presetName="investigation"
-                    isChecked={watchedFields.presets?.investigation}
+                    isChecked={!!watchedFields.presets?.investigation}
+                    isUserModified={!!watchedFields.userModified?.investigation}
                     onToggle={() => handlePresetToggle('investigation')}
                 >
                     {watchedFields.modifiers?.wasSuspectInVehicle &&
@@ -768,7 +789,8 @@ export function AdvancedArrestReportForm() {
                 <NarrativeSection
                     title="ARREST"
                     presetName="arrest"
-                    isChecked={watchedFields.presets?.arrest}
+                    isChecked={!!watchedFields.presets?.arrest}
+                    isUserModified={!!watchedFields.userModified?.arrest}
                     onToggle={() => handlePresetToggle('arrest')}
                 >
                     {!watchedFields.modifiers?.didYouTransport && (
@@ -788,7 +810,8 @@ export function AdvancedArrestReportForm() {
                 <NarrativeSection
                     title="PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING"
                     presetName="photographs"
-                    isChecked={watchedFields.presets?.photographs}
+                    isChecked={!!watchedFields.presets?.photographs}
+                    isUserModified={!!watchedFields.userModified?.photographs}
                     onToggle={() => handlePresetToggle('photographs')}
                 >
                     {watchedFields.modifiers?.doYouHaveAVideo || watchedFields.modifiers?.didYouTakePhotographs || watchedFields.modifiers?.didYouObtainCctvFootage || watchedFields.modifiers?.thirdPartyVideoFootage ? (
@@ -814,7 +837,8 @@ export function AdvancedArrestReportForm() {
                 <NarrativeSection
                     title="BOOKING"
                     presetName="booking"
-                    isChecked={watchedFields.presets?.booking}
+                    isChecked={!!watchedFields.presets?.booking}
+                    isUserModified={!!watchedFields.userModified?.booking}
                     onToggle={() => handlePresetToggle('booking')}
                 >
                     {!watchedFields.modifiers?.didYouBook && (
@@ -834,7 +858,8 @@ export function AdvancedArrestReportForm() {
                  <NarrativeSection
                     title="PHYSICAL EVIDENCE"
                     presetName="evidence"
-                    isChecked={watchedFields.presets?.evidence}
+                    isChecked={!!watchedFields.presets?.evidence}
+                    isUserModified={!!watchedFields.userModified?.evidence}
                     onToggle={() => handlePresetToggle('evidence')}
                  >
                     <Table>
@@ -851,7 +876,8 @@ export function AdvancedArrestReportForm() {
                 <NarrativeSection
                     title="COURT INFORMATION"
                     presetName="court"
-                    isChecked={watchedFields.presets?.court}
+                    isChecked={!!watchedFields.presets?.court}
+                    isUserModified={!!watchedFields.userModified?.court}
                     onToggle={() => handlePresetToggle('court')}
                 >
                     <Textarea
@@ -865,7 +891,8 @@ export function AdvancedArrestReportForm() {
                  <NarrativeSection
                     title="ADDITIONAL INFORMATION"
                     presetName="additional"
-                    isChecked={watchedFields.presets?.additional}
+                    isChecked={!!watchedFields.presets?.additional}
+                    isUserModified={!!watchedFields.userModified?.additional}
                     onToggle={() => handlePresetToggle('additional')}
                  >
                      <Controller

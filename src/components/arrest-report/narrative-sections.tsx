@@ -9,16 +9,27 @@ import { Trash2, CirclePlus } from 'lucide-react';
 import { FormState } from '@/stores/advanced-report-store';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+
 
 interface NarrativeSectionProps {
     title: string;
     children: React.ReactNode;
     presetName: keyof FormState['presets'];
     isChecked: boolean;
+    isUserModified: boolean;
     onToggle: () => void;
 }
 
-export const NarrativeSection = ({ title, children, presetName, isChecked, onToggle }: NarrativeSectionProps) => {
+export const NarrativeSection = ({ title, children, presetName, isChecked, isUserModified, onToggle }: NarrativeSectionProps) => {
+    
+    const checkboxWithLabel = (
+        <div className="flex items-center space-x-2">
+            <Checkbox id={`preset-${presetName}`} checked={isChecked} onCheckedChange={onToggle} disabled={isUserModified} />
+            <Label htmlFor={`preset-${presetName}`} className="text-sm font-medium">Enable Preset?</Label>
+        </div>
+    );
+
     return (
       <>
         <TableRow className="h-3" />
@@ -26,10 +37,20 @@ export const NarrativeSection = ({ title, children, presetName, isChecked, onTog
           <TableHead className="bg-secondary gap-x-2" colSpan={5}>
             <div className="flex flex-wrap justify-between items-center relative">
               <a>{title}</a>
-              <div className="flex items-center space-x-2">
-                <Checkbox id={`preset-${presetName}`} checked={isChecked} onCheckedChange={onToggle} />
-                <Label htmlFor={`preset-${presetName}`} className="text-sm font-medium">Enable Preset?</Label>
-              </div>
+              {isUserModified ? (
+                 <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                           {checkboxWithLabel}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                           <p>Clear the textarea to re-enable presets.</p>
+                        </TooltipContent>
+                    </Tooltip>
+                 </TooltipProvider>
+              ) : (
+                checkboxWithLabel
+              )}
             </div>
           </TableHead>
         </TableRow>
