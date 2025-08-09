@@ -339,7 +339,7 @@ export function AdvancedArrestReportForm() {
     useEffect(() => {
         if (!watchedFields.presets?.additional) return;
         if (watchedFields.userModified?.additional) return;
-        const suspectName = watchedFields.arrestee?.name || 'suspect';
+        const suspectName = watchedFields.arrestee?.name || '';
         const plea = watchedFields.narrative?.plea || 'Guilty';
         const additionalText = `(( ${suspectName} pled ${plea}. ))`;
         setValue('narrative.additional', additionalText);
