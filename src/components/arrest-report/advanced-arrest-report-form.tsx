@@ -286,11 +286,6 @@ export function AdvancedArrestReportForm() {
             }
         }
 
-        const currentPersons = getValues('persons');
-        if (!currentPersons || currentPersons.length === 0) {
-            appendPerson({ name: '', sex: '', gang: '' }, { shouldFocus: false });
-        }
-    
         fetch('/data/dept_ranks.json')
             .then((res) => res.json())
             .then((data) => setDeptRanks(data));
@@ -307,7 +302,7 @@ export function AdvancedArrestReportForm() {
         if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
         if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
 
-    }, [appendOfficer, appendPerson, defaultOfficers, getValues, setValue]);
+    }, [appendOfficer, defaultOfficers, getValues, setValue]);
 
     useEffect(() => {
         reset(formData);

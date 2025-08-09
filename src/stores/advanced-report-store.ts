@@ -70,7 +70,7 @@ const getInitialState = (): FormState => ({
         name: '', sex: '', hair: '', eyes: '', residence: '', age: '', height: '',
         descent: '', clothing: '', oddities: '', alias: '', gang: ''
     },
-    persons: [],
+    persons: [{ name: '', sex: '', gang: '' }],
     incident: {
         date: '', time: '', locationDistrict: '', locationStreet: ''
     },
