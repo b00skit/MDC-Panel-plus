@@ -20,10 +20,12 @@ import {
   SelectGroup,
   SelectLabel
 } from '@/components/ui/select';
-import { User, Shield, Badge as BadgeIcon, Plus, Trash2 } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useOfficerStore, Officer } from '@/stores/officer-store';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -139,6 +141,9 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
     swapOfficer,
   } = useOfficerStore();
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
+  const { toggleAdvanced } = useAdvancedReportStore();
+
+  const showLspdWarning = officers.some(o => o.department === 'Los Santos Police Department');
 
   useEffect(() => {
     setInitialOfficers();
@@ -233,6 +238,18 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
             )}
           </div>
         ))}
+         {showLspdWarning && (
+            <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Policy Notice</AlertTitle>
+                <AlertDescription className="flex justify-between items-center">
+                    <span>LSPD policy requires the use of the advanced arrest report format.</span>
+                    <Button variant="outline" size="sm" onClick={toggleAdvanced}>
+                        Switch to Advanced
+                    </Button>
+                </AlertDescription>
+            </Alert>
+        )}
       </div>
     </FormSection>
   );
