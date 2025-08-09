@@ -2,7 +2,7 @@
 'use client';
 import create from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Officer } from './officer-store';
+import { useOfficerStore, type Officer } from './officer-store';
 
 type Person = {
     name: string;
@@ -65,7 +65,7 @@ export interface FormState {
     evidenceLogs: EvidenceLog[];
 }
 
-const getInitialState = (): FormState => ({
+const getInitialState = (initialOfficers: FormOfficer[] = []): FormState => ({
     arrestee: {
         name: '', sex: '', hair: '', eyes: '', residence: '', age: '', height: '',
         descent: '', clothing: '', oddities: '', alias: '', gang: ''
@@ -74,7 +74,7 @@ const getInitialState = (): FormState => ({
     incident: {
         date: '', time: '', locationDistrict: '', locationStreet: ''
     },
-    officers: [],
+    officers: initialOfficers,
     modifiers: {
         markedUnit: true,
         slicktop: true,
@@ -117,7 +117,7 @@ interface AdvancedReportState {
   setAdvanced: (isAdvanced: boolean) => void;
   formData: FormState;
   setFields: (fields: Partial<FormState>) => void;
-  reset: (data?: FormState) => void;
+  reset: () => void;
 }
 
 export const useAdvancedReportStore = create<AdvancedReportState>()(
@@ -133,7 +133,10 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
             ...fields,
         }
       })),
-      reset: (data) => set({ formData: data || getInitialState() }),
+      reset: () => {
+        const initialOfficers = useOfficerStore.getState().officers;
+        set({ formData: getInitialState(initialOfficers) });
+      },
     }),
     {
       name: 'advanced-report-storage',

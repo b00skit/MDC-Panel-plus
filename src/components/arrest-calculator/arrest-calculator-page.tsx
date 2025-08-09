@@ -119,8 +119,7 @@ export function ArrestCalculatorPage() {
     }
     setReport(charges);
     resetForm();
-    // Do not reset the advanced form here, as it clears the field arrays before the component can react.
-    // The AdvancedArrestReportForm component will handle its own initialization.
+    resetAdvancedForm();
     resetOfficers();
     router.push('/arrest-report');
   }

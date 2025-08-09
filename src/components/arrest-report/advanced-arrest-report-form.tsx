@@ -69,6 +69,10 @@ export function AdvancedArrestReportForm() {
 
     const watchedFields = watch();
 
+    useEffect(() => {
+        reset(formData);
+    }, [formData, reset]);
+
     // Preset Effects
     useEffect(() => {
         if (watchedFields.narrativePresets?.source) {
@@ -273,10 +277,6 @@ export function AdvancedArrestReportForm() {
     ]);
     
     useEffect(() => {
-      if (getValues('officers').length === 0) {
-        addOfficerToStore();
-      }
-      
       fetch('/data/dept_ranks.json')
           .then((res) => res.json())
           .then((data) => setDeptRanks(data));
@@ -293,7 +293,7 @@ export function AdvancedArrestReportForm() {
       if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
       if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
   
-    }, []);
+    }, [getValues, setValue]);
     
     useEffect(() => {
         const subscription = watch((value) => {
