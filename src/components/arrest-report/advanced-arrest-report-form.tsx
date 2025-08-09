@@ -72,7 +72,15 @@ export function AdvancedArrestReportForm() {
     
     // Auto-population from modifiers
     useEffect(() => {
-        let sourceText = '';
+        const date = getValues('incident.date') || '09/AUG/2025';
+        const primaryOfficer = getValues('officers.0');
+        const rank = primaryOfficer?.rank || 'Officer';
+        const name = primaryOfficer?.name || 'Laura Meredith';
+        const badge = primaryOfficer?.badgeNumber || '#114466';
+        const divDetail = primaryOfficer?.divDetail || 'Davis Division';
+        const callsign = primaryOfficer?.callSign || '280C';
+
+        let sourceText = `On ${date}, I, ${rank} ${name} (${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
         
         // Vehicle part
         if (watchedFields.modifiers?.markedUnit) {
@@ -111,7 +119,10 @@ export function AdvancedArrestReportForm() {
         watchedFields.modifiers?.undercover, 
         watchedFields.modifiers?.inMetroUniform, 
         watchedFields.modifiers?.inG3Uniform, 
-        setValue
+        watchedFields.incident,
+        watchedFields.officers,
+        setValue,
+        getValues,
     ]);
 
     useEffect(() => {
@@ -141,20 +152,29 @@ export function AdvancedArrestReportForm() {
 
      useEffect(() => {
         let arrestText = '';
-        const name = getValues('arrestee.name') || '<name>';
+        const suspectName = getValues('arrestee.name') || 'John Doe';
         if (watchedFields.modifiers?.wasSuspectMirandized) {
             const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
-            arrestText += `I admonished ${name} utilizing my Field Officer’s Notebook, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${name} responded ${understood}.`;
+            arrestText += `I admonished ${suspectName} utilizing my Field Officer’s Notebook, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
         }
 
         const transportingRank = getValues('narrative.transportingRank') || '<Rank>';
         const transportingName = getValues('narrative.transportingName') || '<Name of Transporting Officer>';
-        const suspectName = getValues('arrestee.name') || '<suspect>';
+        
         if (watchedFields.modifiers?.didYouTransport) {
             arrestText += `\nI transported ${suspectName} to Mission Row Station.`;
         } else {
             arrestText += `\n${transportingRank} ${transportingName} transported ${suspectName} to Mission Row Station.`;
         }
+
+        const chargesList = charges.map(c => {
+            const details = penalCode?.[c.chargeId!];
+            return details ? `${details.id}. ${details.charge}` : 'an unknown charge';
+        }).join(', ');
+
+        arrestText += `\n${suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).`;
+        arrestText += `\n${suspectName} was arrested for ${chargesList || 'the aforementioned charges'}.`;
+
         setValue('narrative.arrest', arrestText.trim() || 'N/A');
     }, [
         watchedFields.modifiers?.wasSuspectMirandized, 
@@ -163,6 +183,8 @@ export function AdvancedArrestReportForm() {
         watchedFields.arrestee?.name,
         watchedFields.narrative?.transportingRank,
         watchedFields.narrative?.transportingName,
+        charges,
+        penalCode,
         setValue,
         getValues
     ]);
@@ -233,9 +255,14 @@ export function AdvancedArrestReportForm() {
 
 
     useEffect(() => {
-      reset(formData); // This ensures the form is populated with store data on mount
+        reset(formData); // This ensures the form is populated with store data on mount
+    }, [formData, reset]);
+
+
+    useEffect(() => {
+      // This effect runs once on mount to set up the form correctly.
       if (officers.length === 0) {
-        addOfficer();
+        addOfficer(); 
       }
       if (personFields.length === 0) {
         appendPerson({ name: '', sex: '', gang: '' });
@@ -275,8 +302,10 @@ export function AdvancedArrestReportForm() {
     
     // Sync zustand officer state with react-hook-form state
     useEffect(() => {
-        reset({ ...getValues(), officers });
-    }, [officers]);
+        if(officers.length > 0) {
+            setValue('officers', officers);
+        }
+    }, [officers, setValue]);
 
     const handleRankChange = (index: number, value: string) => {
         const [department, rank] = value.split('__');
@@ -695,3 +724,5 @@ export function AdvancedArrestReportForm() {
     </form>
   );
 }
+
+    
