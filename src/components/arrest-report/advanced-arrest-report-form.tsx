@@ -265,7 +265,7 @@ export function AdvancedArrestReportForm() {
             }
         });
         setValue('narrative.evidence', evidenceText.trim());
-    }, [watchedFields, setValue]);
+    }, [watchedFields.evidenceLogs, setValue]);
 
     useEffect(() => {
         const primaryOfficer = watchedFields.officers?.[0];
