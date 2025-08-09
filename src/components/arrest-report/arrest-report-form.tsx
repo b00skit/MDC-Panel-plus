@@ -229,8 +229,7 @@ export function ArrestReportForm() {
                 icon={<FileText className="h-4 w-4 text-muted-foreground" />}
                 description={
                     <span className="text-red-500">
-                      LSPD: Describe the events leading up to the arrest in third person and in chronological order, explaining all charges. <br />
-                      LSSD: Describe the events leading up to the arrest in first person and in chronological order, explaining all charges.
+                      Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
                     </span>
                   }
                   className="min-h-[150px]"
