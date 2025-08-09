@@ -160,12 +160,12 @@ export function SidebarNav() {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              isActive={isActive('/paperwork-generator')}
-              tooltip="Paperwork Generator"
+              isActive={isActive('/paperwork-generators')}
+              tooltip="Paperwork Generators"
             >
               <Link href="#">
-                <FileText />
-                <span>Paperwork Generator</span>
+                <Puzzle />
+                <span>Paperwork Generators</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
