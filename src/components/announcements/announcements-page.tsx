@@ -3,8 +3,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { PageHeader } from '@/components/dashboard/page-header';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Bell } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Bell, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
 
 type Announcement = {
@@ -12,6 +14,10 @@ type Announcement = {
     date: string;
     title: string;
     content: string;
+    button?: {
+        text: string;
+        href: string;
+    }
 };
 
 interface AnnouncementsPageProps {
@@ -62,6 +68,16 @@ export function AnnouncementsPage({ initialAnnouncements }: AnnouncementsPagePro
                         <CardContent>
                             <p className="whitespace-pre-wrap">{announcement.content}</p>
                         </CardContent>
+                        {announcement.button && (
+                            <CardFooter>
+                                <Button asChild>
+                                    <Link href={announcement.button.href}>
+                                        {announcement.button.text}
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Link>
+                                </Button>
+                            </CardFooter>
+                        )}
                     </Card>
                 ))}
             </div>

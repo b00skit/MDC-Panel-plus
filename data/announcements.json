@@ -10,7 +10,11 @@
             "id": 2,
             "date": "2025-08-11",
             "title": "Advanced Arrest Report Now Live!",
-            "content": "The much-anticipated Advanced Arrest Report module is now live. This feature allows for more detailed and structured report generation, including automated narrative presets based on your selections. Check it out on the Arrest Report page by enabling the toggle."
+            "content": "The much-anticipated Advanced Arrest Report module is now live. This feature allows for more detailed and structured report generation, including automated narrative presets based on your selections. Check it out on the Arrest Report page by enabling the toggle.",
+            "button": {
+                "text": "View Changelog",
+                "href": "/changelog"
+            }
         }
     ]
 }
