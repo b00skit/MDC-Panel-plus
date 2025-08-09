@@ -1,0 +1,53 @@
+{
+    "changelogs": [
+        {
+            "version": "3.0.1",
+            "type": "Hotfix",
+            "date": "2025-08-12",
+            "items": [
+                {
+                    "id": 1,
+                    "type": "fix",
+                    "description": "Fixed an issue where the advanced arrest report preview would not render fonts correctly."
+                },
+                {
+                    "id": 2,
+                    "type": "fix",
+                    "description": "Corrected validation logic on the basic arrest report to only trigger on submission."
+                },
+                {
+                    "id": 3,
+                    "type": "modification",
+                    "description": "Aligned the GitHub icon in the sidebar for better visual consistency."
+                }
+            ]
+        },
+        {
+            "version": "3.0.0",
+            "type": "Major Update",
+            "date": "2025-08-11",
+            "items": [
+                {
+                    "id": 1,
+                    "type": "feature",
+                    "description": "Introduced the Announcements system to keep users updated with the latest news."
+                },
+                {
+                    "id": 2,
+                    "type": "feature",
+                    "description": "Implemented the Advanced Arrest Report with modifier presets for automated text generation."
+                },
+                {
+                    "id": 3,
+                    "type": "modification",
+                    "description": "Overhauled the Settings page for managing default and alternative characters."
+                },
+                {
+                    "id": 4,
+                    "type": "fix",
+                    "description": "Resolved multiple data persistence issues across application stores."
+                }
+            ]
+        }
+    ]
+}
