@@ -77,15 +77,41 @@ export function AdvancedArrestReportForm() {
     
     // Auto-population from modifiers
     useEffect(() => {
-        const primaryOfficer = watchedFields.officers?.[0];
-        const date = watchedFields.incident?.date || '09/AUG/2025';
-        const rank = primaryOfficer?.rank || '';
-        const name = primaryOfficer?.name || '';
-        const badge = primaryOfficer?.badgeNumber || '';
-        const divDetail = primaryOfficer?.divDetail || '';
-        const callsign = primaryOfficer?.callSign || '';
+        const officers = watchedFields.officers;
+        const primaryOfficer = officers?.[0];
+        if (!primaryOfficer) return;
 
-        let sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+        const date = watchedFields.incident?.date || '09/AUG/2025';
+        const rank = primaryOfficer.rank || '';
+        const name = primaryOfficer.name || '';
+        const badge = primaryOfficer.badgeNumber || '';
+        const divDetail = primaryOfficer.divDetail || '';
+        const callsign = primaryOfficer.callSign || '';
+
+        let sourceText = '';
+
+        if (officers && officers.length > 1) {
+            const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail); // Filter out empty partners
+            if (partners.length > 0) {
+                const partnerDetails = partners.map(p => `(#${p.badgeNumber || 'N/A'}), assigned to ${p.divDetail || 'Division'}`);
+
+                let partnerStr = '';
+                if (partnerDetails.length === 1) {
+                    partnerStr = partnerDetails[0];
+                } else if (partnerDetails.length > 1) {
+                    const lastPartner = partnerDetails.pop();
+                    partnerStr = partnerDetails.join(', ') + ', and ' + lastPartner;
+                }
+
+                sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, partnered with ${partnerStr}, were deployed under Unit ${callsign}. `;
+
+            } else {
+                 // Fallback for case where there are officer rows but they are empty
+                sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+            }
+        } else {
+            sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+        }
         
         // Vehicle part
         if (watchedFields.modifiers?.markedUnit) {
@@ -125,11 +151,7 @@ export function AdvancedArrestReportForm() {
         watchedFields.modifiers?.inMetroUniform, 
         watchedFields.modifiers?.inG3Uniform, 
         watchedFields.incident?.date,
-        watchedFields.officers?.[0]?.rank,
-        watchedFields.officers?.[0]?.name,
-        watchedFields.officers?.[0]?.badgeNumber,
-        watchedFields.officers?.[0]?.divDetail,
-        watchedFields.officers?.[0]?.callSign,
+        JSON.stringify(watchedFields.officers),
         setValue,
     ]);
 
@@ -265,7 +287,7 @@ export function AdvancedArrestReportForm() {
             }
         });
         setValue('narrative.evidence', evidenceText.trim());
-    }, [watchedFields.evidenceLogs, setValue]);
+    }, [JSON.stringify(watchedFields.evidenceLogs), setValue]);
 
     useEffect(() => {
         const primaryOfficer = watchedFields.officers?.[0];
