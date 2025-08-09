@@ -274,9 +274,8 @@ export function AdvancedArrestReportForm() {
     ]);
 
     useEffect(() => {
-        const isFormEmpty = officerFields.length === 0 && personFields.length === 0;
-        if (isFormEmpty) {
-            // Pre-fill default officer from officerStore
+        const currentOfficers = getValues('officers');
+        if (!currentOfficers || currentOfficers.length === 0) {
             if (defaultOfficers.length > 0) {
                 const defaultOfficer = defaultOfficers[0];
                 const storedDivDetail = (typeof window !== 'undefined') ? localStorage.getItem(`${defaultOfficer.badgeNumber}-divDetail`) || '' : '';
@@ -285,6 +284,10 @@ export function AdvancedArrestReportForm() {
                     divDetail: storedDivDetail
                 }, { shouldFocus: false });
             }
+        }
+
+        const currentPersons = getValues('persons');
+        if (!currentPersons || currentPersons.length === 0) {
             appendPerson({ name: '', sex: '', gang: '' }, { shouldFocus: false });
         }
     
@@ -301,11 +304,10 @@ export function AdvancedArrestReportForm() {
             })
             .catch(err => console.error("Failed to fetch locations:", err));
       
-        // Pre-fill date and time
         if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
         if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
 
-    }, [appendOfficer, appendPerson, defaultOfficers, getValues, officerFields.length, personFields.length, setValue, formData]);
+    }, [appendOfficer, appendPerson, defaultOfficers, getValues, setValue]);
 
     useEffect(() => {
         reset(formData);
