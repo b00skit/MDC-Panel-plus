@@ -45,7 +45,7 @@ interface DeptRanks {
 export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: defaultOfficers, alternativeCharacters, swapOfficer } = useOfficerStore();
+    const { officers: defaultOfficers, alternativeCharacters, swapOfficer, addOfficer: addOfficerToStore } = useOfficerStore();
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
     });
@@ -272,53 +272,45 @@ export function AdvancedArrestReportForm() {
         setValue, 
         getValues
     ]);
-
+    
+    // This effect now correctly handles syncing the local form state with the global store state
     useEffect(() => {
-        const currentOfficers = getValues('officers');
-        if (!currentOfficers || currentOfficers.length === 0) {
-            if (defaultOfficers.length > 0) {
-                const defaultOfficer = defaultOfficers[0];
-                const storedDivDetail = (typeof window !== 'undefined') ? localStorage.getItem(`${defaultOfficer.badgeNumber}-divDetail`) || '' : '';
-                appendOfficer({
-                    ...defaultOfficer,
-                    divDetail: storedDivDetail
-                }, { shouldFocus: false });
-            }
-        }
-
-        fetch('/data/dept_ranks.json')
-            .then((res) => res.json())
-            .then((data) => setDeptRanks(data));
-
-        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
-            .then(res => res.json())
-            .then(data => {
-                const uniqueDistricts = [...new Set((data.districts || []) as string[])];
-                const uniqueStreets = [...new Set((data.streets || []) as string[])];
-                setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
-            })
-            .catch(err => console.error("Failed to fetch locations:", err));
-      
-        if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
-        if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
-
-    }, [appendOfficer, defaultOfficers, getValues, setValue]);
-
-    useEffect(() => {
-        reset(formData);
+      reset(formData);
     }, [formData, reset]);
+  
+    useEffect(() => {
+      if (getValues('officers').length === 0) {
+        addOfficerToStore();
+      }
+      
+      fetch('/data/dept_ranks.json')
+          .then((res) => res.json())
+          .then((data) => setDeptRanks(data));
+
+      fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+          .then(res => res.json())
+          .then(data => {
+              const uniqueDistricts = [...new Set((data.districts || []) as string[])];
+              const uniqueStreets = [...new Set((data.streets || []) as string[])];
+              setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+          })
+          .catch(err => console.error("Failed to fetch locations:", err));
+    
+      if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
+      if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
+  
+    }, []);
     
     useEffect(() => {
-        const subscription = watch((value, { name, type }) => {
-            if (type === 'change') {
-                if (value.officers && value.officers[0] && (name?.startsWith('officers.0') || !name)) {
-                    const officer = value.officers[0];
-                    if (officer.badgeNumber && officer.divDetail) {
-                        localStorage.setItem(`${officer.badgeNumber}-divDetail`, officer.divDetail);
-                    }
+        const subscription = watch((value) => {
+            const currentOfficers = value.officers;
+            if (currentOfficers && currentOfficers[0]) {
+                const officer = currentOfficers[0];
+                if (officer.badgeNumber && officer.divDetail) {
+                    localStorage.setItem(`${officer.badgeNumber}-divDetail`, officer.divDetail);
                 }
-                setFields(value as FormState);
             }
+            setFields(value as FormState);
         });
         return () => subscription.unsubscribe();
     }, [watch, setFields]);
@@ -332,8 +324,7 @@ export function AdvancedArrestReportForm() {
     const handlePillClick = (officerIndex: number, altChar: any) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
         swapOfficer(currentOfficerInForm.id, altChar);
-        const updatedOfficersFromStore = useOfficerStore.getState().officers;
-        const swappedInOfficer = updatedOfficersFromStore.find(o => o.id === currentOfficerInForm.id);
+        const swappedInOfficer = useOfficerStore.getState().officers.find(o => o.id === currentOfficerInForm.id);
         
         if (swappedInOfficer) {
             setValue(`officers.${officerIndex}`, {
@@ -618,7 +609,7 @@ export function AdvancedArrestReportForm() {
                 
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
-                    <Button className="w-full" type="button" onClick={() => appendOfficer({ id: Date.now(), name: '', rank: '', badgeNumber: '', department: '', divDetail: '' })}>
+                    <Button className="w-full" type="button" onClick={addOfficerToStore}>
                       <CirclePlus className="mr-2 h-4 w-4" /> ADD OFFICER
                     </Button>
                   </TableCell>

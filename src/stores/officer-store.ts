@@ -45,22 +45,39 @@ const createEmptyAltCharacter = (): Officer => ({
 export const useOfficerStore = create<OfficerState>()(
     persist(
       (set, get) => ({
-        officers: [getInitialOfficer()],
+        officers: [],
         alternativeCharacters: [],
   
-        addOfficer: () =>
-          set((state) => ({
-            officers: [
-              ...state.officers,
-              {
-                id: Date.now(),
-                name: '',
-                rank: '',
-                department: '',
-                badgeNumber: '',
-              },
-            ],
-          })),
+        addOfficer: () => {
+            set((state) => {
+                const isFirstOfficer = state.officers.length === 0;
+                if (isFirstOfficer) {
+                    const storedOfficer = localStorage.getItem('initial-officer-storage');
+                    let defaultOfficer = getInitialOfficer();
+                    if (storedOfficer) {
+                        try {
+                            defaultOfficer = { ...defaultOfficer, ...JSON.parse(storedOfficer) };
+                        } catch (e) {
+                            console.error("Failed to parse stored officer data");
+                        }
+                    }
+                    return { officers: [defaultOfficer] };
+                } else {
+                    return {
+                        officers: [
+                            ...state.officers,
+                            {
+                                id: Date.now(),
+                                name: '',
+                                rank: '',
+                                department: '',
+                                badgeNumber: '',
+                            },
+                        ],
+                    };
+                }
+            });
+        },
   
         removeOfficer: (id) =>
           set((state) => ({
@@ -90,7 +107,6 @@ export const useOfficerStore = create<OfficerState>()(
             if (typeof window !== 'undefined') {
                 const storedOfficer = localStorage.getItem('initial-officer-storage');
                 const storedAltChars = localStorage.getItem('alt-characters-storage');
-                const currentOfficers = get().officers;
 
                 let defaultOfficer = getInitialOfficer();
                 if (storedOfficer) {
@@ -111,7 +127,7 @@ export const useOfficerStore = create<OfficerState>()(
                 }
                 
                 set({ 
-                    officers: [defaultOfficer, ...currentOfficers.slice(1)],
+                    officers: [defaultOfficer],
                     alternativeCharacters: altChars
                 });
             }
