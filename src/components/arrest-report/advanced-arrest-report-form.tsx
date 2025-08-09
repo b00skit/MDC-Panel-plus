@@ -288,7 +288,7 @@ export function AdvancedArrestReportForm() {
       if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
       if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
   
-    }, []);
+    }, [getValues, setValue]);
     
     useEffect(() => {
         const subscription = watch((value, { name, type }) => {
