@@ -274,18 +274,18 @@ export function AdvancedArrestReportForm() {
     ]);
 
     useEffect(() => {
-        // Pre-fill default officer from officerStore
-        if (defaultOfficers.length > 0 && officerFields.length === 0) {
-            const defaultOfficer = defaultOfficers[0];
-            const storedDivDetail = localStorage.getItem(`${defaultOfficer.badgeNumber}-divDetail`) || '';
-            appendOfficer({
-                ...defaultOfficer,
-                divDetail: storedDivDetail
-            });
-        }
-
-        if (personFields.length === 0) {
-            appendPerson({ name: '', sex: '', gang: '' });
+        const isFormEmpty = officerFields.length === 0 && personFields.length === 0;
+        if (isFormEmpty) {
+            // Pre-fill default officer from officerStore
+            if (defaultOfficers.length > 0) {
+                const defaultOfficer = defaultOfficers[0];
+                const storedDivDetail = (typeof window !== 'undefined') ? localStorage.getItem(`${defaultOfficer.badgeNumber}-divDetail`) || '' : '';
+                appendOfficer({
+                    ...defaultOfficer,
+                    divDetail: storedDivDetail
+                }, { shouldFocus: false });
+            }
+            appendPerson({ name: '', sex: '', gang: '' }, { shouldFocus: false });
         }
     
         fetch('/data/dept_ranks.json')
@@ -305,7 +305,7 @@ export function AdvancedArrestReportForm() {
         if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
         if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
 
-    }, [appendOfficer, appendPerson, defaultOfficers, getValues, officerFields.length, personFields.length, setValue]);
+    }, [appendOfficer, appendPerson, defaultOfficers, getValues, officerFields.length, personFields.length, setValue, formData]);
 
     useEffect(() => {
         reset(formData);

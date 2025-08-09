@@ -35,6 +35,7 @@ import { useChargeStore, type SelectedCharge, type Charge, type PenalCode } from
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useToast } from '@/hooks/use-toast';
+import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -63,6 +64,7 @@ export function ArrestCalculatorPage() {
     resetCharges,
   } = useChargeStore();
   const resetForm = useFormStore(state => state.reset);
+  const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
   const resetOfficers = useOfficerStore(state => state.setInitialOfficers);
 
 
@@ -117,6 +119,7 @@ export function ArrestCalculatorPage() {
     }
     setReport(charges);
     resetForm();
+    resetAdvancedForm();
     resetOfficers();
     router.push('/arrest-report');
   }
