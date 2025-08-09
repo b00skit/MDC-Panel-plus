@@ -46,6 +46,7 @@ export function AdvancedArrestReportForm() {
     const { formData, setFields } = useAdvancedReportStore();
     const { report: charges, penalCode } = useChargeStore();
     const { officers: initialOfficers, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
+    
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         defaultValues: formData,
     });
@@ -260,48 +261,37 @@ export function AdvancedArrestReportForm() {
 
     const isInitialLoad = useRef(true);
     useEffect(() => {
-        if (isInitialLoad.current) {
-            isInitialLoad.current = false;
-            return;
-        }
-        reset(formData);
-    }, [JSON.stringify(formData), reset]);
-
-
-    useEffect(() => {
       // This effect runs once on mount to set up the form correctly.
-      if (officerFields.length === 0) {
-        appendOfficer(initialOfficers[0] || { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' });
+      if (isInitialLoad.current) {
+        if (officerFields.length === 0) {
+            appendOfficer(initialOfficers[0] || { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' });
+        }
+        if (personFields.length === 0) {
+            appendPerson({ name: '', sex: '', gang: '' });
+        }
+        
+        if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
+        if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
+        
+        isInitialLoad.current = false;
       }
-      if (personFields.length === 0) {
-        appendPerson({ name: '', sex: '', gang: '' });
-      }
+    }, [appendOfficer, appendPerson, getValues, setValue, officerFields.length, personFields.length, initialOfficers]);
 
-      fetch('/data/dept_ranks.json')
-          .then((res) => res.json())
-          .then((data) => setDeptRanks(data));
 
-      fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
-          .then(res => res.json())
-          .then(data => {
-              const uniqueDistricts = [...new Set((data.districts || []) as string[])];
-              const uniqueStreets = [...new Set((data.streets || []) as string[])];
-              setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
-          })
-          .catch(err => console.error("Failed to fetch locations:", err));
-    
-      if(!getValues('incident.date')) setValue('incident.date', format(new Date(), 'dd/MMM/yyyy').toUpperCase());
-      if(!getValues('incident.time')) setValue('incident.time', format(new Date(), 'HH:mm'));
-  
-    }, [appendOfficer, appendPerson, getValues, officerFields.length, personFields.length, setValue, initialOfficers]);
-    
     useEffect(() => {
-        const subscription = watch((value) => {
-             setFields(value as FormState);
-        });
-        return () => subscription.unsubscribe();
-    }, [watch, setFields]);
-    
+        fetch('/data/dept_ranks.json')
+            .then((res) => res.json())
+            .then((data) => setDeptRanks(data));
+
+        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+            .then(res => res.json())
+            .then(data => {
+                const uniqueDistricts = [...new Set((data.districts || []) as string[])];
+                const uniqueStreets = [...new Set((data.streets || []) as string[])];
+                setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+            })
+            .catch(err => console.error("Failed to fetch locations:", err));
+    }, []);
 
     const handleRankChange = (index: number, value: string) => {
         const [department, rank] = value.split('__');
@@ -311,6 +301,12 @@ export function AdvancedArrestReportForm() {
     const handlePillClick = (officerIndex: number, altChar: Officer) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
         swapOfficerInStore(currentOfficerInForm.id, altChar);
+
+        // Directly update the form state after swapping in the store
+        const swappedOfficer = useOfficerStore.getState().officers.find(o => o.id === currentOfficerInForm.id);
+        if (swappedOfficer) {
+            updateOfficerField(officerIndex, swappedOfficer);
+        }
     }
     
     const onAddOfficerClick = () => {
@@ -318,7 +314,7 @@ export function AdvancedArrestReportForm() {
     }
 
   return (
-    <form onSubmit={handleSubmit((d) => console.log(d))}>
+    <form onSubmit={handleSubmit((data) => setFields(data))}>
       <Card className="overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -719,8 +715,3 @@ export function AdvancedArrestReportForm() {
     </form>
   );
 }
-
-    
-
-
-    
