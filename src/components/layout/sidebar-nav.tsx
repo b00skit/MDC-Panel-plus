@@ -1,10 +1,23 @@
 
-"use client";
+'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Settings, LifeBuoy, Sun, Moon, Gavel, FileText, BookOpen, Landmark, Puzzle, ExternalLink } from 'lucide-react';
+import {
+  LayoutGrid,
+  Settings,
+  LifeBuoy,
+  Sun,
+  Moon,
+  Gavel,
+  FileText,
+  BookOpen,
+  Landmark,
+  Puzzle,
+  ExternalLink,
+  Github,
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 
@@ -15,13 +28,16 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
+  SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 type SiteConfig = {
-    SITE_NAME: string;
-    SITE_FAVICON: string;
-    URL_GITHUB: string;
+  SITE_NAME: string;
+  SITE_FAVICON: string;
+  URL_GITHUB: string;
 };
 
 export function SidebarNav() {
@@ -29,16 +45,14 @@ export function SidebarNav() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [config, setConfig] = useState<SiteConfig | null>(null);
+  const { state } = useSidebar();
 
   useEffect(() => {
     setMounted(true);
-    // This is now a simple example; in a real app, you'd likely
-    // get this data from a server-side context or API route.
-    // For this example, we'll just use a static object.
     setConfig({
-      SITE_NAME: "MDC Panel+",
-      SITE_FAVICON: "/img/logos/MDC-Panel-Favicon.svg",
-      URL_GITHUB: "https://github.com/biscuitgtaw/MDC-Panel",
+      SITE_NAME: 'MDC Panel+',
+      SITE_FAVICON: '/img/logos/MDC-Panel-Favicon.svg',
+      URL_GITHUB: 'https://github.com/biscuitgtaw/MDC-Panel',
     });
   }, []);
 
@@ -50,31 +64,46 @@ export function SidebarNav() {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const siteName = config?.SITE_NAME.replace('+', '') || "MDC Panel";
+  const siteName = config?.SITE_NAME.replace('+', '') || 'MDC Panel';
 
   return (
     <>
       <SidebarHeader>
-        <div className="flex items-center gap-2.5">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src={config?.SITE_FAVICON || "/img/logos/MDC-Panel-Favicon.svg"}
-              width={40}
-              height={40}
-              alt="MDC Panel Logo"
-            />
-          </Link>
-           <div className="flex items-baseline gap-1">
-            <span className="text-xl font-semibold font-headline">{siteName}</span>
-            <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">+</span>
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src={
+                  config?.SITE_FAVICON || '/img/logos/MDC-Panel-Favicon.svg'
+                }
+                width={40}
+                height={40}
+                alt="MDC Panel Logo"
+              />
+            </Link>
+            {state === 'expanded' && (
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-semibold font-headline">
+                  {siteName}
+                </span>
+                <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">
+                  +
+                </span>
+              </div>
+            )}
           </div>
+          <SidebarTrigger />
         </div>
       </SidebarHeader>
 
       <SidebarContent className="p-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/')}>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/')}
+              tooltip="Dashboard"
+            >
               <Link href="/">
                 <LayoutGrid />
                 <span>Dashboard</span>
@@ -82,15 +111,23 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/arrest-calculator')}>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/arrest-calculator')}
+              tooltip="Arrest Calculator"
+            >
               <Link href="/arrest-calculator">
                 <Gavel />
                 <span>Arrest Calculator</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/arrest-report')}>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/arrest-report')}
+              tooltip="Arrest Report"
+            >
               <Link href="/arrest-report">
                 <FileText />
                 <span>Arrest Report</span>
@@ -98,27 +135,39 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/paperwork-generator')}>
-                <Link href="#">
-                    <FileText />
-                    <span>Paperwork Generator</span>
-                </Link>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/paperwork-generator')}
+              tooltip="Paperwork Generator"
+            >
+              <Link href="#">
+                <FileText />
+                <span>Paperwork Generator</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/simplified-penal-code')}>
-                <Link href="/simplified-penal-code">
-                    <BookOpen />
-                    <span>Simplified Penal Code</span>
-                </Link>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/simplified-penal-code')}
+              tooltip="Simplified Penal Code"
+            >
+              <Link href="/simplified-penal-code">
+                <BookOpen />
+                <span>Simplified Penal Code</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/caselaw')}>
-                <Link href="/caselaw">
-                    <Landmark />
-                    <span>Caselaw &amp; Legal Resources</span>
-                </Link>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/caselaw')}
+              tooltip="Caselaw & Legal Resources"
+            >
+              <Link href="/caselaw">
+                <Landmark />
+                <span>Caselaw &amp; Legal Resources</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -128,7 +177,11 @@ export function SidebarNav() {
         <Separator className="my-2" />
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/settings')}>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/settings')}
+              tooltip="Settings"
+            >
               <Link href="/settings">
                 <Settings />
                 <span>Settings</span>
@@ -136,20 +189,35 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-             <SidebarMenuButton asChild>
-                <Link href={config?.URL_GITHUB || '#'} target="_blank" className="flex items-center justify-between w-full">
-                    <div className="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-github h-4 w-4"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-                        <span>Github</span>
-                    </div>
-                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                </Link>
+            <SidebarMenuButton asChild tooltip="Github">
+              <Link
+                href={config?.URL_GITHUB || '#'}
+                target="_blank"
+                className="justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  <Github />
+                  <span className="group-data-[state=collapsed]:hidden">Github</span>
+                </div>
+                <ExternalLink className="h-4 w-4 text-muted-foreground group-data-[state=collapsed]:hidden" />
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-           <SidebarMenuItem>
-            <SidebarMenuButton onClick={toggleTheme}>
-              {mounted ? (theme === 'light' ? <Sun /> : <Moon />) : <Moon />}
-              <span>{mounted ? (theme === 'light' ? 'Light Mode' : 'Dark Mode') : 'Dark Mode'}</span>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={toggleTheme}
+              tooltip={
+                mounted ? (theme === 'light' ? 'Light Mode' : 'Dark Mode') : 'Dark Mode'
+              }
+            >
+              {mounted ? theme === 'light' ? <Sun /> : <Moon /> : <Moon />}
+              <span>
+                {mounted
+                  ? theme === 'light'
+                    ? 'Light Mode'
+                    : 'Dark Mode'
+                  : 'Dark Mode'}
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
