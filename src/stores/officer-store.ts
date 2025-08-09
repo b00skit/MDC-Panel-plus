@@ -1,4 +1,3 @@
-
 'use client';
 
 import create from 'zustand';
@@ -49,34 +48,18 @@ export const useOfficerStore = create<OfficerState>()(
         alternativeCharacters: [],
   
         addOfficer: () => {
-            set((state) => {
-                const isFirstOfficer = state.officers.length === 0;
-                if (isFirstOfficer) {
-                    const storedOfficer = localStorage.getItem('initial-officer-storage');
-                    let defaultOfficer = getInitialOfficer();
-                    if (storedOfficer) {
-                        try {
-                            defaultOfficer = { ...defaultOfficer, ...JSON.parse(storedOfficer) };
-                        } catch (e) {
-                            console.error("Failed to parse stored officer data");
-                        }
-                    }
-                    return { officers: [defaultOfficer] };
-                } else {
-                    return {
-                        officers: [
-                            ...state.officers,
-                            {
-                                id: Date.now(),
-                                name: '',
-                                rank: '',
-                                department: '',
-                                badgeNumber: '',
-                            },
-                        ],
-                    };
-                }
-            });
+            set((state) => ({
+                officers: [
+                    ...state.officers,
+                    {
+                        id: Date.now(),
+                        name: '',
+                        rank: '',
+                        department: '',
+                        badgeNumber: '',
+                    },
+                ],
+            }));
         },
   
         removeOfficer: (id) =>
@@ -223,4 +206,3 @@ export const useOfficerStore = create<OfficerState>()(
       }
     )
   );
-  

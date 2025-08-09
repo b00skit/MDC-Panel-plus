@@ -88,7 +88,7 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
         if (!existingTime) {
             setFormField('general', 'time', format(now, 'HH:mm'));
         }
-    }, [setFormField]);
+    }, []);
 
 
   return (

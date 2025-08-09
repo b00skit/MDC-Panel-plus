@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -273,11 +272,6 @@ export function AdvancedArrestReportForm() {
         getValues
     ]);
     
-    // This effect now correctly handles syncing the local form state with the global store state
-    useEffect(() => {
-      reset(formData);
-    }, [formData, reset]);
-  
     useEffect(() => {
       if (getValues('officers').length === 0) {
         addOfficerToStore();
