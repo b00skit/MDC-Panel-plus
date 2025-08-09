@@ -1,3 +1,4 @@
+
 'use client';
 
 import create from 'zustand';
@@ -45,12 +46,16 @@ interface ChargeState {
   resetCharges: () => void;
 }
 
+const initialState = {
+    charges: [],
+    report: [],
+};
+
 export const useChargeStore = create<ChargeState>()(
   persist(
     (set) => ({
       penalCode: null,
-      charges: [],
-      report: [],
+      ...initialState,
       setPenalCode: (penalCode) => set({ penalCode }),
       addCharge: () =>
         set((state) => ({
@@ -77,7 +82,7 @@ export const useChargeStore = create<ChargeState>()(
           ),
         })),
        setReport: (report) => set({ report }),
-       resetCharges: () => set({ charges: [] }),
+       resetCharges: () => set(initialState),
     }),
     {
       name: 'charge-storage', // name of the item in the storage (must be unique)

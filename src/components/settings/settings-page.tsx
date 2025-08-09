@@ -33,6 +33,7 @@ import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
 import { Separator } from '../ui/separator';
+import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -53,7 +54,8 @@ export function SettingsPage() {
   const defaultOfficer = officers[0];
 
   const resetCharges = useChargeStore(state => state.resetCharges);
-  const resetForm = useFormStore(state => state.reset);
+  const resetBasicForm = useFormStore(state => state.reset);
+  const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
   const resetOfficers = useOfficerStore(state => state.setInitialOfficers);
 
 
@@ -102,7 +104,8 @@ export function SettingsPage() {
 
         // Reset stores to their initial states
         resetCharges();
-        resetForm();
+        resetBasicForm();
+        resetAdvancedForm();
         resetOfficers();
         
         toast({

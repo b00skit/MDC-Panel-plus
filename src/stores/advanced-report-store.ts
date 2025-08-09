@@ -152,7 +152,7 @@ interface AdvancedReportState {
   setAdvanced: (isAdvanced: boolean) => void;
   formData: FormState;
   setFields: (fields: Partial<FormState>) => void;
-  reset: (data?: FormState) => void;
+  reset: () => void;
 }
 
 export const useAdvancedReportStore = create<AdvancedReportState>()(
@@ -168,7 +168,7 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
             ...fields,
         }
       })),
-      reset: (data) => set({ formData: data || getInitialState() }),
+      reset: () => set({ formData: getInitialState(), isAdvanced: false }),
     }),
     {
       name: 'advanced-report-storage',
