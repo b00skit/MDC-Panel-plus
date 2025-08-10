@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -53,7 +54,9 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     }, [value]);
 
     const handleSelect = (currentValue: string) => {
-      const newValue = currentValue === value ? '' : currentValue;
+      // Find the full option text if currentValue is just a part of it (e.g., ID)
+      const selectedOption = options.find(opt => opt.toLowerCase().startsWith(currentValue.toLowerCase()));
+      const newValue = selectedOption || (currentValue === value ? '' : currentValue);
       onChange(newValue);
       setInputValue(newValue);
       setOpen(false);

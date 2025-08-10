@@ -1,0 +1,31 @@
+
+{
+    "id": "traffic-report",
+    "title": "Traffic Report",
+    "description": "Generate a traffic citation report.",
+    "icon": "Car",
+    "formAction": "/paperwork-submit",
+    "formMethod": "POST",
+    "output": "<strong>{{officers.0.rank}} {{officers.0.name}}</strong> (<strong>#{{officers.0.badgeNumber}}</strong>), under the call sign <strong>{{general.callSign}}</strong> on the <strong>{{general.date}}</strong>, <strong>{{general.time}}</strong>.<br>Conducted a traffic stop on a <strong>{{vehicle_make_model}}</strong>, on <strong>{{location_street}}</strong>, <strong>{{location_district}}</strong>.<br>The vehicle was <strong>{{#if vehicle_registered}}registered{{else}}unregistered{{/if}}</strong> to <strong>{{vehicle_owner}}</strong>, with the identification plate reading <strong>{{vehicle_plate}}</strong>.<br>The vehicle was {{#if vehicle_tint_uninspected}}not inspected with the tint meter device{{else}}inspected with a tint meter device, yielding a result of {{vehicle_tint_level}}{{/if}}.<br>The driver was identified as <strong>{{defendant_name}}</strong>, possessing a <strong>{{defendant_license_status}}</strong>.<br>{{narrative}}<br><br>Following charge(s) were issued:<ul>{{#each charges}}<li><strong class=\"style-underline chargeCopy\" data-clipboard-target=\"#charge-{{id}}\" data-toggle=\"tooltip\" title=\"Copied!\"><span id=\"charge-{{id}}\"><strong style=\"color: #27ae60!important;\">IC {{id}}. {{#lookup @root.penalCode this.id}}{{this.charge}}{{/lookup}}</strong></span></strong></li>{{/each}}</ul><strong style=\"color: #9944dd!important;\">*</strong> {{dashcam}} <strong style=\"color: #9944dd!important;\">*</strong>",
+    "form": [
+        { "type": "hidden", "name": "generatorType", "value": "TrafficReport" },
+        { "type": "section", "title": "General Section" },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Officer Section" },
+        { "type": "officer", "name": "officers" },
+        { "type": "section", "title": "Defendant & Narrative" },
+        { "type": "text", "name": "defendant_name", "label": "Defendant's Full Name", "placeholder": "Firstname Lastname" },
+        { "type": "dropdown", "name": "defendant_license_status", "label": "Driver's License Status", "placeholder": "Select License Status", "options": ["Valid", "No License", "Expired", "Suspended", "Revoked"] },
+        { "type": "textarea", "name": "narrative", "label": "Traffic Stop Narrative", "placeholder": "Witnessed the defendant to be..." },
+        { "type": "textarea", "name": "dashcam", "label": "Dashboard Camera", "placeholder": "The dashboard camera captures audio and video footage showcasing..." },
+        { "type": "section", "title": "Vehicle Details" },
+        { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Unregistered", "dataOff": "Registered" },
+        { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname (leave empty if same as defendant)" },
+        { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX" },
+        { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Uninsured", "dataOff": "Insured" },
+        { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "options": ["Albany Alpha", "Benefactor Dubsta", "Bravado Buffalo", "Declasse Granger", "Vapid Stanier"] },
+        { "type": "dropdown", "name": "vehicle_tint_level", "label": "Tint Level", "placeholder": "Select Tint Level", "options": ["Uninspected", "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5"] },
+        { "type": "section", "title": "Charges" },
+        { "type": "charge", "name": "charges" }
+    ]
+}
