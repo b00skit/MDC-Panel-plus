@@ -15,26 +15,34 @@ import { usePaperworkStore } from '@/stores/paperwork-store';
 const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
     const { formData, generatorId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
+    const [generatorConfig, setGeneratorConfig] = useState<any>(null);
+
+    useEffect(() => {
+        if (generatorId) {
+            fetch(`/data/paperwork-generators/${generatorId}.json`)
+            .then(res => res.json())
+            .then(config => {
+                setGeneratorConfig(config);
+            })
+        }
+    }, [generatorId]);
   
     useEffect(() => {
-      if (generatorId) {
-        // In a real app, you might fetch this from a server or have it statically available
-        import(`../../../data/paperwork-generators/${generatorId}.json`)
-          .then(module => {
-            let output = module.output;
+      if (generatorConfig) {
+            let output = generatorConfig.output;
             
             // Replace simple wildcards
             for (const key in formData) {
-                if (typeof formData[key] === 'string') {
+                if (typeof formData[key] === 'string' || typeof formData[key] === 'number' ) {
                     output = output.replace(new RegExp(`{{${key}}}`, 'g'), formData[key]);
                 }
             }
-
-            // Replace officer wildcards (e.g., {{officer.0.name}})
-            if(formData.officer) {
-                formData.officer.forEach((officer: any, index: number) => {
+            
+            // Replace officer wildcards (e.g., {{officers.0.name}})
+            if(formData.officers) {
+                formData.officers.forEach((officer: any, index: number) => {
                     for(const key in officer) {
-                        output = output.replace(new RegExp(`{{officer.${index}.${key}}}`, 'g'), officer[key]);
+                        output = output.replace(new RegExp(`{{officers.${index}.${key}}}`, 'g'), officer[key]);
                     }
                 });
             }
@@ -46,9 +54,8 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
             }
             
             setTemplate(output);
-          });
       }
-    }, [generatorId, formData]);
+    }, [generatorConfig, formData]);
   
     return (
       <div ref={innerRef} className="prose dark:prose-invert max-w-none p-4 border rounded-lg bg-card">
@@ -71,9 +78,9 @@ function FormSubmitContent() {
   
     useEffect(() => {
         if (reportRef.current) {
-            setReportHtml(reportRef.current.innerHTML); // Using innerHTML for BBCode like format
+            setReportHtml(reportRef.current.innerText); 
         }
-    }, [formData, isClient]);
+    }, [formData, isClient, reportRef.current]);
   
     const handleCopy = () => {
         if (reportRef.current) {
@@ -118,7 +125,7 @@ function FormSubmitContent() {
   
          <div className="space-y-4 mt-6">
           <div className="flex justify-end">
-              <Button onClick={handleCopy} disabled={isClient && !formData}>
+              <Button onClick={handleCopy} disabled={!isClient || !formData}>
                   <Clipboard className="mr-2 h-4 w-4" />
                   Copy Paperwork
               </Button>

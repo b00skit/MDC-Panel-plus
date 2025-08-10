@@ -14,6 +14,7 @@ import { OfficerSection } from '../arrest-report/officer-section';
 import { GeneralSection } from '../arrest-report/general-section';
 import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useOfficerStore } from '@/stores/officer-store';
+import { useFormStore } from '@/stores/form-store';
 
 type FormField = {
   type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general';
@@ -41,8 +42,6 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
   const { control, handleSubmit } = useForm();
   const setFormData = usePaperworkStore(state => state.setFormData);
   const setGeneratorId = usePaperworkStore(state => state.setGeneratorId);
-  const { officers } = useOfficerStore.getState();
-  const { general } = useFormStore.getState().formData;
 
 
   const onSubmit = (data: any) => {

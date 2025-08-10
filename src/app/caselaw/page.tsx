@@ -1,4 +1,3 @@
-import { Layout } from '@/components/layout/layout';
 import { CaselawPage } from '@/components/caselaw/caselaw-page';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -25,12 +24,10 @@ export default async function Caselaw() {
   const { caselaws, resources, config } = await getCaselawData();
   
   return (
-    <Layout>
       <CaselawPage 
         initialResources={resources.resources} 
         initialCaselaws={caselaws.caselaws} 
         initialConfig={config} 
       />
-    </Layout>
   );
 }

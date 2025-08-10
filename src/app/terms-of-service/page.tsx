@@ -1,10 +1,8 @@
-import { Layout } from '@/components/layout/layout';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function TermsOfServicePage() {
   return (
-    <Layout>
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader
           title="Terms of Service"
@@ -142,6 +140,5 @@ export default function TermsOfServicePage() {
           </CardContent>
         </Card>
       </div>
-    </Layout>
   );
 }

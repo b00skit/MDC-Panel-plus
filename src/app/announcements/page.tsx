@@ -1,5 +1,4 @@
 
-import { Layout } from '@/components/layout/layout';
 import { AnnouncementsPage } from '@/components/announcements/announcements-page';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -15,8 +14,6 @@ export default async function Announcements() {
   const announcements = await getAnnouncementsData();
   
   return (
-    <Layout>
       <AnnouncementsPage initialAnnouncements={announcements} />
-    </Layout>
   );
 }

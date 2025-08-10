@@ -1,12 +1,11 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { Layout } from '@/components/layout/layout';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { ModuleCard, ModuleCardProps } from '@/components/dashboard/module-card';
 import { FileSearch, Puzzle } from 'lucide-react';
 
 async function getGenerators() {
-  const dirPath = path.join(process.cwd(), 'data/paperwork-generators');
+  const dirPath = path.join(process.cwd(), 'public/data/paperwork-generators');
   try {
     const files = await fs.readdir(dirPath);
     const generators = await Promise.all(
@@ -37,7 +36,6 @@ export default async function PaperworkGeneratorsPage() {
   const generators = await getGenerators();
 
   return (
-    <Layout>
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader
           title="Paperwork Generators"
@@ -55,6 +53,5 @@ export default async function PaperworkGeneratorsPage() {
           ))}
         </div>
       </div>
-    </Layout>
   );
 }

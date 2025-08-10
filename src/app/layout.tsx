@@ -5,6 +5,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { promises as fs } from 'fs';
 import path from 'path';
 import MaintenancePage from '@/components/layout/maintenance-page';
+import { Footer } from '@/components/layout/footer';
+import { Layout } from '@/components/layout/layout';
 
 type SiteConfig = {
   SITE_LIVE: boolean;
@@ -77,7 +79,9 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Layout footer={<Footer />}>
+            {children}
+          </Layout>
           <Toaster />
         </ThemeProvider>
       </body>

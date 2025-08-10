@@ -1,4 +1,3 @@
-import { Layout } from '@/components/layout/layout';
 import { ChangelogPage } from '@/components/changelog/changelog-page';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -14,8 +13,6 @@ export default async function Changelog() {
   const changelogs = await getChangelogData();
   
   return (
-    <Layout>
       <ChangelogPage initialChangelogs={changelogs} />
-    </Layout>
   );
 }
