@@ -1,8 +1,6 @@
 
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useForm, Controller } from 'react-hook-form';
 import { PageHeader } from '../dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Label } from '../ui/label';
@@ -12,16 +10,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Button } from '../ui/button';
 import { OfficerSection } from '../arrest-report/officer-section';
 import { GeneralSection } from '../arrest-report/general-section';
-import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore } from '@/stores/form-store';
+import { Separator } from '../ui/separator';
 
 type FormField = {
-  type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general';
+  type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden';
   name: string;
   label?: string;
   placeholder?: string;
   options?: string[];
+  title?: string;
+  value?: string;
 };
 
 type GeneratorConfig = {
@@ -29,8 +29,9 @@ type GeneratorConfig = {
   title: string;
   description: string;
   icon: string;
+  formAction: string;
+  formMethod: 'POST' | 'GET';
   form: FormField[];
-  output: string;
 };
 
 interface PaperworkGeneratorFormProps {
@@ -38,96 +39,75 @@ interface PaperworkGeneratorFormProps {
 }
 
 export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFormProps) {
-  const router = useRouter();
-  const { control, handleSubmit } = useForm();
-  const setFormData = usePaperworkStore(state => state.setFormData);
-  const setGeneratorId = usePaperworkStore(state => state.setGeneratorId);
+    const { officers } = useOfficerStore();
+    const { general } = useFormStore().formData;
 
-
-  const onSubmit = (data: any) => {
-    const { officers } = useOfficerStore.getState();
-    const { general } = useFormStore.getState().formData;
-
-    const fullData = {
-        ...data,
-        officers: officers,
-        general: general,
-    };
-    setFormData(fullData);
-    setGeneratorId(generatorConfig.id);
-    router.push(`/form-submit`);
-  };
+    // This component will now render a standard HTML form
+    // The state from zustand will be used to set default/initial values
+    // but the form submission will be handled by the browser natively.
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {generatorConfig.form.map((field) => {
+      <form action={generatorConfig.formAction} method={generatorConfig.formMethod} className="space-y-6">
+        {generatorConfig.form.map((field, index) => {
           switch (field.type) {
+            case 'hidden':
+                return <input key={`${field.name}-${index}`} type="hidden" name={field.name} defaultValue={field.value} />;
+
+            case 'section':
+                return (
+                    <div key={`${field.title}-${index}`}>
+                        <Separator className="my-4" />
+                        <h4 className="mb-2 text-xl font-semibold tracking-tight">{field.title}</h4>
+                    </div>
+                );
+
             case 'general':
-              return <GeneralSection key={field.name} isSubmitted={false} />;
+                return <GeneralSection key={`${field.name}-${index}`} isSubmitted={false} />;
+            
             case 'officer':
-              return <OfficerSection key={field.name} isSubmitted={false} />;
+                return <OfficerSection key={`${field.name}-${index}`} isSubmitted={false} />;
+
             case 'text':
               return (
-                <Card key={field.name}>
-                  <CardHeader><CardTitle>{field.label}</CardTitle></CardHeader>
-                  <CardContent>
-                    <Controller
-                      name={field.name}
-                      control={control}
-                      render={({ field: controllerField }) => (
-                        <Input {...controllerField} placeholder={field.placeholder} />
-                      )}
-                    />
-                  </CardContent>
-                </Card>
+                <div key={`${field.name}-${index}`}>
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  <Input id={field.name} name={field.name} placeholder={field.placeholder} />
+                </div>
               );
+
             case 'textarea':
                 return (
-                    <Card key={field.name}>
-                        <CardHeader><CardTitle>{field.label}</CardTitle></CardHeader>
-                        <CardContent>
-                            <Controller
-                            name={field.name}
-                            control={control}
-                            render={({ field: controllerField }) => (
-                                <Textarea {...controllerField} placeholder={field.placeholder} className="min-h-[120px]" />
-                            )}
-                            />
-                        </CardContent>
-                    </Card>
+                    <div key={`${field.name}-${index}`}>
+                        <Label htmlFor={field.name}>{field.label}</Label>
+                        <Textarea id={field.name} name={field.name} placeholder={field.placeholder} className="min-h-[120px]" />
+                    </div>
                 );
+
             case 'dropdown':
                 return (
-                    <Card key={field.name}>
-                        <CardHeader><CardTitle>{field.label}</CardTitle></CardHeader>
-                        <CardContent>
-                            <Controller
-                                name={field.name}
-                                control={control}
-                                render={({ field: controllerField }) => (
-                                <Select onValueChange={controllerField.onChange} defaultValue={controllerField.value}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={field.placeholder} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                    {field.options?.map((option) => (
-                                        <SelectItem key={option} value={option}>{option}</SelectItem>
-                                    ))}
-                                    </SelectContent>
-                                </Select>
-                                )}
-                            />
-                        </CardContent>
-                    </Card>
+                    <div key={`${field.name}-${index}`}>
+                        <Label htmlFor={field.name}>{field.label}</Label>
+                        <Select name={field.name}>
+                            <SelectTrigger id={field.name}>
+                                <SelectValue placeholder={field.placeholder} />
+                            </SelectTrigger>
+                            <SelectContent>
+                            {field.options?.map((option) => (
+                                <SelectItem key={option} value={option}>{option}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 );
+
             default:
               return null;
           }
         })}
         <div className="flex justify-end">
-          <Button type="submit">Generate Paperwork</Button>
+          <Button type="submit">Submit Paperwork</Button>
         </div>
       </form>
     </div>

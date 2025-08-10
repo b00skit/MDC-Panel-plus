@@ -3,14 +3,33 @@
     "title": "Seizure Warrant",
     "description": "Generate a seizure warrant affidavit for property.",
     "icon": "FileSearch",
+    "formAction": "/api/debug",
+    "formMethod": "POST",
     "form": [
+        {
+            "type": "hidden",
+            "name": "generatorType",
+            "value": "SeizureWarrant"
+        },
+        {
+            "type": "section",
+            "title": "General Section"
+        },
         {
             "type": "general",
             "name": "general"
         },
         {
+            "type": "section",
+            "title": "Officer Section"
+        },
+        {
             "type": "officer",
-            "name": "officer"
+            "name": "officers"
+        },
+        {
+            "type": "section",
+            "title": "Warrant Details"
         },
         {
             "type": "text",
@@ -36,6 +55,5 @@
             "label": "Issuing Judge",
             "options": ["Judge Crane", "Judge Judy", "Judge Mental"]
         }
-    ],
-    "output": "[b]AFFIDAVIT AND REQUEST FOR A SEIZURE WARRANT[/b]\n\n[b]DATE:[/b] {{general.date}}\n[b]TIME:[/b] {{general.time}}\n\n[b]AFFIANT INFORMATION[/b]\n[b]Name:[/b] {{officer.0.name}}\n[b]Rank:[/b] {{officer.0.rank}}\n[b]Badge Number:[/b] {{officer.0.badgeNumber}}\n\n[b]SUBJECT OF WARRANT[/b]\n[b]Name:[/b] {{suspect_name}}\n\n[b]PROPERTY TO BE SEIZED[/b]\n{{property_description}}\n\n[b]PROBABLE CAUSE STATEMENT[/b]\n{{probable_cause}}\n\nI, {{officer.0.name}}, swear under penalty of perjury that the information contained in this affidavit is true and correct to the best of my knowledge and belief.\n\n[b]ISSUING JUDGE:[/b] {{judge_name}}"
+    ]
 }
