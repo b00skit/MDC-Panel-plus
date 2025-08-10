@@ -3,7 +3,7 @@
 
 import { PaperworkGeneratorForm } from '@/components/paperwork-generators/paperwork-generator-form';
 import { notFound, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function GeneratorPageContent() {
@@ -20,7 +20,8 @@ function GeneratorPageContent() {
             return;
         }
 
-        fetch(`/data/paperwork-generators/${slug}.json`)
+        // Fetch from the new API route
+        fetch(`/api/paperwork-generators/${slug}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -61,6 +62,8 @@ function GeneratorPageContent() {
 
 export default function GeneratorPage() {
     return (
-        <GeneratorPageContent />
+        <Suspense fallback={<div>Loading...</div>}>
+            <GeneratorPageContent />
+        </Suspense>
     );
 }
