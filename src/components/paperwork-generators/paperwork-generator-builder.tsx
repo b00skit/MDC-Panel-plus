@@ -30,7 +30,7 @@ const fieldTypes: { type: Field['type']; label: string; default: Partial<Field> 
     { type: 'officer', label: 'Officer Section', default: { type: 'officer', name: 'officers' } },
 ];
 
-function FieldEditor({ field, index, onRemove, register }: any) {
+function FieldEditor({ field, index, onRemove, register, control }: any) {
     const renderFieldInputs = () => {
         const canBeRequired = ['text', 'textarea', 'dropdown', 'datalist'].includes(field.type);
         return (
@@ -48,7 +48,18 @@ function FieldEditor({ field, index, onRemove, register }: any) {
                         <>
                             <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
                             <Input {...register(`form.${index}.label`)} placeholder="Label" />
-                            <Input {...register(`form.${index}.options`, { setValueAs: v => v.split(',') })} placeholder="Options (comma-separated)" />
+                            <Controller
+                                name={`form.${index}.options`}
+                                control={control}
+                                render={({ field }) => (
+                                    <Input 
+                                        {...field}
+                                        placeholder="Options (comma-separated)"
+                                        value={Array.isArray(field.value) ? field.value.join(',') : field.value}
+                                        onChange={e => field.onChange(e.target.value.split(','))}
+                                    />
+                                )}
+                            />
                         </>
                     )}
                     {field.type === 'toggle' && (
@@ -251,6 +262,7 @@ export function PaperworkGeneratorBuilder() {
                                 index={index} 
                                 onRemove={remove}
                                 register={register}
+                                control={control}
                             />
                         ))}
                     </CardContent>
@@ -279,17 +291,24 @@ export function PaperworkGeneratorBuilder() {
                                     </div>
                                     <div>
                                         <Label>Is...</Label>
-                                        <Select {...register(`conditionals.${index}.operator`)} defaultValue="is_checked">
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="is_checked">Checked</SelectItem>
-                                                <SelectItem value="is_not_checked">Not Checked</SelectItem>
-                                                <SelectItem value="equals">Equal to</SelectItem>
-                                                <SelectItem value="not_equals">Not Equal to</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                        <Controller
+                                            name={`conditionals.${index}.operator`}
+                                            control={control}
+                                            defaultValue="is_checked"
+                                            render={({ field }) => (
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="is_checked">Checked</SelectItem>
+                                                        <SelectItem value="is_not_checked">Not Checked</SelectItem>
+                                                        <SelectItem value="equals">Equal to</SelectItem>
+                                                        <SelectItem value="not_equals">Not Equal to</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
                                     </div>
                                     <div>
                                         <Label>Value</Label>
