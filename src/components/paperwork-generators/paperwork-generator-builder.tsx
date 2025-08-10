@@ -16,6 +16,7 @@ import { Badge } from '../ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
+import { Separator } from '../ui/separator';
 
 const fieldTypes: { type: Field['type']; label: string; default: Partial<Field> }[] = [
     { type: 'section', label: 'Section Header', default: { type: 'section', title: 'New Section' } },
@@ -69,10 +70,15 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
         name: `form.${index}.fields`
     });
 
+     const { fields: chargeCustomFields, append: appendChargeCustomField, remove: removeChargeCustomField } = useFieldArray({
+        control,
+        name: `form.${index}.customFields`
+    });
+
     const renderFieldInputs = () => {
         const canBeRequired = ['text', 'textarea', 'dropdown', 'datalist'].includes(field.type);
         return (
-            <>
+            <div className="space-y-4">
                 <div className="space-y-2">
                     {field.type === 'section' && <Input {...register(`form.${index}.title`)} placeholder="Section Title" />}
                     
@@ -104,30 +110,66 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
                     )}
                     
                     {field.type === 'toggle' && (
-                         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                            <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
-                            <Input {...register(`form.${index}.label`)} placeholder="Label" />
-                            <Input {...register(`form.${index}.dataOn`)} placeholder="Text for ON state" />
-                            <Input {...register(`form.${index}.dataOff`)} placeholder="Text for OFF state" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 items-center">
+                            <Input {...register(`form.${index}.name`)} placeholder="Field Name" className="lg:col-span-1" />
+                            <Input {...register(`form.${index}.label`)} placeholder="Label" className="lg:col-span-1" />
+                            <Input {...register(`form.${index}.dataOn`)} placeholder="Text for ON state" className="lg:col-span-1" />
+                            <Input {...register(`form.${index}.dataOff`)} placeholder="Text for OFF state" className="lg:col-span-1" />
+                             <div className="flex items-center space-x-2 justify-self-start pt-6">
+                                <Controller
+                                    name={`form.${index}.defaultValue`}
+                                    control={control}
+                                    render={({ field: controllerField }) => <Checkbox id={`default-on-${index}`} checked={controllerField.value} onCheckedChange={controllerField.onChange} />}
+                                />
+                                <Label htmlFor={`default-on-${index}`}>Default On?</Label>
+                             </div>
                         </div>
                     )}
 
                      {field.type === 'charge' && (
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                             <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. citations)" />
-                             <div className="flex items-center space-x-2">
-                                <Checkbox id={`show-class-${index}`} {...register(`form.${index}.showClass`)} />
-                                <Label htmlFor={`show-class-${index}`}>Show Class</Label>
-                             </div>
-                              <div className="flex items-center space-x-2">
-                                <Checkbox id={`show-offense-${index}`} {...register(`form.${index}.showOffense`)} />
-                                <Label htmlFor={`show-offense-${index}`}>Show Offense</Label>
-                             </div>
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
+                                 <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. citations)" />
+                                 <div className="flex items-center space-x-2">
+                                    <Controller
+                                        name={`form.${index}.showClass`}
+                                        control={control}
+                                        render={({ field: controllerField }) => <Checkbox id={`show-class-${index}`} checked={controllerField.value} onCheckedChange={controllerField.onChange} />}
+                                    />
+                                    <Label htmlFor={`show-class-${index}`}>Show Class</Label>
+                                 </div>
+                                  <div className="flex items-center space-x-2">
+                                     <Controller
+                                        name={`form.${index}.showOffense`}
+                                        control={control}
+                                        render={({ field: controllerField }) => <Checkbox id={`show-offense-${index}`} checked={controllerField.value} onCheckedChange={controllerField.onChange} />}
+                                    />
+                                    <Label htmlFor={`show-offense-${index}`}>Show Offense</Label>
+                                 </div>
+                            </div>
+                             <Card className="bg-muted/50">
+                                 <CardHeader className="p-4">
+                                     <CardTitle className="text-base">Custom Charge Fields</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-4 pt-0 space-y-2">
+                                     {chargeCustomFields.map((customField, cfIndex) => (
+                                         <div key={customField.id} className="flex items-center gap-2">
+                                            <div className="flex-1 grid grid-cols-3 gap-2">
+                                                <Input {...register(`form.${index}.customFields.${cfIndex}.name`)} placeholder="Field Name"/>
+                                                <Input {...register(`form.${index}.customFields.${cfIndex}.label`)} placeholder="Label"/>
+                                                <Input {...register(`form.${index}.customFields.${cfIndex}.placeholder`)} placeholder="Placeholder"/>
+                                            </div>
+                                            <Button type="button" variant="ghost" size="icon" className="text-red-500" onClick={() => removeChargeCustomField(cfIndex)}><Trash2 className="h-4 w-4" /></Button>
+                                        </div>
+                                     ))}
+                                     <Button type="button" size="sm" variant="outline" onClick={() => appendChargeCustomField({ type: 'text' })}>Add Custom Input</Button>
+                                </CardContent>
+                             </Card>
                         </div>
                     )}
 
                      {field.type === 'group' && (
-                        <div className="space-y-2 p-2 border-l-2">
+                        <div className="space-y-2 p-4 border rounded-md bg-muted/50">
                              {subFields.map((subField, subIndex) => (
                                  <SubFieldEditor
                                      key={subField.id}
@@ -149,21 +191,29 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
 
                     {(field.type === 'general' || field.type === 'officer') && <p className="text-muted-foreground text-sm">This field has no configuration.</p>}
                 </div>
-                <div className="flex items-center gap-4 pt-2">
-                     {canBeRequired && (
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id={`required-${index}`} {...register(`form.${index}.required`)} />
-                            <Label htmlFor={`required-${index}`}>Required?</Label>
-                        </div>
-                     )}
-                     {field.type === 'toggle' && (
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id={`default-on-${index}`} {...register(`form.${index}.defaultValue`)} />
-                            <Label htmlFor={`default-on-${index}`}>Default On?</Label>
-                        </div>
-                     )}
-                </div>
-            </>
+                 <Separator />
+                 <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                         {canBeRequired && (
+                            <div className="flex items-center space-x-2">
+                                 <Controller
+                                    name={`form.${index}.required`}
+                                    control={control}
+                                    render={({ field: controllerField }) => <Checkbox id={`required-${index}`} checked={controllerField.value} onCheckedChange={controllerField.onChange} />}
+                                />
+                                <Label htmlFor={`required-${index}`}>Required?</Label>
+                            </div>
+                         )}
+                    </div>
+                     <div>
+                        <Label className="text-xs text-muted-foreground">Conditional Logic (Stipulation)</Label>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2 border rounded-md bg-muted/50">
+                            <Input {...register(`form.${index}.stipulation.field`)} placeholder="Show if field... (e.g. a_toggle)" />
+                            <Input {...register(`form.${index}.stipulation.value`)} placeholder="...has this value (e.g. true)" />
+                         </div>
+                    </div>
+                 </div>
+            </div>
         )
     }
 
@@ -172,10 +222,6 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
             <div className="flex-1 space-y-2">
                 <p className="font-medium capitalize">{field.type} Field</p>
                 {renderFieldInputs()}
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2 border-t mt-2">
-                    <Input {...register(`form.${index}.stipulation.field`)} placeholder="Conditional Field Name (e.g. some_toggle)" />
-                    <Input {...register(`form.${index}.stipulation.value`)} placeholder="Conditional Field Value (e.g. true)" />
-                 </div>
             </div>
             <Button type="button" variant="ghost" size="icon" onClick={() => onRemove(index)}>
                 <Trash2 className="h-5 w-5 text-red-500" />
@@ -186,7 +232,7 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
 
 export function PaperworkGeneratorBuilder() {
     const { formData, reset } = usePaperworkBuilderStore();
-    const { control, register, handleSubmit, watch } = useForm({
+    const { control, register, handleSubmit, watch, setValue } = useForm({
         defaultValues: formData,
     });
 
@@ -227,6 +273,12 @@ export function PaperworkGeneratorBuilder() {
                 if(field.type === 'general'){
                     ['date', 'time', 'callSign'].forEach(p => generatedWildcards.push(`{{general.${p}}}`))
                 }
+                 if(field.type === 'charge' && field.name){
+                     const chargeName = field.name;
+                     generatedWildcards.push(`{{#each ${chargeName}}}`);
+                     generatedWildcards.push(`{{this.chargeId}}`);
+                     generatedWildcards.push(`{{/each}}`);
+                }
             });
         };
         processFields(watchedForm);
@@ -251,7 +303,7 @@ export function PaperworkGeneratorBuilder() {
         if(response.ok) {
             const result = await response.json();
             toast({ title: "Success!", description: "Form created successfully." });
-            router.push(`/paperwork-generators/form?s=${result.id}`);
+            router.push(`/paperwork-generators/form?f=${result.id}`);
         } else {
             const error = await response.json();
             toast({ title: "Error", description: error.error || "Failed to create form.", variant: "destructive" });
@@ -330,6 +382,7 @@ export function PaperworkGeneratorBuilder() {
                                 watch={watch}
                             />
                         ))}
+                         {fields.length === 0 && <p className="text-muted-foreground text-center p-4">No fields added yet. Add some fields to get started.</p>}
                     </CardContent>
                 </Card>
 
@@ -344,6 +397,7 @@ export function PaperworkGeneratorBuilder() {
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    type="button"
                                     className="absolute top-2 right-2 text-red-500"
                                     onClick={() => removeConditional(index)}
                                 >

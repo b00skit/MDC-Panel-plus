@@ -51,7 +51,7 @@ interface PaperworkBuilderState {
     reset: () => void;
 }
 
-const getInitialState = () => ({
+const getInitialState = (): PaperworkBuilderState['formData'] => ({
     title: '',
     description: '',
     icon: 'Puzzle',
