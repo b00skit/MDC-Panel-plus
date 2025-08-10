@@ -3,8 +3,7 @@
     "title": "Seizure Warrant",
     "description": "Generate a seizure warrant affidavit for property.",
     "icon": "FileSearch",
-    "formAction": "/api/debug",
-    "formMethod": "POST",
+    "output": "[font=Arial][center][size=120][b]SUPERIOR COURT OF SAN ANDREAS[/b][/size][/center]\n[center][size=120][b]COUNTY OF LOS SANTOS[/b][/size][/center]\n\n[b]AFFIDAVIT AND STATEMENT OF PROBABLE CAUSE FOR SEIZURE WARRANT[/b]\n\n[b]Affiant:[/b] {{officers.0.rank}} {{officers.0.name}}, #{{officers.0.badgeNumber}}\n[b]Date:[/b] {{general.date}}\n\n[b]Property to be Seized:[/b]\n{{property_description}}\n\n[b]Suspect Name:[/b]\n{{suspect_name}}\n\n[b]Statement of Probable Cause:[/b]\n{{probable_cause}}\n\n[b]Conclusion:[/b]\nBased on the information provided herein, I, {{officers.0.rank}} {{officers.0.name}}, respectfully request that this court issue a warrant for the seizure of the property described above.\n\n[hr][/hr]\n[b]Judicial Officer Signature:[/b]\n[b]Judge's Name:[/b] {{judge_name}}\n[b]Date:[/b] {{general.date}}",
     "form": [
         {
             "type": "hidden",
