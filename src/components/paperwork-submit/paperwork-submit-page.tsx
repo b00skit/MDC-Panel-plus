@@ -18,7 +18,6 @@ import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useFormStore } from '@/stores/form-store';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
@@ -630,9 +629,14 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
 
     useEffect(() => {
         if(generatorOutput && formData) {
+            // Register helpers
             Handlebars.registerHelper('lookup', function(obj, key) {
                 return obj && obj[key];
             });
+            Handlebars.registerHelper('with', function(context, options) {
+                return options.fn(context);
+            });
+
             const compiledTemplate = Handlebars.compile(generatorOutput, { noEscape: true });
             const parsed = compiledTemplate(formData);
             setTemplate(parsed);
@@ -680,7 +684,6 @@ function PaperworkSubmitContent() {
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
     const reportRef = useRef<HTMLDivElement>(null);
-    const [reportHtml, setReportHtml] = useState('');
   
     useEffect(() => {
       setIsClient(true);
@@ -755,21 +758,14 @@ function PaperworkSubmitContent() {
       { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
     ) : null;
   
-    useEffect(() => {
-        if (reportRef.current) {
-            setReportHtml(reportRef.current.innerHTML);
-        }
-    }, [formData, report, penalCode, totals, isClient, reportType, reportRef.current?.innerHTML]);
-  
     const handleCopy = () => {
-        let contentToCopy = reportHtml;
-        if (contentToCopy) {
-            navigator.clipboard.writeText(contentToCopy);
-            toast({
-              title: "Success",
-              description: "Paperwork content copied to clipboard.",
-              variant: "default",
-            })
+        if (reportRef.current) {
+          navigator.clipboard.writeText(reportRef.current.innerHTML);
+          toast({
+            title: "Success",
+            description: "Paperwork content copied to clipboard.",
+            variant: "default",
+          })
         }
     };
   
@@ -810,7 +806,6 @@ function PaperworkSubmitContent() {
         }
         return (
             <Alert variant="destructive">
-                <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
                     Could not load report data. Please go back and try again.
