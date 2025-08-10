@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useFieldArray, useForm, Controller } from 'react-hook-form';
+import { useFieldArray, useForm, Controller, Control, UseFormRegister } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '../dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
@@ -19,7 +19,17 @@ import { GripVertical, Trash2, PlusCircle } from 'lucide-react';
 
 const ICONS = ['FileSearch', 'Puzzle'];
 
-function SortableField({ field, index, onRemoveField, onUpdateField, control, register }: { field: Field; index: number; onRemoveField: (index: number) => void; onUpdateField: (index: number, field: Partial<Field>) => void; control: any, register: any }) {
+interface SortableFieldProps {
+    field: Field;
+    index: number;
+    onRemoveField: (index: number) => void;
+    onUpdateField: (index: number, field: Partial<Field>) => void;
+    control: Control<any>;
+    register: UseFormRegister<any>;
+}
+
+
+function SortableField({ field, index, onRemoveField, onUpdateField, control, register }: SortableFieldProps) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: field.id });
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -216,7 +226,7 @@ export function PaperworkGeneratorBuilder() {
                                 ))}
                             </SortableContext>
                         </DndContext>
-                        <Button type="button" variant="outline" className="w-full" onClick={() => { const newField = { id: Date.now().toString(), type: 'text', name: '', label: '', placeholder: '', options: [] }; append(newField); addFormField(newField); }}>
+                        <Button type="button" variant="outline" className="w-full" onClick={() => { const newField = { id: Date.now().toString(), type: 'text' as const, name: '', label: '', placeholder: '', options: [] }; append(newField); addFormField(newField); }}>
                             <PlusCircle className="mr-2 h-4 w-4" /> Add Field
                         </Button>
                     </CardContent>
