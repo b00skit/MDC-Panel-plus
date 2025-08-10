@@ -8,7 +8,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function GeneratorPageContent() {
     const searchParams = useSearchParams();
-    const slug = searchParams.get('s');
+    const staticSlug = searchParams.get('s');
+    const userFormSlug = searchParams.get('f');
+    
+    const slug = staticSlug || userFormSlug;
+    const param = staticSlug ? `s=${staticSlug}` : `f=${userFormSlug}`;
+
     const [generatorConfig, setGeneratorConfig] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -20,8 +25,7 @@ function GeneratorPageContent() {
             return;
         }
 
-        // Fetch from the new API route
-        fetch(`/api/paperwork-generators/${slug}`)
+        fetch(`/api/paperwork-generators/${slug}?${param}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -36,7 +40,7 @@ function GeneratorPageContent() {
                 setError(true);
                 setLoading(false);
             });
-    }, [slug]);
+    }, [slug, param]);
 
     if (loading) {
         return (

@@ -3,12 +3,12 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { NextResponse } from 'next/server';
 
-function sanitizeFilename(name: string) {
-    if (!name) {
-        // Fallback for untitled forms
+function generateUniqueId(title: string) {
+    if (!title) {
         return `form_${Date.now()}`;
     }
-    return name.toLowerCase().replace(/[^a-z0-9_]/g, '-').replace(/-+/g, '-').slice(0, 50);
+    const sanitizedTitle = title.toLowerCase().replace(/[^a-z0-9_]/g, '-').replace(/-+/g, '-').slice(0, 50);
+    return `${sanitizedTitle}_${Date.now()}`;
 }
 
 export async function POST(request: Request) {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
         
-        const id = sanitizeFilename(title);
+        const id = generateUniqueId(title);
 
         const newGenerator = {
             id,
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
             output,
         };
 
-        const dirPath = path.join(process.cwd(), 'data/paperwork-generators');
+        const dirPath = path.join(process.cwd(), 'data/forms');
         const filePath = path.join(dirPath, `${id}.json`);
         
         await fs.mkdir(dirPath, { recursive: true });

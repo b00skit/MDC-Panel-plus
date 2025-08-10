@@ -1,12 +1,16 @@
+
 import { promises as fs } from 'fs';
 import path from 'path';
 import Link from 'next/link';
 import { PageHeader } from '@/components/dashboard/page-header';
-import { ModuleCard, ModuleCardProps } from '@/components/dashboard/module-card';
-import { FileSearch, Puzzle, PlusCircle } from 'lucide-react';
+import { ModuleCard } from '@/components/dashboard/module-card';
+import { FileSearch, Puzzle, PlusCircle, Pencil, Play, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
-async function getGenerators() {
+async function getStaticGenerators() {
   const dirPath = path.join(process.cwd(), 'data/paperwork-generators');
   try {
     const files = await fs.readdir(dirPath);
@@ -15,18 +19,43 @@ async function getGenerators() {
         if (path.extname(file) === '.json') {
           const filePath = path.join(dirPath, file);
           const fileContents = await fs.readFile(filePath, 'utf8');
-          const data = JSON.parse(fileContents);
-          return data;
+          return JSON.parse(fileContents);
         }
         return null;
       })
     );
     return generators.filter(g => g !== null);
   } catch (error) {
-    console.error("Could not read paperwork generators directory:", error);
+    console.error("Could not read static paperwork generators directory:", error);
     return [];
   }
 }
+
+async function getUserForms() {
+    const dirPath = path.join(process.cwd(), 'data/forms');
+    try {
+      const files = await fs.readdir(dirPath);
+      const forms = await Promise.all(
+        files.map(async (file) => {
+          if (path.extname(file) === '.json') {
+            const filePath = path.join(dirPath, file);
+            const fileContents = await fs.readFile(filePath, 'utf8');
+            const data = JSON.parse(fileContents);
+            const stats = await fs.stat(filePath);
+            return {
+                ...data,
+                lastModified: stats.mtime.toLocaleString(),
+            };
+          }
+          return null;
+        })
+      );
+      return forms.filter(f => f !== null);
+    } catch (error) {
+      console.log("Could not read user forms directory, it might not exist yet.");
+      return [];
+    }
+  }
 
 async function getConfig() {
     const configPath = path.join(process.cwd(), 'data/config.json');
@@ -40,18 +69,19 @@ async function getConfig() {
 const ICONS: { [key: string]: React.ReactNode } = {
   FileSearch: <FileSearch className="w-8 h-8 text-primary" />,
   Puzzle: <Puzzle className="w-8 h-8 text-primary" />,
+  Car: <FileSearch className="w-8 h-8 text-primary" />,
   default: <Puzzle className="w-8 h-8 text-primary" />,
 };
 
 export default async function PaperworkGeneratorsPage() {
-  const [generators, { isBuilderEnabled }] = await Promise.all([getGenerators(), getConfig()]);
+  const [staticGenerators, userForms, { isBuilderEnabled }] = await Promise.all([getStaticGenerators(), getUserForms(), getConfig()]);
 
   return (
-      <div className="container mx-auto p-4 md:p-6 lg:p-8">
-         <div className="flex justify-between items-center mb-6">
+      <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
+         <div className="flex justify-between items-center">
              <PageHeader
                 title="Paperwork Generators"
-                description="Select a template to generate paperwork."
+                description="Select a template or use one of your saved forms."
             />
             {isBuilderEnabled && (
                 <Button asChild>
@@ -62,8 +92,9 @@ export default async function PaperworkGeneratorsPage() {
                 </Button>
             )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-          {generators.map((generator) => (
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {staticGenerators.map((generator) => (
             <ModuleCard
               key={generator.id}
               title={generator.title}
@@ -73,6 +104,54 @@ export default async function PaperworkGeneratorsPage() {
             />
           ))}
         </div>
+
+        {isBuilderEnabled && (
+             <Card>
+                <CardHeader>
+                    <CardTitle>Your Custom Forms</CardTitle>
+                    <CardContent className="px-0 pb-0 pt-4">
+                        {userForms.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Title</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead>Last Modified</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {userForms.map(form => (
+                                        <TableRow key={form.id}>
+                                            <TableCell className="font-medium flex items-center gap-2">
+                                                <Badge variant="outline">{form.icon}</Badge> {form.title}
+                                            </TableCell>
+                                            <TableCell>{form.description}</TableCell>
+                                            <TableCell>{form.lastModified}</TableCell>
+                                            <TableCell className="text-right">
+                                                <Button variant="ghost" size="icon" asChild>
+                                                    <Link href={`/paperwork-generators/form?f=${form.id}`} title="Use Form">
+                                                        <Play className="h-4 w-4" />
+                                                    </Link>
+                                                </Button>
+                                                <Button variant="ghost" size="icon" disabled>
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                                 <Button variant="ghost" size="icon" disabled>
+                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ): (
+                            <p className="text-muted-foreground">You haven't created any forms yet. Click "Create New Form" to get started.</p>
+                        )}
+                    </CardContent>
+                </CardHeader>
+             </Card>
+        )}
       </div>
   );
 }
