@@ -211,7 +211,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         };
         setGeneratorId(generatorConfig.id);
         setFormData(fullData);
-        router.push('/paperwork-submit?type=generator');
+        router.push('/arrest-submit?type=generator');
     };
 
   return (
