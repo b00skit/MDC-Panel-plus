@@ -5,7 +5,7 @@ import { ModuleCard, ModuleCardProps } from '@/components/dashboard/module-card'
 import { FileSearch, Puzzle } from 'lucide-react';
 
 async function getGenerators() {
-  const dirPath = path.join(process.cwd(), 'public/data/paperwork-generators');
+  const dirPath = path.join(process.cwd(), 'data/paperwork-generators');
   try {
     const files = await fs.readdir(dirPath);
     const generators = await Promise.all(
