@@ -30,22 +30,62 @@ const fieldTypes: { type: Field['type']; label: string; default: Partial<Field> 
     { type: 'officer', label: 'Officer Section', default: { type: 'officer', name: 'officers' } },
 ];
 
-function FieldEditor({ field, index, onRemove, register, control }: any) {
+const subFieldTypes: { type: Field['type']; label: string; default: Partial<Field> }[] = [
+    { type: 'text', label: 'Text Input', default: { type: 'text', name: 'new_text', label: 'New Text Input', placeholder: 'Enter value' } },
+    { type: 'toggle', label: 'Toggle Switch', default: { type: 'toggle', name: 'new_toggle', label: 'New Toggle', dataOn: 'On', dataOff: 'Off' } },
+    { type: 'dropdown', label: 'Dropdown', default: { type: 'dropdown', name: 'new_dropdown', label: 'New Dropdown', options: ['Option 1', 'Option 2'] } },
+];
+
+
+function SubFieldEditor({ field, fieldPath, onRemove, register }: { field: Field; fieldPath: string; onRemove: () => void; register: any }) {
+    return (
+        <div className="flex-1 p-2 border rounded-md bg-muted/50 space-y-2">
+            <div className="flex justify-between items-center">
+                <p className="text-xs font-semibold uppercase">{field.type} FIELD</p>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onRemove}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+            </div>
+            {field.type === 'text' && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <Input {...register(`${fieldPath}.name`)} placeholder="Field Name" />
+                    <Input {...register(`${fieldPath}.label`)} placeholder="Label" />
+                    <Input {...register(`${fieldPath}.placeholder`)} placeholder="Placeholder" />
+                </div>
+            )}
+             {field.type === 'toggle' && (
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <Input {...register(`${fieldPath}.name`)} placeholder="Field Name" />
+                    <Input {...register(`${fieldPath}.label`)} placeholder="Label" />
+                    <Input {...register(`${fieldPath}.dataOn`)} placeholder="Text for ON" />
+                    <Input {...register(`${fieldPath}.dataOff`)} placeholder="Text for OFF" />
+                </div>
+            )}
+        </div>
+    );
+}
+
+function FieldEditor({ field, index, onRemove, register, control, watch }: any) {
+    const { fields: subFields, append: appendSubField, remove: removeSubField } = useFieldArray({
+        control,
+        name: `form.${index}.fields`
+    });
+
     const renderFieldInputs = () => {
         const canBeRequired = ['text', 'textarea', 'dropdown', 'datalist'].includes(field.type);
         return (
             <>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div className="space-y-2">
                     {field.type === 'section' && <Input {...register(`form.${index}.title`)} placeholder="Section Title" />}
+                    
                     {['text', 'textarea'].includes(field.type) && (
-                        <>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                             <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. suspect_name)" />
                             <Input {...register(`form.${index}.label`)} placeholder="Label (e.g. Suspect Name)" />
                             <Input {...register(`form.${index}.placeholder`)} placeholder="Placeholder Text" />
-                        </>
+                        </div>
                     )}
+                    
                     {['dropdown', 'datalist'].includes(field.type) && (
-                        <>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                             <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
                             <Input {...register(`form.${index}.label`)} placeholder="Label" />
                             <Controller
@@ -55,13 +95,14 @@ function FieldEditor({ field, index, onRemove, register, control }: any) {
                                     <Input 
                                         {...field}
                                         placeholder="Options (comma-separated)"
-                                        value={Array.isArray(field.value) ? field.value.join(',') : field.value}
+                                        value={Array.isArray(field.value) ? field.value.join(',') : field.value || ''}
                                         onChange={e => field.onChange(e.target.value.split(','))}
                                     />
                                 )}
                             />
-                        </>
+                        </div>
                     )}
+                    
                     {field.type === 'toggle' && (
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
                             <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
@@ -70,20 +111,43 @@ function FieldEditor({ field, index, onRemove, register, control }: any) {
                             <Input {...register(`form.${index}.dataOff`)} placeholder="Text for OFF state" />
                         </div>
                     )}
+
                      {field.type === 'charge' && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                              <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. citations)" />
-                             <label className="flex items-center space-x-2">
-                                <input type="checkbox" {...register(`form.${index}.showClass`)} />
-                                <span>Show Class</span>
-                             </label>
-                             <label className="flex items-center space-x-2">
-                                <input type="checkbox" {...register(`form.${index}.showOffense`)} />
-                                <span>Show Offense</span>
-                             </label>
+                             <div className="flex items-center space-x-2">
+                                <Checkbox id={`show-class-${index}`} {...register(`form.${index}.showClass`)} />
+                                <Label htmlFor={`show-class-${index}`}>Show Class</Label>
+                             </div>
+                              <div className="flex items-center space-x-2">
+                                <Checkbox id={`show-offense-${index}`} {...register(`form.${index}.showOffense`)} />
+                                <Label htmlFor={`show-offense-${index}`}>Show Offense</Label>
+                             </div>
                         </div>
                     )}
-                    {(field.type === 'general' || field.type === 'officer') && <p className="text-muted-foreground text-sm col-span-3">This field has no configuration.</p>}
+
+                     {field.type === 'group' && (
+                        <div className="space-y-2 p-2 border-l-2">
+                             {subFields.map((subField, subIndex) => (
+                                 <SubFieldEditor
+                                     key={subField.id}
+                                     field={subField}
+                                     fieldPath={`form.${index}.fields.${subIndex}`}
+                                     onRemove={() => removeSubField(subIndex)}
+                                     register={register}
+                                 />
+                             ))}
+                             <div className="flex flex-wrap gap-2 pt-2">
+                                {subFieldTypes.map(sft => (
+                                    <Button key={sft.type} type="button" variant="outline" size="sm" onClick={() => appendSubField(sft.default)}>
+                                        <Plus className="mr-2 h-4 w-4" /> Add {sft.label}
+                                    </Button>
+                                ))}
+                             </div>
+                        </div>
+                     )}
+
+                    {(field.type === 'general' || field.type === 'officer') && <p className="text-muted-foreground text-sm">This field has no configuration.</p>}
                 </div>
                 <div className="flex items-center gap-4 pt-2">
                      {canBeRequired && (
@@ -108,7 +172,7 @@ function FieldEditor({ field, index, onRemove, register, control }: any) {
             <div className="flex-1 space-y-2">
                 <p className="font-medium capitalize">{field.type} Field</p>
                 {renderFieldInputs()}
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2 border-t mt-2">
                     <Input {...register(`form.${index}.stipulation.field`)} placeholder="Conditional Field Name (e.g. some_toggle)" />
                     <Input {...register(`form.${index}.stipulation.value`)} placeholder="Conditional Field Value (e.g. true)" />
                  </div>
@@ -263,6 +327,7 @@ export function PaperworkGeneratorBuilder() {
                                 onRemove={remove}
                                 register={register}
                                 control={control}
+                                watch={watch}
                             />
                         ))}
                     </CardContent>
