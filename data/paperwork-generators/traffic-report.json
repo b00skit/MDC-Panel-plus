@@ -19,12 +19,18 @@
         { "type": "textarea", "name": "narrative", "label": "Traffic Stop Narrative", "placeholder": "Witnessed the defendant to be..." },
         { "type": "textarea", "name": "dashcam", "label": "Dashboard Camera", "placeholder": "The dashboard camera captures audio and video footage showcasing..." },
         { "type": "section", "title": "Vehicle Details" },
-        { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Unregistered", "dataOff": "Registered" },
-        { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname (leave empty if same as defendant)" },
-        { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX" },
-        { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Uninsured", "dataOff": "Insured" },
-        { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "options": ["Albany Alpha", "Benefactor Dubsta", "Bravado Buffalo", "Declasse Granger", "Vapid Stanier"] },
-        { "type": "dropdown", "name": "vehicle_tint_level", "label": "Tint Level", "placeholder": "Select Tint Level", "options": ["Uninspected", "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5"] },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Registered", "dataOff": "Unregistered" },
+            { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname", "stipulation": {"field": "vehicle_registered", "value": true}},
+            { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX", "stipulation": {"field": "vehicle_registered", "value": true}},
+            { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "stipulation": {"field": "vehicle_registered", "value": true}}
+          ]
+        },
+        { "type": "text", "name": "insurance_expired_date", "label": "Insurance Expired Date", "placeholder": "DD/MM/YYYY", "stipulation": {"field": "vehicle_insured", "value": false}},
+        { "type": "group", "fields": [
+            { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "options": ["Albany Alpha", "Benefactor Dubsta", "Bravado Buffalo", "Declasse Granger", "Vapid Stanier"] },
+            { "type": "dropdown", "name": "vehicle_tint_level", "label": "Tint Level", "placeholder": "Select Tint Level", "options": ["Uninspected", "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5"] }
+        ]},
         { "type": "section", "title": "Charges" },
         { "type": "charge", "name": "charges" }
     ]
