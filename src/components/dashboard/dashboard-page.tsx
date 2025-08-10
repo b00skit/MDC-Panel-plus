@@ -26,7 +26,7 @@ const modules: ModuleCardProps[] = [
     title: "Paperwork Generators",
     description: "Generate different types of paperwork.",
     icon: <Puzzle className="w-8 h-8 text-primary" />,
-    href: "#",
+    href: "/paperwork-generators",
     dataAiHint: "document generator"
   },
   {

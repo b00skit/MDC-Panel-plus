@@ -24,7 +24,7 @@ import { useFormStore } from '@/stores/form-store';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { usePaperworkStore } from '@/stores/paperwork-store';
 
 
 const getType = (type: string | undefined) => {
@@ -479,10 +479,10 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
     // Helper to render text with line breaks
     const renderWithBreaks = (text: string | undefined) => {
         if (!text) return 'N/A';
-        return text.split('\n').map((line, index) => (
+        return text.split('\n').map((line, index, arr) => (
             <span key={index}>
                 {line}
-                <br />
+                {index < arr.length - 1 && <br />}
             </span>
         ));
     };
@@ -546,9 +546,9 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
                     </tr>
                     {persons.map((person: any, index: number) => (
                         <tr key={index}>
-                            <td colSpan={2} style={{...cellStyle, color: 'black', fontFamily: "'Times New Roman', serif" }}>{person.name || 'N/A'}</td>
-                            <td style={{...cellStyle, color: 'black', fontFamily: "'Times New Roman', serif" }}>{person.sex || 'N/A'}</td>
-                            <td colSpan={2} style={{...cellStyle, color: 'black', fontFamily: "'Times New Roman', serif" }}>{person.gang || 'N/A'}</td>
+                            <td colSpan={2} style={cellStyle}>{person.name || 'N/A'}</td>
+                            <td style={cellStyle}>{person.sex || 'N/A'}</td>
+                            <td colSpan={2} style={cellStyle}>{person.gang || 'N/A'}</td>
                         </tr>
                     ))}
                      <tr><th style={{...headerCellStyle, ...sectionHeaderStyle}}>DATE</th>
@@ -610,6 +610,51 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
         </div>
     );
 };
+
+const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
+    const { formData, generatorId } = usePaperworkStore();
+    const [template, setTemplate] = useState('');
+  
+    useEffect(() => {
+      if (generatorId) {
+        // In a real app, you might fetch this from a server or have it statically available
+        import(`../../../data/paperwork-generators/${generatorId}.json`)
+          .then(module => {
+            let output = module.output;
+            
+            // Replace simple wildcards
+            for (const key in formData) {
+                if (typeof formData[key] === 'string') {
+                    output = output.replace(new RegExp(`{{${key}}}`, 'g'), formData[key]);
+                }
+            }
+
+            // Replace officer wildcards (e.g., {{officer.0.name}})
+            if(formData.officer) {
+                formData.officer.forEach((officer: any, index: number) => {
+                    for(const key in officer) {
+                        output = output.replace(new RegExp(`{{officer.${index}.${key}}}`, 'g'), officer[key]);
+                    }
+                });
+            }
+
+            if(formData.general) {
+                for(const key in formData.general) {
+                    output = output.replace(new RegExp(`{{general.${key}}}`, 'g'), formData.general[key]);
+                }
+            }
+            
+            setTemplate(output);
+          });
+      }
+    }, [generatorId, formData]);
+  
+    return (
+      <div ref={innerRef} className="prose dark:prose-invert max-w-none">
+         <pre className="whitespace-pre-wrap font-sans">{template}</pre>
+      </div>
+    );
+  };
   
 
 const getBailStatus = (totals: any) => {
@@ -637,6 +682,7 @@ function PaperworkSubmitContent() {
     const { report, penalCode } = useChargeStore();
     const { formData: basicFormData } = useFormStore();
     const { formData: advancedFormData } = useAdvancedReportStore();
+    const { formData: generatorFormData } = usePaperworkStore();
 
     const searchParams = useSearchParams();
     const reportType = searchParams.get('type') || 'basic';
@@ -651,7 +697,10 @@ function PaperworkSubmitContent() {
     }, []);
   
     const isBasicReport = reportType === 'basic';
-    const formData = isBasicReport ? basicFormData : advancedFormData;
+    const isAdvancedReport = reportType === 'advanced';
+    const isGeneratorReport = reportType === 'generator';
+    
+    const formData = isBasicReport ? basicFormData : (isAdvancedReport ? advancedFormData : generatorFormData);
     
     const hasReport = isClient && report.length > 0 && !!penalCode;
     
@@ -727,7 +776,7 @@ function PaperworkSubmitContent() {
           navigator.clipboard.writeText(reportRef.current.outerHTML);
           toast({
             title: "Success",
-            description: "Arrest report HTML copied to clipboard.",
+            description: "Paperwork HTML copied to clipboard.",
             variant: "default",
           })
         }
@@ -746,6 +795,31 @@ function PaperworkSubmitContent() {
       );
     }
   
+    const renderContent = () => {
+        if (isGeneratorReport) {
+          return <GeneratedFormattedReport innerRef={reportRef} />;
+        }
+    
+        if ((isBasicReport || isAdvancedReport) && hasReport && totals) {
+          return (
+            <div className="space-y-6">
+              <ChargesTable report={report} penalCode={penalCode} />
+              <SummaryTable totals={totals} />
+              <Separator />
+              <div className='p-4 border rounded-lg bg-card'>
+                {isBasicReport && (
+                  <BasicFormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} totals={totals} />
+                )}
+                {isAdvancedReport && (
+                  <AdvancedFormattedReport innerRef={reportRef} formData={formData} />
+                )}
+              </div>
+            </div>
+          );
+        }
+        return null;
+      };
+
     return (
       <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
         <PageHeader
@@ -761,26 +835,13 @@ function PaperworkSubmitContent() {
             </AlertDescription>
         </Alert>
           
-        {hasReport && totals && (
-          <div className="space-y-6">
-              <ChargesTable report={report} penalCode={penalCode} />
-              <SummaryTable totals={totals} />
-              <Separator />
-              <div className='p-4 border rounded-lg bg-card'>
-                {isBasicReport ? (
-                    <BasicFormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} totals={totals} />
-                ) : (
-                    <AdvancedFormattedReport innerRef={reportRef} formData={formData} />
-                )}
-              </div>
-          </div>
-        )}
+        {renderContent()}
   
-         <div className="space-y-4">
+         <div className="space-y-4 mt-6">
           <div className="flex justify-end">
-              <Button onClick={handleCopy} disabled={!hasReport}>
+              <Button onClick={handleCopy} disabled={isClient && !formData}>
                   <Clipboard className="mr-2 h-4 w-4" />
-                  Copy Arrest Report
+                  Copy Paperwork
               </Button>
           </div>
           <div className="space-y-2">
@@ -806,5 +867,3 @@ export function PaperworkSubmitPage() {
         </Suspense>
     )
 }
-
-    

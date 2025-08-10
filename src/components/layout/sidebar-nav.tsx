@@ -80,7 +80,7 @@ export function SidebarNav() {
 
 
   const isActive = (path: string) => {
-    return pathname === path;
+    return pathname === path || pathname.startsWith(path + '/');
   };
 
   const toggleTheme = () => {
@@ -163,7 +163,7 @@ export function SidebarNav() {
               isActive={isActive('/paperwork-generators')}
               tooltip="Paperwork Generators"
             >
-              <Link href="#">
+              <Link href="/paperwork-generators">
                 <Puzzle />
                 <span>Paperwork Generators</span>
               </Link>
