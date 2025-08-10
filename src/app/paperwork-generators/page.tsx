@@ -50,7 +50,7 @@ export default async function PaperworkGeneratorsPage() {
               title={generator.title}
               description={generator.description}
               icon={ICONS[generator.icon] || ICONS.default}
-              href={`/paperwork-generators/${generator.id}`}
+              href={`/paperwork-generators/form?s=${generator.id}`}
             />
           ))}
         </div>
