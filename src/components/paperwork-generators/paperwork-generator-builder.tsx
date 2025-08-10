@@ -18,6 +18,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '../ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '../ui/label';
+import { Checkbox } from '../ui/checkbox';
 
 const fieldTypes: { type: Field['type']; label: string; default: Partial<Field> }[] = [
     { type: 'section', label: 'Section Header', default: { type: 'section', title: 'New Section' } },
@@ -25,7 +26,7 @@ const fieldTypes: { type: Field['type']; label: string; default: Partial<Field> 
     { type: 'textarea', label: 'Text Area', default: { type: 'textarea', name: 'new_textarea', label: 'New Text Area', placeholder: 'Enter long text' } },
     { type: 'dropdown', label: 'Dropdown', default: { type: 'dropdown', name: 'new_dropdown', label: 'New Dropdown', options: ['Option 1', 'Option 2'] } },
     { type: 'datalist', label: 'Datalist Input', default: { type: 'datalist', name: 'new_datalist', label: 'New Datalist', options: ['Suggestion 1', 'Suggestion 2'] } },
-    { type: 'toggle', label: 'Toggle Switch', default: { type: 'toggle', name: 'new_toggle', label: 'New Toggle', dataOn: 'On', dataOff: 'Off' } },
+    { type: 'toggle', label: 'Toggle Switch', default: { type: 'toggle', name: 'new_toggle', label: 'New Toggle', dataOn: 'On', dataOff: 'Off', defaultValue: false } },
     { type: 'group', label: 'Field Group (Inline)', default: { type: 'group', fields: [] } },
     { type: 'charge', label: 'Charge Selector', default: { type: 'charge', name: 'charges', showClass: true, customFields: [] } },
     { type: 'general', label: 'General Section', default: { type: 'general', name: 'general' } },
@@ -42,53 +43,64 @@ function SortableField({ field, index, onRemove, onUpdate, control, register, er
     };
     
     const renderFieldInputs = () => {
-        switch (field.type) {
-            case 'section':
-                return <Input {...register(`form.${index}.title`)} placeholder="Section Title" />;
-            case 'text':
-            case 'textarea':
-                return (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. suspect_name)" />
-                        <Input {...register(`form.${index}.label`)} placeholder="Label (e.g. Suspect Name)" />
-                        <Input {...register(`form.${index}.placeholder`)} placeholder="Placeholder Text" />
-                    </div>
-                );
-            case 'dropdown':
-            case 'datalist':
-                 return (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
-                        <Input {...register(`form.${index}.label`)} placeholder="Label" />
-                        <Input {...register(`form.${index}.options`, { setValueAs: v => v.split(',') })} placeholder="Options (comma-separated)" />
-                    </div>
-                );
-            case 'toggle':
-                return (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                        <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
-                        <Input {...register(`form.${index}.label`)} placeholder="Label" />
-                        <Input {...register(`form.${index}.dataOn`)} placeholder="Text for ON state" />
-                        <Input {...register(`form.${index}.dataOff`)} placeholder="Text for OFF state" />
-                    </div>
-                );
-            case 'charge':
-                return (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                         <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. citations)" />
-                         <label className="flex items-center space-x-2">
-                            <input type="checkbox" {...register(`form.${index}.showClass`)} />
-                            <span>Show Class</span>
-                         </label>
-                         <label className="flex items-center space-x-2">
-                            <input type="checkbox" {...register(`form.${index}.showOffense`)} />
-                            <span>Show Offense</span>
-                         </label>
-                    </div>
-                )
-            default:
-                return <p className="text-muted-foreground text-sm">This field has no configuration.</p>;
-        }
+        const canBeRequired = ['text', 'textarea', 'dropdown', 'datalist'].includes(field.type);
+        return (
+            <>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    {field.type === 'section' && <Input {...register(`form.${index}.title`)} placeholder="Section Title" />}
+                    {['text', 'textarea'].includes(field.type) && (
+                        <>
+                            <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. suspect_name)" />
+                            <Input {...register(`form.${index}.label`)} placeholder="Label (e.g. Suspect Name)" />
+                            <Input {...register(`form.${index}.placeholder`)} placeholder="Placeholder Text" />
+                        </>
+                    )}
+                    {['dropdown', 'datalist'].includes(field.type) && (
+                        <>
+                            <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
+                            <Input {...register(`form.${index}.label`)} placeholder="Label" />
+                            <Input {...register(`form.${index}.options`, { setValueAs: v => v.split(',') })} placeholder="Options (comma-separated)" />
+                        </>
+                    )}
+                    {field.type === 'toggle' && (
+                         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+                            <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
+                            <Input {...register(`form.${index}.label`)} placeholder="Label" />
+                            <Input {...register(`form.${index}.dataOn`)} placeholder="Text for ON state" />
+                            <Input {...register(`form.${index}.dataOff`)} placeholder="Text for OFF state" />
+                        </div>
+                    )}
+                     {field.type === 'charge' && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                             <Input {...register(`form.${index}.name`)} placeholder="Field Name (e.g. citations)" />
+                             <label className="flex items-center space-x-2">
+                                <input type="checkbox" {...register(`form.${index}.showClass`)} />
+                                <span>Show Class</span>
+                             </label>
+                             <label className="flex items-center space-x-2">
+                                <input type="checkbox" {...register(`form.${index}.showOffense`)} />
+                                <span>Show Offense</span>
+                             </label>
+                        </div>
+                    )}
+                    {field.type === 'general' || field.type === 'officer' && <p className="text-muted-foreground text-sm col-span-3">This field has no configuration.</p>}
+                </div>
+                <div className="flex items-center gap-4 pt-2">
+                     {canBeRequired && (
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id={`required-${index}`} {...register(`form.${index}.required`)} />
+                            <Label htmlFor={`required-${index}`}>Required?</Label>
+                        </div>
+                     )}
+                     {field.type === 'toggle' && (
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id={`default-on-${index}`} {...register(`form.${index}.defaultValue`)} />
+                            <Label htmlFor={`default-on-${index}`}>Default On?</Label>
+                        </div>
+                     )}
+                </div>
+            </>
+        )
     }
 
     return (
@@ -297,4 +309,3 @@ export function PaperworkGeneratorBuilder() {
         </div>
     );
 }
-

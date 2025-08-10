@@ -32,6 +32,8 @@ type FormField = {
   value?: string;
   dataOn?: string;
   dataOff?: string;
+  defaultValue?: any;
+  required?: boolean;
   stipulation?: {
     field: string;
     value: any;
@@ -90,7 +92,7 @@ const renderField = (field: FormField, index: number, control: any, register: an
         return (
           <div key={`${field.name}-${index}`} className="w-full">
             <Label htmlFor={field.name}>{field.label}</Label>
-            <Input id={field.name} {...register(field.name)} placeholder={field.placeholder} />
+            <Input id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} />
           </div>
         );
       case 'datalist':
@@ -98,7 +100,7 @@ const renderField = (field: FormField, index: number, control: any, register: an
           return (
               <div key={`${field.name}-${index}`} className="w-full">
                   <Label htmlFor={field.name}>{field.label}</Label>
-                  <Input id={field.name} {...register(field.name)} placeholder={field.placeholder} list={dataListId} />
+                  <Input id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} list={dataListId} />
                   <datalist id={dataListId}>
                       {field.options?.map((option) => (
                           <option key={option} value={option} />
@@ -111,7 +113,7 @@ const renderField = (field: FormField, index: number, control: any, register: an
           return (
               <div key={`${field.name}-${index}`} className="w-full">
                   <Label htmlFor={field.name}>{field.label}</Label>
-                  <Textarea id={field.name} {...register(field.name)} placeholder={field.placeholder} className="min-h-[120px]" />
+                  <Textarea id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
               </div>
           );
 
@@ -122,6 +124,7 @@ const renderField = (field: FormField, index: number, control: any, register: an
                   <Controller
                       control={control}
                       name={field.name!}
+                      rules={{ required: field.required }}
                       render={({ field: { onChange, value } }) => (
                           <Select onValueChange={onChange} value={value}>
                               <SelectTrigger id={field.name}>
@@ -143,7 +146,7 @@ const renderField = (field: FormField, index: number, control: any, register: an
                    <Controller
                       name={field.name!}
                       control={control}
-                      defaultValue={false}
+                      defaultValue={field.defaultValue === true}
                       render={({ field: { onChange, value } }) => (
                           <Switch
                               id={field.name}
