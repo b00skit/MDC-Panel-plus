@@ -13,6 +13,8 @@ export type Field = {
     value?: string;
     dataOn?: string;
     dataOff?: string;
+    defaultValue?: boolean;
+    required?: boolean;
     stipulation?: {
       field: string;
       value: any;
@@ -26,6 +28,14 @@ export type Field = {
     customFields?: Field[];
 };
 
+export type ConditionalVariable = {
+    conditionField: string;
+    operator: 'is_checked' | 'is_not_checked' | 'equals' | 'not_equals';
+    conditionValue?: string;
+    variableName: string;
+    outputText: string;
+};
+
 
 interface PaperworkBuilderState {
     formData: {
@@ -33,6 +43,7 @@ interface PaperworkBuilderState {
         description: string;
         icon: string;
         form: Field[];
+        conditionals?: ConditionalVariable[];
         output: string;
     };
     setField: (field: keyof PaperworkBuilderState['formData'], value: any) => void;
@@ -45,6 +56,7 @@ const getInitialState = () => ({
     description: '',
     icon: 'Puzzle',
     form: [],
+    conditionals: [],
     output: '',
 });
 

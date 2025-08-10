@@ -3,18 +3,15 @@
 
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { PageHeader } from '../dashboard/page-header';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Plus, Trash2, GripVertical, Copy } from 'lucide-react';
+import { Plus, Trash2, Copy } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { usePaperworkBuilderStore, Field } from '@/stores/paperwork-builder-store';
+import { usePaperworkBuilderStore, Field, ConditionalVariable } from '@/stores/paperwork-builder-store';
 import { useEffect, useState } from 'react';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '../ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '../ui/label';
@@ -33,15 +30,7 @@ const fieldTypes: { type: Field['type']; label: string; default: Partial<Field> 
     { type: 'officer', label: 'Officer Section', default: { type: 'officer', name: 'officers' } },
 ];
 
-
-function SortableField({ field, index, onRemove, onUpdate, control, register, errors }: any) {
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: field.id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-    };
-    
+function FieldEditor({ field, index, onRemove, register }: any) {
     const renderFieldInputs = () => {
         const canBeRequired = ['text', 'textarea', 'dropdown', 'datalist'].includes(field.type);
         return (
@@ -83,7 +72,7 @@ function SortableField({ field, index, onRemove, onUpdate, control, register, er
                              </label>
                         </div>
                     )}
-                    {field.type === 'general' || field.type === 'officer' && <p className="text-muted-foreground text-sm col-span-3">This field has no configuration.</p>}
+                    {(field.type === 'general' || field.type === 'officer') && <p className="text-muted-foreground text-sm col-span-3">This field has no configuration.</p>}
                 </div>
                 <div className="flex items-center gap-4 pt-2">
                      {canBeRequired && (
@@ -104,10 +93,7 @@ function SortableField({ field, index, onRemove, onUpdate, control, register, er
     }
 
     return (
-        <div ref={setNodeRef} style={style} className="flex items-start gap-2 p-4 border rounded-lg bg-card">
-            <Button variant="ghost" size="icon" {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
-                <GripVertical className="h-5 w-5" />
-            </Button>
+        <div className="flex items-start gap-2 p-4 border rounded-lg bg-card">
             <div className="flex-1 space-y-2">
                 <p className="font-medium capitalize">{field.type} Field</p>
                 {renderFieldInputs()}
@@ -124,17 +110,25 @@ function SortableField({ field, index, onRemove, onUpdate, control, register, er
 }
 
 export function PaperworkGeneratorBuilder() {
-    const { formData, setField, setFormFields, reset } = usePaperworkBuilderStore();
-    const { control, register, handleSubmit, watch, formState: { errors } } = useForm({
+    const { formData, reset } = usePaperworkBuilderStore();
+    const { control, register, handleSubmit, watch } = useForm({
         defaultValues: formData,
     });
+
     const { fields, append, remove, move } = useFieldArray({
         control,
         name: "form"
     });
+
+    const { fields: conditionalFields, append: appendConditional, remove: removeConditional } = useFieldArray({
+        control,
+        name: "conditionals"
+    });
+
     const { toast } = useToast();
     const router = useRouter();
     const watchedForm = watch("form");
+    const watchedConditionals = watch("conditionals");
     const [wildcards, setWildcards] = useState<string[]>([]);
     
     useEffect(() => {
@@ -143,6 +137,7 @@ export function PaperworkGeneratorBuilder() {
 
     useEffect(() => {
         const generatedWildcards: string[] = [];
+        
         const processFields = (fields: Field[], prefix = '') => {
             fields.forEach(field => {
                 if (field.name) {
@@ -160,26 +155,17 @@ export function PaperworkGeneratorBuilder() {
             });
         };
         processFields(watchedForm);
-        setWildcards([...new Set(generatedWildcards)]); // Remove duplicates
-    }, [watchedForm]);
+
+        watchedConditionals?.forEach(cond => {
+            if(cond.variableName) {
+                generatedWildcards.push(`{{${cond.variableName}}}`);
+            }
+        });
+
+        setWildcards([...new Set(generatedWildcards)]);
+    }, [watchedForm, watchedConditionals]);
 
 
-    const sensors = useSensors(
-        useSensor(PointerSensor),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        })
-    );
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (over && active.id !== over.id) {
-            const oldIndex = fields.findIndex((item) => item.id === active.id);
-            const newIndex = fields.findIndex((item) => item.id === over.id);
-            move(oldIndex, newIndex);
-        }
-    };
-    
     const onSubmit = async (data: any) => {
         const response = await fetch('/api/paperwork-generators/save', {
             method: 'POST',
@@ -258,21 +244,71 @@ export function PaperworkGeneratorBuilder() {
                         <CardTitle>Form Fields</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                            <SortableContext items={fields} strategy={verticalListSortingStrategy}>
-                                {fields.map((field, index) => (
-                                    <SortableField 
-                                        key={field.id} 
-                                        field={field} 
-                                        index={index} 
-                                        onRemove={remove}
-                                        control={control}
-                                        register={register}
-                                        errors={errors}
-                                    />
-                                ))}
-                            </SortableContext>
-                        </DndContext>
+                        {fields.map((field, index) => (
+                            <FieldEditor 
+                                key={field.id} 
+                                field={field} 
+                                index={index} 
+                                onRemove={remove}
+                                register={register}
+                            />
+                        ))}
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Conditional Variables</CardTitle>
+                        <CardDescription>Define variables that can be used in the output template based on form input.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {conditionalFields.map((field, index) => (
+                            <div key={field.id} className="p-4 border rounded-lg space-y-2 bg-card relative">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute top-2 right-2 text-red-500"
+                                    onClick={() => removeConditional(index)}
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
+                                    <div>
+                                        <Label>If field...</Label>
+                                        <Input {...register(`conditionals.${index}.conditionField`)} placeholder="e.g., was_mirandized"/>
+                                    </div>
+                                    <div>
+                                        <Label>Is...</Label>
+                                        <Select {...register(`conditionals.${index}.operator`)} defaultValue="is_checked">
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="is_checked">Checked</SelectItem>
+                                                <SelectItem value="is_not_checked">Not Checked</SelectItem>
+                                                <SelectItem value="equals">Equal to</SelectItem>
+                                                <SelectItem value="not_equals">Not Equal to</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <Label>Value</Label>
+                                        <Input {...register(`conditionals.${index}.conditionValue`)} placeholder="e.g., true (leave empty if checked/not checked)"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <Label>Then create variable...</Label>
+                                    <Input {...register(`conditionals.${index}.variableName`)} placeholder="e.g., miranda_statement" />
+                                </div>
+                                <div>
+                                    <Label>With text content...</Label>
+                                    <Textarea {...register(`conditionals.${index}.outputText`)} placeholder="The full Miranda rights text..."/>
+                                </div>
+                            </div>
+                        ))}
+                         <Button type="button" variant="outline" size="sm" onClick={() => appendConditional({ conditionField: '', operator: 'is_checked', conditionValue: '', variableName: '', outputText: '' })}>
+                            <Plus className="mr-2 h-4 w-4" /> Add Conditional Variable
+                        </Button>
                     </CardContent>
                 </Card>
 

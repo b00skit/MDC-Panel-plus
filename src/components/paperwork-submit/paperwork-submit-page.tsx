@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { usePaperworkStore } from '@/stores/paperwork-store';
 import Handlebars from 'handlebars';
+import { ConditionalVariable } from '@/stores/paperwork-builder-store';
 
 
 const getType = (type: string | undefined) => {
@@ -614,34 +615,62 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
 const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
     const { formData, generatorId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
-    const [generatorOutput, setGeneratorOutput] = useState('');
+    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; conditionals?: ConditionalVariable[] } | null>(null);
   
     useEffect(() => {
         if (generatorId) {
             fetch(`/api/paperwork-generators/${generatorId}`)
                 .then(res => res.json())
                 .then(data => {
-                    setGeneratorOutput(data.output || '');
+                    setGeneratorConfig(data);
                 })
                 .catch(err => console.error("Failed to load generator template", err));
         }
     }, [generatorId]);
 
     useEffect(() => {
-        if(generatorOutput && formData) {
-            // Register helpers
-            Handlebars.registerHelper('lookup', function(obj, key) {
-                return obj && obj[key];
-            });
-            Handlebars.registerHelper('with', function(context, options) {
-                return options.fn(context);
+        if(generatorConfig && formData) {
+            Handlebars.registerHelper('lookup', (obj, key) => obj && obj[key]);
+            Handlebars.registerHelper('with', (context, options) => options.fn(context));
+            Handlebars.registerHelper('if', function(this: any, conditional, options) {
+                if (conditional) {
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
             });
 
-            const compiledTemplate = Handlebars.compile(generatorOutput, { noEscape: true });
-            const parsed = compiledTemplate(formData);
+            // Process conditionals
+            const processedData = { ...formData };
+            if (generatorConfig.conditionals) {
+                generatorConfig.conditionals.forEach(cond => {
+                    const fieldValue = processedData[cond.conditionField];
+                    let conditionMet = false;
+                    switch(cond.operator) {
+                        case 'is_checked':
+                            conditionMet = fieldValue === true;
+                            break;
+                        case 'is_not_checked':
+                            conditionMet = fieldValue === false || fieldValue === undefined;
+                            break;
+                        case 'equals':
+                             conditionMet = fieldValue == cond.conditionValue;
+                             break;
+                        case 'not_equals':
+                            conditionMet = fieldValue != cond.conditionValue;
+                            break;
+                    }
+                    if(conditionMet) {
+                        processedData[cond.variableName] = cond.outputText;
+                    }
+                });
+            }
+
+            const compiledTemplate = Handlebars.compile(generatorConfig.output, { noEscape: true });
+            const parsed = compiledTemplate(processedData);
             setTemplate(parsed);
         }
-    }, [generatorOutput, formData]);
+    }, [generatorConfig, formData]);
   
     return (
         <div ref={innerRef} className="p-4 border rounded-lg bg-card text-card-foreground">
