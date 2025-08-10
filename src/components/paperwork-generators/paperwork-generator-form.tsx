@@ -16,32 +16,35 @@ import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore as useBasicFormStore } from '@/stores/form-store';
 import { Switch } from '../ui/switch';
-import { Plus, Trash2 } from 'lucide-react';
-import { Charge, PenalCode } from '@/stores/charge-store';
+import { type PenalCode } from '@/stores/charge-store';
 import { useEffect, useState } from 'react';
 import { Combobox } from '../ui/combobox';
-import { Badge } from '../ui/badge';
-import { cn } from '@/lib/utils';
-
+import { PaperworkChargeField } from './paperwork-generator-charge-field';
 
 type FormField = {
   type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group';
-  name?: string;
+  name: string;
   label?: string;
   placeholder?: string;
   options?: string[];
-  optionsSource?: string; // URL to fetch options from
+  optionsSource?: string;
   title?: string;
   value?: string;
   dataOn?: string;
   dataOff?: string;
-  charges?: Charge[];
   stipulation?: {
     field: string;
     value: any;
   },
   fields?: FormField[]; // For group type
+  // Charge field specific config
+  showClass?: boolean;
+  showOffense?: boolean;
+  showAddition?: boolean;
+  showCategory?: boolean;
+  customFields?: FormField[];
 };
+
 
 type GeneratorConfig = {
   id: string;
@@ -58,20 +61,7 @@ interface PaperworkGeneratorFormProps {
   generatorConfig: GeneratorConfig;
 }
 
-const getTypeClasses = (type: Charge['type']) => {
-    switch (type) {
-      case 'F':
-        return 'bg-red-500 hover:bg-red-500/80 text-white';
-      case 'M':
-        return 'bg-yellow-500 hover:bg-yellow-500/80 text-white';
-      case 'I':
-        return 'bg-green-500 hover:bg-green-500/80 text-white';
-      default:
-        return 'bg-gray-500 hover:bg-gray-500/80 text-white';
-    }
-  };
-
-const renderField = (field: FormField, index: number, control: any, register: any, watch: any, fields?: any, append?: any, remove?: any, penalCode?: PenalCode | null) => {
+const renderField = (field: FormField, index: number, control: any, register: any, watch: any, penalCode: PenalCode | null) => {
     if (field.stipulation) {
         const watchedValue = watch(field.stipulation.field);
         if (watchedValue !== field.stipulation.value) {
@@ -169,39 +159,26 @@ const renderField = (field: FormField, index: number, control: any, register: an
           );
       case 'charge':
           return (
-              <div key={field.name + '-' + index} className="space-y-4">
-                  {fields.map((chargeItem: any, chargeIndex: number) => (
-                      <div key={chargeItem.id} className="flex items-end gap-2 p-4 border rounded-lg">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
-                          <Controller
-                              name={`charges.${chargeIndex}.id`}
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
-                                  <Combobox
-                                      value={value}
-                                      onChange={onChange}
-                                      placeholder="Select Charge"
-                                      options={penalCode ? Object.keys(penalCode).map(k => `${penalCode[k].id} - ${penalCode[k].charge}`) : []}
-                                  />
-                              )}
-                          />
-                              <Input {...register(`charges.${chargeIndex}.class`)} placeholder="Class (e.g., A, B, C)" />
-                              <Input {...register(`charges.${chargeIndex}.fine`)} placeholder="Fine Amount" type="number" />
-                          </div>
-                          <Button type="button" variant="ghost" size="icon" onClick={() => remove(chargeIndex)}>
-                              <Trash2 className="h-5 w-5 text-red-500" />
-                          </Button>
-                      </div>
-                  ))}
-                   <Button type="button" variant="outline" onClick={() => append({ id: '', class: '', fine: '' })}>
-                      <Plus className="mr-2 h-4 w-4" /> Add Charge/Citation
-                  </Button>
-              </div>
+              <PaperworkChargeField 
+                key={`${field.name}-${index}`}
+                control={control}
+                register={register}
+                watch={watch}
+                penalCode={penalCode}
+                config={{
+                    name: field.name,
+                    showClass: field.showClass,
+                    showOffense: field.showOffense,
+                    showAddition: field.showAddition,
+                    showCategory: field.showCategory,
+                    customFields: field.customFields,
+                }}
+              />
           )
       case 'group':
           return (
               <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4">
-                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch))}
+                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode))}
               </div>
           );
 
@@ -212,11 +189,7 @@ const renderField = (field: FormField, index: number, control: any, register: an
 
 export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
-    const { register, handleSubmit, control, watch, setValue } = useForm();
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "charges"
-    });
+    const { register, handleSubmit, control, watch } = useForm();
 
     const { setGeneratorId, setFormData } = usePaperworkStore();
     const { officers } = useOfficerStore.getState();
@@ -234,6 +207,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             ...data,
             officers,
             general,
+            penalCode,
         };
         setGeneratorId(generatorConfig.id);
         setFormData(fullData);
@@ -243,8 +217,8 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
-      <form onSubmit={handleSubmit(onSubmit)} action={generatorConfig.formAction} method={generatorConfig.formMethod} className="space-y-6">
-        {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, fields, append, remove, penalCode))}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode))}
         <div className="flex justify-end mt-6">
           <Button type="submit">Generate Paperwork</Button>
         </div>

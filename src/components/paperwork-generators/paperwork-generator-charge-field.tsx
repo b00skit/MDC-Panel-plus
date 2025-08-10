@@ -1,0 +1,203 @@
+
+'use client';
+
+import { useFieldArray, Controller, Control, UseFormRegister, UseFormWatch } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Label } from '@/components/ui/label';
+import { Plus, Trash2, ChevronsUpDown, Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { type Charge, type PenalCode } from '@/stores/charge-store';
+import { Input } from '../ui/input';
+
+const getTypeClasses = (type: Charge['type']) => {
+  switch (type) {
+    case 'F': return 'bg-red-500 hover:bg-red-500/80 text-white';
+    case 'M': return 'bg-yellow-500 hover:bg-yellow-500/80 text-white';
+    case 'I': return 'bg-green-500 hover:bg-green-500/80 text-white';
+    default: return 'bg-gray-500 hover:bg-gray-500/80 text-white';
+  }
+};
+
+type FormField = {
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group';
+    name: string;
+    label?: string;
+    placeholder?: string;
+    options?: string[];
+  };
+
+interface PaperworkChargeFieldProps {
+  control: Control<any>;
+  register: UseFormRegister<any>;
+  watch: UseFormWatch<any>;
+  penalCode: PenalCode | null;
+  config: {
+    name: string;
+    showClass?: boolean;
+    showOffense?: boolean;
+    showAddition?: boolean;
+    showCategory?: boolean;
+    customFields?: FormField[];
+  };
+}
+
+export function PaperworkChargeField({ control, register, watch, penalCode, config }: PaperworkChargeFieldProps) {
+  const { fields, append, remove, update } = useFieldArray({
+    control,
+    name: config.name,
+  });
+  
+  const [openChargeSelector, setOpenChargeSelector] = React.useState<number | null>(null);
+
+  const penalCodeArray = React.useMemo(() => penalCode ? Object.values(penalCode) : [], [penalCode]);
+
+  const handleChargeSelect = (index: number, chargeId: string) => {
+    if (!penalCode) return;
+
+    const currentCharge = watch(`${config.name}.${index}`);
+    const isDeselecting = currentCharge.chargeId === chargeId;
+
+    if (isDeselecting) {
+      update(index, { ...currentCharge, chargeId: null, class: null, offense: null, addition: null, category: null });
+      return;
+    }
+
+    const chargeDetails = penalCode[chargeId];
+    if (!chargeDetails) return;
+
+    const newValues: any = { chargeId };
+    if (config.showClass) {
+        let defaultClass: string | null = null;
+        if (chargeDetails.class?.A) defaultClass = 'A';
+        else if (chargeDetails.class?.B) defaultClass = 'B';
+        else if (chargeDetails.class?.C) defaultClass = 'C';
+        newValues.class = defaultClass;
+    }
+    if (config.showOffense) {
+        let defaultOffense: string | null = null;
+        if (chargeDetails.offence?.['1']) defaultOffense = '1';
+        else if (chargeDetails.offence?.['2']) defaultOffense = '2';
+        else if (chargeDetails.offence?.['3']) defaultOffense = '3';
+        newValues.offense = defaultOffense;
+    }
+    if (config.showAddition) {
+        newValues.addition = 'Offender';
+    }
+
+    update(index, { ...currentCharge, ...newValues });
+  };
+  
+  const getChargeDetails = React.useCallback((chargeId: string | null): Charge | null => {
+    if (!chargeId || !penalCode) return null;
+    return penalCode[chargeId] || null;
+  }, [penalCode]);
+
+  return (
+    <div className="space-y-4">
+      {fields.map((field, index) => {
+        const chargeDetails = getChargeDetails(watch(`${config.name}.${index}.chargeId`));
+        const isDrugCharge = !!chargeDetails?.drugs;
+
+        return (
+            <div key={field.id} className="flex items-end gap-2 p-4 border rounded-lg">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 items-end">
+                    {/* Charge Dropdown */}
+                    <div className="space-y-1.5 md:col-span-2">
+                        <Label>Charge</Label>
+                        <Popover open={openChargeSelector === index} onOpenChange={(isOpen) => setOpenChargeSelector(isOpen ? index : null)}>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" role="combobox" className="w-full justify-between h-9">
+                                    {chargeDetails ? (
+                                        <span className="flex items-center">
+                                            <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(chargeDetails.type))}>{chargeDetails.id}</Badge>
+                                            <span className="truncate">{chargeDetails.charge}</span>
+                                        </span>
+                                    ) : 'Select a charge...'}
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                <Command filter={(value, search) => {
+                                    if (!penalCode) return 0;
+                                    const charge = penalCodeArray.find(c => c.id === value);
+                                    if (!charge) return 0;
+                                    const term = search.toLowerCase();
+                                    return charge.charge.toLowerCase().includes(term) || charge.id.includes(term) ? 1 : 0;
+                                }}>
+                                    <CommandInput placeholder="Search charge by name or ID..." />
+                                    <CommandEmpty>No charge found.</CommandEmpty>
+                                    <CommandList>
+                                        <CommandGroup>
+                                            {penalCodeArray.map((c) => (
+                                                <CommandItem
+                                                    key={c.id}
+                                                    value={c.id}
+                                                    onSelect={(currentValue) => {
+                                                        handleChargeSelect(index, currentValue);
+                                                        setOpenChargeSelector(null);
+                                                    }}
+                                                    disabled={c.type === '?'}
+                                                >
+                                                    <Check className={cn('mr-2 h-4 w-4', watch(`${config.name}.${index}.chargeId`) === c.id ? 'opacity-100' : 'opacity-0')} />
+                                                    <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(c.type))}>{c.id}</Badge>
+                                                    <span className="flex-1 truncate">{c.charge}</span>
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+
+                    {/* Standard Fields */}
+                    {config.showClass && (
+                         <div className="space-y-1.5">
+                            <Label>Class</Label>
+                             <Controller
+                                name={`${config.name}.${index}.class`}
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <Select value={value || ''} onValueChange={onChange} disabled={!chargeDetails}>
+                                        <SelectTrigger className="h-9"><SelectValue placeholder="Select class" /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="A" disabled={!chargeDetails?.class?.A}>Class A</SelectItem>
+                                            <SelectItem value="B" disabled={!chargeDetails?.class?.B}>Class B</SelectItem>
+                                            <SelectItem value="C" disabled={!chargeDetails?.class?.C}>Class C</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                        </div>
+                    )}
+                    
+                    {config.customFields?.map(customField => (
+                         <div key={customField.name} className="space-y-1.5">
+                            <Label>{customField.label}</Label>
+                            <Input {...register(`${config.name}.${index}.${customField.name}`)} placeholder={customField.placeholder} />
+                         </div>
+                    ))}
+
+                </div>
+                 <Button variant="ghost" size="icon" onClick={() => remove(index)} className="text-red-500 hover:text-red-700 h-9 w-9">
+                    <Trash2 className="h-5 w-5" />
+                </Button>
+            </div>
+        );
+      })}
+      <Button type="button" variant="outline" onClick={() => append({})}>
+        <Plus className="mr-2 h-4 w-4" /> Add Charge/Citation
+      </Button>
+    </div>
+  );
+}

@@ -25,6 +25,7 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { usePaperworkStore } from '@/stores/paperwork-store';
+import Handlebars from 'handlebars';
 
 
 const getType = (type: string | undefined) => {
@@ -610,30 +611,7 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
         </div>
     );
 };
-
-function parseTemplate(template: string, data: Record<string, any>): string {
-    let output = template;
-    const regex = /{{(.*?)}}/g;
-
-    output = output.replace(regex, (match, key) => {
-        const trimmedKey = key.trim();
-        const keys = trimmedKey.split('.');
-        let value = data;
-
-        for (const k of keys) {
-            if (value && typeof value === 'object' && k in value) {
-                value = value[k];
-            } else {
-                return match; // Keep placeholder if path is invalid
-            }
-        }
-        
-        return String(value);
-    });
-
-    return output;
-}
-
+  
 const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
     const { formData, generatorId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
@@ -652,14 +630,18 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
 
     useEffect(() => {
         if(generatorOutput && formData) {
-            const parsed = parseTemplate(generatorOutput, formData);
+            Handlebars.registerHelper('lookup', function(obj, key) {
+                return obj && obj[key];
+            });
+            const compiledTemplate = Handlebars.compile(generatorOutput, { noEscape: true });
+            const parsed = compiledTemplate(formData);
             setTemplate(parsed);
         }
     }, [generatorOutput, formData]);
   
     return (
         <div ref={innerRef} className="p-4 border rounded-lg bg-card text-card-foreground">
-            <pre className="whitespace-pre-wrap font-sans text-sm">{template || "Generating..."}</pre>
+            <div dangerouslySetInnerHTML={{ __html: template || "Generating..." }} />
         </div>
     );
 };
@@ -690,7 +672,7 @@ function PaperworkSubmitContent() {
     const { report, penalCode } = useChargeStore();
     const { formData: basicFormData } = useFormStore();
     const { formData: advancedFormData } = useAdvancedReportStore();
-    const { formData: generatorFormData, generatorId } = usePaperworkStore();
+    const { formData: generatorFormData } = usePaperworkStore();
 
     const searchParams = useSearchParams();
     const reportType = searchParams.get('type') || 'basic';
@@ -699,7 +681,6 @@ function PaperworkSubmitContent() {
     const { toast } = useToast();
     const reportRef = useRef<HTMLDivElement>(null);
     const [reportHtml, setReportHtml] = useState('');
-    const [reportBbcode, setReportBbcode] = useState('');
   
     useEffect(() => {
       setIsClient(true);
@@ -776,22 +757,12 @@ function PaperworkSubmitContent() {
   
     useEffect(() => {
         if (reportRef.current) {
-            if (isGeneratorReport) {
-                setReportBbcode(reportRef.current.innerText);
-            } else {
-                setReportHtml(reportRef.current.outerHTML);
-            }
+            setReportHtml(reportRef.current.innerHTML);
         }
-    }, [formData, report, penalCode, totals, isClient, reportType, isGeneratorReport, reportRef.current?.innerText]);
+    }, [formData, report, penalCode, totals, isClient, reportType, reportRef.current?.innerHTML]);
   
     const handleCopy = () => {
-        let contentToCopy = '';
-        if (isGeneratorReport) {
-            contentToCopy = reportBbcode;
-        } else {
-            contentToCopy = reportHtml;
-        }
-
+        let contentToCopy = reportHtml;
         if (contentToCopy) {
             navigator.clipboard.writeText(contentToCopy);
             toast({
