@@ -13,7 +13,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, Clipboard, Info } from 'lucide-react';
+import { Clipboard, Info } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -611,50 +611,58 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
     );
 };
 
+function parseTemplate(template: string, data: Record<string, any>): string {
+    let output = template;
+    const regex = /{{(.*?)}}/g;
+
+    output = output.replace(regex, (match, key) => {
+        const trimmedKey = key.trim();
+        const keys = trimmedKey.split('.');
+        let value = data;
+
+        for (const k of keys) {
+            if (value && typeof value === 'object' && k in value) {
+                value = value[k];
+            } else {
+                return match; // Keep placeholder if path is invalid
+            }
+        }
+        
+        return String(value);
+    });
+
+    return output;
+}
+
 const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
     const { formData, generatorId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
+    const [generatorOutput, setGeneratorOutput] = useState('');
   
     useEffect(() => {
-      if (generatorId) {
-        // In a real app, you might fetch this from a server or have it statically available
-        import(`../../../data/paperwork-generators/${generatorId}.json`)
-          .then(module => {
-            let output = module.output;
-            
-            // Replace simple wildcards
-            for (const key in formData) {
-                if (typeof formData[key] === 'string') {
-                    output = output.replace(new RegExp(`{{${key}}}`, 'g'), formData[key]);
-                }
-            }
+        if (generatorId) {
+            fetch(`/api/paperwork-generators/${generatorId}`)
+                .then(res => res.json())
+                .then(data => {
+                    setGeneratorOutput(data.output || '');
+                })
+                .catch(err => console.error("Failed to load generator template", err));
+        }
+    }, [generatorId]);
 
-            // Replace officer wildcards (e.g., {{officer.0.name}})
-            if(formData.officer) {
-                formData.officer.forEach((officer: any, index: number) => {
-                    for(const key in officer) {
-                        output = output.replace(new RegExp(`{{officer.${index}.${key}}}`, 'g'), officer[key]);
-                    }
-                });
-            }
-
-            if(formData.general) {
-                for(const key in formData.general) {
-                    output = output.replace(new RegExp(`{{general.${key}}}`, 'g'), formData.general[key]);
-                }
-            }
-            
-            setTemplate(output);
-          });
-      }
-    }, [generatorId, formData]);
+    useEffect(() => {
+        if(generatorOutput && formData) {
+            const parsed = parseTemplate(generatorOutput, formData);
+            setTemplate(parsed);
+        }
+    }, [generatorOutput, formData]);
   
     return (
-      <div ref={innerRef} className="prose dark:prose-invert max-w-none">
-         <pre className="whitespace-pre-wrap font-sans">{template}</pre>
-      </div>
+        <div ref={innerRef} className="p-4 border rounded-lg bg-card text-card-foreground">
+            <pre className="whitespace-pre-wrap font-sans text-sm">{template || "Generating..."}</pre>
+        </div>
     );
-  };
+};
   
 
 const getBailStatus = (totals: any) => {
@@ -682,7 +690,7 @@ function PaperworkSubmitContent() {
     const { report, penalCode } = useChargeStore();
     const { formData: basicFormData } = useFormStore();
     const { formData: advancedFormData } = useAdvancedReportStore();
-    const { formData: generatorFormData } = usePaperworkStore();
+    const { formData: generatorFormData, generatorId } = usePaperworkStore();
 
     const searchParams = useSearchParams();
     const reportType = searchParams.get('type') || 'basic';
@@ -691,6 +699,7 @@ function PaperworkSubmitContent() {
     const { toast } = useToast();
     const reportRef = useRef<HTMLDivElement>(null);
     const [reportHtml, setReportHtml] = useState('');
+    const [reportBbcode, setReportBbcode] = useState('');
   
     useEffect(() => {
       setIsClient(true);
@@ -767,20 +776,31 @@ function PaperworkSubmitContent() {
   
     useEffect(() => {
         if (reportRef.current) {
-            setReportHtml(reportRef.current.outerHTML);
+            if (isGeneratorReport) {
+                setReportBbcode(reportRef.current.innerText);
+            } else {
+                setReportHtml(reportRef.current.outerHTML);
+            }
         }
-    }, [formData, report, penalCode, totals, isClient, reportType]);
+    }, [formData, report, penalCode, totals, isClient, reportType, isGeneratorReport, reportRef.current?.innerText]);
   
     const handleCopy = () => {
-        if (reportRef.current) {
-          navigator.clipboard.writeText(reportRef.current.outerHTML);
-          toast({
-            title: "Success",
-            description: "Paperwork HTML copied to clipboard.",
-            variant: "default",
-          })
+        let contentToCopy = '';
+        if (isGeneratorReport) {
+            contentToCopy = reportBbcode;
+        } else {
+            contentToCopy = reportHtml;
         }
-      };
+
+        if (contentToCopy) {
+            navigator.clipboard.writeText(contentToCopy);
+            toast({
+              title: "Success",
+              description: "Paperwork content copied to clipboard.",
+              variant: "default",
+            })
+        }
+    };
   
     if (!isClient) {
       return (
@@ -817,7 +837,15 @@ function PaperworkSubmitContent() {
             </div>
           );
         }
-        return null;
+        return (
+            <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                    Could not load report data. Please go back and try again.
+                </AlertDescription>
+            </Alert>
+        );
       };
 
     return (
@@ -831,31 +859,18 @@ function PaperworkSubmitContent() {
             <Info className="h-4 w-4" />
             <AlertTitle>Heads up!</AlertTitle>
             <AlertDescription>
-                The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC.
+                The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it.
             </AlertDescription>
         </Alert>
           
         {renderContent()}
-  
-         <div className="space-y-4 mt-6">
-          <div className="flex justify-end">
-              <Button onClick={handleCopy} disabled={isClient && !formData}>
-                  <Clipboard className="mr-2 h-4 w-4" />
-                  Copy Paperwork
-              </Button>
-          </div>
-          <div className="space-y-2">
-              <label htmlFor="final-submission" className="font-medium">Final Submission Area (HTML)</label>
-              <Textarea 
-                  id="final-submission"
-                  placeholder="The HTML for the report will be generated here."
-                  className="min-h-[200px] font-mono text-xs"
-                  value={reportHtml}
-                  readOnly
-              />
-          </div>
+
+        <div className="flex justify-end mt-6">
+            <Button onClick={handleCopy} disabled={!isClient}>
+                <Clipboard className="mr-2 h-4 w-4" />
+                Copy Paperwork
+            </Button>
         </div>
-  
       </div>
     );
   }
@@ -867,3 +882,5 @@ export function PaperworkSubmitPage() {
         </Suspense>
     )
 }
+
+    
