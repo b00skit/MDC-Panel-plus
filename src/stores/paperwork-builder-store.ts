@@ -4,12 +4,28 @@ import create from 'zustand';
 
 export type Field = {
     id: string;
-    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general';
-    name: string;
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group';
+    name?: string;
     label?: string;
     placeholder?: string;
     options?: string[];
+    title?: string;
+    value?: string;
+    dataOn?: string;
+    dataOff?: string;
+    stipulation?: {
+      field: string;
+      value: any;
+    },
+    fields?: Field[]; // For group type
+    // Charge field specific config
+    showClass?: boolean;
+    showOffense?: boolean;
+    showAddition?: boolean;
+    showCategory?: boolean;
+    customFields?: Field[];
 };
+
 
 interface PaperworkBuilderState {
     formData: {
@@ -20,9 +36,6 @@ interface PaperworkBuilderState {
         output: string;
     };
     setField: (field: keyof PaperworkBuilderState['formData'], value: any) => void;
-    addFormField: (field: Field) => void;
-    removeFormField: (index: number) => void;
-    updateFormField: (index: number, updatedField: Partial<Field>) => void;
     setFormFields: (fields: Field[]) => void;
     reset: () => void;
 }
@@ -30,7 +43,7 @@ interface PaperworkBuilderState {
 const getInitialState = () => ({
     title: '',
     description: '',
-    icon: '',
+    icon: 'Puzzle',
     form: [],
     output: '',
 });
@@ -40,25 +53,6 @@ export const usePaperworkBuilderStore = create<PaperworkBuilderState>((set) => (
     setField: (field, value) => set(state => ({
         formData: { ...state.formData, [field]: value }
     })),
-    addFormField: (field) => set(state => ({
-        formData: { ...state.formData, form: [...state.formData.form, field] }
-    })),
-    removeFormField: (index) => set(state => ({
-        formData: {
-            ...state.formData,
-            form: state.formData.form.filter((_, i) => i !== index),
-        }
-    })),
-    updateFormField: (index, updatedField) => set(state => {
-        const newForm = [...state.formData.form];
-        const fieldToUpdate = newForm[index];
-
-        if (fieldToUpdate.type === 'general') updatedField.name = 'general';
-        else if (fieldToUpdate.type === 'officer') updatedField.name = 'officer';
-
-        newForm[index] = { ...fieldToUpdate, ...updatedField };
-        return { formData: { ...state.formData, form: newForm } };
-    }),
     setFormFields: (fields) => set(state => ({
         formData: { ...state.formData, form: fields }
     })),

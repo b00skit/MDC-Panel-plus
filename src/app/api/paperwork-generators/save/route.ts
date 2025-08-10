@@ -4,7 +4,11 @@ import path from 'path';
 import { NextResponse } from 'next/server';
 
 function sanitizeFilename(name: string) {
-    return name.toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 50);
+    if (!name) {
+        // Fallback for untitled forms
+        return `form_${Date.now()}`;
+    }
+    return name.toLowerCase().replace(/[^a-z0-9_]/g, '-').replace(/-+/g, '-').slice(0, 50);
 }
 
 export async function POST(request: Request) {
