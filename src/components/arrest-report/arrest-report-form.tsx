@@ -202,7 +202,7 @@ export function ArrestReportForm() {
         officers: officers,
     };
     useFormStore.getState().setAll(allFormData);
-    router.push('/paperwork-submit?type=basic');
+    router.push('/arrest-submit?type=basic');
   };
 
   const saveToStore = () => {
@@ -214,7 +214,7 @@ export function ArrestReportForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} onBlur={saveToStore} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <GeneralSection isSubmitted={submitted} />
       <OfficerSection isSubmitted={submitted}/>
 
@@ -227,6 +227,7 @@ export function ArrestReportForm() {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               value={formData.arrest.suspectName}
               onChange={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+              onBlur={() => saveToStore()}
               isInvalid={submitted && !formData.arrest.suspectName}
             />
             <TextareaField 
@@ -242,6 +243,7 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.arrest.narrative}
                   onChange={(e) => setFormField('arrest', 'narrative', e.target.value)}
+                  onBlur={() => saveToStore()}
                   isInvalid={submitted && !formData.arrest.narrative}
             />
          </div>
@@ -254,7 +256,10 @@ export function ArrestReportForm() {
                 <Combobox
                     options={locations.districts}
                     value={formData.location.district}
-                    onChange={(value) => setFormField('location', 'district', value)}
+                    onChange={(value) => {
+                        setFormField('location', 'district', value);
+                        saveToStore();
+                    }}
                     placeholder="Select or type a district"
                     searchPlaceholder="Search districts..."
                     emptyPlaceholder="No districts found."
@@ -266,7 +271,10 @@ export function ArrestReportForm() {
                 <Combobox
                     options={locations.streets}
                     value={formData.location.street}
-                    onChange={(value) => setFormField('location', 'street', value)}
+                    onChange={(value) => {
+                        setFormField('location', 'street', value);
+                        saveToStore();
+                    }}
                     placeholder="Select or type a street"
                     searchPlaceholder="Search streets..."
                     emptyPlaceholder="No streets found."
@@ -287,6 +295,7 @@ export function ArrestReportForm() {
                 className="min-h-[150px]"
                 value={formData.evidence.supporting}
                 onChange={(e) => setFormField('evidence', 'supporting', e.target.value)}
+                onBlur={() => saveToStore()}
                 required={false}
             />
             <TextareaField 
@@ -304,6 +313,7 @@ export function ArrestReportForm() {
                   className="min-h-[150px]"
                   value={formData.evidence.dashcam}
                   onChange={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+                  onBlur={() => saveToStore()}
                   isInvalid={submitted && !formData.evidence.dashcam}
             />
         </div>

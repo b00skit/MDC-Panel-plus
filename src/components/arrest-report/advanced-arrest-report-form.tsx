@@ -79,7 +79,7 @@ export function AdvancedArrestReportForm() {
 
     const handleFormSubmit = () => {
         saveForm();
-        router.push('/paperwork-submit?type=advanced');
+        router.push('/arrest-submit?type=advanced');
     };
     
     // Auto-population from modifiers

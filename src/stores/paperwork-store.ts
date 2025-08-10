@@ -2,10 +2,12 @@
 'use client';
 import create from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { Officer } from './officer-store';
+import { useFormStore } from './form-store';
 
 interface PaperworkState {
   generatorId: string | null;
-  formData: Record<string, any>;
+  formData: Record<string, any> & { officers?: Officer[], general?: any };
   setGeneratorId: (id: string) => void;
   setFormData: (data: Record<string, any>) => void;
   reset: () => void;
@@ -21,7 +23,12 @@ export const usePaperworkStore = create<PaperworkState>()(
     (set) => ({
       ...initialState,
       setGeneratorId: (id) => set({ generatorId: id }),
-      setFormData: (data) => set({ formData: data }),
+      setFormData: (data) => set((state) => ({
+        formData: {
+          ...state.formData,
+          ...data,
+        }
+      })),
       reset: () => set(initialState),
     }),
     {

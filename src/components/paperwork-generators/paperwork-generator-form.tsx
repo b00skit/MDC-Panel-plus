@@ -42,17 +42,21 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
   const setFormData = usePaperworkStore(state => state.setFormData);
   const setGeneratorId = usePaperworkStore(state => state.setGeneratorId);
   const { officers } = useOfficerStore.getState();
-  const { general } = usePaperworkStore.getState().formData;
+  const { general } = useFormStore.getState().formData;
+
 
   const onSubmit = (data: any) => {
+    const { officers } = useOfficerStore.getState();
+    const { general } = useFormStore.getState().formData;
+
     const fullData = {
         ...data,
-        officer: officers,
+        officers: officers,
         general: general,
     };
     setFormData(fullData);
     setGeneratorId(generatorConfig.id);
-    router.push(`/paperwork-submit?type=generator`);
+    router.push(`/form-submit`);
   };
 
   return (
