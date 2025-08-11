@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
+import { useFormContext, Controller } from 'react-hook-form';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -47,24 +48,24 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     ref
   ) => {
     const [open, setOpen] = React.useState(false);
-    const [inputValue, setInputValue] = React.useState(value);
+    const [inputValue, setInputValue] = React.useState(value || '');
 
     React.useEffect(() => {
-        setInputValue(value);
+        setInputValue(value || '');
     }, [value]);
 
     const handleSelect = (currentValue: string) => {
-      // Find the full option text if currentValue is just a part of it (e.g., ID)
-      const selectedOption = options.find(opt => opt.toLowerCase().startsWith(currentValue.toLowerCase()));
-      const newValue = selectedOption || (currentValue === value ? '' : currentValue);
+      const selectedOption = options.find(opt => opt.toLowerCase() === currentValue.toLowerCase());
+      const newValue = selectedOption || currentValue;
       onChange(newValue);
       setInputValue(newValue);
       setOpen(false);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value);
-        onChange(e.target.value);
+        const currentInputValue = e.target.value;
+        setInputValue(currentInputValue);
+        onChange(currentInputValue);
     }
     
     // Filter out duplicate options to prevent key errors
@@ -74,14 +75,14 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       <div className={cn('relative', className)} ref={ref}>
          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <div className="relative">
+                <div className="relative" onClick={() => setOpen(true)} >
                      <Input 
                         value={inputValue}
                         onChange={handleInputChange}
                         placeholder={placeholder}
                         className={cn('w-full pr-8', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
                      />
-                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50" />
+                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" />
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
@@ -94,7 +95,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                             <CommandItem
                             key={option}
                             value={option}
-                            onSelect={handleSelect}
+                            onSelect={() => handleSelect(option)}
                             >
                             <Check
                                 className={cn(

@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
   MapPin,
-  Map,
   Paperclip,
   Video,
   FileText,
@@ -26,7 +25,8 @@ import { OfficerSection } from './officer-section';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useToast } from '@/hooks/use-toast';
-import { Combobox } from '../ui/combobox';
+import { LocationDetails } from '../shared/location-details';
+import { useForm, FormProvider } from 'react-hook-form';
 
 const FormSection = ({
   title,
@@ -144,17 +144,10 @@ const TextareaField = ({
 export function ArrestReportForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const { formData, setFormField } = useFormStore();
+  const { formData, setFormField, setAll } = useFormStore();
   const { officers } = useOfficerStore();
   const [submitted, setSubmitted] = useState(false);
-  const [locations, setLocations] = useState<{districts: string[], streets: string[]}>({ districts: [], streets: []});
-
-  useEffect(() => {
-    fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
-      .then(res => res.json())
-      .then(data => setLocations(data))
-      .catch(err => console.error("Failed to fetch locations:", err));
-  }, []);
+  const methods = useForm({ defaultValues: formData });
 
   const validateForm = () => {
     // General Section
@@ -196,133 +189,109 @@ export function ArrestReportForm() {
       });
       return;
     }
-
+    
+    // Get latest data from the form state which now includes location
+    const latestFormData = methods.getValues();
     const allFormData = {
-        ...formData,
+        ...latestFormData,
         officers: officers,
     };
-    useFormStore.getState().setAll(allFormData);
+
+    setAll(allFormData as any);
     router.push('/arrest-submit?type=basic');
   };
 
   const saveToStore = () => {
+    const latestFormData = methods.getValues();
     const allFormData = {
-        ...formData,
+        ...latestFormData,
         officers: officers,
     };
-    useFormStore.getState().setAll(allFormData);
+    setAll(allFormData as any);
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <GeneralSection isSubmitted={submitted} />
-      <OfficerSection isSubmitted={submitted} isArrestReport={true} />
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit} className="space-y-6" onBlur={saveToStore}>
+        <GeneralSection isSubmitted={submitted} />
+        <OfficerSection isSubmitted={submitted} isArrestReport={true} />
 
-       <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
-         <div className="space-y-6">
-            <InputField
-              label="Suspect's Full Name"
-              id="suspect-name"
-              placeholder="Firstname Lastname"
-              icon={<User className="h-4 w-4 text-muted-foreground" />}
-              value={formData.arrest.suspectName}
-              onChange={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-              onBlur={() => saveToStore()}
-              isInvalid={submitted && !formData.arrest.suspectName}
-            />
-            <TextareaField 
-                label="Arrest Narrative"
-                id="narrative"
-                placeholder="Arrest Narrative"
-                icon={<FileText className="h-4 w-4 text-muted-foreground" />}
-                description={
-                    <span className="text-red-500">
-                      Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
-                    </span>
-                  }
+        <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
+          <div className="space-y-6">
+              <InputField
+                label="Suspect's Full Name"
+                id="suspect-name"
+                placeholder="Firstname Lastname"
+                icon={<User className="h-4 w-4 text-muted-foreground" />}
+                value={formData.arrest.suspectName}
+                onChange={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+                isInvalid={submitted && !formData.arrest.suspectName}
+              />
+              <TextareaField 
+                  label="Arrest Narrative"
+                  id="narrative"
+                  placeholder="Arrest Narrative"
+                  icon={<FileText className="h-4 w-4 text-muted-foreground" />}
+                  description={
+                      <span className="text-red-500">
+                        Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
+                      </span>
+                    }
+                    className="min-h-[150px]"
+                    value={formData.arrest.narrative}
+                    onChange={(e) => setFormField('arrest', 'narrative', e.target.value)}
+                    isInvalid={submitted && !formData.arrest.narrative}
+              />
+          </div>
+        </FormSection>
+
+        <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
+          <LocationDetails 
+            districtFieldName="location.district"
+            streetFieldName="location.street"
+            showDistrict={true}
+            isSubmitted={submitted}
+          />
+        </FormSection>
+
+        <FormSection title="Evidence Section" icon={<Paperclip className="h-6 w-6" />}>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <TextareaField 
+                  label="Supporting Evidence"
+                  id="supporting-evidence"
+                  placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
+                  icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
+                  description="Provide supporting evidence to aid the arrest report."
                   className="min-h-[150px]"
-                  value={formData.arrest.narrative}
-                  onChange={(e) => setFormField('arrest', 'narrative', e.target.value)}
-                  onBlur={() => saveToStore()}
-                  isInvalid={submitted && !formData.arrest.narrative}
-            />
-         </div>
-      </FormSection>
+                  value={formData.evidence.supporting}
+                  onChange={(e) => setFormField('evidence', 'supporting', e.target.value)}
+                  required={false}
+              />
+              <TextareaField 
+                  label="Dashboard Camera"
+                  id="dashcam"
+                  placeholder="The dashboard camera captures audio and video footage showcasing..."
+                  icon={<Video className="h-4 w-4 text-muted-foreground" />}
+                  description={
+                      <span>
+                        Roleplay what the dashboard camera captures OR provide Streamable/YouTube links.
+                        <br/>
+                        <span className="text-red-500">(( Lying in this section will lead to OOC punishment ))</span>
+                      </span>
+                    }
+                    className="min-h-[150px]"
+                    value={formData.evidence.dashcam}
+                    onChange={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+                    isInvalid={submitted && !formData.evidence.dashcam}
+              />
+          </div>
+        </FormSection>
 
-       <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="grid gap-2">
-                <Label htmlFor="district">District</Label>
-                <Combobox
-                    options={locations.districts}
-                    value={formData.location.district}
-                    onChange={(value) => {
-                        setFormField('location', 'district', value);
-                        saveToStore();
-                    }}
-                    placeholder="Select or type a district"
-                    searchPlaceholder="Search districts..."
-                    emptyPlaceholder="No districts found."
-                    isInvalid={submitted && !formData.location.district}
-                />
-            </div>
-            <div className="grid gap-2">
-                <Label htmlFor="street-name">Street Name</Label>
-                <Combobox
-                    options={locations.streets}
-                    value={formData.location.street}
-                    onChange={(value) => {
-                        setFormField('location', 'street', value);
-                        saveToStore();
-                    }}
-                    placeholder="Select or type a street"
-                    searchPlaceholder="Search streets..."
-                    emptyPlaceholder="No streets found."
-                    isInvalid={submitted && !formData.location.street}
-                />
-            </div>
+        <div className="flex justify-end gap-4">
+            <Button variant="outline" type="button" onClick={saveToStore}>Save as Draft</Button>
+            <Button type="submit">Submit Report</Button>
         </div>
-      </FormSection>
-
-      <FormSection title="Evidence Section" icon={<Paperclip className="h-6 w-6" />}>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <TextareaField 
-                label="Supporting Evidence"
-                id="supporting-evidence"
-                placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
-                icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
-                description="Provide supporting evidence to aid the arrest report."
-                className="min-h-[150px]"
-                value={formData.evidence.supporting}
-                onChange={(e) => setFormField('evidence', 'supporting', e.target.value)}
-                onBlur={() => saveToStore()}
-                required={false}
-            />
-            <TextareaField 
-                label="Dashboard Camera"
-                id="dashcam"
-                placeholder="The dashboard camera captures audio and video footage showcasing..."
-                icon={<Video className="h-4 w-4 text-muted-foreground" />}
-                description={
-                    <span>
-                      Roleplay what the dashboard camera captures OR provide Streamable/YouTube links.
-                      <br/>
-                      <span className="text-red-500">(( Lying in this section will lead to OOC punishment ))</span>
-                    </span>
-                  }
-                  className="min-h-[150px]"
-                  value={formData.evidence.dashcam}
-                  onChange={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-                  onBlur={() => saveToStore()}
-                  isInvalid={submitted && !formData.evidence.dashcam}
-            />
-        </div>
-      </FormSection>
-
-      <div className="flex justify-end gap-4">
-          <Button variant="outline" type="button" onClick={saveToStore}>Save as Draft</Button>
-          <Button type="submit">Submit Report</Button>
-      </div>
-    </form>
+      </form>
+    </FormProvider>
   );
 }

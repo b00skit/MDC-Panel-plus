@@ -1,3 +1,4 @@
+
 'use client';
 import create from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
@@ -39,7 +40,7 @@ interface FormStore {
     field: K,
     value: FormState[T][K]
   ) => void;
-  setAll: (data: FormState) => void;
+  setAll: (data: Partial<FormState>) => void;
   reset: () => void;
 }
 
@@ -67,7 +68,12 @@ export const useFormStore = create<FormStore>()(
           },
         })),
 
-      setAll: (data) => set({ formData: data }),
+      setAll: (data) => set(state => ({ 
+        formData: {
+            ...state.formData,
+            ...data
+        }
+      })),
 
       reset: () => set({ formData: initialState }),
     }),
