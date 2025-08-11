@@ -20,8 +20,10 @@
         },
         { "type": "group", "fields": [
             { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "defaultValue": true },
-            { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "optionsSource": "vehicles", "required": true, "defaultValue": "" }
-        ]},
+            { "type": "text", "name": "insurance_expired_date", "label": "Insurance Expired Date", "placeholder": "DD/MM/YYYY", "stipulation": {"field": "vehicle_insured", "value": false}}
+          ]
+        },
+        { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "optionsSource": "vehicles", "required": true, "defaultValue": "" },
         { "type": "section", "title": "Location Details" },
         { 
             "type": "location", 
