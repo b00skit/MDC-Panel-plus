@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -292,12 +291,15 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 )
             case 'group':
                 return (
-                    <div key={currentName} className="flex flex-col md:flex-row items-end gap-4 w-full">
-                        {field.fields?.map((subField, subIndex) => renderField(subField, `${currentName}.${subIndex}`))}
+                    <div key={currentName || index} className="flex flex-col md:flex-row items-end gap-4 w-full">
+                        {field.fields?.map((subField, subIndex) => {
+                            const subFieldKey = `${subField.name}-${subIndex}`;
+                            return <div key={subFieldKey} className="w-full">{renderField(subField, subField.name)}</div>;
+                        })}
                     </div>
                 );
 
-             case 'input_group':
+            case 'input_group':
                 return <MultiInputGroup key={currentName} fieldConfig={field} renderField={renderField} />;
 
             default:
@@ -349,7 +351,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         router.push('/paperwork-submit?type=generator');
     };
 
- return (
+  return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
         <FormProvider {...methods}>
@@ -364,5 +366,5 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             </form>
         </FormProvider>
     </div>
- );
+  );
 }

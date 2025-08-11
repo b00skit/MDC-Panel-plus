@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -77,6 +76,10 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
+      // ✅ Open the dropdown if the user starts typing.
+      if (!open) {
+        setOpen(true);
+      }
     };
 
     const filteredOptions = React.useMemo(() => {
@@ -95,11 +98,12 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       <div className={cn('relative', className)} ref={ref}>
         <Popover open={open} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
+            {/* The div is the trigger. Clicks on its children will bubble up and be handled here. */}
             <div className="relative">
               <Input
                 value={inputValue}
                 onChange={handleInputChange}
-                onFocus={() => handleOpenChange(true)}
+                // ❌ REMOVED onFocus to prevent conflict with the trigger's click handler.
                 placeholder={placeholder}
                 className={cn(
                   'w-full pr-8',
@@ -108,7 +112,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
               />
               <ChevronsUpDown
                 className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer"
-                onClick={() => handleOpenChange(!open)}
+                // ❌ REMOVED onClick to prevent a double-toggle. The trigger handles it.
               />
             </div>
           </PopoverTrigger>
