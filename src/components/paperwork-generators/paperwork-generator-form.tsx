@@ -25,59 +25,69 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useToast } from '@/hooks/use-toast';
 
 type FormField = {
-  type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group';
-  name: string;
-  label?: string;
-  placeholder?: string;
-  options?: string[];
-  optionsSource?: 'districts' | 'streets' | 'vehicles';
-  title?: string;
-  value?: string;
-  dataOn?: string;
-  dataOff?: string;
-  defaultValue?: any;
-  required?: boolean;
-  stipulation?: {
-    field: string;
-    value: any;
-  },
-  fields?: FormField[]; // For group type
-  // Charge field specific config
-  showClass?: boolean;
-  showOffense?: boolean;
-  showAddition?: boolean;
-  showCategory?: boolean;
-  allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
-  allowedIds?: string;
-  customFields?: FormField[];
-  previewFields?: {
-    sentence?: boolean;
-    fine?: boolean;
-    impound?: boolean;
-    suspension?: boolean;
-  }
-  // Location field specific config
-  showDistrict?: boolean;
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group';
+    name: string;
+    label?: string;
+    placeholder?: string;
+    options?: string[];
+    optionsSource?: 'districts' | 'streets' | 'vehicles';
+    title?: string;
+    value?: string;
+    dataOn?: string;
+    dataOff?: string;
+    defaultValue?: any;
+    required?: boolean;
+    stipulation?: {
+        field: string;
+        value: any;
+    },
+    fields?: FormField[]; // For group and input_group types
+    // Charge field specific config
+    showClass?: boolean;
+    showOffense?: boolean;
+    showAddition?: boolean;
+    showCategory?: boolean;
+    allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
+    allowedIds?: string;
+    customFields?: FormField[];
+    previewFields?: {
+        sentence?: boolean;
+        fine?: boolean;
+        impound?: boolean;
+        suspension?: boolean;
+    }
+    // Location field specific config
+    showDistrict?: boolean;
 };
 
 type GeneratorConfig = {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  output: string;
-  formAction?: string;
-  formMethod?: string;
-  form: FormField[];
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+    output: string;
+    formAction?: string;
+    formMethod?: string;
+    form: FormField[];
 };
 
 interface PaperworkGeneratorFormProps {
-  generatorConfig: GeneratorConfig;
+    generatorConfig: GeneratorConfig;
 }
 
 export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
-    const methods = useForm();
+    const methods = useForm({
+        // Set validation criteria mode to 'all' to report all errors, not just the first.
+        criteriaMode: 'all',
+        // Set default values to prevent "uncontrolled to controlled" input errors.
+        defaultValues: generatorConfig.form.reduce((acc, field) => {
+            if (field.type === 'input_group' && field.name) {
+                acc[field.name] = [];
+            }
+            return acc;
+        }, {} as Record<string, any>)
+    });
     const { register, handleSubmit, control, watch } = methods;
 
     const { setGeneratorId, setFormData } = usePaperworkStore();
@@ -90,7 +100,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     const [isFetchingVehicles, setIsFetchingVehicles] = useState(false);
 
     useEffect(() => {
-        const hasChargeField = generatorConfig.form.some(field => field.type === 'charge');
+        const hasChargeField = generatorConfig.form.some(field => field.type === 'charge' || field.fields?.some(f => f.type === 'charge'));
         const hasLocationFields = generatorConfig.form.some(field => field.type === 'location' || field.optionsSource === 'districts' || field.optionsSource === 'streets');
         
         if (hasChargeField && !penalCode) {
@@ -115,9 +125,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         if (vehiclesFetched || isFetchingVehicles) {
             return;
         }
-
         setIsFetchingVehicles(true);
-
         fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
             .then(res => res.json())
             .then(data => {
@@ -234,8 +242,9 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                             control={control}
                             name={path}
                             rules={{ required: field.required }}
+                            defaultValue={field.defaultValue}
                             render={({ field: { onChange, value } }) => (
-                                <Select onValueChange={onChange} value={value}>
+                                <Select onValueChange={onChange} value={value} defaultValue={field.defaultValue}>
                                     <SelectTrigger id={path}>
                                         <SelectValue placeholder={field.placeholder} />
                                     </SelectTrigger>
@@ -332,7 +341,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                             </Button>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append({})}>
+                    <Button type="button" variant="outline" onClick={() => append(fieldConfig.fields?.reduce((acc, f) => ({...acc, [f.name]: f.defaultValue || ''}), {}) || {})}>
                         <Plus className="mr-2 h-4 w-4" /> Add {fieldConfig.label}
                     </Button>
                 </CardContent>
@@ -342,25 +351,46 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
 
     const onError = (errors: FieldErrors) => {
         const errorMessages: string[] = [];
-        const findFieldLabel = (fieldName: string): string | undefined => {
-            const findInFields = (fields: FormField[]): string | undefined => {
-                for (const field of fields) {
-                    if (field.name === fieldName) return field.label;
-                    if (field.fields) {
-                        const found = findInFields(field.fields);
-                        if (found) return found;
-                    }
+    
+        const findFieldLabel = (fieldName: string, fields: FormField[]): string | undefined => {
+            for (const field of fields) {
+                if (field.name === fieldName) return field.label;
+                // Check within nested 'fields' as well (for groups, input_groups)
+                if (field.fields) {
+                    const foundLabel = findFieldLabel(fieldName, field.fields);
+                    if (foundLabel) return foundLabel;
                 }
             }
-            return findInFields(generatorConfig.form);
-        }
-        
-        Object.keys(errors).forEach(key => {
-            const label = findFieldLabel(key) || key.replace(/_/g, ' ');
-            errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)} is a required field.`);
-        });
+        };
 
-        errorMessages.forEach(msg => {
+        const processErrors = (errorNode: any) => {
+            for (const key in errorNode) {
+                const childNode = errorNode[key];
+                if (!childNode) continue;
+    
+                // Base case: Found the actual error object from react-hook-form
+                if (childNode.type && childNode.message) {
+                    const label = findFieldLabel(key, generatorConfig.form) || key.replace(/_/g, ' ');
+                    errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${childNode.message}`);
+                } 
+                // Recursive step for nested objects or arrays
+                else if (typeof childNode === 'object') {
+                    processErrors(childNode);
+                }
+            }
+        };
+    
+        processErrors(errors);
+    
+        // Fallback for when no specific messages are generated but errors exist
+        if (errorMessages.length === 0 && Object.keys(errors).length > 0) {
+            errorMessages.push("Please review the form and fill out all required fields.");
+        }
+    
+        // Use a Set to ensure we only show unique error messages
+        const uniqueMessages = [...new Set(errorMessages)];
+        
+        uniqueMessages.forEach(msg => {
             toast({
                 title: 'Validation Error',
                 description: msg,
@@ -383,20 +413,20 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         router.push('/paperwork-submit?type=generator');
     };
 
-  return (
-    <div className="container mx-auto p-4 md:p-6 lg:p-8">
-        <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
-        <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
-                {generatorConfig.form.map((field, index) => {
-                    const fieldKey = `${field.name || field.type}-${index}`;
-                    return <div key={fieldKey}>{renderField(field, field.name || fieldKey, index)}</div>;
-                })}
-                <div className="flex justify-end mt-6">
-                <Button type="submit">Generate Paperwork</Button>
-                </div>
-            </form>
-        </FormProvider>
-    </div>
-  );
+    return (
+        <div className="container mx-auto p-4 md:p-6 lg:p-8">
+            <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
+            <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
+                    {generatorConfig.form.map((field, index) => {
+                        const fieldKey = `${field.name || field.type}-${index}`;
+                        return <div key={fieldKey}>{renderField(field, field.name || fieldKey, index)}</div>;
+                    })}
+                    <div className="flex justify-end mt-6">
+                        <Button type="submit">Generate Paperwork</Button>
+                    </div>
+                </form>
+            </FormProvider>
+        </div>
+    );
 }

@@ -20,7 +20,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
     useEffect(() => {
         if (generatorId) {
             // This logic assumes user-created forms are not in the main generator directory.
-            const isUserForm = !['impound-report', 'traffic-report', 'trespass-notice', 'test-generator'].includes(generatorId);
+            const isUserForm = !['impound-report', 'traffic-report', 'trespass-notice', 'test'].includes(generatorId);
             const url = isUserForm 
                 ? `/api/paperwork-generators/${generatorId}?f=${generatorId}`
                 : `/api/paperwork-generators/${generatorId}?s=${generatorId}`;
@@ -35,9 +35,9 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
     }, [generatorId]);
 
     useEffect(() => {
-        if(generatorConfig && formData) {
+        if(generatorConfig && generatorConfig.output && formData) {
             Handlebars.registerHelper('lookup', (obj, key) => obj && obj[key]);
-            Handlebars.registerHelper('with', function(context, options) {
+            Handlebars.registerHelper('with', function(this: any, context, options) {
                 return options.fn(context);
             });
             Handlebars.registerHelper('if', function(this: any, conditional, options) {
