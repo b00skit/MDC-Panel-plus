@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -23,13 +24,14 @@ import { LocationDetails } from '../shared/location-details';
 import { Plus, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { MultiSelect } from '../ui/multi-select';
 
 type FormField = {
-    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group';
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select';
     name: string;
     label?: string;
     placeholder?: string;
-    options?: string[];
+    options?: any[];
     optionsSource?: 'districts' | 'streets' | 'vehicles';
     title?: string;
     value?: string;
@@ -84,6 +86,8 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         defaultValues: generatorConfig.form.reduce((acc, field) => {
             if (field.type === 'input_group' && field.name) {
                 acc[field.name] = [];
+            } else if (field.name) {
+                acc[field.name] = field.defaultValue ?? '';
             }
             return acc;
         }, {} as Record<string, any>)
@@ -148,7 +152,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
 
         if (field.stipulation) {
             const watchedValue = watch(field.stipulation.field);
-            if (watchedValue !== field.stipulation.value) {
+            if (String(watchedValue) !== String(field.stipulation.value)) {
                 return null;
             }
         }
@@ -258,6 +262,27 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                         />
                     </div>
                 );
+            
+             case 'multi-select':
+                return (
+                    <div key={fieldKey} className="w-full">
+                        <Label htmlFor={path}>{field.label}</Label>
+                        <Controller
+                            name={path}
+                            control={control}
+                            defaultValue={field.defaultValue || []}
+                            render={({ field: { onChange, value } }) => (
+                                <MultiSelect
+                                    options={field.options || []}
+                                    onValueChange={onChange}
+                                    defaultValue={value}
+                                    placeholder={field.placeholder}
+                                />
+                            )}
+                         />
+                    </div>
+                );
+
             case 'toggle':
                 return (
                     <div key={fieldKey} className="flex items-center space-x-2 pt-6">
@@ -303,8 +328,8 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 return (
                     <div key={fieldKey} className="flex flex-col md:flex-row items-end gap-4 w-full">
                         {field.fields?.map((subField, subIndex) => {
-                            const subFieldKey = `${subField.name}-${subIndex}`;
-                            return <div key={subFieldKey} className="w-full">{renderField(subField, subField.name || subFieldKey)}</div>;
+                            const subFieldPath = `${path}.${subField.name}`;
+                            return <div key={`${subField.name}-${subIndex}`} className="w-full">{renderField(subField, subFieldPath, subIndex)}</div>;
                         })}
                     </div>
                 );
@@ -355,7 +380,6 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         const findFieldLabel = (fieldName: string, fields: FormField[]): string | undefined => {
             for (const field of fields) {
                 if (field.name === fieldName) return field.label;
-                // Check within nested 'fields' as well (for groups, input_groups)
                 if (field.fields) {
                     const foundLabel = findFieldLabel(fieldName, field.fields);
                     if (foundLabel) return foundLabel;
@@ -363,31 +387,28 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             }
         };
 
-        const processErrors = (errorNode: any) => {
+        const processErrors = (errorNode: any, path: string = '') => {
             for (const key in errorNode) {
+                const newPath = path ? `${path}.${key}` : key;
                 const childNode = errorNode[key];
                 if (!childNode) continue;
     
-                // Base case: Found the actual error object from react-hook-form
                 if (childNode.type && childNode.message) {
-                    const label = findFieldLabel(key, generatorConfig.form) || key.replace(/_/g, ' ');
-                    errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${childNode.message}`);
+                    const label = findFieldLabel(newPath, generatorConfig.form) || newPath.replace(/_/g, ' ');
+                    errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${childNode.message || 'This field is required.'}`);
                 } 
-                // Recursive step for nested objects or arrays
                 else if (typeof childNode === 'object') {
-                    processErrors(childNode);
+                    processErrors(childNode, newPath);
                 }
             }
         };
     
         processErrors(errors);
     
-        // Fallback for when no specific messages are generated but errors exist
         if (errorMessages.length === 0 && Object.keys(errors).length > 0) {
             errorMessages.push("Please review the form and fill out all required fields.");
         }
     
-        // Use a Set to ensure we only show unique error messages
         const uniqueMessages = [...new Set(errorMessages)];
         
         uniqueMessages.forEach(msg => {

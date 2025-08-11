@@ -4,7 +4,7 @@
     "title": "Test Generator",
     "description": "A test for multi-input group functionality.",
     "icon": "Puzzle",
-    "output": "--- VEHICLE LIST ---\n{@start_vehicles}Vehicle Name: {{vehicle_name}}\n{@end_vehicles}--- END OF LIST ---",
+    "output": "--- VEHICLE LIST ---\n{@start_vehicles}Vehicle Name: {{vehicle_name}}, Extras: {{vehicle_extras}}\n{@end_vehicles}--- END OF LIST ---",
     "form": [
         {
             "type": "input_group",
@@ -16,6 +16,19 @@
                     "name": "vehicle_name",
                     "label": "Vehicle Name",
                     "placeholder": "e.g., Karin Sultan"
+                },
+                {
+                    "type": "multi-select",
+                    "name": "vehicle_extras",
+                    "label": "Extras",
+                    "placeholder": "Select extras",
+                    "options": [
+                        { "value": "gps", "label": "GPS" },
+                        { "value": "spoiler", "label": "Spoiler" },
+                        { "value": "turbo", "label": "Turbo" },
+                        { "value": "rims", "label": "Custom Rims" },
+                        { "value": "tint", "label": "Window Tint" }
+                    ]
                 }
             ]
         }
