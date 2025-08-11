@@ -74,6 +74,7 @@ const InputField = ({
       <div className="absolute left-2.5 z-10">{icon}</div>
       <Input
         id={id}
+        name={id}
         type={type}
         placeholder={placeholder}
         className={cn(
@@ -117,6 +118,7 @@ const TextareaField = ({
       <div className="absolute left-3 top-3.5">{icon}</div>
       <Textarea
         id={id}
+        name={id}
         placeholder={placeholder}
         className={cn(
             'pl-9 pt-3',

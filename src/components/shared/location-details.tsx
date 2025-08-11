@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Combobox } from '@/components/ui/combobox';
 import { Label } from '@/components/ui/label';
+import { useFormStore } from '@/stores/form-store';
 
 interface LocationDetailsProps {
     districtFieldName: string;
@@ -19,8 +20,10 @@ export function LocationDetails({
     showDistrict = true, 
     isSubmitted = false 
 }: LocationDetailsProps) {
-    const { control, formState: { errors } } = useFormContext();
+    const { control, getValues } = useFormContext();
     const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
+    const { setFormField } = useFormStore();
+
 
     useEffect(() => {
         fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
@@ -33,8 +36,8 @@ export function LocationDetails({
             .catch(err => console.error("Failed to fetch locations:", err));
     }, []);
 
-    const isDistrictInvalid = isSubmitted && !control.getValues(districtFieldName);
-    const isStreetInvalid = isSubmitted && !control.getValues(streetFieldName);
+    const isDistrictInvalid = isSubmitted && !getValues(districtFieldName);
+    const isStreetInvalid = isSubmitted && !getValues(streetFieldName);
 
     return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -49,7 +52,10 @@ export function LocationDetails({
                             <Combobox
                                 options={locations.districts}
                                 value={field.value}
-                                onChange={field.onChange}
+                                onChange={(value) => {
+                                    field.onChange(value);
+                                    setFormField('location', 'district', value);
+                                }}
                                 placeholder="Select or type a district"
                                 searchPlaceholder="Search districts..."
                                 emptyPlaceholder="No districts found."
@@ -69,7 +75,10 @@ export function LocationDetails({
                          <Combobox
                             options={locations.streets}
                             value={field.value}
-                            onChange={field.onChange}
+                            onChange={(value) => {
+                                field.onChange(value);
+                                setFormField('location', 'street', value);
+                            }}
                             placeholder="Select or type a street"
                             searchPlaceholder="Search streets..."
                             emptyPlaceholder="No streets found."
@@ -81,4 +90,3 @@ export function LocationDetails({
         </div>
     );
 }
-
