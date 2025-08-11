@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -79,13 +80,14 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     };
 
     const filteredOptions = React.useMemo(() => {
-      if (!inputValue) {
-        return options;
-      }
-      return options.filter(option =>
-        option.toLowerCase().includes(inputValue.toLowerCase())
-      );
+        if (!inputValue) {
+            return options;
+        }
+        return options.filter(option =>
+            String(option).toLowerCase().includes(String(inputValue).toLowerCase())
+        );
     }, [inputValue, options]);
+
 
     const uniqueOptions = React.useMemo(() => [...new Set(filteredOptions)], [filteredOptions]);
 
@@ -97,7 +99,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
               <Input
                 value={inputValue}
                 onChange={handleInputChange}
-                // onFocus handler removed to prevent conflict with onClick
+                onFocus={() => handleOpenChange(true)}
                 placeholder={placeholder}
                 className={cn(
                   'w-full pr-8',
