@@ -68,10 +68,10 @@ const ChargeCard = ({ charge }: { charge: Charge }) => {
                 <div className="flex justify-between items-start">
                     <div>
                         <CardTitle className="text-xl font-bold">{charge.id}. {charge.charge}</CardTitle>
-                        <CardDescription className="flex items-center gap-2 mt-1">
+                        <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                             <Badge className={cn(getTypeClasses(charge.type))}>{getTypeFullName(charge.type)}</Badge>
                             {isDrugCharge && <Badge variant="secondary">Drug Related</Badge>}
-                        </CardDescription>
+                        </div>
                     </div>
                     <Badge variant="outline" className="text-lg px-3 py-1">ID: {charge.id}</Badge>
                 </div>
