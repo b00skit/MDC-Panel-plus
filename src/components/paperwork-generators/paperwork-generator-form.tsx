@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, Controller, FormProvider, useFieldArray, FieldErrors } from 'react-hook-form';
 import { PageHeader } from '../dashboard/page-header';
 import { Label } from '../ui/label';
@@ -16,7 +17,7 @@ import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore as useBasicFormStore } from '@/stores/form-store';
 import { Switch } from '../ui/switch';
 import { type PenalCode } from '@/stores/charge-store';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { Combobox } from '../ui/combobox';
 import { PaperworkChargeField } from './paperwork-generator-charge-field';
 import { LocationDetails } from '../shared/location-details';
@@ -100,17 +101,18 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
     return defaults;
 };
 
-
-export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFormProps) {
+function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+
     const methods = useForm({
         criteriaMode: 'all',
         // Use the new recursive function to set correct initial values
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
-    const { register, handleSubmit, control, watch } = methods;
+    const { register, handleSubmit, control, watch, trigger } = methods;
 
-    const { setGeneratorId, setFormData } = usePaperworkStore();
+    const { setGeneratorData, setFormData } = usePaperworkStore();
     const { toast } = useToast();
     
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
@@ -299,7 +301,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                      </div>
                  );
 
-            case 'toggle':
+             case 'toggle':
                 return (
                     <div key={fieldKey} className="flex items-center space-x-2 pt-6">
                         <Controller
@@ -310,8 +312,10 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                                 <Switch
                                     id={path}
                                     checked={value}
-                                    // FIX 2: Removed unnecessary `trigger()` call. `onChange` is sufficient.
-                                    onCheckedChange={onChange}
+                                    onCheckedChange={value => {
+                                        onChange(value);
+                                        trigger(); // Trigger validation to re-evaluate conditional fields
+                                    }}
                                 />
                             )}
                         />
@@ -320,6 +324,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                         </Label>
                     </div>
                 );
+
             case 'charge':
                 return (
                     <PaperworkChargeField 
@@ -454,9 +459,16 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             general,
             penalCode,
         };
-        setGeneratorId(generatorConfig.id);
+
+        const type = searchParams.get('s') ? 'static' : 'user';
+
+        setGeneratorData({
+            generatorId: generatorConfig.id,
+            generatorType: type,
+        });
+
         setFormData(fullData);
-        router.push('/paperwork-submit?type=generator');
+        router.push('/paperwork-submit');
     };
 
     return (
@@ -465,10 +477,9 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
                     {generatorConfig.form.map((field, index) => {
-                        const fieldKey = `${field.name || field.type}-${index}`;
-                        // For fields without a name (like sections or groups), pass the key as the path
-                        const path = field.name || fieldKey;
-                        return <div key={fieldKey}>{renderField(field, path, index)}</div>;
+                         // For fields without a name (like sections or groups), pass the key as the path
+                        const path = field.name || `${field.type}-${index}`;
+                        return <div key={path}>{renderField(field, path, index)}</div>;
                     })}
                     <div className="flex justify-end mt-6">
                         <Button type="submit">Generate Paperwork</Button>
@@ -477,4 +488,12 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             </FormProvider>
         </div>
     );
+}
+
+export function PaperworkGeneratorForm(props: PaperworkGeneratorFormProps) {
+    return (
+        <Suspense fallback={<div>Loading form...</div>}>
+            <PaperworkGeneratorFormComponent {...props} />
+        </Suspense>
+    )
 }

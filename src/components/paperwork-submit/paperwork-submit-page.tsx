@@ -13,17 +13,14 @@ import Handlebars from 'handlebars';
 import { ConditionalVariable } from '@/stores/paperwork-builder-store';
 
 const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
-    const { formData, generatorId } = usePaperworkStore();
+    const { formData, generatorId, generatorType } = usePaperworkStore();
     const [template, setTemplate] = useState('');
     const [generatorConfig, setGeneratorConfig] = useState<{ output: string; conditionals?: ConditionalVariable[] } | null>(null);
   
     useEffect(() => {
-        if (generatorId) {
-            // This logic assumes user-created forms are not in the main generator directory.
-            const isUserForm = !['impound-report', 'traffic-report', 'trespass-notice', 'test'].includes(generatorId);
-            const url = isUserForm 
-                ? `/api/paperwork-generators/${generatorId}?f=${generatorId}`
-                : `/api/paperwork-generators/${generatorId}?s=${generatorId}`;
+        if (generatorId && generatorType) {
+            const param = generatorType === 'static' ? `s=${generatorId}` : `f=${generatorId}`;
+            const url = `/api/paperwork-generators/${generatorId}?${param}`;
 
             fetch(url)
                 .then(res => res.json())
@@ -32,7 +29,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 })
                 .catch(err => console.error("Failed to load generator template", err));
         }
-    }, [generatorId]);
+    }, [generatorId, generatorType]);
 
     useEffect(() => {
         if(generatorConfig && generatorConfig.output && formData) {
@@ -57,9 +54,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 return ret;
             });
             
-            const templateString = generatorConfig.output
-                                    .replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}')
-                                    .replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
+            const templateString = generatorConfig.output.replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}').replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
 
             const compiledTemplate = Handlebars.compile(templateString, { noEscape: true });
 
@@ -102,9 +97,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
   
 
 function PaperworkSubmitContent() {
-    const { formData } = usePaperworkStore();
-    const searchParams = useSearchParams();
-    const reportType = searchParams.get('type');
+    const { formData, generatorId } = usePaperworkStore();
     
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
@@ -137,7 +130,7 @@ function PaperworkSubmitContent() {
       );
     }
 
-    if (reportType !== 'generator' || !formData) {
+    if (!generatorId || !formData) {
         return (
             <div className="container mx-auto p-4 md:p-6 lg:p-8">
                  <PageHeader
