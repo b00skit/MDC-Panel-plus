@@ -45,6 +45,8 @@ type FormField = {
   showOffense?: boolean;
   showAddition?: boolean;
   showCategory?: boolean;
+  allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
+  allowedIds?: string;
   customFields?: FormField[];
   // Location field specific config
   showDistrict?: boolean;
@@ -213,6 +215,8 @@ const renderField = (
                     showOffense: field.showOffense,
                     showAddition: field.showAddition,
                     showCategory: field.showCategory,
+                    allowedTypes: field.allowedTypes,
+                    allowedIds: field.allowedIds,
                     customFields: field.customFields,
                 }}
               />

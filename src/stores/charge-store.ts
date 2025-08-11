@@ -2,7 +2,7 @@
 'use client';
 
 import create from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 export interface Charge {
   id: string;
@@ -86,11 +86,7 @@ export const useChargeStore = create<ChargeState>()(
     }),
     {
       name: 'charge-storage', // name of the item in the storage (must be unique)
-      storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
-      partialize: (state) =>
-        Object.fromEntries(
-          Object.entries(state).filter(([key]) => !['penalCode'].includes(key))
-        ),
+      getStorage: () => sessionStorage, // (optional) by default, 'localStorage' is used
     }
   )
 );
