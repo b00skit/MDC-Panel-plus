@@ -1,8 +1,7 @@
-
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray, Controller, FormProvider } from 'react-hook-form';
+import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { PageHeader } from '../dashboard/page-header';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -58,7 +57,6 @@ type FormField = {
   showDistrict?: boolean;
 };
 
-
 type GeneratorConfig = {
   id: string;
   title: string;
@@ -87,6 +85,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
     const [vehicles, setVehicles] = useState<string[]>([]);
     const [vehiclesFetched, setVehiclesFetched] = useState(false);
+    const [isFetchingVehicles, setIsFetchingVehicles] = useState(false);
 
     useEffect(() => {
         const hasChargeField = generatorConfig.form.some(field => field.type === 'charge');
@@ -111,18 +110,24 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     }, [generatorConfig, penalCode, locations.districts.length]);
 
     const handleVehicleFetch = useCallback(() => {
-        if (!vehiclesFetched) {
-            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
-                .then(res => res.json())
-                .then(data => {
-                    const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
-                    setVehicles(vehicleNames);
-                    setVehiclesFetched(true);
-                })
-                .catch(err => console.error("Failed to fetch vehicles:", err));
+        if (vehiclesFetched || isFetchingVehicles) {
+            return;
         }
-    }, [vehiclesFetched]);
 
+        setIsFetchingVehicles(true);
+
+        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
+            .then(res => res.json())
+            .then(data => {
+                const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
+                setVehicles(vehicleNames);
+                setVehiclesFetched(true);
+            })
+            .catch(err => console.error("Failed to fetch vehicles:", err))
+            .finally(() => {
+                setIsFetchingVehicles(false);
+            });
+    }, [vehiclesFetched, isFetchingVehicles]);
 
     const renderField = (
         field: FormField, 
@@ -178,6 +183,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                             render={({ field: { onChange, value } }) => {
                                 let options: string[] = [];
                                 let onOpen: (() => void) | undefined = undefined;
+                                let isLoading = false;
 
                                 if (field.optionsSource === 'districts') {
                                     options = locations.districts;
@@ -186,6 +192,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                                 } else if (field.optionsSource === 'vehicles') {
                                     options = vehicles;
                                     onOpen = handleVehicleFetch;
+                                    isLoading = isFetchingVehicles;
                                 }
 
                                 return (
@@ -194,6 +201,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                                         value={value}
                                         onChange={onChange}
                                         onOpen={onOpen}
+                                        isLoading={isLoading}
                                         placeholder={field.placeholder}
                                         searchPlaceholder='Search...'
                                         emptyPlaceholder='No results.'
@@ -300,7 +308,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         router.push('/paperwork-submit?type=generator');
     };
 
-  return (
+ return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
         <FormProvider {...methods}>
@@ -312,5 +320,5 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             </form>
         </FormProvider>
     </div>
-  );
+ );
 }
