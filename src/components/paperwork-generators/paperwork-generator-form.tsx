@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
+import { useForm, Controller, FormProvider, useFieldArray } from 'react-hook-form';
 import { PageHeader } from '../dashboard/page-header';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -20,9 +21,11 @@ import { useEffect, useState, useCallback } from 'react';
 import { Combobox } from '../ui/combobox';
 import { PaperworkChargeField } from './paperwork-generator-charge-field';
 import { LocationDetails } from '../shared/location-details';
+import { Plus, Trash2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 type FormField = {
-  type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location';
+  type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group';
   name: string;
   label?: string;
   placeholder?: string;
@@ -131,8 +134,11 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
 
     const renderField = (
         field: FormField, 
-        index: number
+        path: string,
+        index?: number,
     ) => {
+        const currentName = path;
+
         if (field.stipulation) {
             const watchedValue = watch(field.stipulation.field);
             if (watchedValue !== field.stipulation.value) {
@@ -141,44 +147,44 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         }
         switch (field.type) {
             case 'hidden':
-                return <input key={`${field.name}-${index}`} type="hidden" {...register(field.name)} defaultValue={field.value} />;
+                return <input key={currentName} type="hidden" {...register(currentName)} defaultValue={field.value} />;
 
             case 'section':
                 return (
-                    <div key={`${field.title}-${index}`}>
+                    <div key={currentName}>
                         <Separator className="my-4" />
                         <h4 className="mb-2 text-xl font-semibold tracking-tight">{field.title}</h4>
                     </div>
                 );
 
             case 'general':
-                return <GeneralSection key={`${field.name}-${index}`} isSubmitted={false} />;
+                return <GeneralSection key={currentName} isSubmitted={false} />;
             
             case 'officer':
-                return <OfficerSection key={`${field.name}-${index}`} isSubmitted={false} isArrestReport={false} />;
+                return <OfficerSection key={currentName} isSubmitted={false} isArrestReport={false} />;
 
             case 'location':
                 return <LocationDetails 
-                            key={`${field.name}-${index}`} 
+                            key={currentName}
                             districtFieldName={`${field.name}.district`}
                             streetFieldName={`${field.name}.street`}
                             showDistrict={field.showDistrict !== false}
                             isSubmitted={false}
                         />;
             case 'text':
-            return (
-                <div key={`${field.name}-${index}`} className="w-full">
-                <Label htmlFor={field.name}>{field.label}</Label>
-                <Input id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} />
-                </div>
-            );
+                return (
+                    <div key={currentName} className="w-full">
+                        <Label htmlFor={currentName}>{field.label}</Label>
+                        <Input id={currentName} {...register(currentName, { required: field.required })} placeholder={field.placeholder} />
+                    </div>
+                );
             case 'datalist':
                 return (
-                    <div key={`${field.name}-${index}`} className="w-full">
-                        <Label htmlFor={field.name}>{field.label}</Label>
+                    <div key={currentName} className="w-full">
+                        <Label htmlFor={currentName}>{field.label}</Label>
                         <Controller
                             control={control}
-                            name={field.name!}
+                            name={currentName}
                             rules={{ required: field.required }}
                             render={({ field: { onChange, value } }) => {
                                 let options: string[] = [];
@@ -214,23 +220,23 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
 
             case 'textarea':
                 return (
-                    <div key={`${field.name}-${index}`} className="w-full">
-                        <Label htmlFor={field.name}>{field.label}</Label>
-                        <Textarea id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
+                    <div key={currentName} className="w-full">
+                        <Label htmlFor={currentName}>{field.label}</Label>
+                        <Textarea id={currentName} {...register(currentName, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
                     </div>
                 );
 
             case 'dropdown':
                 return (
-                    <div key={`${field.name}-${index}`} className="w-full">
-                        <Label htmlFor={field.name}>{field.label}</Label>
+                    <div key={currentName} className="w-full">
+                        <Label htmlFor={currentName}>{field.label}</Label>
                         <Controller
                             control={control}
-                            name={field.name!}
+                            name={currentName}
                             rules={{ required: field.required }}
                             render={({ field: { onChange, value } }) => (
                                 <Select onValueChange={onChange} value={value}>
-                                    <SelectTrigger id={field.name}>
+                                    <SelectTrigger id={currentName}>
                                         <SelectValue placeholder={field.placeholder} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -245,28 +251,28 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 );
             case 'toggle':
                 return (
-                    <div key={`${field.name}-${index}`} className="flex items-center space-x-2 pt-6">
+                    <div key={currentName} className="flex items-center space-x-2 pt-6">
                         <Controller
-                            name={field.name!}
+                            name={currentName}
                             control={control}
                             defaultValue={field.defaultValue === true}
                             render={({ field: { onChange, value } }) => (
                                 <Switch
-                                    id={field.name}
+                                    id={currentName}
                                     checked={value}
                                     onCheckedChange={onChange}
                                 />
                             )}
                         />
-                        <Label htmlFor={field.name}>
-                            {watch(field.name!) ? field.dataOn : field.dataOff}
+                        <Label htmlFor={currentName}>
+                            {watch(currentName) ? field.dataOn : field.dataOff}
                         </Label>
                     </div>
                 );
             case 'charge':
                 return (
                     <PaperworkChargeField 
-                        key={`${field.name}-${index}`}
+                        key={currentName}
                         control={control}
                         register={register}
                         watch={watch}
@@ -286,15 +292,50 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 )
             case 'group':
                 return (
-                    <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4 w-full">
-                        {field.fields?.map((subField, subIndex) => renderField(subField, subIndex))}
+                    <div key={currentName} className="flex flex-col md:flex-row items-end gap-4 w-full">
+                        {field.fields?.map((subField, subIndex) => renderField(subField, `${currentName}.${subIndex}`))}
                     </div>
                 );
+
+             case 'input_group':
+                return <MultiInputGroup key={currentName} fieldConfig={field} renderField={renderField} />;
 
             default:
                 return null;
         }
     };
+
+    const MultiInputGroup = ({ fieldConfig, renderField }: { fieldConfig: FormField, renderField: Function }) => {
+        const { fields, append, remove } = useFieldArray({
+            control,
+            name: fieldConfig.name
+        });
+
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>{fieldConfig.label}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {fields.map((item, index) => (
+                        <div key={item.id} className="flex items-start gap-2 p-4 border rounded-lg">
+                            <div className="flex-1 space-y-4">
+                                {fieldConfig.fields?.map((subField) => (
+                                    renderField(subField, `${fieldConfig.name}.${index}.${subField.name}`)
+                                ))}
+                            </div>
+                            <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                        </div>
+                    ))}
+                    <Button type="button" variant="outline" onClick={() => append({})}>
+                        <Plus className="mr-2 h-4 w-4" /> Add {fieldConfig.label}
+                    </Button>
+                </CardContent>
+            </Card>
+        );
+    }
 
     const onSubmit = (data: any) => {
         const fullData = {
@@ -313,7 +354,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {generatorConfig.form.map((field, index) => renderField(field, index))}
+                {generatorConfig.form.map((field, index) => renderField(field, field.name, index))}
                 <div className="flex justify-end mt-6">
                 <Button type="submit">Generate Paperwork</Button>
                 </div>

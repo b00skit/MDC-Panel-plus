@@ -4,7 +4,7 @@ import create from 'zustand';
 
 export type Field = {
     id: string;
-    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group';
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'input_group';
     name?: string;
     label?: string;
     placeholder?: string;

@@ -1,0 +1,23 @@
+
+{
+    "id": "test-generator",
+    "title": "Test Generator",
+    "description": "A test for multi-input group functionality.",
+    "icon": "Puzzle",
+    "output": "--- VEHICLE LIST ---\n{@start_vehicles}Vehicle Name: {{vehicle_name}}\n{@end_vehicles}--- END OF LIST ---",
+    "form": [
+        {
+            "type": "input_group",
+            "name": "vehicles",
+            "label": "Vehicle(s)",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "vehicle_name",
+                    "label": "Vehicle Name",
+                    "placeholder": "e.g., Karin Sultan"
+                }
+            ]
+        }
+    ]
+}

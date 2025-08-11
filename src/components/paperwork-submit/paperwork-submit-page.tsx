@@ -619,7 +619,12 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
   
     useEffect(() => {
         if (generatorId) {
-            fetch(`/api/paperwork-generators/${generatorId}`)
+            const isUserForm = !['impound-report', 'traffic-report', 'trespass-notice'].includes(generatorId);
+            const url = isUserForm 
+                ? `/api/paperwork-generators/${generatorId}?f=${generatorId}`
+                : `/api/paperwork-generators/${generatorId}?s=${generatorId}`;
+
+            fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     setGeneratorConfig(data);
@@ -638,6 +643,17 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 } else {
                     return options.inverse(this);
                 }
+            });
+
+            // Custom block helper for input groups
+            Handlebars.registerHelper('start_loop', function(context, options) {
+                let ret = "";
+                if (Array.isArray(context)) {
+                    for(let i = 0; i < context.length; i++) {
+                        ret = ret + options.fn(context[i]);
+                    }
+                }
+                return ret;
             });
 
             // Process conditionals
@@ -666,7 +682,9 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 });
             }
 
-            const compiledTemplate = Handlebars.compile(generatorConfig.output, { noEscape: true });
+            const templateString = generatorConfig.output.replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}').replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
+
+            const compiledTemplate = Handlebars.compile(templateString, { noEscape: true });
             const parsed = compiledTemplate(processedData);
             setTemplate(parsed);
         }
