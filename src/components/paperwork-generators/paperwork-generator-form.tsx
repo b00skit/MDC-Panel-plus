@@ -253,35 +253,39 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     const [vehicles, setVehicles] = useState<string[]>([]);
 
     useEffect(() => {
+        // Fetch Penal Code
         fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
-          .then((res) => res.json())
-          .then((data) => setPenalCode(data));
-        
-        const hasDataListFields = generatorConfig.form.some(field => field.type === 'datalist');
-        if (hasDataListFields) {
-            const hasLocationFields = generatorConfig.form.some(field => field.optionsSource === 'districts' || field.optionsSource === 'streets');
-            const hasVehicleField = generatorConfig.form.some(field => field.optionsSource === 'vehicles');
+            .then((res) => res.json())
+            .then((data) => setPenalCode(data))
+            .catch(err => console.error("Failed to fetch penal code:", err));
 
-            if (hasLocationFields) {
-                fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
-                    .then(res => res.json())
-                    .then(data => {
-                        const uniqueDistricts = [...new Set<string>(data.districts || [])];
-                        const uniqueStreets = [...new Set<string>(data.streets || [])];
-                        setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
-                    })
-                    .catch(err => console.error("Failed to fetch locations:", err));
-            }
-            
-            if (hasVehicleField) {
-                fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
-                    .then(res => res.json())
-                    .then(data => {
-                        const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
-                        setVehicles(vehicleNames);
-                    })
-                    .catch(err => console.error("Failed to fetch vehicles:", err));
-            }
+        // Fetch Locations if needed
+        const hasLocationFields = generatorConfig.form.some(field =>
+            field.type === 'datalist' && (field.optionsSource === 'districts' || field.optionsSource === 'streets')
+        );
+        if (hasLocationFields) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+                .then(res => res.json())
+                .then(data => {
+                    const uniqueDistricts = [...new Set<string>(data.districts || [])];
+                    const uniqueStreets = [...new Set<string>(data.streets || [])];
+                    setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+                })
+                .catch(err => console.error("Failed to fetch locations:", err));
+        }
+
+        // Fetch Vehicles if needed
+        const hasVehicleField = generatorConfig.form.some(field =>
+            field.type === 'datalist' && field.optionsSource === 'vehicles'
+        );
+        if (hasVehicleField) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
+                .then(res => res.json())
+                .then(data => {
+                    const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
+                    setVehicles(vehicleNames);
+                })
+                .catch(err => console.error("Failed to fetch vehicles:", err));
         }
     }, [generatorConfig]);
 
