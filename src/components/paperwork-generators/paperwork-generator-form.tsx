@@ -48,6 +48,12 @@ type FormField = {
   allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
   allowedIds?: string;
   customFields?: FormField[];
+  previewFields?: {
+    sentence?: boolean;
+    fine?: boolean;
+    impound?: boolean;
+    suspension?: boolean;
+  }
   // Location field specific config
   showDistrict?: boolean;
 };
@@ -100,7 +106,7 @@ const renderField = (
           return <GeneralSection key={`${field.name}-${index}`} isSubmitted={false} />;
       
       case 'officer':
-          return <OfficerSection key={`${field.name}-${index}`} isSubmitted={false} />;
+          return <OfficerSection key={`${field.name}-${index}`} isSubmitted={false} isArrestReport={false} />;
 
         case 'location':
             return <LocationDetails 
@@ -218,6 +224,7 @@ const renderField = (
                     allowedTypes: field.allowedTypes,
                     allowedIds: field.allowedIds,
                     customFields: field.customFields,
+                    previewFields: field.previewFields,
                 }}
               />
           )
@@ -250,30 +257,32 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
           .then((res) => res.json())
           .then((data) => setPenalCode(data));
         
-        const hasLocationFields = generatorConfig.form.some(field => field.type === 'datalist' && (field.optionsSource === 'districts' || field.optionsSource === 'streets'));
-        if (hasLocationFields) {
-            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
-                .then(res => res.json())
-                .then(data => {
-                    const uniqueDistricts = [...new Set<string>(data.districts || [])];
-                    const uniqueStreets = [...new Set<string>(data.streets || [])];
-                    setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
-                })
-                .catch(err => console.error("Failed to fetch locations:", err));
-        }
-        
-        const hasVehicleField = generatorConfig.form.some(field => field.type === 'datalist' && field.optionsSource === 'vehicles');
-        if (hasVehicleField) {
-            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
-                .then(res => res.json())
-                .then(data => {
-                    const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
-                    setVehicles(vehicleNames);
-                })
-                .catch(err => console.error("Failed to fetch vehicles:", err));
-        }
+        const hasDataListFields = generatorConfig.form.some(field => field.type === 'datalist');
+        if (hasDataListFields) {
+            const hasLocationFields = generatorConfig.form.some(field => field.optionsSource === 'districts' || field.optionsSource === 'streets');
+            const hasVehicleField = generatorConfig.form.some(field => field.optionsSource === 'vehicles');
 
-
+            if (hasLocationFields) {
+                fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+                    .then(res => res.json())
+                    .then(data => {
+                        const uniqueDistricts = [...new Set<string>(data.districts || [])];
+                        const uniqueStreets = [...new Set<string>(data.streets || [])];
+                        setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+                    })
+                    .catch(err => console.error("Failed to fetch locations:", err));
+            }
+            
+            if (hasVehicleField) {
+                fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
+                    .then(res => res.json())
+                    .then(data => {
+                        const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
+                        setVehicles(vehicleNames);
+                    })
+                    .catch(err => console.error("Failed to fetch vehicles:", err));
+            }
+        }
     }, [generatorConfig]);
 
     const onSubmit = (data: any) => {
@@ -285,7 +294,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         };
         setGeneratorId(generatorConfig.id);
         setFormData(fullData);
-        router.push('/arrest-submit?type=generator');
+        router.push('/paperwork-submit?type=generator');
     };
 
   return (
