@@ -1,0 +1,80 @@
+
+{
+    "id": "parking-ticket",
+    "title": "Parking Ticket",
+    "description": "Generate a parking ticket citation.",
+    "icon": "Car",
+    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:4px solid black\"><tbody><tr><td colspan=\"3\" style=\"text-align:center;padding-bottom:2rem\"><h1 style=\"font-family:Arial,sans-serif;font-size:2rem;font-weight:700;text-transform:uppercase;margin:0\">COUNTY OF LOS SANTOS</h1><h2 style=\"font-family:Arial,sans-serif;font-size:1.5rem;font-weight:600;margin:0\">Parking Ticket</h2></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">1. GENERAL INFORMATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">A. DATE:</strong> {{general.date}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">B. TIME (24HR):</strong> {{general.time}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">2. OFFICER INFORMATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:41.66%\"><strong style=\"font-family:Arial,sans-serif\">A. OFFICER NAME:</strong> {{officers.0.name}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">B. RANK:</strong> {{officers.0.rank}}</td><td style=\"border:1px solid black;padding:.5rem;width:25%\"><strong style=\"font-family:Arial,sans-serif\">C. BADGE:</strong> #{{officers.0.badgeNumber}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">3. VEHICLE INFORMATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">A. MAKE &amp; MODEL:</strong> {{vehicle_make_model}}</td><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">B. IDENTIFICATION PLATE:</strong> {{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}}</td></tr><tr><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">C. REGISTERED OWNER:</strong> {{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</td><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">D. REGISTRATION:</strong> {{#if vehicle_registered}}Valid{{else}}Expired/None{{/if}}</td></tr><tr><td colspan=\"3\" style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">E. INSURANCE:</strong> {{#if vehicle_insured}}Insured{{else}}Uninsured{{/if}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">4. LOCATION OF CITATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">A. DISTRICT:</strong> {{location.district}}</td><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">B. STREET:</strong> {{location.street}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">5. EVIDENCE</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:100%\"><strong style=\"font-family:Arial,sans-serif\">PHOTOGRAPH(S):</strong><br/>{{#if photograph_link}}{{photograph_link}}{{else}}N/A{{/if}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">6. CHARGES</h3><table style=\"width:100%;border-collapse:collapse;border:1px solid black\"><thead style=\"background-color:#e5e7eb\"><tr><th style=\"border:1px solid black;padding:.5rem;font-family:Arial,sans-serif\">CHARGE DESCRIPTION</th><th style=\"border:1px solid black;padding:.5rem;font-family:Arial,sans-serif\">FINE</th></tr></thead><tbody>{{#each charges}}<tr><td style=\"border:1px solid black;padding:.5rem\">IC {{chargeId}}. {{#with (lookup @root.penalCode chargeId)}}{{this.charge}}{{/with}}</td><td style=\"border:1px solid black;padding:.5rem\">${{fine}}</td></tr>{{/each}}</tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">7. PARKING VIOLATION(S)</h3><ul style=\"margin:0;padding-left:1.5rem\">{{#each parking_reasons}}<li>{{this}}</li>{{/each}}</ul></td></tr></tbody></table>",
+    "form": [
+        { "type": "hidden", "name": "generatorType", "value": "ParkingTicket" },
+        { "type": "section", "title": "General Section" },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Officer Section" },
+        { "type": "officer", "name": "officers" },
+        { "type": "section", "title": "Vehicle Details" },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Registered", "dataOff": "Unregistered", "defaultValue": true },
+            { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname", "stipulation": {"field": "vehicle_registered", "value": true}},
+            { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX", "stipulation": {"field": "vehicle_registered", "value": true}}
+          ]
+        },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "defaultValue": true },
+            { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "optionsSource": "vehicles", "required": true, "defaultValue": "" }
+        ]},
+        { "type": "section", "title": "Location Details" },
+        { 
+            "type": "location", 
+            "name": "location", 
+            "showDistrict": true 
+        },
+        { "type": "section", "title": "Evidence Section" },
+        { "type": "text", "name": "photograph_link", "label": "Photograph Link", "placeholder": "https://i.imgur.com/example.png", "required": false },
+        { "type": "section", "title": "Charges" },
+        { 
+            "type": "charge", 
+            "name": "charges",
+            "showClass": true,
+            "allowedTypes": { "I": true },
+            "allowedIds": "401-433",
+            "customFields": [
+                {
+                    "type": "text",
+                    "name": "fine",
+                    "label": "Fine",
+                    "placeholder": "Fine Amount"
+                }
+            ]
+        },
+        { "type": "section", "title": "Parking Ticket Details" },
+        { 
+            "type": "multi-select",
+            "name": "parking_reasons",
+            "label": "Parking Ticket Reason(s)",
+            "placeholder": "Select all applicable reasons",
+            "options": [
+                { "value": "Failed to pay vehicular insurance within the time required by law on any public road.", "label": "Uninsured Vehicle" },
+                { "value": "Next to a fire hydrant, and/or on a firelane marked by red lines.", "label": "Fire Hydrant/Firelane" },
+                { "value": "Facing opposing traffic.", "label": "Facing Opposing Traffic" },
+                { "value": "Inside any tunnel.", "label": "In Tunnel" },
+                { "value": "On any freeway.", "label": "On Freeway" },
+                { "value": "On a bridge outside of the City of Los Santos.", "label": "On Bridge (Outside LS)" },
+                { "value": "Parking a non-electric vehicle into a parking space with an electric charger.", "label": "Non-EV in EV Spot" },
+                { "value": "In a manner that a vehicle takes up two parking spaces.", "label": "Taking Two Spaces" },
+                { "value": "No more than 2 motorcycles may park abreast in 1 parking space.", "label": "Motorcycle Parking Violation" },
+                { "value": "In a fashion which blocks the flow of traffic.", "label": "Blocking Traffic Flow" },
+                { "value": "In a manner that obstructs a lane of traffic and prevents traffic from properly flowing.", "label": "Obstructing Traffic Lane" },
+                { "value": "In a manner that obstructs an alleyway used by traffic.", "label": "Obstructing Alleyway" },
+                { "value": "In a manner that obstructs a parking lot and prevents vehicles from leaving or entering.", "label": "Obstructing Parking Lot" },
+                { "value": "In front of or obstructing a private driveway or an entrance or exit to a private road or path.", "label": "Obstructing Driveway/Entrance" },
+                { "value": "In the immediate ambulatory parking or bay area of a hospital or clinic.", "label": "Obstructing Hospital/Clinic Area" },
+                { "value": "On or within range of railroad tracks.", "label": "On Railroad Tracks" },
+                { "value": "At or near a helipad or an aircraft landing zone.", "label": "Obstructing Helipad/Landing Zone" },
+                { "value": "Within a marked crosswalk.", "label": "In Crosswalk" },
+                { "value": "On any part of a sidewalk.", "label": "On Sidewalk" },
+                { "value": "On any sidewalk that completely obstructs pedestrian foot traffic, or on any median.", "label": "Obstructing Sidewalk/Median" },
+                { "value": "In the immediate vicinity of the Bank's entrance, including the sidewalk adjacent to the metal barriers.", "label": "Obstructing Bank Entrance" }
+            ]
+        }
+    ]
+}
