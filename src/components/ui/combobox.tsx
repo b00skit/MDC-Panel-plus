@@ -10,7 +10,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
@@ -27,7 +26,6 @@ interface ComboboxProps {
   onChange: (value: string) => void;
   onOpen?: () => void;
   placeholder?: string;
-  searchPlaceholder?: string;
   emptyPlaceholder?: string;
   className?: string;
   isInvalid?: boolean;
@@ -41,7 +39,6 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       onChange,
       onOpen,
       placeholder = 'Select an option',
-      searchPlaceholder = 'Search...',
       emptyPlaceholder = 'No option found.',
       className,
       isInvalid = false,
@@ -55,55 +52,64 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         setInputValue(value || '');
     }, [value]);
 
-    const handleOpenChange = (isOpen: boolean) => {
-        setOpen(isOpen);
+    const handleOpen = (isOpen: boolean) => {
         if (isOpen && onOpen) {
             onOpen();
         }
+        setOpen(isOpen);
     }
-
-    const handleSelect = (currentValue: string) => {
-      const selectedOption = options.find(opt => opt.toLowerCase() === currentValue.toLowerCase());
-      const newValue = selectedOption || currentValue;
-      onChange(newValue);
-      setInputValue(newValue);
-      setOpen(false);
+    
+    const handleSelect = (option: string) => {
+        onChange(option);
+        setInputValue(option);
+        setOpen(false);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const currentInputValue = e.target.value;
         setInputValue(currentInputValue);
         onChange(currentInputValue);
+        if (!open) {
+            handleOpen(true);
+        }
     }
     
-    const uniqueOptions = React.useMemo(() => [...new Set(options)], [options]);
+    const filteredOptions = React.useMemo(() => {
+        if (!inputValue) {
+            return options;
+        }
+        return options.filter(option =>
+            option.toLowerCase().includes(inputValue.toLowerCase())
+        );
+    }, [inputValue, options]);
+    
+    const uniqueOptions = React.useMemo(() => [...new Set(filteredOptions)], [filteredOptions]);
 
     return (
       <div className={cn('relative', className)} ref={ref}>
-         <Popover open={open} onOpenChange={handleOpenChange}>
+         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <div className="relative" >
                      <Input 
                         value={inputValue}
                         onChange={handleInputChange}
-                        onFocus={() => handleOpenChange(true)}
+                        onFocus={() => handleOpen(true)}
                         placeholder={placeholder}
                         className={cn('w-full pr-8', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
                      />
-                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" onClick={() => handleOpenChange(!open)} />
+                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" onClick={() => handleOpen(!open)} />
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
                  <Command>
-                    <CommandInput placeholder={searchPlaceholder} />
                     <CommandList>
                         <CommandEmpty>{emptyPlaceholder}</CommandEmpty>
                         <CommandGroup>
                         {uniqueOptions.map((option) => (
                             <CommandItem
-                            key={option}
-                            value={option}
-                            onSelect={() => handleSelect(option)}
+                                key={option}
+                                value={option}
+                                onSelect={() => handleSelect(option)}
                             >
                             <Check
                                 className={cn(
