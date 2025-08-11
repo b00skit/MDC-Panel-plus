@@ -259,7 +259,6 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             .then((data) => setPenalCode(data))
             .catch(err => console.error("Failed to fetch penal code:", err));
 
-        // Fetch Locations if needed
         const hasLocationFields = generatorConfig.form.some(field =>
             field.type === 'datalist' && (field.optionsSource === 'districts' || field.optionsSource === 'streets')
         );
@@ -274,7 +273,6 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 .catch(err => console.error("Failed to fetch locations:", err));
         }
 
-        // Fetch Vehicles if needed
         const hasVehicleField = generatorConfig.form.some(field =>
             field.type === 'datalist' && field.optionsSource === 'vehicles'
         );
