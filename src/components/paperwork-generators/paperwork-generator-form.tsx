@@ -91,7 +91,6 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     useEffect(() => {
         const hasChargeField = generatorConfig.form.some(field => field.type === 'charge');
         const hasLocationFields = generatorConfig.form.some(field => field.type === 'location' || field.optionsSource === 'districts' || field.optionsSource === 'streets');
-        const hasVehicleField = generatorConfig.form.some(field => field.optionsSource === 'vehicles');
         
         if (hasChargeField && !penalCode) {
             fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')

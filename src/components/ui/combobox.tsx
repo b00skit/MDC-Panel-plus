@@ -19,6 +19,7 @@ interface ComboboxProps {
   onChange: (value: string) => void;
   onOpen?: () => void;
   placeholder?: string;
+  searchPlaceholder?: string;
   emptyPlaceholder?: string;
   className?: string;
   isInvalid?: boolean;
@@ -32,6 +33,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       onChange,
       onOpen,
       placeholder = 'Select an option',
+      searchPlaceholder = 'Search...',
       emptyPlaceholder = 'No option found.',
       className,
       isInvalid = false,
@@ -46,8 +48,8 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     }, [value]);
 
     const handleOpenChange = (isOpen: boolean) => {
-        if (isOpen) {
-            onOpen?.();
+        if (isOpen && onOpen) {
+            onOpen();
         }
         setOpen(isOpen);
     }
@@ -61,10 +63,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const currentInputValue = e.target.value;
         setInputValue(currentInputValue);
-        onChange(currentInputValue);
-        if (!open) {
-            handleOpenChange(true);
-        }
+        onChange(currentInputValue); // Allow form to update with partial input
     }
     
     const filteredOptions = React.useMemo(() => {
@@ -75,7 +74,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
             option.toLowerCase().includes(inputValue.toLowerCase())
         );
     }, [inputValue, options]);
-    
+
     const uniqueOptions = React.useMemo(() => [...new Set(filteredOptions)], [filteredOptions]);
 
     return (
