@@ -34,14 +34,18 @@ import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
 import { Separator } from '../ui/separator';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
-import { useSettingsStore } from '@/stores/settings-store';
+import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '../ui/switch';
 
 interface DeptRanks {
   [department: string]: string[];
 }
 
-export function SettingsPage() {
+interface SettingsPageProps {
+    initialFactionGroups: FactionGroup[];
+}
+
+export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
   const { toast } = useToast();
   const { 
     officers, 
@@ -52,7 +56,7 @@ export function SettingsPage() {
     updateAlternativeCharacter,
     removeAlternativeCharacter,
   } = useOfficerStore();
-  const { hiddenFactions, toggleFactionVisibility, factionGroups, loadFactionGroups } = useSettingsStore();
+  const { hiddenFactions, toggleFactionVisibility, setFactionGroups } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
@@ -68,8 +72,8 @@ export function SettingsPage() {
     fetch('/data/dept_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
-    loadFactionGroups();
-  }, [setInitialOfficers, loadFactionGroups]);
+    setFactionGroups(initialFactionGroups);
+  }, [setInitialOfficers, initialFactionGroups, setFactionGroups]);
 
   const handleOfficerChange = (field: string, value: string) => {
     if (defaultOfficer) {
@@ -287,8 +291,8 @@ export function SettingsPage() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {factionGroups.length > 0 ? (
-                    factionGroups.map(group => (
+                {initialFactionGroups.length > 0 ? (
+                    initialFactionGroups.map(group => (
                         <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
                             <Label htmlFor={`toggle-${group.group_id}`} className="text-base">{group.group_name}</Label>
                             <Switch
