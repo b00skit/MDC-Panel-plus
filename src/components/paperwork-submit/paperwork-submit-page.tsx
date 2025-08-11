@@ -46,7 +46,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                     return options.inverse(this);
                 }
             });
-            Handlebars.registerHelper('each', function(this: any, context, options) {
+            Handlebars.registerHelper('start_loop', function(this: any, context, options) {
                 let ret = "";
                 if (Array.isArray(context)) {
                     for(let i = 0; i < context.length; i++) {
@@ -56,7 +56,8 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 return ret;
             });
             
-            const templateString = generatorConfig.output;
+            const templateString = generatorConfig.output.replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}').replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
+
 
             const compiledTemplate = Handlebars.compile(templateString, { noEscape: true });
 
