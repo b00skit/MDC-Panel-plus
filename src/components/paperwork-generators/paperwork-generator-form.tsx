@@ -17,7 +17,7 @@ import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore as useBasicFormStore } from '@/stores/form-store';
 import { Switch } from '../ui/switch';
 import { type PenalCode } from '@/stores/charge-store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Combobox } from '../ui/combobox';
 import { PaperworkChargeField } from './paperwork-generator-charge-field';
 import { LocationDetails } from '../shared/location-details';
@@ -74,172 +74,6 @@ interface PaperworkGeneratorFormProps {
   generatorConfig: GeneratorConfig;
 }
 
-const renderField = (
-    field: FormField, 
-    index: number, 
-    control: any, 
-    register: any, 
-    watch: any, 
-    penalCode: PenalCode | null,
-    locations: { districts: string[], streets: string[] },
-    vehicles: string[]
-) => {
-    if (field.stipulation) {
-        const watchedValue = watch(field.stipulation.field);
-        if (watchedValue !== field.stipulation.value) {
-            return null;
-        }
-    }
-    switch (field.type) {
-      case 'hidden':
-          return <input key={`${field.name}-${index}`} type="hidden" {...register(field.name)} defaultValue={field.value} />;
-
-      case 'section':
-          return (
-              <div key={`${field.title}-${index}`}>
-                  <Separator className="my-4" />
-                  <h4 className="mb-2 text-xl font-semibold tracking-tight">{field.title}</h4>
-              </div>
-          );
-
-      case 'general':
-          return <GeneralSection key={`${field.name}-${index}`} isSubmitted={false} />;
-      
-      case 'officer':
-          return <OfficerSection key={`${field.name}-${index}`} isSubmitted={false} isArrestReport={false} />;
-
-        case 'location':
-            return <LocationDetails 
-                        key={`${field.name}-${index}`} 
-                        districtFieldName={`${field.name}.district`}
-                        streetFieldName={`${field.name}.street`}
-                        showDistrict={field.showDistrict !== false}
-                        isSubmitted={false}
-                    />;
-      case 'text':
-        return (
-          <div key={`${field.name}-${index}`} className="w-full">
-            <Label htmlFor={field.name}>{field.label}</Label>
-            <Input id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} />
-          </div>
-        );
-      case 'datalist': // Datalist now uses Combobox
-          return (
-            <div key={`${field.name}-${index}`} className="w-full">
-                <Label htmlFor={field.name}>{field.label}</Label>
-                 <Controller
-                    control={control}
-                    name={field.name!}
-                    rules={{ required: field.required }}
-                    render={({ field: { onChange, value } }) => {
-                         let options: string[] = [];
-                         if (field.optionsSource === 'districts') {
-                            options = locations.districts;
-                         } else if (field.optionsSource === 'streets') {
-                             options = locations.streets;
-                         } else if (field.optionsSource === 'vehicles') {
-                             options = vehicles;
-                         }
-
-                        return (
-                            <Combobox
-                                options={options}
-                                value={value}
-                                onChange={onChange}
-                                placeholder={field.placeholder}
-                                searchPlaceholder='Search...'
-                                emptyPlaceholder='No results.'
-                            />
-                        )
-                    }}
-                />
-            </div>
-        );
-
-      case 'textarea':
-          return (
-              <div key={`${field.name}-${index}`} className="w-full">
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                  <Textarea id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
-              </div>
-          );
-
-      case 'dropdown':
-          return (
-              <div key={`${field.name}-${index}`} className="w-full">
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                  <Controller
-                      control={control}
-                      name={field.name!}
-                      rules={{ required: field.required }}
-                      render={({ field: { onChange, value } }) => (
-                          <Select onValueChange={onChange} value={value}>
-                              <SelectTrigger id={field.name}>
-                                  <SelectValue placeholder={field.placeholder} />
-                              </SelectTrigger>
-                              <SelectContent>
-                              {field.options?.map((option) => (
-                                  <SelectItem key={option} value={option}>{option}</SelectItem>
-                              ))}
-                              </SelectContent>
-                          </Select>
-                      )}
-                  />
-              </div>
-          );
-      case 'toggle':
-          return (
-              <div key={`${field.name}-${index}`} className="flex items-center space-x-2 pt-6">
-                   <Controller
-                      name={field.name!}
-                      control={control}
-                      defaultValue={field.defaultValue === true}
-                      render={({ field: { onChange, value } }) => (
-                          <Switch
-                              id={field.name}
-                              checked={value}
-                              onCheckedChange={onChange}
-                          />
-                      )}
-                  />
-                  <Label htmlFor={field.name}>
-                      {watch(field.name!) ? field.dataOn : field.dataOff}
-                  </Label>
-              </div>
-          );
-      case 'charge':
-          return (
-              <PaperworkChargeField 
-                key={`${field.name}-${index}`}
-                control={control}
-                register={register}
-                watch={watch}
-                penalCode={penalCode}
-                config={{
-                    name: field.name,
-                    showClass: field.showClass,
-                    showOffense: field.showOffense,
-                    showAddition: field.showAddition,
-                    showCategory: field.showCategory,
-                    allowedTypes: field.allowedTypes,
-                    allowedIds: field.allowedIds,
-                    customFields: field.customFields,
-                    previewFields: field.previewFields,
-                }}
-              />
-          )
-      case 'group':
-          return (
-              <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4 w-full">
-                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode, locations, vehicles))}
-              </div>
-          );
-
-      default:
-        return null;
-    }
-  };
-
 export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
     const methods = useForm();
@@ -248,42 +82,210 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     const { setGeneratorId, setFormData } = usePaperworkStore();
     const { officers } = useOfficerStore.getState();
     const { general } = useBasicFormStore.getState().formData;
+    
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
     const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
     const [vehicles, setVehicles] = useState<string[]>([]);
+    const [vehiclesFetched, setVehiclesFetched] = useState(false);
 
     useEffect(() => {
-        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
-          .then((res) => res.json())
-          .then((data) => setPenalCode(data));
-        
-        const hasDataListFields = generatorConfig.form.some(field => field.type === 'datalist');
-        if (hasDataListFields) {
-            const hasLocationFields = generatorConfig.form.some(field => field.optionsSource === 'districts' || field.optionsSource === 'streets');
-            const hasVehicleField = generatorConfig.form.some(field => field.optionsSource === 'vehicles');
+        const hasChargeField = generatorConfig.form.some(field => field.type === 'charge');
+        const hasLocationFields = generatorConfig.form.some(field => field.type === 'location' || field.optionsSource === 'districts' || field.optionsSource === 'streets');
 
-            if (hasLocationFields) {
-                fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
-                    .then(res => res.json())
-                    .then(data => {
-                        const uniqueDistricts = [...new Set<string>(data.districts || [])];
-                        const uniqueStreets = [...new Set<string>(data.streets || [])];
-                        setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
-                    })
-                    .catch(err => console.error("Failed to fetch locations:", err));
-            }
-            
-            if (hasVehicleField) {
-                fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
-                    .then(res => res.json())
-                    .then(data => {
-                        const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.model);
-                        setVehicles(vehicleNames);
-                    })
-                    .catch(err => console.error("Failed to fetch vehicles:", err));
-            }
+        if (hasChargeField) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
+                .then((res) => res.json())
+                .then((data) => setPenalCode(data));
+        }
+        if (hasLocationFields) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+                .then(res => res.json())
+                .then(data => {
+                    const uniqueDistricts = [...new Set<string>(data.districts || [])];
+                    const uniqueStreets = [...new Set<string>(data.streets || [])];
+                    setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+                })
+                .catch(err => console.error("Failed to fetch locations:", err));
         }
     }, [generatorConfig]);
+
+    const handleVehicleFetch = useCallback(() => {
+        if (!vehiclesFetched) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
+                .then(res => res.json())
+                .then(data => {
+                    const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
+                    setVehicles(vehicleNames);
+                    setVehiclesFetched(true);
+                })
+                .catch(err => console.error("Failed to fetch vehicles:", err));
+        }
+    }, [vehiclesFetched]);
+
+
+    const renderField = (
+        field: FormField, 
+        index: number
+    ) => {
+        if (field.stipulation) {
+            const watchedValue = watch(field.stipulation.field);
+            if (watchedValue !== field.stipulation.value) {
+                return null;
+            }
+        }
+        switch (field.type) {
+            case 'hidden':
+                return <input key={`${field.name}-${index}`} type="hidden" {...register(field.name)} defaultValue={field.value} />;
+
+            case 'section':
+                return (
+                    <div key={`${field.title}-${index}`}>
+                        <Separator className="my-4" />
+                        <h4 className="mb-2 text-xl font-semibold tracking-tight">{field.title}</h4>
+                    </div>
+                );
+
+            case 'general':
+                return <GeneralSection key={`${field.name}-${index}`} isSubmitted={false} />;
+            
+            case 'officer':
+                return <OfficerSection key={`${field.name}-${index}`} isSubmitted={false} isArrestReport={false} />;
+
+            case 'location':
+                return <LocationDetails 
+                            key={`${field.name}-${index}`} 
+                            districtFieldName={`${field.name}.district`}
+                            streetFieldName={`${field.name}.street`}
+                            showDistrict={field.showDistrict !== false}
+                            isSubmitted={false}
+                        />;
+            case 'text':
+            return (
+                <div key={`${field.name}-${index}`} className="w-full">
+                <Label htmlFor={field.name}>{field.label}</Label>
+                <Input id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} />
+                </div>
+            );
+            case 'datalist':
+                return (
+                    <div key={`${field.name}-${index}`} className="w-full">
+                        <Label htmlFor={field.name}>{field.label}</Label>
+                        <Controller
+                            control={control}
+                            name={field.name!}
+                            rules={{ required: field.required }}
+                            render={({ field: { onChange, value } }) => {
+                                let options: string[] = [];
+                                let onOpen: (() => void) | undefined = undefined;
+
+                                if (field.optionsSource === 'districts') {
+                                    options = locations.districts;
+                                } else if (field.optionsSource === 'streets') {
+                                    options = locations.streets;
+                                } else if (field.optionsSource === 'vehicles') {
+                                    options = vehicles;
+                                    onOpen = handleVehicleFetch;
+                                }
+
+                                return (
+                                    <Combobox
+                                        options={options}
+                                        value={value}
+                                        onChange={onChange}
+                                        onOpen={onOpen}
+                                        placeholder={field.placeholder}
+                                        searchPlaceholder='Search...'
+                                        emptyPlaceholder='No results.'
+                                    />
+                                )
+                            }}
+                        />
+                    </div>
+                );
+
+            case 'textarea':
+                return (
+                    <div key={`${field.name}-${index}`} className="w-full">
+                        <Label htmlFor={field.name}>{field.label}</Label>
+                        <Textarea id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
+                    </div>
+                );
+
+            case 'dropdown':
+                return (
+                    <div key={`${field.name}-${index}`} className="w-full">
+                        <Label htmlFor={field.name}>{field.label}</Label>
+                        <Controller
+                            control={control}
+                            name={field.name!}
+                            rules={{ required: field.required }}
+                            render={({ field: { onChange, value } }) => (
+                                <Select onValueChange={onChange} value={value}>
+                                    <SelectTrigger id={field.name}>
+                                        <SelectValue placeholder={field.placeholder} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    {field.options?.map((option) => (
+                                        <SelectItem key={option} value={option}>{option}</SelectItem>
+                                    ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+                );
+            case 'toggle':
+                return (
+                    <div key={`${field.name}-${index}`} className="flex items-center space-x-2 pt-6">
+                        <Controller
+                            name={field.name!}
+                            control={control}
+                            defaultValue={field.defaultValue === true}
+                            render={({ field: { onChange, value } }) => (
+                                <Switch
+                                    id={field.name}
+                                    checked={value}
+                                    onCheckedChange={onChange}
+                                />
+                            )}
+                        />
+                        <Label htmlFor={field.name}>
+                            {watch(field.name!) ? field.dataOn : field.dataOff}
+                        </Label>
+                    </div>
+                );
+            case 'charge':
+                return (
+                    <PaperworkChargeField 
+                        key={`${field.name}-${index}`}
+                        control={control}
+                        register={register}
+                        watch={watch}
+                        penalCode={penalCode}
+                        config={{
+                            name: field.name,
+                            showClass: field.showClass,
+                            showOffense: field.showOffense,
+                            showAddition: field.showAddition,
+                            showCategory: field.showCategory,
+                            allowedTypes: field.allowedTypes,
+                            allowedIds: field.allowedIds,
+                            customFields: field.customFields,
+                            previewFields: field.previewFields,
+                        }}
+                    />
+                )
+            case 'group':
+                return (
+                    <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4 w-full">
+                        {field.fields?.map((subField, subIndex) => renderField(subField, subIndex))}
+                    </div>
+                );
+
+            default:
+                return null;
+        }
+    };
 
     const onSubmit = (data: any) => {
         const fullData = {
@@ -302,7 +304,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode, locations, vehicles))}
+                {generatorConfig.form.map((field, index) => renderField(field, index))}
                 <div className="flex justify-end mt-6">
                 <Button type="submit">Generate Paperwork</Button>
                 </div>

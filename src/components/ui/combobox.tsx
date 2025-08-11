@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { useFormContext, Controller } from 'react-hook-form';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -26,6 +25,7 @@ interface ComboboxProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
+  onOpen?: () => void;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyPlaceholder?: string;
@@ -39,6 +39,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       options,
       value,
       onChange,
+      onOpen,
       placeholder = 'Select an option',
       searchPlaceholder = 'Search...',
       emptyPlaceholder = 'No option found.',
@@ -54,6 +55,13 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         setInputValue(value || '');
     }, [value]);
 
+    const handleOpenChange = (isOpen: boolean) => {
+        setOpen(isOpen);
+        if (isOpen && onOpen) {
+            onOpen();
+        }
+    }
+
     const handleSelect = (currentValue: string) => {
       const selectedOption = options.find(opt => opt.toLowerCase() === currentValue.toLowerCase());
       const newValue = selectedOption || currentValue;
@@ -68,21 +76,24 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         onChange(currentInputValue);
     }
     
-    // Filter out duplicate options to prevent key errors
     const uniqueOptions = React.useMemo(() => [...new Set(options)], [options]);
 
     return (
       <div className={cn('relative', className)} ref={ref}>
-         <Popover open={open} onOpenChange={setOpen}>
+         <Popover open={open} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild>
-                <div className="relative" onClick={() => setOpen(true)} >
+                <div className="relative" >
                      <Input 
                         value={inputValue}
                         onChange={handleInputChange}
+                        onFocus={() => {
+                            if (onOpen) onOpen();
+                            setOpen(true);
+                        }}
                         placeholder={placeholder}
                         className={cn('w-full pr-8', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
                      />
-                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" />
+                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" onClick={() => setOpen(o => !o)} />
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
