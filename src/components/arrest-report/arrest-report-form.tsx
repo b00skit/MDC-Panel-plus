@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -53,11 +53,10 @@ const InputField = ({
   icon,
   type = 'text',
   className = '',
-  value,
-  onChange,
-  onBlur,
+  defaultValue,
   required = true,
   isInvalid = false,
+  ...props
 }: {
   label:string;
   id: string;
@@ -65,9 +64,7 @@ const InputField = ({
   icon: React.ReactNode;
   type?: string;
   className?: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  defaultValue?: string;
   required?: boolean;
   isInvalid?: boolean;
 }) => (
@@ -84,10 +81,9 @@ const InputField = ({
             isInvalid && 'border-red-500 focus-visible:ring-red-500',
             className
         )}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
+        defaultValue={defaultValue}
         required={required}
+        {...props}
       />
     </div>
   </div>
@@ -100,11 +96,10 @@ const TextareaField = ({
   icon,
   description,
   className = '',
-  value,
-  onChange,
-  onBlur,
+  defaultValue,
   required = true,
   isInvalid = false,
+  ...props
 }: {
   label: string;
   id: string;
@@ -112,9 +107,7 @@ const TextareaField = ({
   icon: React.ReactNode;
   description?: React.ReactNode;
   className?: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
+  defaultValue?: string;
   required?: boolean;
   isInvalid?: boolean;
 }) => (
@@ -130,10 +123,9 @@ const TextareaField = ({
             isInvalid && 'border-red-500 focus-visible:ring-red-500',
             className
         )}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
+        defaultValue={defaultValue}
         required={required}
+        {...props}
       />
     </div>
     {description && <p className="text-xs text-muted-foreground">{description}</p>}
@@ -144,34 +136,54 @@ const TextareaField = ({
 export function ArrestReportForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const { formData, setFormField, setAll } = useFormStore();
+  const { formData, setAll } = useFormStore();
   const { officers } = useOfficerStore();
   const [submitted, setSubmitted] = useState(false);
   const methods = useForm({ defaultValues: formData });
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const validateForm = () => {
+
+  const getFormData = () => {
+    if (!formRef.current) return null;
+    const form = formRef.current;
+    const data = {
+        ...useFormStore.getState().formData,
+        arrest: {
+            suspectName: (form.elements.namedItem('suspect-name') as HTMLInputElement).value,
+            narrative: (form.elements.namedItem('narrative') as HTMLTextAreaElement).value,
+        },
+        evidence: {
+            supporting: (form.elements.namedItem('supporting-evidence') as HTMLTextAreaElement).value,
+            dashcam: (form.elements.namedItem('dashcam') as HTMLTextAreaElement).value,
+        },
+        officers: officers,
+    };
+    return data;
+  }
+
+  const validateForm = (data: any) => {
     // General Section
-    if (!formData.general.callSign) return "Call Sign is required.";
-    if (!formData.general.date) return "Date is required.";
-    if (!formData.general.time) return "Time is required.";
+    if (!data.general.callSign) return "Call Sign is required.";
+    if (!data.general.date) return "Date is required.";
+    if (!data.general.time) return "Time is required.";
     
     // Officer Section
-    for (const officer of officers) {
+    for (const officer of data.officers) {
         if (!officer.name || !officer.rank || !officer.badgeNumber || !officer.department) {
             return `All fields for Officer ${officer.name || '(new officer)'} are required.`;
         }
     }
 
     // Arrest Section
-    if (!formData.arrest.suspectName) return "Suspect's Full Name is required.";
-    if (!formData.arrest.narrative) return "Arrest Narrative is required.";
+    if (!data.arrest.suspectName) return "Suspect's Full Name is required.";
+    if (!data.arrest.narrative) return "Arrest Narrative is required.";
 
     // Location Details
-    if (!formData.location.district) return "District is required.";
-    if (!formData.location.street) return "Street Name is required.";
+    if (!data.location.district) return "District is required.";
+    if (!data.location.street) return "Street Name is required.";
     
     // Evidence Section
-    if (!formData.evidence.dashcam) return "Dashboard Camera narrative is required.";
+    if (!data.evidence.dashcam) return "Dashboard Camera narrative is required.";
     // Supporting evidence is not mandatory
 
     return null;
@@ -180,7 +192,10 @@ export function ArrestReportForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    const validationError = validateForm();
+    const latestFormData = getFormData();
+    if (!latestFormData) return;
+
+    const validationError = validateForm(latestFormData);
     if (validationError) {
       toast({
         title: 'Missing Information',
@@ -190,28 +205,24 @@ export function ArrestReportForm() {
       return;
     }
     
-    // Get latest data from the form state which now includes location
-    const latestFormData = methods.getValues();
-    const allFormData = {
-        ...useFormStore.getState().formData, // get latest from store
-        ...latestFormData,
-        officers: officers,
-    };
-
-    setAll(allFormData as any);
+    setAll(latestFormData as any);
     router.push('/arrest-submit?type=basic');
   };
   
   const saveDraft = () => {
+    const latestFormData = getFormData();
+    if (latestFormData) {
+        setAll(latestFormData as any);
+    }
     toast({
         title: 'Draft Saved',
         description: 'Your report has been saved as a draft.',
-      });
+    });
   }
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
         <GeneralSection isSubmitted={submitted} />
         <OfficerSection isSubmitted={submitted} isArrestReport={true} />
 
@@ -222,8 +233,7 @@ export function ArrestReportForm() {
                 id="suspect-name"
                 placeholder="Firstname Lastname"
                 icon={<User className="h-4 w-4 text-muted-foreground" />}
-                value={formData.arrest.suspectName}
-                onChange={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+                defaultValue={formData.arrest.suspectName}
                 isInvalid={submitted && !formData.arrest.suspectName}
               />
               <TextareaField 
@@ -237,8 +247,7 @@ export function ArrestReportForm() {
                       </span>
                     }
                     className="min-h-[150px]"
-                    value={formData.arrest.narrative}
-                    onChange={(e) => setFormField('arrest', 'narrative', e.target.value)}
+                    defaultValue={formData.arrest.narrative}
                     isInvalid={submitted && !formData.arrest.narrative}
               />
           </div>
@@ -262,8 +271,7 @@ export function ArrestReportForm() {
                   icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
                   description="Provide supporting evidence to aid the arrest report."
                   className="min-h-[150px]"
-                  value={formData.evidence.supporting}
-                  onChange={(e) => setFormField('evidence', 'supporting', e.target.value)}
+                  defaultValue={formData.evidence.supporting}
                   required={false}
               />
               <TextareaField 
@@ -279,8 +287,7 @@ export function ArrestReportForm() {
                       </span>
                     }
                     className="min-h-[150px]"
-                    value={formData.evidence.dashcam}
-                    onChange={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+                    defaultValue={formData.evidence.dashcam}
                     isInvalid={submitted && !formData.evidence.dashcam}
               />
           </div>
