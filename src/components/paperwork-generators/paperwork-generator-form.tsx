@@ -354,7 +354,10 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {generatorConfig.form.map((field, index) => renderField(field, field.name, index))}
+                {generatorConfig.form.map((field, index) => {
+                    const fieldKey = `${field.name || field.type}-${index}`;
+                    return <div key={fieldKey}>{renderField(field, field.name, index)}</div>;
+                })}
                 <div className="flex justify-end mt-6">
                 <Button type="submit">Generate Paperwork</Button>
                 </div>
