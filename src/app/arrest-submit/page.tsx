@@ -1,7 +1,7 @@
-import { PaperworkSubmitPage } from '@/components/paperwork-submit/paperwork-submit-page';
+import { ArrestSubmitPage } from '@/components/arrest-submit/arrest-submit-page';
 
-export default function PaperworkSubmit() {
+export default function ArrestSubmit() {
   return (
-      <PaperworkSubmitPage />
+      <ArrestSubmitPage />
   );
 }
