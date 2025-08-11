@@ -51,8 +51,53 @@ interface PaperworkChargeFieldProps {
     allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
     allowedIds?: string;
     customFields?: FormField[];
+    previewFields?: {
+        sentence?: boolean;
+        fine?: boolean;
+        impound?: boolean;
+        suspension?: boolean;
+    }
   };
 }
+
+const ChargePreview = ({ charge, config }: { charge: Charge, config: PaperworkChargeFieldProps['config'] }) => {
+    const isDrugCharge = !!charge.drugs;
+
+    const formatTime = (time: any) => {
+        if (!time || (time.days === 0 && time.hours === 0 && time.min === 0)) return 'N/A';
+        const parts = [];
+        if (time.days > 0) parts.push(`${time.days}d`);
+        if (time.hours > 0) parts.push(`${time.hours}h`);
+        if (time.min > 0) parts.push(`${time.min}m`);
+        return parts.join(' ');
+    };
+    
+    const getFine = (fineObj: any, offense: string) => {
+        if (!fineObj) return '$0';
+        if(isDrugCharge) return 'Varies';
+        return `$${(fineObj[offense as keyof typeof fineObj] || 0).toLocaleString()}`;
+    }
+
+    const offense = '1'; // Defaulting to offense 1 for preview, this could be improved
+
+    return (
+        <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2">
+            {config.previewFields?.sentence && (
+                <div><strong>Sentence:</strong> {isDrugCharge ? 'Varies' : `${formatTime(charge.time)} - ${formatTime(charge.maxtime)}`}</div>
+            )}
+            {config.previewFields?.fine && (
+                <div><strong>Fine:</strong> {getFine(charge.fine, offense)}</div>
+            )}
+            {config.previewFields?.impound && (
+                <div><strong>Impound:</strong> {charge.impound[offense as keyof typeof charge.impound] ? `${charge.impound[offense as keyof typeof charge.impound]} Days` : 'No'}</div>
+            )}
+            {config.previewFields?.suspension && (
+                <div><strong>Suspension:</strong> {charge.suspension[offense as keyof typeof charge.suspension] ? `${charge.suspension[offense as keyof typeof charge.suspension]} Days` : 'No'}</div>
+            )}
+        </div>
+    );
+};
+
 
 export function PaperworkChargeField({ control, register, watch, penalCode, config }: PaperworkChargeFieldProps) {
   const { fields, append, remove, update } = useFieldArray({
@@ -61,12 +106,13 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
   });
   
   const [openChargeSelector, setOpenChargeSelector] = React.useState<number | null>(null);
+  const [filteredPenalCode, setFilteredPenalCode] = React.useState<Charge[]>([]);
 
-  const filteredPenalCode = React.useMemo(() => {
+  React.useEffect(() => {
     if (!penalCode) {
-      return [];
+        setFilteredPenalCode([]);
+        return;
     }
-
     const parseAllowedIds = (allowedIdsStr: string | undefined): Set<number> => {
         if (!allowedIdsStr) return new Set();
         const allowed = new Set<number>();
@@ -94,14 +140,16 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     const allowedIds = parseAllowedIds(config.allowedIds);
     
     if (allowedTypes.length === 0 && allowedIds.size === 0) {
-        return Object.values(penalCode);
+        setFilteredPenalCode(Object.values(penalCode));
+        return;
     }
 
-    return Object.values(penalCode).filter(charge => {
+    const filtered = Object.values(penalCode).filter(charge => {
         const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
         const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
         return typeMatch && idMatch;
     });
+    setFilteredPenalCode(filtered);
   }, [penalCode, config.allowedTypes, config.allowedIds]);
 
   const handleChargeSelect = (index: number, chargeId: string) => {
@@ -152,89 +200,92 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
         const isDrugCharge = !!chargeDetails?.drugs;
 
         return (
-            <div key={field.id} className="flex items-end gap-2 p-4 border rounded-lg">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 items-end">
-                    {/* Charge Dropdown */}
-                    <div className="space-y-1.5 md:col-span-2">
-                        <Label>Charge</Label>
-                        <Popover open={openChargeSelector === index} onOpenChange={(isOpen) => setOpenChargeSelector(isOpen ? index : null)}>
-                            <PopoverTrigger asChild>
-                                <Button variant="outline" role="combobox" className="w-full justify-between h-9">
-                                    {chargeDetails ? (
-                                        <span className="flex items-center">
-                                            <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(chargeDetails.type))}>{chargeDetails.id}</Badge>
-                                            <span className="truncate">{chargeDetails.charge}</span>
-                                        </span>
-                                    ) : 'Select a charge...'}
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                                <Command filter={(value, search) => {
-                                    if (!penalCode) return 0;
-                                    const charge = filteredPenalCode.find(c => c.id === value);
-                                    if (!charge) return 0;
-                                    const term = search.toLowerCase();
-                                    return charge.charge.toLowerCase().includes(term) || charge.id.includes(term) ? 1 : 0;
-                                }}>
-                                    <CommandInput placeholder="Search charge by name or ID..." />
-                                    <CommandEmpty>No charge found.</CommandEmpty>
-                                    <CommandList>
-                                        <CommandGroup>
-                                            {filteredPenalCode.map((c) => (
-                                                <CommandItem
-                                                    key={c.id}
-                                                    value={c.id}
-                                                    onSelect={(currentValue) => {
-                                                        handleChargeSelect(index, currentValue);
-                                                        setOpenChargeSelector(null);
-                                                    }}
-                                                    disabled={c.type === '?'}
-                                                >
-                                                    <Check className={cn('mr-2 h-4 w-4', watch(`${config.name}.${index}.chargeId`) === c.id ? 'opacity-100' : 'opacity-0')} />
-                                                    <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(c.type))}>{c.id}</Badge>
-                                                    <span className="flex-1 truncate">{c.charge}</span>
-                                                </CommandItem>
-                                            ))}
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-
-                    {/* Standard Fields */}
-                    {config.showClass && (
-                         <div className="space-y-1.5">
-                            <Label>Class</Label>
-                             <Controller
-                                name={`${config.name}.${index}.class`}
-                                control={control}
-                                render={({ field: { onChange, value } }) => (
-                                    <Select value={value || ''} onValueChange={onChange} disabled={!chargeDetails}>
-                                        <SelectTrigger className="h-9"><SelectValue placeholder="Select class" /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="A" disabled={!chargeDetails?.class?.A}>Class A</SelectItem>
-                                            <SelectItem value="B" disabled={!chargeDetails?.class?.B}>Class B</SelectItem>
-                                            <SelectItem value="C" disabled={!chargeDetails?.class?.C}>Class C</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                            />
+            <div key={field.id} className="p-4 border rounded-lg">
+                <div className="flex items-end gap-2">
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 items-end">
+                        {/* Charge Dropdown */}
+                        <div className="space-y-1.5 md:col-span-2">
+                            <Label>Charge</Label>
+                            <Popover open={openChargeSelector === index} onOpenChange={(isOpen) => setOpenChargeSelector(isOpen ? index : null)}>
+                                <PopoverTrigger asChild>
+                                    <Button variant="outline" role="combobox" className="w-full justify-between h-9">
+                                        {chargeDetails ? (
+                                            <span className="flex items-center">
+                                                <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(chargeDetails.type))}>{chargeDetails.id}</Badge>
+                                                <span className="truncate">{chargeDetails.charge}</span>
+                                            </span>
+                                        ) : 'Select a charge...'}
+                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                    <Command filter={(value, search) => {
+                                        if (!penalCode) return 0;
+                                        const charge = filteredPenalCode.find(c => c.id === value);
+                                        if (!charge) return 0;
+                                        const term = search.toLowerCase();
+                                        return charge.charge.toLowerCase().includes(term) || charge.id.includes(term) ? 1 : 0;
+                                    }}>
+                                        <CommandInput placeholder="Search charge by name or ID..." />
+                                        <CommandEmpty>No charge found.</CommandEmpty>
+                                        <CommandList>
+                                            <CommandGroup>
+                                                {filteredPenalCode.map((c) => (
+                                                    <CommandItem
+                                                        key={c.id}
+                                                        value={c.id}
+                                                        onSelect={(currentValue) => {
+                                                            handleChargeSelect(index, currentValue);
+                                                            setOpenChargeSelector(null);
+                                                        }}
+                                                        disabled={c.type === '?'}
+                                                    >
+                                                        <Check className={cn('mr-2 h-4 w-4', watch(`${config.name}.${index}.chargeId`) === c.id ? 'opacity-100' : 'opacity-0')} />
+                                                        <Badge className={cn('mr-2 rounded-sm px-1.5 py-0.5 text-xs', getTypeClasses(c.type))}>{c.id}</Badge>
+                                                        <span className="flex-1 truncate">{c.charge}</span>
+                                                    </CommandItem>
+                                                ))}
+                                            </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
                         </div>
-                    )}
-                    
-                    {config.customFields?.map(customField => (
-                         <div key={customField.name} className="space-y-1.5">
-                            <Label>{customField.label}</Label>
-                            <Input {...register(`${config.name}.${index}.${customField.name}`)} placeholder={customField.placeholder} />
-                         </div>
-                    ))}
 
+                        {/* Standard Fields */}
+                        {config.showClass && (
+                            <div className="space-y-1.5">
+                                <Label>Class</Label>
+                                <Controller
+                                    name={`${config.name}.${index}.class`}
+                                    control={control}
+                                    render={({ field: { onChange, value } }) => (
+                                        <Select value={value || ''} onValueChange={onChange} disabled={!chargeDetails}>
+                                            <SelectTrigger className="h-9"><SelectValue placeholder="Select class" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="A" disabled={!chargeDetails?.class?.A}>Class A</SelectItem>
+                                                <SelectItem value="B" disabled={!chargeDetails?.class?.B}>Class B</SelectItem>
+                                                <SelectItem value="C" disabled={!chargeDetails?.class?.C}>Class C</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+                            </div>
+                        )}
+                        
+                        {config.customFields?.map(customField => (
+                            <div key={customField.name} className="space-y-1.5">
+                                <Label>{customField.label}</Label>
+                                <Input {...register(`${config.name}.${index}.${customField.name}`)} placeholder={customField.placeholder} />
+                            </div>
+                        ))}
+
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={() => remove(index)} className="text-red-500 hover:text-red-700 h-9 w-9">
+                        <Trash2 className="h-5 w-5" />
+                    </Button>
                 </div>
-                 <Button variant="ghost" size="icon" onClick={() => remove(index)} className="text-red-500 hover:text-red-700 h-9 w-9">
-                    <Trash2 className="h-5 w-5" />
-                </Button>
+                 {chargeDetails && config.previewFields && <ChargePreview charge={chargeDetails} config={config} />}
             </div>
         );
       })}
