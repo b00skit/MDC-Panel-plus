@@ -18,8 +18,8 @@
         { "type": "textarea", "name": "dashcam", "label": "Dashboard Camera", "placeholder": "The dashboard camera captures audio and video footage showcasing...", "required": true },
         { "type": "section", "title": "Location Details" },
         { "type": "group", "fields": [
-            { "type": "text", "name": "location_district", "label": "District", "placeholder": "e.g., Downtown Vinewood", "required": true },
-            { "type": "text", "name": "location_street", "label": "Street", "placeholder": "e.g., Eclipse Boulevard", "required": true }
+            { "type": "datalist", "name": "location_district", "label": "District", "placeholder": "e.g., Downtown Vinewood", "optionsSource": "districts", "required": true },
+            { "type": "datalist", "name": "location_street", "label": "Street", "placeholder": "e.g., Eclipse Boulevard", "optionsSource": "streets", "required": true }
         ]},
         { "type": "section", "title": "Vehicle Details" },
         { "type": "group", "fields": [

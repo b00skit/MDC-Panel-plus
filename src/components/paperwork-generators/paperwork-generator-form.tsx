@@ -63,7 +63,15 @@ interface PaperworkGeneratorFormProps {
   generatorConfig: GeneratorConfig;
 }
 
-const renderField = (field: FormField, index: number, control: any, register: any, watch: any, penalCode: PenalCode | null) => {
+const renderField = (
+    field: FormField, 
+    index: number, 
+    control: any, 
+    register: any, 
+    watch: any, 
+    penalCode: PenalCode | null, 
+    dynamicOptions: { [key: string]: string[] }
+) => {
     if (field.stipulation) {
         const watchedValue = watch(field.stipulation.field);
         if (watchedValue !== field.stipulation.value) {
@@ -97,12 +105,13 @@ const renderField = (field: FormField, index: number, control: any, register: an
         );
       case 'datalist':
           const dataListId = `${field.name}-list`;
+          const options = field.optionsSource ? dynamicOptions[field.optionsSource] || [] : field.options || [];
           return (
               <div key={`${field.name}-${index}`} className="w-full">
                   <Label htmlFor={field.name}>{field.label}</Label>
                   <Input id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} list={dataListId} />
                   <datalist id={dataListId}>
-                      {field.options?.map((option) => (
+                      {options.map((option) => (
                           <option key={option} value={option} />
                       ))}
                   </datalist>
@@ -181,7 +190,7 @@ const renderField = (field: FormField, index: number, control: any, register: an
       case 'group':
           return (
               <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4">
-                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode))}
+                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode, dynamicOptions))}
               </div>
           );
 
@@ -198,12 +207,27 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     const { officers } = useOfficerStore.getState();
     const { general } = useBasicFormStore.getState().formData;
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
+    const [dynamicOptions, setDynamicOptions] = useState<{ [key: string]: string[] }>({});
+
 
     useEffect(() => {
         fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
           .then((res) => res.json())
           .then((data) => setPenalCode(data));
-    }, []);
+        
+        const hasDatalist = generatorConfig.form.some(f => f.type === 'datalist' && f.optionsSource);
+        if (hasDatalist) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+                .then(res => res.json())
+                .then(data => {
+                    const uniqueDistricts = [...new Set((data.districts || []) as string[])];
+                    const uniqueStreets = [...new Set((data.streets || []) as string[])];
+                    setDynamicOptions({ districts: uniqueDistricts, streets: uniqueStreets });
+                })
+                .catch(err => console.error("Failed to fetch locations:", err));
+        }
+
+    }, [generatorConfig]);
 
     const onSubmit = (data: any) => {
         const fullData = {
@@ -221,7 +245,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode))}
+        {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode, dynamicOptions))}
         <div className="flex justify-end mt-6">
           <Button type="submit">Generate Paperwork</Button>
         </div>
