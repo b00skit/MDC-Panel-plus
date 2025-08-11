@@ -139,16 +139,12 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     const allowedTypes = config.allowedTypes ? Object.entries(config.allowedTypes).filter(([, v]) => v).map(([k]) => k) : [];
     const allowedIds = parseAllowedIds(config.allowedIds);
     
-    if (allowedTypes.length === 0 && allowedIds.size === 0) {
-        setFilteredPenalCode(Object.values(penalCode));
-        return;
-    }
-
     const filtered = Object.values(penalCode).filter(charge => {
         const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
         const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
         return typeMatch && idMatch;
     });
+
     setFilteredPenalCode(filtered);
   }, [penalCode, config.allowedTypes, config.allowedIds]);
 
