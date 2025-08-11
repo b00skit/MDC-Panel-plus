@@ -23,7 +23,7 @@ const fieldTypes: { type: Field['type']; label: string; default: Partial<Field> 
     { type: 'text', label: 'Text Input', default: { type: 'text', name: 'new_text', label: 'New Text Input', placeholder: 'Enter value' } },
     { type: 'textarea', label: 'Text Area', default: { type: 'textarea', name: 'new_textarea', label: 'New Text Area', placeholder: 'Enter long text' } },
     { type: 'dropdown', label: 'Dropdown', default: { type: 'dropdown', name: 'new_dropdown', label: 'New Dropdown', options: ['Option 1', 'Option 2'] } },
-    { type: 'datalist', label: 'Datalist Input', default: { type: 'datalist', name: 'new_datalist', label: 'New Datalist', options: ['Suggestion 1', 'Suggestion 2'] } },
+    { type: 'datalist', label: 'Datalist Input', default: { type: 'datalist', name: 'new_datalist', label: 'New Datalist' } },
     { type: 'toggle', label: 'Toggle Switch', default: { type: 'toggle', name: 'new_toggle', label: 'New Toggle', dataOn: 'On', dataOff: 'Off', defaultValue: false } },
     { type: 'group', label: 'Field Group (Inline)', default: { type: 'group', fields: [] } },
     { type: 'charge', label: 'Charge Selector', default: { type: 'charge', name: 'charges', showClass: true, customFields: [] } },
@@ -177,6 +177,30 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
                                     <Input id={`allowed-ids-${index}`} {...register(`form.${index}.allowedIds`)} placeholder="e.g., 101, 105-110, 203" />
                                 </div>
                             </div>
+                            <div className="p-4 border rounded-md bg-muted/50 space-y-4">
+                                <div>
+                                    <Label>Charge Preview</Label>
+                                    <p className="text-xs text-muted-foreground">Show charge details below the selector.</p>
+                                    <div className="flex gap-4 pt-2">
+                                        <div className="flex items-center space-x-2">
+                                             <Controller name={`form.${index}.previewFields.sentence`} control={control} render={({ field }) => <Checkbox id={`preview-sentence-${index}`} checked={field.value} onCheckedChange={field.onChange} />} />
+                                            <Label htmlFor={`preview-sentence-${index}`}>Sentence</Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                             <Controller name={`form.${index}.previewFields.fine`} control={control} render={({ field }) => <Checkbox id={`preview-fine-${index}`} checked={field.value} onCheckedChange={field.onChange} />} />
+                                            <Label htmlFor={`preview-fine-${index}`}>Fine</Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                             <Controller name={`form.${index}.previewFields.impound`} control={control} render={({ field }) => <Checkbox id={`preview-impound-${index}`} checked={field.value} onCheckedChange={field.onChange} />} />
+                                            <Label htmlFor={`preview-impound-${index}`}>Impound</Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                             <Controller name={`form.${index}.previewFields.suspension`} control={control} render={({ field }) => <Checkbox id={`preview-suspension-${index}`} checked={field.value} onCheckedChange={field.onChange} />} />
+                                            <Label htmlFor={`preview-suspension-${index}`}>Suspension</Label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                              <Card className="bg-muted/50">
                                  <CardHeader className="p-4">
                                      <CardTitle className="text-base">Custom Charge Fields</CardTitle>
@@ -307,6 +331,11 @@ export function PaperworkGeneratorBuilder() {
                      const chargeName = field.name;
                      generatedWildcards.push(`{{#each ${chargeName}}}`);
                      generatedWildcards.push(`{{this.chargeId}}`);
+                     if(field.customFields) {
+                        field.customFields.forEach(cf => {
+                            if(cf.name) generatedWildcards.push(`{{this.${cf.name}}}`);
+                        })
+                     }
                      generatedWildcards.push(`{{/each}}`);
                 }
             });

@@ -28,6 +28,12 @@ export type Field = {
     allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
     allowedIds?: string;
     customFields?: Field[];
+    previewFields?: {
+        sentence?: boolean;
+        fine?: boolean;
+        impound?: boolean;
+        suspension?: boolean;
+    }
 };
 
 export type ConditionalVariable = {
