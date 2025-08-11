@@ -277,7 +277,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
                     .then(res => res.json())
                     .then(data => {
-                        const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
+                        const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.model);
                         setVehicles(vehicleNames);
                     })
                     .catch(err => console.error("Failed to fetch vehicles:", err));
