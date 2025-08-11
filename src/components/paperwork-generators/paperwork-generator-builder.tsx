@@ -90,7 +90,7 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
                         </div>
                     )}
                     
-                    {['dropdown', 'datalist'].includes(field.type) && (
+                    {field.type === 'dropdown' && (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                             <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
                             <Input {...register(`form.${index}.label`)} placeholder="Label" />
@@ -106,6 +106,13 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
                                     />
                                 )}
                             />
+                        </div>
+                    )}
+                     {field.type === 'datalist' && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            <Input {...register(`form.${index}.name`)} placeholder="Field Name" />
+                            <Input {...register(`form.${index}.label`)} placeholder="Label" />
+                            <Input {...register(`form.${index}.optionsSource`)} placeholder="Options Source (e.g., vehicles)" />
                         </div>
                     )}
                     
@@ -146,6 +153,29 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
                                     />
                                     <Label htmlFor={`show-offense-${index}`}>Show Offense</Label>
                                  </div>
+                            </div>
+                            <div className="p-4 border rounded-md bg-muted/50 space-y-4">
+                                <div>
+                                    <Label>Allowed Charge Types</Label>
+                                    <div className="flex gap-4 pt-2">
+                                        <div className="flex items-center space-x-2">
+                                             <Controller name={`form.${index}.allowedTypes.F`} control={control} render={({ field }) => <Checkbox id={`type-f-${index}`} checked={field.value} onCheckedChange={field.onChange} />} />
+                                            <Label htmlFor={`type-f-${index}`}>Felonies</Label>
+                                        </div>
+                                         <div className="flex items-center space-x-2">
+                                             <Controller name={`form.${index}.allowedTypes.M`} control={control} render={({ field }) => <Checkbox id={`type-m-${index}`} checked={field.value} onCheckedChange={field.onChange} />} />
+                                            <Label htmlFor={`type-m-${index}`}>Misdemeanors</Label>
+                                        </div>
+                                         <div className="flex items-center space-x-2">
+                                             <Controller name={`form.${index}.allowedTypes.I`} control={control} render={({ field }) => <Checkbox id={`type-i-${index}`} checked={field.value} onCheckedChange={field.onChange} />} />
+                                            <Label htmlFor={`type-i-${index}`}>Infractions</Label>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div>
+                                    <Label htmlFor={`allowed-ids-${index}`}>Allowed Charge IDs</Label>
+                                    <Input id={`allowed-ids-${index}`} {...register(`form.${index}.allowedIds`)} placeholder="e.g., 101, 105-110, 203" />
+                                </div>
                             </div>
                              <Card className="bg-muted/50">
                                  <CardHeader className="p-4">
@@ -483,3 +513,5 @@ export function PaperworkGeneratorBuilder() {
         </div>
     );
 }
+
+    

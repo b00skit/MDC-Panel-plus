@@ -25,6 +25,8 @@ export type Field = {
     showOffense?: boolean;
     showAddition?: boolean;
     showCategory?: boolean;
+    allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
+    allowedIds?: string;
     customFields?: Field[];
 };
 
@@ -70,3 +72,5 @@ export const usePaperworkBuilderStore = create<PaperworkBuilderState>((set) => (
     })),
     reset: () => set({ formData: getInitialState() }),
 }));
+
+    

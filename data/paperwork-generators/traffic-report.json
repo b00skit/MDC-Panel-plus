@@ -30,7 +30,7 @@
           ]
         },
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "stipulation": {"field": "vehicle_registered", "value": true}, "defaultValue": true },
+            { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "defaultValue": true },
             { "type": "text", "name": "insurance_expired_date", "label": "Insurance Expired Date", "placeholder": "DD/MM/YYYY", "stipulation": {"field": "vehicle_insured", "value": false}}
           ]
         },
@@ -43,6 +43,8 @@
             "type": "charge", 
             "name": "charges",
             "showClass": true,
+            "allowedTypes": { "M": true, "I": true },
+            "allowedIds": "401-433",
             "customFields": [
                 {
                     "type": "text",
@@ -54,3 +56,5 @@
         }
     ]
 }
+
+    

@@ -48,6 +48,8 @@ interface PaperworkChargeFieldProps {
     showOffense?: boolean;
     showAddition?: boolean;
     showCategory?: boolean;
+    allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
+    allowedIds?: string;
     customFields?: FormField[];
   };
 }
@@ -60,7 +62,42 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
   
   const [openChargeSelector, setOpenChargeSelector] = React.useState<number | null>(null);
 
-  const penalCodeArray = React.useMemo(() => penalCode ? Object.values(penalCode) : [], [penalCode]);
+    const parseAllowedIds = (allowedIdsStr: string | undefined): Set<number> => {
+        if (!allowedIdsStr) return new Set();
+        const allowed = new Set<number>();
+        const parts = allowedIdsStr.split(',');
+        parts.forEach(part => {
+            part = part.trim();
+            if (part.includes('-')) {
+                const [start, end] = part.split('-').map(Number);
+                if (!isNaN(start) && !isNaN(end)) {
+                    for (let i = start; i <= end; i++) {
+                        allowed.add(i);
+                    }
+                }
+            } else {
+                const num = Number(part);
+                if (!isNaN(num)) {
+                    allowed.add(num);
+                }
+            }
+        });
+        return allowed;
+    };
+
+  const penalCodeArray = React.useMemo(() => {
+    if (!penalCode) return [];
+    
+    const allowedTypes = config.allowedTypes ? Object.entries(config.allowedTypes).filter(([, v]) => v).map(([k]) => k) : [];
+    const allowedIds = parseAllowedIds(config.allowedIds);
+    
+    return Object.values(penalCode).filter(charge => {
+        const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
+        const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
+        return typeMatch && idMatch;
+    });
+
+  }, [penalCode, config.allowedTypes, config.allowedIds]);
 
   const handleChargeSelect = (index: number, chargeId: string) => {
     if (!penalCode) return;
@@ -202,3 +239,5 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     </div>
   );
 }
+
+    
