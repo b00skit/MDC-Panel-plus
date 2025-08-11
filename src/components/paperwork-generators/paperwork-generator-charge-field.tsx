@@ -65,9 +65,9 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     const parseAllowedIds = (allowedIdsStr: string | undefined): Set<number> => {
         if (!allowedIdsStr) return new Set();
         const allowed = new Set<number>();
-        const parts = allowedIdsStr.split(',');
+        const parts = allowedIdsStr.split(',').map(p => p.trim());
+
         parts.forEach(part => {
-            part = part.trim();
             if (part.includes('-')) {
                 const [start, end] = part.split('-').map(Number);
                 if (!isNaN(start) && !isNaN(end)) {
@@ -239,5 +239,3 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     </div>
   );
 }
-
-    
