@@ -216,7 +216,7 @@ export function ArrestReportForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <GeneralSection isSubmitted={submitted} />
-      <OfficerSection isSubmitted={submitted}/>
+      <OfficerSection isSubmitted={submitted} isArrestReport={true} />
 
        <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
          <div className="space-y-6">

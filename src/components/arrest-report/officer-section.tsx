@@ -130,7 +130,7 @@ const SelectField = ({
 );
 
 
-export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
+export function OfficerSection({ isSubmitted, isArrestReport = false }: { isSubmitted: boolean, isArrestReport?: boolean }) {
   const { 
     officers, 
     updateOfficer, 
@@ -143,7 +143,7 @@ export function OfficerSection({ isSubmitted }: { isSubmitted: boolean }) {
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const { toggleAdvanced } = useAdvancedReportStore();
 
-  const showLspdWarning = officers.some(o => o.department === 'Los Santos Police Department');
+  const showLspdWarning = isArrestReport && officers.some(o => o.department === 'Los Santos Police Department');
 
   useEffect(() => {
     setInitialOfficers();
