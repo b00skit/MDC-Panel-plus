@@ -61,10 +61,12 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
   });
   
   const [openChargeSelector, setOpenChargeSelector] = React.useState<number | null>(null);
+  const [filteredPenalCode, setFilteredPenalCode] = React.useState<Charge[]>([]);
 
-  const filteredPenalCode = React.useMemo(() => {
+  React.useEffect(() => {
     if (!penalCode) {
-      return [];
+      setFilteredPenalCode([]);
+      return;
     }
 
     const parseAllowedIds = (allowedIdsStr: string | undefined): Set<number> => {
@@ -93,11 +95,14 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     const allowedTypes = config.allowedTypes ? Object.entries(config.allowedTypes).filter(([, v]) => v).map(([k]) => k) : [];
     const allowedIds = parseAllowedIds(config.allowedIds);
     
-    return Object.values(penalCode).filter(charge => {
+    const filtered = Object.values(penalCode).filter(charge => {
         const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
         const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
         return typeMatch && idMatch;
     });
+
+    setFilteredPenalCode(filtered);
+
   }, [penalCode, config.allowedTypes, config.allowedIds]);
 
   const handleChargeSelect = (index: number, chargeId: string) => {
