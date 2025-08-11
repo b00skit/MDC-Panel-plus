@@ -8,24 +8,27 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function GeneratorPageContent() {
     const searchParams = useSearchParams();
-    const staticSlug = searchParams.get('s');
-    const userFormSlug = searchParams.get('f');
+    const type = searchParams.get('type');
+    const id = searchParams.get('id');
+    const groupId = searchParams.get('group_id');
     
-    const slug = staticSlug || userFormSlug;
-    const param = staticSlug ? `s=${staticSlug}` : `f=${userFormSlug}`;
-
     const [generatorConfig, setGeneratorConfig] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        if (!slug) {
+        if (!type || !id) {
             setLoading(false);
             setError(true);
             return;
         }
 
-        fetch(`/api/paperwork-generators/${slug}?${param}`)
+        let url = `/api/paperwork-generators/${id}?type=${type}&id=${id}`;
+        if (groupId) {
+            url += `&group_id=${groupId}`;
+        }
+
+        fetch(url)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -40,7 +43,7 @@ function GeneratorPageContent() {
                 setError(true);
                 setLoading(false);
             });
-    }, [slug, param]);
+    }, [type, id, groupId]);
 
     if (loading) {
         return (

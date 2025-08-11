@@ -10,33 +10,29 @@ export async function GET(
   const slug = params.slug;
   const searchParams = request.nextUrl.searchParams;
   
-  let formType: 'static' | 'user';
-  let formId: string | null;
+  const formType = searchParams.get('type') as 'user' | 'static' | null;
+  const formId = searchParams.get('id');
+  const groupId = searchParams.get('group_id');
 
-  if (searchParams.has('s')) {
-      formType = 'static';
-      formId = searchParams.get('s');
-  } else if (searchParams.has('f')) {
-      formType = 'user';
-      formId = searchParams.get('f');
-  } else {
-      // Fallback or default behavior if needed, though typically one should be present.
-      // For now, assume it might be a static form if no param is given, using the slug.
-      formType = 'static';
-      formId = slug;
-  }
-
-  if (!formId) {
-    return NextResponse.json({ error: 'Generator not specified' }, { status: 400 });
+  if (!formId || !formType) {
+    return NextResponse.json({ error: 'Generator not specified correctly' }, { status: 400 });
   }
 
   // Basic validation to prevent path traversal
-  if (formId.includes('..')) {
+  if (formId.includes('..') || (groupId && groupId.includes('..'))) {
       return NextResponse.json({ error: 'Invalid generator name' }, { status: 400 });
   }
   
-  const basePath = formType === 'user' ? 'data/forms' : 'data/paperwork-generators';
-  
+  let basePath = 'data';
+  if(formType === 'user'){
+    basePath = path.join(basePath, 'forms');
+  } else {
+    basePath = path.join(basePath, 'paperwork-generators');
+    if(groupId) {
+        basePath = path.join(basePath, groupId);
+    }
+  }
+
   try {
     const filePath = path.join(process.cwd(), basePath, `${formId}.json`);
     const fileContents = await fs.readFile(filePath, 'utf8');

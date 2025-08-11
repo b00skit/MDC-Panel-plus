@@ -13,14 +13,16 @@ import Handlebars from 'handlebars';
 import { ConditionalVariable } from '@/stores/paperwork-builder-store';
 
 const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
-    const { formData, generatorId, generatorType } = usePaperworkStore();
+    const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
     const [generatorConfig, setGeneratorConfig] = useState<{ output: string; conditionals?: ConditionalVariable[] } | null>(null);
   
     useEffect(() => {
         if (generatorId && generatorType) {
-            const param = generatorType === 'static' ? `s=${generatorId}` : `f=${generatorId}`;
-            const url = `/api/paperwork-generators/${generatorId}?${param}`;
+            let url = `/api/paperwork-generators/${generatorId}?type=${generatorType}&id=${generatorId}`;
+            if (groupId) {
+                url += `&group_id=${groupId}`;
+            }
 
             fetch(url)
                 .then(res => res.json())
@@ -29,10 +31,10 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 })
                 .catch(err => console.error("Failed to load generator template", err));
         }
-    }, [generatorId, generatorType]);
+    }, [generatorId, generatorType, groupId]);
 
     useEffect(() => {
-        if(generatorConfig && generatorConfig.output && formData) {
+        if(generatorConfig?.output && formData) {
             Handlebars.registerHelper('lookup', (obj, key) => obj && obj[key]);
             Handlebars.registerHelper('with', function(this: any, context, options) {
                 return options.fn(context);
@@ -44,7 +46,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                     return options.inverse(this);
                 }
             });
-            Handlebars.registerHelper('start_loop', function(context, options) {
+            Handlebars.registerHelper('each', function(this: any, context, options) {
                 let ret = "";
                 if (Array.isArray(context)) {
                     for(let i = 0; i < context.length; i++) {
@@ -54,7 +56,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 return ret;
             });
             
-            const templateString = generatorConfig.output.replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}').replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
+            const templateString = generatorConfig.output;
 
             const compiledTemplate = Handlebars.compile(templateString, { noEscape: true });
 

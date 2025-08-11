@@ -77,18 +77,15 @@ interface PaperworkGeneratorFormProps {
     generatorConfig: GeneratorConfig;
 }
 
-// FIX 1: Recursive function to build defaultValues for all fields, including nested ones.
 const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
     const defaults: Record<string, any> = {};
 
     for (const field of fields) {
         if (field.type === 'group' && field.fields) {
-            // Recursively merge defaults from nested fields
             Object.assign(defaults, buildDefaultValues(field.fields));
         } else if (field.type === 'input_group' && field.name) {
             defaults[field.name] = field.defaultValue ?? [];
         } else if (field.name) {
-            // Assign default value based on field type
             if (field.type === 'toggle') {
                 defaults[field.name] = field.defaultValue === true;
             } else if (field.type === 'multi-select') {
@@ -107,7 +104,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
 
     const methods = useForm({
         criteriaMode: 'all',
-        // Use the new recursive function to set correct initial values
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
     const { register, handleSubmit, control, watch, trigger } = methods;
@@ -314,7 +310,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                     checked={value}
                                     onCheckedChange={value => {
                                         onChange(value);
-                                        trigger(); // Trigger validation to re-evaluate conditional fields
+                                        trigger(); 
                                     }}
                                 />
                             )}
@@ -350,7 +346,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="flex flex-col md:flex-row items-end gap-4 w-full">
                         {field.fields?.map((subField, subIndex) => {
-                             // FIX 3: Register the field with its own name, not a nested path.
                             const subFieldPath = subField.name;
                             return <div key={`${subField.name}-${subIndex}`} className="w-full">{renderField(subField, subFieldPath, subIndex)}</div>;
                         })}
@@ -425,7 +420,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 }
                  else if (Array.isArray(childNode)) {
                     childNode.forEach((item, index) => {
-                        if (item) { // Ensure item is not null/undefined
+                        if (item) { 
                             processErrors(item, `${newPath}.${index}`);
                         }
                     });
@@ -460,11 +455,13 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             penalCode,
         };
 
-        const type = searchParams.get('s') ? 'static' : 'user';
-
+        const type = searchParams.get('type') as 'static' | 'user';
+        const groupId = searchParams.get('group_id');
+        
         setGeneratorData({
             generatorId: generatorConfig.id,
             generatorType: type,
+            groupId: groupId
         });
 
         setFormData(fullData);
@@ -477,7 +474,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
                     {generatorConfig.form.map((field, index) => {
-                         // For fields without a name (like sections or groups), pass the key as the path
                         const path = field.name || `${field.type}-${index}`;
                         return <div key={path}>{renderField(field, path, index)}</div>;
                     })}

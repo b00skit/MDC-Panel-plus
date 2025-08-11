@@ -34,6 +34,8 @@ import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
 import { Separator } from '../ui/separator';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
+import { useSettingsStore } from '@/stores/settings-store';
+import { Switch } from '../ui/switch';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -50,6 +52,8 @@ export function SettingsPage() {
     updateAlternativeCharacter,
     removeAlternativeCharacter,
   } = useOfficerStore();
+  const { hiddenFactions, toggleFactionVisibility, factionGroups, loadFactionGroups } = useSettingsStore();
+
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
 
@@ -60,12 +64,12 @@ export function SettingsPage() {
 
 
   useEffect(() => {
-    // Ensure the initial officer is loaded from localStorage
     setInitialOfficers(); 
     fetch('/data/dept_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
-  }, [setInitialOfficers]);
+    loadFactionGroups();
+  }, [setInitialOfficers, loadFactionGroups]);
 
   const handleOfficerChange = (field: string, value: string) => {
     if (defaultOfficer) {
@@ -90,10 +94,9 @@ export function SettingsPage() {
   };
 
   const handleSave = () => {
-    // The store automatically persists to localStorage on update
     toast({
       title: 'Settings Saved',
-      description: 'Your officer information has been updated.',
+      description: 'Your settings have been updated.',
     });
   };
 
@@ -102,7 +105,6 @@ export function SettingsPage() {
         localStorage.clear();
         sessionStorage.clear();
 
-        // Reset stores to their initial states
         resetCharges();
         resetBasicForm();
         resetAdvancedForm();
@@ -113,7 +115,6 @@ export function SettingsPage() {
             description: 'All local and session data has been successfully cleared.',
         });
 
-        // Optionally, reload the page to ensure a clean state
         setTimeout(() => window.location.reload(), 1000);
 
     } catch (error) {
@@ -276,6 +277,31 @@ export function SettingsPage() {
                 </Button>
             )}
           </CardContent>
+        </Card>
+        
+        <Card>
+            <CardHeader>
+                <CardTitle>Form Visibility</CardTitle>
+                <CardDescription>
+                    Control which faction-specific forms are visible on the Paperwork Generators page.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {factionGroups.length > 0 ? (
+                    factionGroups.map(group => (
+                        <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
+                            <Label htmlFor={`toggle-${group.group_id}`} className="text-base">{group.group_name}</Label>
+                            <Switch
+                                id={`toggle-${group.group_id}`}
+                                checked={!hiddenFactions.includes(group.group_id)}
+                                onCheckedChange={() => toggleFactionVisibility(group.group_id)}
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-muted-foreground text-sm">No faction-specific form groups found.</p>
+                )}
+            </CardContent>
         </Card>
         
         <div className="flex justify-end">
