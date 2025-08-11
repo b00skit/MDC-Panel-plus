@@ -104,19 +104,27 @@ const renderField = (
           </div>
         );
       case 'datalist':
-          const dataListId = `${field.name}-list`;
           const options = field.optionsSource ? dynamicOptions[field.optionsSource] || [] : field.options || [];
           return (
-              <div key={`${field.name}-${index}`} className="w-full">
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                  <Input id={field.name} {...register(field.name, { required: field.required })} placeholder={field.placeholder} list={dataListId} />
-                  <datalist id={dataListId}>
-                      {options.map((option) => (
-                          <option key={option} value={option} />
-                      ))}
-                  </datalist>
-              </div>
-          );
+            <div key={`${field.name}-${index}`} className="w-full">
+                <Label htmlFor={field.name}>{field.label}</Label>
+                 <Controller
+                    control={control}
+                    name={field.name!}
+                    rules={{ required: field.required }}
+                    render={({ field: { onChange, value } }) => (
+                        <Combobox
+                            options={options}
+                            value={value}
+                            onChange={onChange}
+                            placeholder={field.placeholder}
+                            searchPlaceholder='Search...'
+                            emptyPlaceholder='No results.'
+                        />
+                    )}
+                />
+            </div>
+        );
 
       case 'textarea':
           return (
@@ -189,7 +197,7 @@ const renderField = (
           )
       case 'group':
           return (
-              <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4">
+              <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4 w-full">
                   {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode, dynamicOptions))}
               </div>
           );
