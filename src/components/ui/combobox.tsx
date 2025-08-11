@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -6,19 +5,13 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Input } from './input';
+import { ScrollArea } from './scroll-area';
 
 interface ComboboxProps {
   options: string[];
@@ -52,9 +45,9 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         setInputValue(value || '');
     }, [value]);
 
-    const handleOpen = (isOpen: boolean) => {
-        if (isOpen && onOpen) {
-            onOpen();
+    const handleOpenChange = (isOpen: boolean) => {
+        if (isOpen) {
+            onOpen?.();
         }
         setOpen(isOpen);
     }
@@ -70,7 +63,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         setInputValue(currentInputValue);
         onChange(currentInputValue);
         if (!open) {
-            handleOpen(true);
+            handleOpenChange(true);
         }
     }
     
@@ -87,42 +80,45 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
 
     return (
       <div className={cn('relative', className)} ref={ref}>
-         <Popover open={open} onOpenChange={setOpen}>
+         <Popover open={open} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild>
                 <div className="relative" >
                      <Input 
                         value={inputValue}
                         onChange={handleInputChange}
-                        onFocus={() => handleOpen(true)}
+                        onFocus={() => handleOpenChange(true)}
                         placeholder={placeholder}
                         className={cn('w-full pr-8', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
                      />
-                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" onClick={() => handleOpen(!open)} />
+                     <ChevronsUpDown 
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" 
+                        onClick={() => handleOpenChange(!open)} 
+                    />
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                 <Command>
-                    <CommandList>
-                        <CommandEmpty>{emptyPlaceholder}</CommandEmpty>
-                        <CommandGroup>
-                        {uniqueOptions.map((option) => (
-                            <CommandItem
-                                key={option}
-                                value={option}
-                                onSelect={() => handleSelect(option)}
-                            >
-                            <Check
-                                className={cn(
-                                'mr-2 h-4 w-4',
-                                value === option ? 'opacity-100' : 'opacity-0'
-                                )}
-                            />
-                            {option}
-                            </CommandItem>
-                        ))}
-                        </CommandGroup>
-                    </CommandList>
-                 </Command>
+                 <ScrollArea className="max-h-60">
+                    {uniqueOptions.length > 0 ? (
+                        uniqueOptions.map((option) => (
+                           <Button
+                             key={option}
+                             variant="ghost"
+                             className="w-full justify-start font-normal h-9"
+                             onClick={() => handleSelect(option)}
+                           >
+                                <Check
+                                    className={cn(
+                                    'mr-2 h-4 w-4',
+                                    value === option ? 'opacity-100' : 'opacity-0'
+                                    )}
+                                />
+                                {option}
+                           </Button>
+                        ))
+                    ) : (
+                        <div className="py-6 text-center text-sm">{emptyPlaceholder}</div>
+                    )}
+                 </ScrollArea>
             </PopoverContent>
          </Popover>
       </div>
