@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -77,22 +76,39 @@ interface PaperworkGeneratorFormProps {
     generatorConfig: GeneratorConfig;
 }
 
+// FIX 1: Recursive function to build defaultValues for all fields, including nested ones.
+const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
+    const defaults: Record<string, any> = {};
+
+    for (const field of fields) {
+        if (field.type === 'group' && field.fields) {
+            // Recursively merge defaults from nested fields
+            Object.assign(defaults, buildDefaultValues(field.fields));
+        } else if (field.type === 'input_group' && field.name) {
+            defaults[field.name] = field.defaultValue ?? [];
+        } else if (field.name) {
+            // Assign default value based on field type
+            if (field.type === 'toggle') {
+                defaults[field.name] = field.defaultValue === true;
+            } else if (field.type === 'multi-select') {
+                defaults[field.name] = field.defaultValue || [];
+            } else {
+                defaults[field.name] = field.defaultValue ?? '';
+            }
+        }
+    }
+    return defaults;
+};
+
+
 export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
     const methods = useForm({
-        // Set validation criteria mode to 'all' to report all errors, not just the first.
         criteriaMode: 'all',
-        // Set default values to prevent "uncontrolled to controlled" input errors.
-        defaultValues: generatorConfig.form.reduce((acc, field) => {
-            if (field.type === 'input_group' && field.name) {
-                acc[field.name] = [];
-            } else if (field.name) {
-                acc[field.name] = field.defaultValue ?? '';
-            }
-            return acc;
-        }, {} as Record<string, any>)
+        // Use the new recursive function to set correct initial values
+        defaultValues: buildDefaultValues(generatorConfig.form)
     });
-    const { register, handleSubmit, control, watch, trigger } = methods;
+    const { register, handleSubmit, control, watch } = methods;
 
     const { setGeneratorId, setFormData } = usePaperworkStore();
     const { toast } = useToast();
@@ -264,24 +280,24 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 );
             
              case 'multi-select':
-                return (
-                    <div key={fieldKey} className="w-full">
-                        <Label htmlFor={path}>{field.label}</Label>
-                        <Controller
-                            name={path}
-                            control={control}
-                            defaultValue={field.defaultValue || []}
-                            render={({ field: { onChange, value } }) => (
-                                <MultiSelect
-                                    options={field.options || []}
-                                    onValueChange={onChange}
-                                    defaultValue={value}
-                                    placeholder={field.placeholder}
-                                />
-                            )}
-                         />
-                    </div>
-                );
+                 return (
+                     <div key={fieldKey} className="w-full">
+                         <Label htmlFor={path}>{field.label}</Label>
+                         <Controller
+                             name={path}
+                             control={control}
+                             defaultValue={field.defaultValue || []}
+                             render={({ field: { onChange, value } }) => (
+                                 <MultiSelect
+                                     options={field.options || []}
+                                     onValueChange={onChange}
+                                     defaultValue={value}
+                                     placeholder={field.placeholder}
+                                 />
+                             )}
+                            />
+                     </div>
+                 );
 
             case 'toggle':
                 return (
@@ -294,10 +310,8 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                                 <Switch
                                     id={path}
                                     checked={value}
-                                    onCheckedChange={(checked) => {
-                                        onChange(checked);
-                                        trigger(); 
-                                    }}
+                                    // FIX 2: Removed unnecessary `trigger()` call. `onChange` is sufficient.
+                                    onCheckedChange={onChange}
                                 />
                             )}
                         />
@@ -331,7 +345,8 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 return (
                     <div key={fieldKey} className="flex flex-col md:flex-row items-end gap-4 w-full">
                         {field.fields?.map((subField, subIndex) => {
-                            const subFieldPath = `${path}.${subField.name}`;
+                             // FIX 3: Register the field with its own name, not a nested path.
+                            const subFieldPath = subField.name;
                             return <div key={`${subField.name}-${subIndex}`} className="w-full">{renderField(subField, subFieldPath, subIndex)}</div>;
                         })}
                     </div>
@@ -400,8 +415,15 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                     const label = findFieldLabel(newPath, generatorConfig.form) || newPath.replace(/_/g, ' ');
                     errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${childNode.message || 'This field is required.'}`);
                 } 
-                else if (typeof childNode === 'object') {
+                else if (typeof childNode === 'object' && !Array.isArray(childNode)) {
                     processErrors(childNode, newPath);
+                }
+                 else if (Array.isArray(childNode)) {
+                    childNode.forEach((item, index) => {
+                        if (item) { // Ensure item is not null/undefined
+                            processErrors(item, `${newPath}.${index}`);
+                        }
+                    });
                 }
             }
         };
@@ -444,7 +466,9 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
                     {generatorConfig.form.map((field, index) => {
                         const fieldKey = `${field.name || field.type}-${index}`;
-                        return <div key={fieldKey}>{renderField(field, field.name || fieldKey, index)}</div>;
+                        // For fields without a name (like sections or groups), pass the key as the path
+                        const path = field.name || fieldKey;
+                        return <div key={fieldKey}>{renderField(field, path, index)}</div>;
                     })}
                     <div className="flex justify-end mt-6">
                         <Button type="submit">Generate Paperwork</Button>

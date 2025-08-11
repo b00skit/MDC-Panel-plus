@@ -9,8 +9,22 @@ export async function GET(
 ) {
   const slug = params.slug;
   const searchParams = request.nextUrl.searchParams;
-  const formType = searchParams.has('f') ? 'user' : 'static';
-  const formId = searchParams.has('f') ? searchParams.get('f') : slug;
+  
+  let formType: 'static' | 'user';
+  let formId: string | null;
+
+  if (searchParams.has('s')) {
+      formType = 'static';
+      formId = searchParams.get('s');
+  } else if (searchParams.has('f')) {
+      formType = 'user';
+      formId = searchParams.get('f');
+  } else {
+      // Fallback or default behavior if needed, though typically one should be present.
+      // For now, assume it might be a static form if no param is given, using the slug.
+      formType = 'static';
+      formId = slug;
+  }
 
   if (!formId) {
     return NextResponse.json({ error: 'Generator not specified' }, { status: 400 });
