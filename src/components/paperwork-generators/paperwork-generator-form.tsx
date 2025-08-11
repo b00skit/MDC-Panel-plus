@@ -28,7 +28,7 @@ type FormField = {
   label?: string;
   placeholder?: string;
   options?: string[];
-  optionsSource?: 'districts' | 'streets';
+  optionsSource?: 'districts' | 'streets' | 'vehicles';
   title?: string;
   value?: string;
   dataOn?: string;
@@ -73,7 +73,8 @@ const renderField = (
     register: any, 
     watch: any, 
     penalCode: PenalCode | null,
-    locations: { districts: string[], streets: string[] }
+    locations: { districts: string[], streets: string[] },
+    vehicles: string[]
 ) => {
     if (field.stipulation) {
         const watchedValue = watch(field.stipulation.field);
@@ -122,16 +123,27 @@ const renderField = (
                     control={control}
                     name={field.name!}
                     rules={{ required: field.required }}
-                    render={({ field: { onChange, value } }) => (
-                        <Combobox
-                            options={field.optionsSource === 'districts' ? locations.districts : (field.optionsSource === 'streets' ? locations.streets : [])}
-                            value={value}
-                            onChange={onChange}
-                            placeholder={field.placeholder}
-                            searchPlaceholder='Search...'
-                            emptyPlaceholder='No results.'
-                        />
-                    )}
+                    render={({ field: { onChange, value } }) => {
+                         let options: string[] = [];
+                         if (field.optionsSource === 'districts') {
+                            options = locations.districts;
+                         } else if (field.optionsSource === 'streets') {
+                             options = locations.streets;
+                         } else if (field.optionsSource === 'vehicles') {
+                             options = vehicles;
+                         }
+
+                        return (
+                            <Combobox
+                                options={options}
+                                value={value}
+                                onChange={onChange}
+                                placeholder={field.placeholder}
+                                searchPlaceholder='Search...'
+                                emptyPlaceholder='No results.'
+                            />
+                        )
+                    }}
                 />
             </div>
         );
@@ -208,7 +220,7 @@ const renderField = (
       case 'group':
           return (
               <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4 w-full">
-                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode, locations))}
+                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode, locations, vehicles))}
               </div>
           );
 
@@ -227,13 +239,14 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     const { general } = useBasicFormStore.getState().formData;
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
     const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
+    const [vehicles, setVehicles] = useState<string[]>([]);
 
     useEffect(() => {
         fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
           .then((res) => res.json())
           .then((data) => setPenalCode(data));
         
-        const hasLocationFields = generatorConfig.form.some(field => field.type === 'datalist' && field.optionsSource);
+        const hasLocationFields = generatorConfig.form.some(field => field.type === 'datalist' && (field.optionsSource === 'districts' || field.optionsSource === 'streets'));
         if (hasLocationFields) {
             fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
                 .then(res => res.json())
@@ -244,6 +257,18 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 })
                 .catch(err => console.error("Failed to fetch locations:", err));
         }
+        
+        const hasVehicleField = generatorConfig.form.some(field => field.type === 'datalist' && field.optionsSource === 'vehicles');
+        if (hasVehicleField) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
+                .then(res => res.json())
+                .then(data => {
+                    const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);
+                    setVehicles(vehicleNames);
+                })
+                .catch(err => console.error("Failed to fetch vehicles:", err));
+        }
+
 
     }, [generatorConfig]);
 
@@ -264,7 +289,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
         <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode, locations))}
+                {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode, locations, vehicles))}
                 <div className="flex justify-end mt-6">
                 <Button type="submit">Generate Paperwork</Button>
                 </div>

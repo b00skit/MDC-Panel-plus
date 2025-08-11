@@ -22,13 +22,13 @@
         { "type": "group", "fields": [
             { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Registered", "dataOff": "Unregistered", "defaultValue": true },
             { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname", "stipulation": {"field": "vehicle_registered", "value": true}},
-            { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX", "stipulation": {"field": "vehicle_registered", "value": true}},
-            { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "stipulation": {"field": "vehicle_registered", "value": true}, "defaultValue": true}
+            { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX", "stipulation": {"field": "vehicle_registered", "value": true}}
           ]
         },
+        { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "stipulation": {"field": "vehicle_registered", "value": true}, "defaultValue": true },
         { "type": "text", "name": "insurance_expired_date", "label": "Insurance Expired Date", "placeholder": "DD/MM/YYYY", "stipulation": {"field": "vehicle_insured", "value": false}},
         { "type": "group", "fields": [
-            { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "options": ["Albany Alpha", "Benefactor Dubsta", "Bravado Buffalo", "Declasse Granger", "Vapid Stanier"], "required": true },
+            { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "optionsSource": "vehicles", "required": true },
             { "type": "dropdown", "name": "vehicle_tint_level", "label": "Tint Level", "placeholder": "Select Tint Level", "options": ["Uninspected", "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5"], "required": true }
         ]},
         { "type": "section", "title": "Charges" },
