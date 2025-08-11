@@ -2,7 +2,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray, Controller, FormProvider } from 'react-hook-form';
 import { PageHeader } from '../dashboard/page-header';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -28,7 +28,7 @@ type FormField = {
   label?: string;
   placeholder?: string;
   options?: string[];
-  optionsSource?: string;
+  optionsSource?: 'districts' | 'streets';
   title?: string;
   value?: string;
   dataOn?: string;
@@ -72,7 +72,8 @@ const renderField = (
     control: any, 
     register: any, 
     watch: any, 
-    penalCode: PenalCode | null
+    penalCode: PenalCode | null,
+    locations: { districts: string[], streets: string[] }
 ) => {
     if (field.stipulation) {
         const watchedValue = watch(field.stipulation.field);
@@ -123,7 +124,7 @@ const renderField = (
                     rules={{ required: field.required }}
                     render={({ field: { onChange, value } }) => (
                         <Combobox
-                            options={[]} // This will be populated by a separate data fetcher
+                            options={field.optionsSource === 'districts' ? locations.districts : (field.optionsSource === 'streets' ? locations.streets : [])}
                             value={value}
                             onChange={onChange}
                             placeholder={field.placeholder}
@@ -207,7 +208,7 @@ const renderField = (
       case 'group':
           return (
               <div key={`group-${index}`} className="flex flex-col md:flex-row items-end gap-4 w-full">
-                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode))}
+                  {field.fields?.map((subField, subIndex) => renderField(subField, subIndex, control, register, watch, penalCode, locations))}
               </div>
           );
 
@@ -218,18 +219,33 @@ const renderField = (
 
 export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
-    const { register, handleSubmit, control, watch } = useForm();
+    const methods = useForm();
+    const { register, handleSubmit, control, watch } = methods;
 
     const { setGeneratorId, setFormData } = usePaperworkStore();
     const { officers } = useOfficerStore.getState();
     const { general } = useBasicFormStore.getState().formData;
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
+    const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
 
     useEffect(() => {
         fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
           .then((res) => res.json())
           .then((data) => setPenalCode(data));
-    }, []);
+        
+        const hasLocationFields = generatorConfig.form.some(field => field.type === 'datalist' && field.optionsSource);
+        if (hasLocationFields) {
+            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+                .then(res => res.json())
+                .then(data => {
+                    const uniqueDistricts = [...new Set<string>(data.districts || [])];
+                    const uniqueStreets = [...new Set<string>(data.streets || [])];
+                    setLocations({ districts: uniqueDistricts, streets: uniqueStreets });
+                })
+                .catch(err => console.error("Failed to fetch locations:", err));
+        }
+
+    }, [generatorConfig]);
 
     const onSubmit = (data: any) => {
         const fullData = {
@@ -245,13 +261,15 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode))}
-        <div className="flex justify-end mt-6">
-          <Button type="submit">Generate Paperwork</Button>
-        </div>
-      </form>
+        <PageHeader title={generatorConfig.title} description={generatorConfig.description} />
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                {generatorConfig.form.map((field, index) => renderField(field, index, control, register, watch, penalCode, locations))}
+                <div className="flex justify-end mt-6">
+                <Button type="submit">Generate Paperwork</Button>
+                </div>
+            </form>
+        </FormProvider>
     </div>
   );
 }
