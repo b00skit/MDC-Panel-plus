@@ -91,13 +91,14 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
     useEffect(() => {
         const hasChargeField = generatorConfig.form.some(field => field.type === 'charge');
         const hasLocationFields = generatorConfig.form.some(field => field.type === 'location' || field.optionsSource === 'districts' || field.optionsSource === 'streets');
-
-        if (hasChargeField) {
+        const hasVehicleField = generatorConfig.form.some(field => field.optionsSource === 'vehicles');
+        
+        if (hasChargeField && !penalCode) {
             fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
                 .then((res) => res.json())
                 .then((data) => setPenalCode(data));
         }
-        if (hasLocationFields) {
+        if (hasLocationFields && locations.districts.length === 0) {
             fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
                 .then(res => res.json())
                 .then(data => {
@@ -107,7 +108,8 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                 })
                 .catch(err => console.error("Failed to fetch locations:", err));
         }
-    }, [generatorConfig]);
+
+    }, [generatorConfig, penalCode, locations.districts.length]);
 
     const handleVehicleFetch = useCallback(() => {
         if (!vehiclesFetched) {

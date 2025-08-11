@@ -86,14 +86,11 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                      <Input 
                         value={inputValue}
                         onChange={handleInputChange}
-                        onFocus={() => {
-                            if (onOpen) onOpen();
-                            setOpen(true);
-                        }}
+                        onFocus={() => handleOpenChange(true)}
                         placeholder={placeholder}
                         className={cn('w-full pr-8', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
                      />
-                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" onClick={() => setOpen(o => !o)} />
+                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" onClick={() => handleOpenChange(!open)} />
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
