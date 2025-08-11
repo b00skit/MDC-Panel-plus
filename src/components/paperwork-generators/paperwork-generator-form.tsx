@@ -92,7 +92,7 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
             return acc;
         }, {} as Record<string, any>)
     });
-    const { register, handleSubmit, control, watch } = methods;
+    const { register, handleSubmit, control, watch, trigger } = methods;
 
     const { setGeneratorId, setFormData } = usePaperworkStore();
     const { toast } = useToast();
@@ -294,7 +294,10 @@ export function PaperworkGeneratorForm({ generatorConfig }: PaperworkGeneratorFo
                                 <Switch
                                     id={path}
                                     checked={value}
-                                    onCheckedChange={onChange}
+                                    onCheckedChange={(checked) => {
+                                        onChange(checked);
+                                        trigger(); 
+                                    }}
                                 />
                             )}
                         />
