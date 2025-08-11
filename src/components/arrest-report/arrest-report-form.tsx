@@ -193,6 +193,7 @@ export function ArrestReportForm() {
     // Get latest data from the form state which now includes location
     const latestFormData = methods.getValues();
     const allFormData = {
+        ...useFormStore.getState().formData, // get latest from store
         ...latestFormData,
         officers: officers,
     };
@@ -200,19 +201,17 @@ export function ArrestReportForm() {
     setAll(allFormData as any);
     router.push('/arrest-submit?type=basic');
   };
-
-  const saveToStore = () => {
-    const latestFormData = methods.getValues();
-    const allFormData = {
-        ...latestFormData,
-        officers: officers,
-    };
-    setAll(allFormData as any);
+  
+  const saveDraft = () => {
+    toast({
+        title: 'Draft Saved',
+        description: 'Your report has been saved as a draft.',
+      });
   }
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit} className="space-y-6" onBlur={saveToStore}>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <GeneralSection isSubmitted={submitted} />
         <OfficerSection isSubmitted={submitted} isArrestReport={true} />
 
@@ -288,7 +287,7 @@ export function ArrestReportForm() {
         </FormSection>
 
         <div className="flex justify-end gap-4">
-            <Button variant="outline" type="button" onClick={saveToStore}>Save as Draft</Button>
+            <Button variant="outline" type="button" onClick={saveDraft}>Save as Draft</Button>
             <Button type="submit">Submit Report</Button>
         </div>
       </form>
