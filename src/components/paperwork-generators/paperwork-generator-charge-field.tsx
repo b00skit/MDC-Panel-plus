@@ -61,6 +61,13 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
   });
   
   const [openChargeSelector, setOpenChargeSelector] = React.useState<number | null>(null);
+  const [filteredPenalCode, setFilteredPenalCode] = React.useState<Charge[]>([]);
+
+  React.useEffect(() => {
+    if (!penalCode) {
+      setFilteredPenalCode([]);
+      return;
+    }
 
     const parseAllowedIds = (allowedIdsStr: string | undefined): Set<number> => {
         if (!allowedIdsStr) return new Set();
@@ -84,18 +91,17 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
         });
         return allowed;
     };
-
-  const penalCodeArray = React.useMemo(() => {
-    if (!penalCode) return [];
     
     const allowedTypes = config.allowedTypes ? Object.entries(config.allowedTypes).filter(([, v]) => v).map(([k]) => k) : [];
     const allowedIds = parseAllowedIds(config.allowedIds);
     
-    return Object.values(penalCode).filter(charge => {
+    const filtered = Object.values(penalCode).filter(charge => {
         const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
         const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
         return typeMatch && idMatch;
     });
+
+    setFilteredPenalCode(filtered);
 
   }, [penalCode, config.allowedTypes, config.allowedIds]);
 
@@ -167,7 +173,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                             <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                                 <Command filter={(value, search) => {
                                     if (!penalCode) return 0;
-                                    const charge = penalCodeArray.find(c => c.id === value);
+                                    const charge = filteredPenalCode.find(c => c.id === value);
                                     if (!charge) return 0;
                                     const term = search.toLowerCase();
                                     return charge.charge.toLowerCase().includes(term) || charge.id.includes(term) ? 1 : 0;
@@ -176,7 +182,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                                     <CommandEmpty>No charge found.</CommandEmpty>
                                     <CommandList>
                                         <CommandGroup>
-                                            {penalCodeArray.map((c) => (
+                                            {filteredPenalCode.map((c) => (
                                                 <CommandItem
                                                     key={c.id}
                                                     value={c.id}
