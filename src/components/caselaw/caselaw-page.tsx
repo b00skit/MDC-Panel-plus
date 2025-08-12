@@ -38,7 +38,9 @@ type Caselaw = {
     case: string;
     summary: string;
     implication: string;
-    jurisdiction: 'federal' | 'local';
+    jurisdiction: 'federal' | 'federal-civil' | 'local-supreme' | 'local-appeals' | 'local-appeals-civil';
+    year: string;
+    source?: string;
 };
 
 type Config = {
@@ -50,6 +52,15 @@ const ICONS: { [key: string]: React.ReactNode } = {
     Landmark: <Landmark className="w-8 h-8 text-primary" />,
     ShieldCheck: <ShieldCheck className="w-8 h-8 text-primary" />,
 };
+
+const jurisdictionMap: Record<Caselaw['jurisdiction'], string> = {
+    'federal': 'United States Supreme Court',
+    'federal-civil': 'United States Supreme Court (Civil Case)',
+    'local-supreme': 'San Andreas (Supreme Court)',
+    'local-appeals': 'San Andreas (Criminal Appeals Court)',
+    'local-appeals-civil': 'San Andreas (Civil Appeals Court)',
+};
+
 
 const ResourceCard = ({ resource, config }: { resource: Resource, config: Config | null }) => {
     const cardContent = (
@@ -96,28 +107,41 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
   };
   
 
-const CaselawCard = ({ caselaw }: { caselaw: Caselaw }) => (
-    <Card>
-        <CardHeader>
-            <div className="flex justify-between items-start">
-                <CardTitle>{caselaw.case}</CardTitle>
-                <Badge variant={caselaw.jurisdiction === 'federal' ? 'default' : 'secondary'}>
-                    {caselaw.jurisdiction === 'federal' ? 'United States' : 'San Andreas'}
-                </Badge>
-            </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-            <div>
-                <h4 className="font-semibold text-muted-foreground">Summary</h4>
-                <p>{caselaw.summary}</p>
-            </div>
-            <div>
-                <h4 className="font-semibold text-muted-foreground">Implication for Officers</h4>
-                <p>{caselaw.implication}</p>
-            </div>
-        </CardContent>
-    </Card>
-);
+const CaselawCard = ({ caselaw }: { caselaw: Caselaw }) => {
+    const isFederal = caselaw.jurisdiction.startsWith('federal');
+
+    return (
+        <Card>
+            <CardHeader>
+                <div className="flex justify-between items-start gap-4">
+                    <CardTitle className="pr-2">{caselaw.case} ({caselaw.year})</CardTitle>
+                    <Badge variant={isFederal ? 'default' : 'secondary'} className="text-right whitespace-nowrap">
+                        {jurisdictionMap[caselaw.jurisdiction] || 'Unknown'}
+                    </Badge>
+                </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div>
+                    <h4 className="font-semibold text-muted-foreground">Summary</h4>
+                    <p>{caselaw.summary}</p>
+                </div>
+                <div>
+                    <h4 className="font-semibold text-muted-foreground">Implication for Officers</h4>
+                    <p>{caselaw.implication}</p>
+                </div>
+                {caselaw.source && (
+                    <div>
+                        <Button variant="link" asChild className="p-0 h-auto">
+                            <a href={caselaw.source} target='_blank' rel="noopener noreferrer">
+                                View Source <ExternalLink className="ml-2 h-4 w-4" />
+                            </a>
+                        </Button>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+};
 
 const SkeletonGrid = ({ count = 3, CardComponent = Card }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,7 +182,7 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
                                 law.summary.toLowerCase().includes(lowercasedFilter) ||
                                 law.implication.toLowerCase().includes(lowercasedFilter);
 
-            const jurisdictionMatch = jurisdictionFilter === 'all' || law.jurisdiction === jurisdictionFilter;
+            const jurisdictionMatch = jurisdictionFilter === 'all' || law.jurisdiction.startsWith(jurisdictionFilter);
 
             return searchMatch && jurisdictionMatch;
         });
@@ -218,3 +242,5 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
         </div>
     );
 }
+
+    
