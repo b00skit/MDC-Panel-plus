@@ -5,5 +5,9 @@
     "variant": "default",
     "icon": "Info",
     "title": "Welcome to the Panel!",
-    "content": "This is a customizable notice that you can edit in the data/notice.json file. You can change the icon, color, title, and content."
+    "content": "This is a customizable notice that you can edit in the data/notice.json file. You can change the icon, color, title, and content.",
+    "button": {
+        "text": "View Changelog",
+        "href": "/changelog"
+    }
 }

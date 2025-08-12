@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 import { PageHeader } from './page-header';
 import { ModuleCard, type ModuleCardProps } from './module-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Gavel, FileText, BookOpen, Landmark, Settings, Archive, X, Info, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Gavel, FileText, BookOpen, Landmark, Settings, Archive, X, Info, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '../ui/button';
+import Link from 'next/link';
 
 const modules: ModuleCardProps[] = [
   {
@@ -67,6 +68,10 @@ type Notice = {
     icon: string;
     title: string;
     content: string;
+    button?: {
+        text: string;
+        href: string;
+    }
 } | null;
 
 interface DashboardPageProps {
@@ -96,8 +101,12 @@ export function DashboardPage({ notice }: DashboardPageProps) {
     }, 1500);
 
     if (notice?.enabled) {
-        const noticeDismissed = sessionStorage.getItem('notice_dismissed');
-        if (noticeDismissed !== 'true') {
+        if(notice.dismissible) {
+            const noticeDismissed = sessionStorage.getItem('notice_dismissed');
+            if (noticeDismissed !== 'true') {
+                setIsNoticeVisible(true);
+            }
+        } else {
             setIsNoticeVisible(true);
         }
     }
@@ -107,9 +116,7 @@ export function DashboardPage({ notice }: DashboardPageProps) {
 
   const handleDismissNotice = () => {
     setIsNoticeVisible(false);
-    if(notice?.dismissible) {
-        sessionStorage.setItem('notice_dismissed', 'true');
-    }
+    sessionStorage.setItem('notice_dismissed', 'true');
   }
 
   const NoticeIcon = notice?.icon ? ICONS[notice.icon] : null;
@@ -117,15 +124,29 @@ export function DashboardPage({ notice }: DashboardPageProps) {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
        {isNoticeVisible && notice && (
-            <Alert variant={notice.variant || 'default'} className="mb-6 relative">
+            <Alert variant={notice.variant || 'default'} className="mb-6">
                 {notice.dismissible && (
                     <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={handleDismissNotice}>
                         <X className="h-4 w-4" />
                     </Button>
                 )}
-                {NoticeIcon}
-                <AlertTitle>{notice.title}</AlertTitle>
-                <AlertDescription>{notice.content}</AlertDescription>
+                <div className="flex items-start gap-4">
+                     {NoticeIcon}
+                    <div className="flex-1">
+                        <AlertTitle>{notice.title}</AlertTitle>
+                        <AlertDescription>
+                            {notice.content}
+                            {notice.button && (
+                                <Button asChild variant="link" className="p-0 h-auto mt-2 font-semibold">
+                                    <Link href={notice.button.href}>
+                                        {notice.button.text}
+                                        <ArrowRight className="ml-1 h-4 w-4" />
+                                    </Link>
+                                </Button>
+                            )}
+                        </AlertDescription>
+                    </div>
+                </div>
             </Alert>
        )}
 
