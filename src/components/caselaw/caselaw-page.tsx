@@ -18,6 +18,7 @@ import {
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
+import { FeedbackDialog } from '@/components/dashboard/feedback-dialog';
 
 type Resource = {
     id: string;
@@ -145,6 +146,7 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [jurisdictionFilter, setJurisdictionFilter] = useState<'all' | 'federal' | 'local'>('all');
+    const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
 
     const filteredCaselaws = useMemo(() => {
@@ -164,10 +166,16 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
+            <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
             <PageHeader
                 title="Caselaw & Legal Resources"
                 description="Quickly access legal documents, schedules, and important caselaw."
             />
+            
+            <div className="text-center text-muted-foreground p-4 border-2 border-dashed rounded-lg">
+                <p className="mb-2">Is what you're looking for not here? Submit feedback</p>
+                <Button onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
+            </div>
 
             {loading ? <SkeletonGrid count={3} CardComponent={Card} /> :
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
