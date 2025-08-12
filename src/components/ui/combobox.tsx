@@ -46,74 +46,136 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
   ) => {
     const [open, setOpen] = React.useState(false);
     const [inputValue, setInputValue] = React.useState(value || '');
+    const [activeIndex, setActiveIndex] = React.useState(-1);
 
-    // Sync inputValue with the external value prop when it changes
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const listRef = React.useRef<HTMLDivElement>(null);
+
     React.useEffect(() => {
       setInputValue(value || '');
     }, [value]);
+    
+    React.useEffect(() => {
+        if (open && activeIndex !== -1 && listRef.current) {
+            const item = listRef.current.children[activeIndex] as HTMLElement;
+            if (item) {
+                item.scrollIntoView({ block: 'nearest' });
+            }
+        }
+    }, [activeIndex, open]);
 
     const handleOpenChange = (isOpen: boolean) => {
-      // Prevent closing the popover while data is loading
-      if (!isOpen && isLoading) {
-        return;
-      }
-      
+      if (isLoading && !isOpen) return;
+
       setOpen(isOpen);
-      if (isOpen && onOpen) {
-        onOpen();
-      }
-      // If closing, reset the input to the last committed value
       if (!isOpen) {
-        setInputValue(value || '');
+        if (inputValue !== value) {
+          onChange(inputValue);
+        }
+        setActiveIndex(-1);
+      } else if (isOpen && onOpen) {
+        onOpen();
       }
     };
 
     const handleSelect = (option: string) => {
-      onChange(option); // Only call onChange on final selection
+      onChange(option);
       setInputValue(option);
       setOpen(false);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
-      // ✅ Open the dropdown if the user starts typing.
       if (!open) {
         setOpen(true);
       }
+      setActiveIndex(-1);
     };
 
     const filteredOptions = React.useMemo(() => {
-        if (!inputValue) {
-            return options;
-        }
-        return options.filter(option =>
-            String(option).toLowerCase().includes(String(inputValue).toLowerCase())
-        );
+      if (!inputValue) return options;
+      return options.filter(option =>
+        String(option).toLowerCase().includes(String(inputValue).toLowerCase())
+      );
     }, [inputValue, options]);
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (isLoading) return;
 
-    const uniqueOptions = React.useMemo(() => [...new Set(filteredOptions)], [filteredOptions]);
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          if (!open) setOpen(true);
+          setActiveIndex(prev =>
+            prev < filteredOptions.length - 1 ? prev + 1 : 0
+          );
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          if (!open) setOpen(true);
+          setActiveIndex(prev =>
+            prev > 0 ? prev - 1 : filteredOptions.length - 1
+          );
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (activeIndex !== -1) {
+            handleSelect(filteredOptions[activeIndex]);
+          } else {
+            onChange(inputValue);
+            setOpen(false);
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          setOpen(false);
+          break;
+      }
+    };
+    
+    // ✅ This new handler provides more robust scroll-locking logic.
+    const handleWheelScroll = (e: React.WheelEvent) => {
+      const el = e.currentTarget as HTMLElement;
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const deltaY = e.deltaY;
+
+      // If the dropdown isn't scrollable, don't interfere.
+      if (scrollHeight <= clientHeight) {
+        return;
+      }
+      
+      // If scrolling up and we're at the top, allow the page to scroll.
+      if (scrollTop === 0 && deltaY < 0) {
+        return;
+      }
+
+      // If scrolling down and we're at the bottom, allow the page to scroll.
+      // A 1px buffer is used to account for potential floating-point inaccuracies.
+      if (scrollHeight - clientHeight - scrollTop <= 1 && deltaY > 0) {
+        return;
+      }
+
+      // Otherwise, the user is scrolling within the dropdown, so we prevent the page from scrolling.
+      e.preventDefault();
+    };
 
     return (
       <div className={cn('relative', className)} ref={ref}>
         <Popover open={open} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
-            {/* The div is the trigger. Clicks on its children will bubble up and be handled here. */}
             <div className="relative">
               <Input
+                ref={inputRef}
                 value={inputValue}
                 onChange={handleInputChange}
-                // ❌ REMOVED onFocus to prevent conflict with the trigger's click handler.
+                onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 className={cn(
                   'w-full pr-8',
                   isInvalid && 'border-red-500 focus-visible:ring-red-500'
                 )}
               />
-              <ChevronsUpDown
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer"
-                // ❌ REMOVED onClick to prevent a double-toggle. The trigger handles it.
-              />
+              <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer" />
             </div>
           </PopoverTrigger>
           <PopoverContent
@@ -127,27 +189,36 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                 {loadingPlaceholder}
               </div>
             ) : (
-              <ScrollArea className="max-h-60">
-                {uniqueOptions.length > 0 ? (
-                  uniqueOptions.map((option) => (
-                    <Button
-                      key={option}
-                      variant="ghost"
-                      className="w-full justify-start font-normal h-9"
-                      onClick={() => handleSelect(option)}
-                    >
-                      <Check
+              <ScrollArea 
+                className="max-h-60"
+                // ✅ Apply the more robust wheel handler here.
+                onWheel={handleWheelScroll}
+              >
+                <div ref={listRef}>
+                  {filteredOptions.length > 0 ? (
+                    filteredOptions.map((option, index) => (
+                      <Button
+                        key={option}
+                        variant="ghost"
                         className={cn(
-                          'mr-2 h-4 w-4',
-                          value === option ? 'opacity-100' : 'opacity-0'
+                          'w-full justify-start font-normal h-9',
+                          index === activeIndex && 'bg-accent text-accent-foreground'
                         )}
-                      />
-                      {option}
-                    </Button>
-                  ))
-                ) : (
-                  <div className="py-6 text-center text-sm">{emptyPlaceholder}</div>
-                )}
+                        onClick={() => handleSelect(option)}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            value === option ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        {option}
+                      </Button>
+                    ))
+                  ) : (
+                    <div className="py-6 text-center text-sm">{emptyPlaceholder}</div>
+                  )}
+                </div>
               </ScrollArea>
             )}
           </PopoverContent>
