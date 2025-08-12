@@ -63,7 +63,7 @@
                     "description": "<b>Arrest Report:</b> Implemented the 25 day sentencing limit instituted by Legal Faction Management."
                 },
                 {
-                    "id": 7,
+                    "id": 8,
                     "type": "fix",
                     "description": "<b>Caselaw & Legal Resources:</b> Adjusted the language of certain caselaws, to stay in line with continuity, California -> San Andreas, Los Angeles -> Los Santos."
                 }
