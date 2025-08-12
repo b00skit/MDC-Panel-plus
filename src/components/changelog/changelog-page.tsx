@@ -95,7 +95,7 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                                 </div>
                                                 <div>
                                                     <p className="font-semibold">{details.label}</p>
-                                                    <p className="text-muted-foreground">{item.description}</p>
+                                                    <p className="text-muted-foreground" dangerouslySetInnerHTML={{ __html: item.description }} />
                                                 </div>
                                             </li>
                                         );
