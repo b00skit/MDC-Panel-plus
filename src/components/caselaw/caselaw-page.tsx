@@ -172,16 +172,16 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
                 description="Quickly access legal documents, schedules, and important caselaw."
             />
             
-            <div className="text-center text-muted-foreground p-4 border-2 border-dashed rounded-lg">
-                <p className="mb-2">Is what you're looking for not here? Submit feedback</p>
-                <Button onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
-            </div>
-
             {loading ? <SkeletonGrid count={3} CardComponent={Card} /> :
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                  {resources.map(resource => <ResourceCard key={resource.id} resource={resource} config={config} />)}
              </div>
             }
+
+            <div className="text-center text-muted-foreground p-4 border-2 border-dashed rounded-lg">
+                <p className="mb-2">Is what you're looking for not here? Submit feedback</p>
+                <Button onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
+            </div>
 
             <div>
                 <h2 className="text-2xl font-bold tracking-tight">Caselaw Database</h2>
