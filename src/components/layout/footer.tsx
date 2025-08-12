@@ -19,7 +19,7 @@ export async function Footer() {
                 alt="MDC Panel Logo"
             />
           <p className="text-center text-sm text-muted-foreground">
-            &copy; 2025-{new Date().getFullYear() + 1} {config.SITE_NAME}. All rights reserved. Version: {config.SITE_VERSION}
+            &copy; 2025-{new Date().getFullYear() + 1} {config.SITE_NAME}. All rights reserved. Version: <Link href="/changelog" className="hover:text-primary transition-colors">{config.SITE_VERSION}</Link>
           </p>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
