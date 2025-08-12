@@ -15,6 +15,8 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 type Resource = {
     id: string;
@@ -34,6 +36,7 @@ type Caselaw = {
     case: string;
     summary: string;
     implication: string;
+    jurisdiction: 'federal' | 'local';
 };
 
 type Config = {
@@ -135,16 +138,23 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     const [config] = useState<Config | null>(initialConfig);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [jurisdictionFilter, setJurisdictionFilter] = useState<'all' | 'federal' | 'local'>('all');
+
 
     const filteredCaselaws = useMemo(() => {
         if (!caselaws) return [];
         const lowercasedFilter = searchTerm.toLowerCase();
-        return caselaws.filter(law => 
-            law.case.toLowerCase().includes(lowercasedFilter) ||
-            law.summary.toLowerCase().includes(lowercasedFilter) ||
-            law.implication.toLowerCase().includes(lowercasedFilter)
-        );
-    }, [caselaws, searchTerm]);
+        
+        return caselaws.filter(law => {
+            const searchMatch = law.case.toLowerCase().includes(lowercasedFilter) ||
+                                law.summary.toLowerCase().includes(lowercasedFilter) ||
+                                law.implication.toLowerCase().includes(lowercasedFilter);
+
+            const jurisdictionMatch = jurisdictionFilter === 'all' || law.jurisdiction === jurisdictionFilter;
+
+            return searchMatch && jurisdictionMatch;
+        });
+    }, [caselaws, searchTerm, jurisdictionFilter]);
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
@@ -173,6 +183,11 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
                         disabled={loading}
                     />
                 </div>
+                 <div className="flex gap-2">
+                    <Button variant={jurisdictionFilter === 'all' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('all')}>All</Button>
+                    <Button variant={jurisdictionFilter === 'federal' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('federal')}>United States</Button>
+                    <Button variant={jurisdictionFilter === 'local' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('local')} disabled>San Andreas</Button>
+                 </div>
             </div>
 
             {loading ? <SkeletonGrid count={6} CardComponent={Card} /> :
@@ -189,3 +204,5 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
         </div>
     );
 }
+
+    

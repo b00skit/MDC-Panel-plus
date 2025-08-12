@@ -1,100 +1,119 @@
+
 {
     "caselaws": [
             {
                 "id": "terry-v-ohio",
                 "case": "Terry v. Ohio",
+                "jurisdiction": "federal",
                 "summary": "This case established the 'Terry frisk' or 'stop and frisk', allowing police to briefly detain a person for questioning if they have reasonable suspicion that the person has committed, is committing, or is about to commit a crime. If the officer also reasonably suspects the person is armed and dangerous, they may conduct a pat-down of their outer clothing for weapons.",
                 "implication": "Officers can perform a limited pat-down for weapons during an investigatory stop based on reasonable suspicion, without needing probable cause for an arrest."
             },
             {
                 "id": "miranda-v-arizona",
                 "case": "Miranda v. Arizona",
+                "jurisdiction": "federal",
                 "summary": "Established that a suspect in custody must be informed of their constitutional rights before being interrogated. These rights include the right to remain silent and the right to an attorney. Failure to provide this warning can make any subsequent confession inadmissible in court.",
                 "implication": "The 'Miranda Rights' must be read to suspects in custody before any interrogation begins. This ensures statements are voluntary and admissible."
             },
             {
                 "id": "graham-v-connor",
                 "case": "Graham v. Connor",
+                "jurisdiction": "federal",
                 "summary": "This ruling sets the 'objective reasonableness' standard for use of force by law enforcement. The force used must be evaluated from the perspective of a reasonable officer on the scene, considering the facts and circumstances of the particular case, including the severity of the crime, whether the suspect poses an immediate threat, and whether they are actively resisting or attempting to evade arrest.",
                 "implication": "All uses of force are judged based on what a reasonable officer would do in the same situation, not with the benefit of hindsight."
             },
             {
                 "id": "tennessee-v-garner",
                 "case": "Tennessee v. Garner",
+                "jurisdiction": "federal",
                 "summary": "The Supreme Court ruled that under the Fourth Amendment, a police officer may not use deadly force to prevent the escape of a fleeing suspect unless the officer has probable cause to believe that the suspect poses a significant threat of death or serious physical injury to the officer or others.",
                 "implication": "Deadly force against a fleeing suspect is only justified if they are a significant and immediate danger to others. It cannot be used simply to prevent escape."
             },
             {
                 "id": "carroll-v-united-states",
                 "case": "Carroll v. United States",
+                "jurisdiction": "federal",
                 "summary": "This case created the 'automobile exception' to the Fourth Amendment's warrant requirement. It allows police to search a vehicle without a warrant if they have probable cause to believe that evidence or contraband is located in the vehicle. This is due to the mobile nature of vehicles.",
                 "implication": "If probable cause exists, a vehicle can be searched on the spot without a warrant because it can be easily moved, potentially taking evidence with it."
             },
             {
                 "id": "arizona-v-gant",
                 "case": "Arizona v. Gant",
+                "jurisdiction": "federal",
                 "summary": "This case narrowed the scope of vehicle searches incident to arrest. Police may search a vehicle's passenger compartment only if it's 'reasonable to believe' that the arrested person might access the vehicle at the time of the search or that the vehicle contains evidence of the offense for which they are being arrested.",
                 "implication": "The automatic search of a vehicle's entire passenger area after an arrest is no longer permitted. The search must be justified by the possibility of the arrestee accessing the vehicle or the likelihood of finding evidence related to the specific crime of arrest."
             },
             {
                 "id": "whren-v-united-states",
                 "case": "Whren v. United States",
+                "jurisdiction": "federal",
                 "summary": "The court held that as long as an officer has a reasonable cause to believe that a traffic violation has occurred, they may stop any vehicle, even if the officer's true motive is to investigate a different, unrelated crime for which they lack reasonable suspicion or probable cause (a 'pretextual stop').",
                 "implication": "Any valid traffic violation is a legitimate basis for a vehicle stop, regardless of the officer's underlying investigatory motives."
             },
             {
                 "id": "mapp-v-ohio",
                 "case": "Mapp v. Ohio",
+                "jurisdiction": "federal",
                 "summary": "This seminal case applied the 'exclusionary rule' to the states through the Fourteenth Amendment. The rule prevents the prosecution from using evidence in court that was obtained by police in violation of the Fourth Amendment's prohibition on unreasonable searches and seizures.",
                 "implication": "Illegally obtained evidence is inadmissible in state courts. This 'fruit of the poisonous tree' doctrine is a major deterrent to unconstitutional police conduct."
             },
             {
                 "id": "katz-v-united-states",
                 "case": "Katz v. United States",
+                "jurisdiction": "federal",
                 "summary": "The court ruled that the Fourth Amendment 'protects people, not places,' establishing the 'reasonable expectation of privacy' standard. A search occurs when the government infringes on a person's expectation of privacy that society is prepared to recognize as reasonable.",
                 "implication": "Warrant requirements are no longer tied only to physical intrusion into property. Electronic surveillance or observation in places where a person has a reasonable expectation of privacy (like a phone booth) constitutes a search."
             },
             {
                 "id": "gideon-v-wainwright",
                 "case": "Gideon v. Wainwright",
+                "jurisdiction": "federal",
                 "summary": "In a unanimous decision, the Supreme Court held that the Sixth Amendment's guarantee of a right to counsel applies to criminal defendants in state court by way of the Fourteenth Amendment. The state must provide an attorney for indigent (poor) defendants in felony cases.",
                 "implication": "Every person accused of a serious crime has the right to a lawyer, regardless of their ability to pay. This led to the creation of public defender systems across the country."
             },
             {
                 "id": "chimel-v-san-andreas",
                 "case": "Chimel v. San Andreas",
+                "jurisdiction": "federal",
                 "summary": "This decision defined the permissible scope of a search incident to a lawful arrest. Police may search the arrestee's person and the area 'within his immediate control' (the person's 'wingspan') to find weapons or prevent the destruction of evidence.",
                 "implication": "Limits warrantless searches conducted after an arrest to the area immediately accessible to the arrestee. A search of an entire house after arresting someone in one room is not permitted without a warrant."
             },
            {
                 "id": "illinois-v-gates",
                 "case": "Illinois v. Gates",
+                "jurisdiction": "federal",
                 "summary": "The Court established the 'totality of the circumstances' standard for determining whether probable cause exists to issue a search warrant based on an informant's tip. This flexible standard replaced a previous, more rigid two-pronged test.",
                 "implication": "When seeking a warrant, magistrates should look at the big picture, including the informant's basis of knowledge and credibility, along with any corroborating police investigation, to make a practical, common-sense decision about whether evidence of a crime is likely in a certain place."
             },
             {
                 "id": "united-states-v-ross",
                 "case": "United States v. Ross",
+                "jurisdiction": "federal",
                 "summary": "This case clarified the scope of the 'automobile exception'. The Supreme Court held that if police have probable cause to search a vehicle for contraband, they may also search any container found within the vehicle that might reasonably contain the object of the search.",
                 "implication": "The scope of a warrantless vehicle search under probable cause is as broad as a search authorized by a warrant. If officers have probable cause to believe drugs are in a car, they can search anywhere drugs could be hidden, including the trunk and closed containers inside it."
             },
             {
                 "id": "schneckloth-v-bustamonte",
                 "case": "Schneckloth v. Bustamonte",
+                "jurisdiction": "federal",
                 "summary": "The Court addressed the standard for voluntary consent to a search. It held that voluntariness is a question of fact to be determined from the 'totality of the circumstances.' The state does not need to prove that the person giving consent knew they had the right to refuse.",
                 "implication": "Consent to a search is valid if it is voluntary and not the result of duress or coercion. Police are not required to inform a person of their right to refuse the search for the consent to be deemed voluntary."
             },
             {
                 "id": "nix-v-williams",
                 "case": "Nix v. Williams",
+                "jurisdiction": "federal",
                 "summary": "This case created the 'inevitable discovery' exception to the exclusionary rule. It allows evidence that was discovered through unconstitutional means to still be admitted in court if the prosecution can prove that the evidence would have inevitably been discovered by lawful means anyway.",
                 "implication": "Illegally obtained evidence may still be used against a defendant if the police can show that a proper, independent investigation would have eventually led them to the same evidence."
             },
             {
                 "id": "brigham-city-v-stuart",
                 "case": "Brigham City, Utah v. Stuart",
+                "jurisdiction": "federal",
                 "summary": "The Supreme Court unanimously ruled that police may enter a home without a warrant if they have an objectively reasonable basis for believing that an occupant is seriously injured or imminently threatened with such injury. This is part of the 'exigent circumstances' exception to the warrant requirement.",
                 "implication": "The 'emergency aid doctrine' allows for warrantless entry into a home to render aid or prevent serious injury. The officer's subjective motive is irrelevant as long as the circumstances objectively justify the action."
             }
         ]
     }
+
+    
