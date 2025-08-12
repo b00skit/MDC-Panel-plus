@@ -1,6 +1,28 @@
 {
     "changelogs": [
         {
+            "version": "3.0.3",
+            "type": "Hotfix",
+            "date": "2025-08-11",
+            "items": [
+                {
+                    "id": 1,
+                    "type": "fix",
+                    "description": "<b>Arrest Calculator:</b> Fixed it so the bail cost is always the highest amount and not the total for all charges."
+                },
+                {
+                    "id": 2,
+                    "type": "fix",
+                    "description": "<b>Arrest Calculator:</b> Add charge and calculate arrest buttons are always gonna remain on top of the charges, meaning you won't need to jump around to add the charges anymore."
+                },
+                {
+                    "id": 3,
+                    "type": "fix",
+                    "description": "<b>General:</b> Fixed the favicon for the website."
+                }
+            ]
+        },
+        {
             "version": "3.0.2",
             "type": "Hotfix",
             "date": "2025-08-11",
