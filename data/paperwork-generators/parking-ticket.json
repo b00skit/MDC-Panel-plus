@@ -48,9 +48,9 @@
         { 
             "type": "charge", 
             "name": "charges",
-            "showClass": true,
+            "showClass": false,
             "allowedTypes": { "I": true },
-            "allowedIds": "401-433",
+            "allowedIds": "418",
             "customFields": [
                 {
                     "type": "text",
@@ -58,7 +58,10 @@
                     "label": "Fine",
                     "placeholder": "Fine Amount"
                 }
-            ]
+            ],
+            "previewFields": {
+                "fine": true
+            }
         },
         { "type": "section", "title": "Parking Ticket Details" },
         { 

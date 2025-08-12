@@ -1,6 +1,38 @@
 {
     "changelogs": [
         {
+            "version": "3.0.2",
+            "type": "Hotfix",
+            "date": "2025-08-11",
+            "items": [
+                {
+                    "id": 1,
+                    "type": "fix",
+                    "description": "General: Added a Detective rank for the Los Santos County Sheriff's Department."
+                },
+                {
+                    "id": 2,
+                    "type": "feature",
+                    "description": "Caselaw & Legal Resources: Added a new Source & Year to each of the caselaws."
+                },
+                {
+                    "id": 3,
+                    "type": "fix",
+                    "description": "Caselaw & Legal Resources: Adjusted the legal citing for the Traffic Citations resource."
+                },
+                {
+                    "id": 4,
+                    "type": "feature",
+                    "description": "Simplified Penal Code: Added a way to filter by crime types."
+                },
+                {
+                    "id": 5,
+                    "type": "modification",
+                    "description": "Paperwork Generators: Modified the parking ticket citation to only offer the charge for Prohibited Parking."
+                }
+            ]
+        },
+        {
             "version": "3.0.1",
             "type": "Hotfix",
             "date": "2025-08-11",
