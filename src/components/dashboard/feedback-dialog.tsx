@@ -103,7 +103,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
         <DialogHeader>
           <DialogTitle>Share Your Feedback</DialogTitle>
           <DialogDescription>
-            Let us know what you think. Your feedback helps us improve.
+            Let me know what you think. Your feedback helps me improve.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">

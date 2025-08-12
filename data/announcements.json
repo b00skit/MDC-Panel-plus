@@ -2,15 +2,9 @@
     "announcements": [
         {
             "id": 1,
-            "date": "2025-08-10",
-            "title": "Welcome to MDC Panel+",
-            "content": "Welcome to the new and improved MDC Panel+! We've been working hard to bring you a more streamlined and powerful experience. Explore the new features and let us know what you think!"
-        },
-        {
-            "id": 2,
-            "date": "2025-08-11",
-            "title": "Advanced Arrest Report Now Live!",
-            "content": "The much-anticipated Advanced Arrest Report module is now live. This feature allows for more detailed and structured report generation, including automated narrative presets based on your selections. Check it out on the Arrest Report page by enabling the toggle.",
+            "date": "2025-08-12",
+            "title": "Welcome to the new MDC Panel!",
+            "content": "I've completely revamped the MDC Panel to a new look, a new feel, a more smoother experience. I hope you enjoy!",
             "button": {
                 "text": "View Changelog",
                 "href": "/changelog"

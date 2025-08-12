@@ -1,51 +1,49 @@
 {
     "changelogs": [
         {
-            "version": "3.0.1",
-            "type": "Hotfix",
-            "date": "2025-08-12",
-            "items": [
-                {
-                    "id": 1,
-                    "type": "fix",
-                    "description": "Fixed an issue where the advanced arrest report preview would not render fonts correctly."
-                },
-                {
-                    "id": 2,
-                    "type": "fix",
-                    "description": "Corrected validation logic on the basic arrest report to only trigger on submission."
-                },
-                {
-                    "id": 3,
-                    "type": "modification",
-                    "description": "Aligned the GitHub icon in the sidebar for better visual consistency."
-                }
-            ]
-        },
-        {
             "version": "3.0.0",
             "type": "Major Update",
             "date": "2025-08-11",
             "items": [
                 {
                     "id": 1,
-                    "type": "feature",
-                    "description": "Introduced the Announcements system to keep users updated with the latest news."
+                    "type": "modification",
+                    "description": "General: The website has been re-built from the ground up via next.js and react."
                 },
                 {
                     "id": 2,
-                    "type": "feature",
-                    "description": "Implemented the Advanced Arrest Report with modifier presets for automated text generation."
+                    "type": "modification",
+                    "description": "General: The frontend layout, design and UX of the website has been redesigned."
                 },
                 {
                     "id": 3,
                     "type": "modification",
-                    "description": "Overhauled the Settings page for managing default and alternative characters."
+                    "description": "Paperwork Generators: The paperwork generators have been re-made and now compile via json instead of them being hard-coded, making any modification super simple."
                 },
                 {
                     "id": 4,
-                    "type": "fix",
-                    "description": "Resolved multiple data persistence issues across application stores."
+                    "type": "modification",
+                    "description": "Arrest Report: The arrest report format has been changed to be as close to the realistic variant of the LA booking report"
+                },
+                {
+                    "id": 5,
+                    "type": "feature",
+                    "description": "Arrest Report: Added an advanced variant of the arrest report, allowing for the Los Santos Police Department to continue using the MDC Panel"
+                },
+                {
+                    "id": 6,
+                    "type": "feature",
+                    "description": "Simplified Penal Code: Added a simplified penal code to allow for quick-searching of charges and sentences."
+                },
+                {
+                    "id": 7,
+                    "type": "feature",
+                    "description": "Caselaw & Legal Resources: Added a simple interface that allows for searching of caselaw and provides a simple overview to some legal resources."
+                },
+                {
+                    "id": 8,
+                    "type": "feature",
+                    "description": "General: Added an announcements section to allow for more simple management of announcements."
                 }
             ]
         }

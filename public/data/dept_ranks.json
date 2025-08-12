@@ -8,9 +8,7 @@
         "Sergeant II",
         "Lieutenant I",
         "Lieutenant II",
-        "Captain I",
-        "Captain II",
-        "Captain III",
+        "Captain",
         "Commander",
         "Deputy Chief of Police",
         "Assistant Chief of Police",
@@ -28,10 +26,45 @@
         "Undersheriff",
         "Sheriff"
     ],
-    "San Andreas State Parks": [
-        "Park Ranger",
-        "Senior Park Ranger",
-        "Supervising Park Ranger",
-        "Chief Park Ranger"
+    "State Fire Marshals": [
+        "Deputy Fire Marshal Trainee",
+        "Deputy Fire Marshal",
+        "Deputy Fire Marshal II",
+        "Deputy Fire Marshal III",
+        "Division Chief",
+        "State Fire Marshal",
+        "Director"
+    ],
+    "Los Santos Parking Enforcement": [
+        "Parking Enforcement Inspector",
+        "Senior Parking Enforcement Inspector",
+        "Commissioner of Parking Enforcement"
+    ],
+    "San Andreas Aviation Administration": [
+        "Investigator",
+        "Senior Investigator",
+        "Deputy Administrator",
+        "Administrator"
+    ],
+    "District Attorney's Office": [
+        "Deputy District Attorney",
+        "Assistant District Attorney",
+        "District Attorney",
+        "Chief of Staff"
+    ],
+    "San Andreas Department of Corrections": [
+        "Correction Officer I",
+        "Correction Officer II",
+        "Correction Officer III",
+        "Parole Agent I",
+        "Parole Agent II",
+        "Parole Agent III",
+        "Special Agent",
+        "Sergeant",
+        "Lieutenant",
+        "Captain",
+        "Associate Warden",
+        "Deputy Chief Warden",
+        "Warden"
     ]
 }

@@ -1,11 +1,11 @@
 
 {
     "enabled": true,
-    "dismissible": true,
+    "dismissible": false,
     "variant": "default",
     "icon": "Info",
-    "title": "We Value Your Feedback!",
-    "content": "Have thoughts on the new design or features? Let us know what you think.",
+    "title": "Send your feedback!",
+    "content": "Let me know what you think about the beta.",
     "button": {
         "text": "Give Feedback",
         "type": "function",
