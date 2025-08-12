@@ -59,7 +59,7 @@ export default function PrivacyPolicyPage() {
                 duration of a page visit).
               </li>
               <li>
-                <strong>Website</strong> refers to LEO Assistant+, accessible
+                <strong>Website</strong> refers to MDC Panel+, accessible
                 from your current URL.
               </li>
               <li>
