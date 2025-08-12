@@ -183,6 +183,16 @@ export function ArrestCalculatorPage() {
       />
 
       <div className="space-y-4">
+        <div className="flex items-center gap-4">
+          <Button onClick={() => addCharge()} disabled={loading}>
+            <Plus className="mr-2 h-4 w-4" /> Add Charge
+          </Button>
+
+          <Button variant="default" disabled={charges.length === 0} onClick={handleCalculate}>
+            Calculate Arrest
+          </Button>
+        </div>
+
         {charges.map((chargeRow) => {
           const chargeDetails = getChargeDetails(chargeRow.chargeId);
           const isDrugCharge = !!chargeDetails?.drugs;
@@ -441,16 +451,6 @@ export function ArrestCalculatorPage() {
             </div>
           );
         })}
-
-        <div className="flex items-center gap-4 mt-4">
-          <Button onClick={() => addCharge()} disabled={loading}>
-            <Plus className="mr-2 h-4 w-4" /> Add Charge
-          </Button>
-
-          <Button variant="default" disabled={charges.length === 0} onClick={handleCalculate}>
-            Calculate Arrest
-          </Button>
-        </div>
         
         {showDrugChargeWarning && (
             <Alert variant="warning" className="mt-4">
@@ -468,5 +468,3 @@ export function ArrestCalculatorPage() {
     </div>
   );
 }
-
-    
