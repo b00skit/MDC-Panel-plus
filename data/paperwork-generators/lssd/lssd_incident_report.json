@@ -1,0 +1,68 @@
+
+{
+    "id": "lssd-incident-report",
+    "title": "Incident Report",
+    "description": "Generate a standard LSSD incident report.",
+    "icon": "FileSearch",
+    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:4px solid black\"><tbody><tr><td colspan=\"3\" style=\"text-align:center;padding-bottom:2rem\"><h1 style=\"font-family:Arial,sans-serif;font-size:2rem;font-weight:700;text-transform:uppercase;margin:0\">Los Santos Sheriff's Department</h1><h2 style=\"font-family:Arial,sans-serif;font-size:1.5rem;font-weight:600;margin:0\">Incident Report</h2></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">1. GENERAL INFORMATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">A. DATE:</strong> {{general.date}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">B. TIME (24HR):</strong> {{general.time}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">C. CALLSIGN:</strong> {{general.callSign}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">2. DEPUTY INFORMATION</h3>{{#each officers}}<table style=\"width:100%;border-collapse:collapse;margin-bottom:.5rem\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">A. DEPUTY NAME:</strong> {{this.name}}</td><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">B. RANK:</strong> {{this.rank}}</td></tr></tbody></table>{{/each}}</td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">3. LOCATION DETAILS</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">A. DISTRICT:</strong> {{location.district}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">B. STREET:</strong> {{location.street}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">C. REPORTING DISTRICT:</strong> {{reporting_district}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">4. INCIDENT DETAILS</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem\"><strong style=\"font-family:Arial,sans-serif\">A. INCIDENT TITLE:</strong> {{incident_title}}</td></tr><tr><td style=\"border:1px solid black;padding:.5rem\"><strong style=\"font-family:Arial,sans-serif\">B. NARRATIVE:</strong><br/><p style=\"white-space:pre-wrap\">{{narrative}}</p></td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">5. INVOLVED PERSONS</h3>{{#each persons}}<table style=\"width:100%;border-collapse:collapse;margin-bottom:.5rem;border:2px solid black\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">NAME:</strong> {{this.name}}</td><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">CLASSIFICATION:</strong> {{this.classification}}</td></tr><tr><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">AGE:</strong> {{this.age}}</td><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">PHONE:</strong> {{this.phone}}</td></tr><tr><td colspan=\"2\" style=\"border:1px solid black;padding:.5rem\"><strong style=\"font-family:Arial,sans-serif\">RESIDENCE:</strong> {{this.residence}}</td></tr><tr><td colspan=\"2\" style=\"border:1px solid black;padding:.5rem\"><strong style=\"font-family:Arial,sans-serif\">RELATION TO INCIDENT:</strong> {{this.relation}}</td></tr></tbody></table>{{/each}}</td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">6. SUSPECTED CRIMES</h3><table style=\"width:100%;border-collapse:collapse;border:1px solid black\"><thead style=\"background-color:#e5e7eb\"><tr><th style=\"border:1px solid black;padding:.5rem;font-family:Arial,sans-serif\">CHARGE</th><th style=\"border:1px solid black;padding:.5rem;font-family:Arial,sans-serif\">CLASS</th></tr></thead><tbody>{{#each charges}}<tr><td style=\"border:1px solid black;padding:.5rem\">{{#with (lookup @root.penalCode this.chargeId)}}{{this.id}}. {{this.charge}}{{/with}}</td><td style=\"border:1px solid black;padding:.5rem\">{{this.class}}</td></tr>{{/each}}</tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">7. EVIDENCE</h3>{{#each photographs}}<p>PHOTOGRAPH: {{this.link}}</p>{{/each}}{{#each evidence_descriptions}}<p>DESCRIPTION: {{this.description}}</p>{{/each}}</td></tr></tbody></table>",
+    "form": [
+        { "type": "hidden", "name": "generatorType", "value": "IncidentReport" },
+        { "type": "section", "title": "General Section" },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Deputy Section" },
+        { "type": "officer", "name": "officers" },
+        { "type": "section", "title": "Location Details" },
+        { "type": "location", "name": "location", "showDistrict": true },
+        { "type": "dropdown", "name": "reporting_district", "label": "Reporting District of Incident", "placeholder": "Select Reporting District", "options": ["Area of Davis", "Area of Senora"], "required": true },
+        { "type": "section", "title": "Involved Persons" },
+        {
+            "type": "input_group",
+            "name": "persons",
+            "label": "Involved Person",
+            "fields": [
+                { "type": "text", "name": "name", "label": "Full Name", "placeholder": "Firstname Lastname", "required": true },
+                { "type": "dropdown", "name": "classification", "label": "Classification", "options": ["Victim", "Suspect", "Witness", "Informant"], "required": true },
+                { "type": "text", "name": "age", "label": "Age", "placeholder": "##" },
+                { "type": "text", "name": "phone", "label": "Phone Number", "placeholder": "#######" },
+                { "type": "text", "name": "residence", "label": "Residence", "placeholder": "1000 Grove Street" },
+                { "type": "text", "name": "relation", "label": "Relation to Incident", "placeholder": "Suspect attacked officer.", "required": true }
+            ]
+        },
+        { "type": "section", "title": "Suspected Crimes" },
+        { 
+            "type": "charge", 
+            "name": "charges",
+            "showClass": true
+        },
+        { "type": "section", "title": "Incident Details" },
+        { "type": "text", "name": "incident_title", "label": "Incident Title", "placeholder": "Deputy Involved Shooting", "required": true },
+        { "type": "textarea", "name": "narrative", "label": "Narrative", "placeholder": "Enter the detailed account of the incident in first person and in chronological order.", "required": true },
+        { "type": "section", "title": "Evidence" },
+        { 
+            "type": "input_group",
+            "name": "photographs",
+            "label": "Photograph Link(s)",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "link",
+                    "label": "Photograph Link",
+                    "placeholder": "https://i.imgur.com/example.png"
+                }
+            ]
+        },
+        { 
+            "type": "input_group",
+            "name": "evidence_descriptions",
+            "label": "Evidence Description(s)",
+            "fields": [
+                {
+                    "type": "textarea",
+                    "name": "description",
+                    "label": "Description",
+                    "placeholder": "Describe a piece of evidence."
+                }
+            ]
+        }
+    ]
+}
