@@ -223,12 +223,15 @@ export default function ArrestReportPage() {
           }
           
           if (bailAuto !== false) {
-            acc.bailCost += getBailCost() || 0;
+            const currentBail = getBailCost() || 0;
+            if (currentBail > acc.highestBail) {
+                acc.highestBail = currentBail;
+            }
           }
           
           return acc;
         },
-        { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: 0, suspension: 0, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
+        { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: 0, suspension: 0, bailStatus: { eligible: false, discretionary: false, noBail: false }, highestBail: 0 }
       );
     
       if (totals.minTime > totals.maxTime) {
@@ -412,7 +415,7 @@ export default function ArrestReportPage() {
                                 <TableHead>Total Impound</TableHead>
                                 <TableHead>Total Suspension</TableHead>
                                 <TableHead>Bail Status</TableHead>
-                                <TableHead>Total Bail Cost</TableHead>
+                                <TableHead>Highest Bail Amount</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -438,7 +441,7 @@ export default function ArrestReportPage() {
                                         }
                                     })()}
                                 </TableCell>
-                                <TableCell>${totals.bailCost.toLocaleString()}</TableCell>
+                                <TableCell>${totals.highestBail.toLocaleString()}</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
@@ -449,7 +452,7 @@ export default function ArrestReportPage() {
                 <CopyableCard label="Min Minutes" value={minTimeCapped} />
                 <CopyableCard label="Max Minutes" value={maxTimeCapped} />
                 <CopyableCard label="Total Fine" value={totals.fine} />
-                <CopyableCard label="Bail Cost" value={totals.bailCost} />
+                <CopyableCard label="Bail Cost" value={totals.highestBail} />
             </div>
         </div>
     );

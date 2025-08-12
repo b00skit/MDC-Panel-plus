@@ -207,7 +207,7 @@ const SummaryTable = ({ totals }: { totals: any }) => {
                             <TableHead>Impound</TableHead>
                             <TableHead>Suspension</TableHead>
                             <TableHead>Bail Status</TableHead>
-                            <TableHead>Total Bail Cost</TableHead>
+                            <TableHead>Highest Bail Amount</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -233,7 +233,7 @@ const SummaryTable = ({ totals }: { totals: any }) => {
                                     }
                                 })()}
                             </TableCell>
-                            <TableCell>${totals.bailCost.toLocaleString()}</TableCell>
+                            <TableCell>${totals.highestBail.toLocaleString()}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
@@ -460,7 +460,7 @@ const BasicFormattedReport = ({ formData, report, penalCode, totals, innerRef }:
                         <p style={{ margin: 0 }}><strong>TOTAL FINE:</strong> ${totals ? totals.fine.toLocaleString() : 'N/A'}</p>
                         <p style={{ margin: 0 }}><strong>POINTS:</strong> {totals ? totals.points : 'N/A'}</p>
                         <p style={{ margin: 0 }}><strong>BAIL STATUS:</strong> {totals ? getBailStatus(totals) : 'N/A'}</p>
-                        <p style={{ margin: 0 }}><strong>BAIL AMOUNT:</strong> ${totals ? totals.bailCost.toLocaleString() : 'N/A'}</p>
+                        <p style={{ margin: 0 }}><strong>BAIL AMOUNT:</strong> ${totals ? totals.highestBail.toLocaleString() : 'N/A'}</p>
                     </td>
                     </tr>
                 </tbody>
@@ -708,12 +708,15 @@ function ArrestSubmitContent() {
         }
         
         if (bailAuto !== false) {
-          acc.bailCost += getBailCost() || 0;
+            const currentBail = getBailCost() || 0;
+            if (currentBail > acc.highestBail) {
+                acc.highestBail = currentBail;
+            }
         }
         
         return acc;
       },
-      { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
+      { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: false, suspension: false, bailStatus: { eligible: false, discretionary: false, noBail: false }, highestBail: 0 }
     ) : null;
   
     useEffect(() => {
