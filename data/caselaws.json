@@ -361,15 +361,6 @@
             "source": "https://www.oyez.org/cases/2016/16-369"
         },
         {
-            "id": "united-states-v-jones",
-            "case": "United States v. Jones",
-            "jurisdiction": "federal",
-            "year": "2012",
-            "summary": "The act of attaching a GPS tracking device to a suspect's vehicle and using it to monitor the vehicle's movements constitutes a 'search' under the Fourth Amendment.",
-            "implication": "Law enforcement must generally obtain a warrant before physically attaching a GPS tracker to a vehicle for monitoring, as it constitutes a physical trespass on property for the purpose of obtaining information.",
-            "source": "https://www.oyez.org/cases/2011/10-1259"
-        },
-        {
             "id": "florida-v-jimeno",
             "case": "Florida v. Jimeno",
             "jurisdiction": "federal",
