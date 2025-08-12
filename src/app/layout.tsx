@@ -13,6 +13,8 @@ type SiteConfig = {
   SITE_NAME: string;
   SITE_DESCRIPTION: string;
   SITE_VERSION: string;
+  SITE_FAVICON?: string;
+  SITE_IMAGE?: string;
 };
 
 // This function is marked as async because it fetches data.
@@ -26,6 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: config.SITE_NAME,
     description: config.SITE_DESCRIPTION,
+    icons: {
+        icon: config.SITE_FAVICON || '/favicon.ico',
+    },
+    openGraph: {
+        images: config.SITE_IMAGE ? [config.SITE_IMAGE] : [],
+    }
   };
 }
 
