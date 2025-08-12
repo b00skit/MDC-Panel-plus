@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mdc-panel-plus
+    ports:
+      - "3003:3003"
+    restart: unless-stopped

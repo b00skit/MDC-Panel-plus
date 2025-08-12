@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+.yarn
+
+# Next.js build outputs
+.next
+out
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Git
+.git
+.gitignore
+
+# Environment variables
+.env
+.env.local
+
+# Project IDX files
+.idx
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
