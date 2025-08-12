@@ -14,7 +14,7 @@ import {
   FileText,
   BookOpen,
   Landmark,
-  Puzzle,
+  Archive,
   ExternalLink,
   Github,
   Bell,
@@ -164,7 +164,7 @@ export function SidebarNav() {
               tooltip="Paperwork Generators"
             >
               <Link href="/paperwork-generators">
-                <Puzzle />
+                <Archive />
                 <span>Paperwork Generators</span>
               </Link>
             </SidebarMenuButton>

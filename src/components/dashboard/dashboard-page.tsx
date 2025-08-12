@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { PageHeader } from './page-header';
 import { ModuleCard, type ModuleCardProps } from './module-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Gavel, FileText, BookOpen, Landmark, Settings, Puzzle } from 'lucide-react';
+import { Gavel, FileText, BookOpen, Landmark, Settings, Archive } from 'lucide-react';
 
 const modules: ModuleCardProps[] = [
   {
@@ -25,7 +25,7 @@ const modules: ModuleCardProps[] = [
    {
     title: "Paperwork Generators",
     description: "Generate different types of paperwork.",
-    icon: <Puzzle className="w-8 h-8 text-primary" />,
+    icon: <Archive className="w-8 h-8 text-primary" />,
     href: "/paperwork-generators",
     dataAiHint: "document generator"
   },
