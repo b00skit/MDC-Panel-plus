@@ -136,15 +136,17 @@ export function DashboardPage({ notice }: DashboardPageProps) {
                         <AlertTitle>{notice.title}</AlertTitle>
                         <AlertDescription>
                             {notice.content}
-                            {notice.button && (
-                                <Button asChild variant="link" className="p-0 h-auto mt-2 font-semibold">
+                        </AlertDescription>
+                        {notice.button && (
+                            <div className="mt-4">
+                                <Button asChild>
                                     <Link href={notice.button.href}>
                                         {notice.button.text}
-                                        <ArrowRight className="ml-1 h-4 w-4" />
+                                        <ArrowRight className="ml-2 h-4 w-4" />
                                     </Link>
                                 </Button>
-                            )}
-                        </AlertDescription>
+                            </div>
+                        )}
                     </div>
                 </div>
             </Alert>
