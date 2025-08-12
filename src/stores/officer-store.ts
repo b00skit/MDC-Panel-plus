@@ -1,3 +1,4 @@
+
 'use client';
 
 import create from 'zustand';
@@ -22,6 +23,7 @@ interface OfficerState {
   removeAlternativeCharacter: (id: number) => void;
   updateAlternativeCharacter: (id: number, updatedFields: Partial<Omit<Officer, 'id'>>) => void;
   swapOfficer: (officerId: number, altCharToUse: Officer) => void;
+  reset: () => void;
 }
 
 const getInitialOfficer = (): Officer => ({
@@ -198,6 +200,7 @@ export const useOfficerStore = create<OfficerState>()(
               };
             });
           },
+          reset: () => set({ officers: [], alternativeCharacters: [] }),
       }),
       {
         name: 'officer-storage',

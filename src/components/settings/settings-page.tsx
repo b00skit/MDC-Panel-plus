@@ -55,6 +55,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     addAlternativeCharacter,
     updateAlternativeCharacter,
     removeAlternativeCharacter,
+    reset: resetOfficers
   } = useOfficerStore();
   const { hiddenFactions, toggleFactionVisibility, setFactionGroups } = useSettingsStore();
 
@@ -64,7 +65,6 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
   const resetCharges = useChargeStore(state => state.resetCharges);
   const resetBasicForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
-  const resetOfficers = useOfficerStore(state => state.setInitialOfficers);
 
 
   useEffect(() => {
