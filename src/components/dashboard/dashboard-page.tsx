@@ -9,6 +9,7 @@ import { Gavel, FileText, BookOpen, Landmark, Settings, Archive, X, Info, AlertT
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { FeedbackDialog } from './feedback-dialog';
 
 const modules: ModuleCardProps[] = [
   {
@@ -70,7 +71,9 @@ type Notice = {
     content: string;
     button?: {
         text: string;
-        href: string;
+        href?: string;
+        type: 'href' | 'function';
+        action?: 'open_feedback_dialog';
     }
 } | null;
 
@@ -94,6 +97,7 @@ const ModuleCardSkeleton = () => (
 export function DashboardPage({ notice }: DashboardPageProps) {
   const [loading, setLoading] = useState(true);
   const [isNoticeVisible, setIsNoticeVisible] = useState(false);
+  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -119,10 +123,17 @@ export function DashboardPage({ notice }: DashboardPageProps) {
     sessionStorage.setItem('notice_dismissed', 'true');
   }
 
+  const handleButtonClick = () => {
+    if (notice?.button?.type === 'function' && notice.button.action === 'open_feedback_dialog') {
+        setIsFeedbackDialogOpen(true);
+    }
+  };
+
   const NoticeIcon = notice?.icon ? ICONS[notice.icon] : null;
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
+        <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
        {isNoticeVisible && notice && (
             <Alert variant={notice.variant || 'default'} className="mb-6">
                 {notice.dismissible && (
@@ -139,12 +150,18 @@ export function DashboardPage({ notice }: DashboardPageProps) {
                         </AlertDescription>
                         {notice.button && (
                             <div className="mt-4">
-                                <Button asChild>
-                                    <Link href={notice.button.href}>
-                                        {notice.button.text}
-                                        <ArrowRight className="ml-2 h-4 w-4" />
-                                    </Link>
-                                </Button>
+                                {notice.button.type === 'href' && notice.button.href ? (
+                                    <Button asChild>
+                                        <Link href={notice.button.href}>
+                                            {notice.button.text}
+                                            <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Link>
+                                    </Button>
+                                ) : (
+                                    <Button onClick={handleButtonClick}>
+                                         {notice.button.text}
+                                    </Button>
+                                )}
                             </div>
                         )}
                     </div>
