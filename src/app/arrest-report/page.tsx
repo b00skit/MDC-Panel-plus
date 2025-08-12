@@ -231,6 +231,10 @@ export default function ArrestReportPage() {
         { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: 0, suspension: 0, bailStatus: { eligible: false, discretionary: false, noBail: false }, bailCost: 0 }
       );
     
+      if (totals.minTime > totals.maxTime) {
+        totals.maxTime = totals.minTime;
+      }
+      
       const getBailStatus = () => {
         if(totals.bailStatus.noBail) return 'NOT ELIGIBLE';
         if(totals.bailStatus.discretionary) return 'DISCRETIONARY';
