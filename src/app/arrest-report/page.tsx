@@ -18,15 +18,15 @@ import { AlertTriangle, Clipboard } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import { Skeleton } from '../ui/skeleton';
-import { ArrestReportForm } from './arrest-report-form';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ArrestReportForm } from '@/components/arrest-report/arrest-report-form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Label } from '../ui/label';
-import { Switch } from '../ui/switch';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
-import { AdvancedArrestReportForm } from './advanced-arrest-report-form';
+import { AdvancedArrestReportForm } from '@/components/arrest-report/advanced-arrest-report-form';
 import config from '../../../data/config.json';
 
 
@@ -115,7 +115,7 @@ const CopyableCard = ({ label, value }: { label: string, value: string | number 
     );
   };
 
-export function ArrestReportPage() {
+export default function ArrestReportPage() {
   const { report, penalCode } = useChargeStore();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
