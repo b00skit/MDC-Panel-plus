@@ -27,11 +27,6 @@ interface ChangelogPageProps {
 }
 
 const itemTypeDetails = {
-    fix: {
-        icon: Wrench,
-        color: 'text-orange-500',
-        label: 'Fix',
-    },
     feature: {
         icon: PlusCircle,
         color: 'text-green-500',
@@ -42,6 +37,11 @@ const itemTypeDetails = {
         color: 'text-blue-500',
         label: 'Modification',
     },
+    fix: {
+        icon: Wrench,
+        color: 'text-orange-500',
+        label: 'Fix',
+    },
 };
 
 const changelogTypeColors = {
@@ -50,6 +50,7 @@ const changelogTypeColors = {
     'Major Update': 'bg-green-500/10 text-green-500 border-green-500/50',
 };
 
+const typeOrder = ['feature', 'modification', 'fix'];
 
 export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
     const sortedChangelogs = useMemo(() => {
@@ -85,7 +86,7 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-4">
-                                    {changelog.items.map((item) => {
+                                    {[...changelog.items].sort((a, b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type)).map((item) => {
                                         const details = itemTypeDetails[item.type];
                                         const Icon = details.icon;
                                         return (
