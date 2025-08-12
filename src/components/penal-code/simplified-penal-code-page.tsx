@@ -11,6 +11,7 @@ import { AlertCircle, Search } from 'lucide-react';
 import { type PenalCode, type Charge } from '@/stores/charge-store';
 import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
+import { Button } from '../ui/button';
 
 const getTypeClasses = (type: Charge['type']) => {
     switch (type) {
@@ -136,6 +137,7 @@ export function SimplifiedPenalCodePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [typeFilter, setTypeFilter] = useState<'all' | 'F' | 'M' | 'I'>('all');
 
     useEffect(() => {
         fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
@@ -159,14 +161,18 @@ export function SimplifiedPenalCodePage() {
     const filteredCharges = useMemo(() => {
         if (!penalCode) return [];
         const lowercasedFilter = searchTerm.toLowerCase();
+        
         return Object.values(penalCode).filter(charge => {
-            if (charge.type === '?') return false; // Exclude placeholder charges
-            return (
-                charge.charge.toLowerCase().includes(lowercasedFilter) ||
-                charge.id.includes(lowercasedFilter)
-            );
+            if (charge.type === '?') return false;
+
+            const searchMatch = charge.charge.toLowerCase().includes(lowercasedFilter) ||
+                                charge.id.includes(lowercasedFilter);
+
+            const typeMatch = typeFilter === 'all' || charge.type === typeFilter;
+
+            return searchMatch && typeMatch;
         });
-    }, [penalCode, searchTerm]);
+    }, [penalCode, searchTerm, typeFilter]);
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -175,15 +181,23 @@ export function SimplifiedPenalCodePage() {
                 description="Browse and search through the list of charges."
             />
 
-            <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                    type="search"
-                    placeholder="Search by charge name or ID..."
-                    className="w-full pl-10"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div className="space-y-4 mb-6">
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Search by charge name or ID..."
+                        className="w-full pl-10"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <div className="flex gap-2">
+                    <Button variant={typeFilter === 'all' ? 'default' : 'outline'} onClick={() => setTypeFilter('all')}>All</Button>
+                    <Button variant={typeFilter === 'F' ? 'default' : 'outline'} onClick={() => setTypeFilter('F')}>Felonies</Button>
+                    <Button variant={typeFilter === 'M' ? 'default' : 'outline'} onClick={() => setTypeFilter('M')}>Misdemeanors</Button>
+                    <Button variant={typeFilter === 'I' ? 'default' : 'outline'} onClick={() => setTypeFilter('I')}>Infractions</Button>
+                 </div>
             </div>
 
             {loading && <PenalCodeSkeleton />}
