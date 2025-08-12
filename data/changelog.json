@@ -19,7 +19,7 @@
                     "id": 3,
                     "type": "fix",
                     "description": "General: Adjusted the dockerfile, fixing an issue regarding the serving of data to the production server."
-                },
+                }
             ]
         },
         {
