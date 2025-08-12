@@ -5,7 +5,9 @@ import { useState, useEffect } from 'react';
 import { PageHeader } from './page-header';
 import { ModuleCard, type ModuleCardProps } from './module-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Gavel, FileText, BookOpen, Landmark, Settings, Archive } from 'lucide-react';
+import { Gavel, FileText, BookOpen, Landmark, Settings, Archive, X, Info, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '../ui/button';
 
 const modules: ModuleCardProps[] = [
   {
@@ -52,6 +54,25 @@ const modules: ModuleCardProps[] = [
   },
 ];
 
+const ICONS: { [key: string]: React.ReactNode } = {
+    Info: <Info className="h-4 w-4" />,
+    AlertTriangle: <AlertTriangle className="h-4 w-4" />,
+    CheckCircle: <CheckCircle className="h-4 w-4" />,
+};
+
+type Notice = {
+    enabled: boolean;
+    dismissible: boolean;
+    variant: 'default' | 'destructive' | 'warning';
+    icon: string;
+    title: string;
+    content: string;
+} | null;
+
+interface DashboardPageProps {
+    notice: Notice;
+}
+
 const ModuleCardSkeleton = () => (
   <div className="p-6 flex flex-col justify-between rounded-lg border bg-card h-[190px]">
     <div className="flex items-start justify-between">
@@ -65,19 +86,49 @@ const ModuleCardSkeleton = () => (
   </div>
 );
 
-export function DashboardPage() {
+export function DashboardPage({ notice }: DashboardPageProps) {
   const [loading, setLoading] = useState(true);
+  const [isNoticeVisible, setIsNoticeVisible] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
 
+    if (notice?.enabled) {
+        const noticeDismissed = sessionStorage.getItem('notice_dismissed');
+        if (noticeDismissed !== 'true') {
+            setIsNoticeVisible(true);
+        }
+    }
+
     return () => clearTimeout(timer);
-  }, []);
+  }, [notice]);
+
+  const handleDismissNotice = () => {
+    setIsNoticeVisible(false);
+    if(notice?.dismissible) {
+        sessionStorage.setItem('notice_dismissed', 'true');
+    }
+  }
+
+  const NoticeIcon = notice?.icon ? ICONS[notice.icon] : null;
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
+       {isNoticeVisible && notice && (
+            <Alert variant={notice.variant || 'default'} className="mb-6 relative">
+                {notice.dismissible && (
+                    <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={handleDismissNotice}>
+                        <X className="h-4 w-4" />
+                    </Button>
+                )}
+                {NoticeIcon}
+                <AlertTitle>{notice.title}</AlertTitle>
+                <AlertDescription>{notice.content}</AlertDescription>
+            </Alert>
+       )}
+
       <PageHeader
         title="Dashboard"
         description="Welcome to MDC Panel+. Here are your available tools."
