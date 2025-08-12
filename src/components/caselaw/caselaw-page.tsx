@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { Badge } from '../ui/badge';
 
 type Resource = {
     id: string;
@@ -97,7 +98,12 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
 const CaselawCard = ({ caselaw }: { caselaw: Caselaw }) => (
     <Card>
         <CardHeader>
-            <CardTitle>{caselaw.case}</CardTitle>
+            <div className="flex justify-between items-start">
+                <CardTitle>{caselaw.case}</CardTitle>
+                <Badge variant={caselaw.jurisdiction === 'federal' ? 'default' : 'secondary'}>
+                    {caselaw.jurisdiction === 'federal' ? 'United States' : 'San Andreas'}
+                </Badge>
+            </div>
         </CardHeader>
         <CardContent className="space-y-4">
             <div>
@@ -186,7 +192,7 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
                  <div className="flex gap-2">
                     <Button variant={jurisdictionFilter === 'all' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('all')}>All</Button>
                     <Button variant={jurisdictionFilter === 'federal' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('federal')}>United States</Button>
-                    <Button variant={jurisdictionFilter === 'local' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('local')} disabled>San Andreas</Button>
+                    <Button variant={jurisdictionFilter === 'local' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('local')}>San Andreas</Button>
                  </div>
             </div>
 
@@ -204,5 +210,3 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
         </div>
     );
 }
-
-    
