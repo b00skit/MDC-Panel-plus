@@ -17,6 +17,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Explicitly create the data directory
+RUN mkdir -p ./data
+
 # Copy built assets from the builder stage
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/data ./data
