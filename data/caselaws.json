@@ -91,8 +91,8 @@
             "source": "https://www.oyez.org/cases/1962/155"
         },
         {
-            "id": "chimel-v-california",
-            "case": "Chimel v. California",
+            "id": "chimel-v-san-andreas",
+            "case": "Chimel v. San Andreas",
             "jurisdiction": "federal",
             "year": "1969",
             "summary": "This decision defined the permissible scope of a search incident to a lawful arrest. Police may search the arrestee's person and the area 'within his immediate control' (the person's 'wingspan') to find weapons or prevent the destruction of evidence.",
@@ -280,8 +280,8 @@
             "source": "https://www.oyez.org/cases/2004/03-923"
         },
         {
-            "id": "navarette-v-california",
-            "case": "Navarette v. California",
+            "id": "navarette-v-san-andreas",
+            "case": "Navarette v. San Andreas",
             "jurisdiction": "federal",
             "year": "2014",
             "summary": "An anonymous 911 call can provide the reasonable suspicion needed to justify a traffic stop if it has sufficient 'indicia of reliability.'",
@@ -289,8 +289,8 @@
             "source": "https://www.oyez.org/cases/2013/12-9490"
         },
         {
-            "id": "riley-v-california",
-            "case": "Riley v. California",
+            "id": "riley-v-san-andreas",
+            "case": "Riley v. San Andreas",
             "jurisdiction": "federal",
             "year": "2014",
             "summary": "Police must generally obtain a warrant before searching the digital information on a cell phone seized from an individual who has been arrested.",
@@ -352,8 +352,8 @@
             "source": "https://www.oyez.org/cases/2013/12-1117"
         },
         {
-            "id": "county-of-los-angeles-v-mendez",
-            "case": "County of Los Angeles v. Mendez",
+            "id": "county-of-los-santos-v-mendez",
+            "case": "County of Los Santos v. Mendez",
             "jurisdiction": "federal-civil",
             "year": "2017",
             "summary": "The Supreme Court rejected the 'provocation rule,' which held that an otherwise reasonable use of force becomes unreasonable if an officer's earlier constitutional violation (like a warrantless entry) provoked the violent confrontation.",
@@ -478,8 +478,8 @@
             "source": "https://www.oyez.org/cases/1989/88-2018"
         },
         {
-            "id": "fernandez-v-california",
-            "case": "Fernandez v. California",
+            "id": "fernandez-v-san-andreas",
+            "case": "Fernandez v. San Andreas",
             "jurisdiction": "federal",
             "year": "2014",
             "summary": "If a co-occupant initially objects to a search but is then lawfully removed from the scene (e.g., arrested), the consent of the remaining occupant can validate a subsequent search.",
@@ -496,8 +496,8 @@
             "source": "https://www.oyez.org/cases/1986/85-1027"
         },
         {
-            "id": "california-v-acevedo",
-            "case": "California v. Acevedo",
+            "id": "san-andreas-v-acevedo",
+            "case": "San Andreas v. Acevedo",
             "jurisdiction": "federal",
             "year": "1991",
             "summary": "If police have probable cause to believe a container in a vehicle holds contraband, they may search that container without a warrant under the automobile exception.",
@@ -532,8 +532,8 @@
             "source": "https://www.oyez.org/cases/1988/86-1088"
         },
         {
-            "id": "samson-v-california",
-            "case": "Samson v. California",
+            "id": "samson-v-san-andreas",
+            "case": "Samson v. San Andreas",
             "jurisdiction": "federal",
             "year": "2006",
             "summary": "The Court held that because a parolee has a greatly diminished expectation of privacy, police can conduct a warrantless, suspicionless search of a parolee at any time as a condition of their parole.",

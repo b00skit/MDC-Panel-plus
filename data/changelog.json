@@ -8,27 +8,42 @@
                 {
                     "id": 1,
                     "type": "fix",
-                    "description": "General: Added a Detective rank for the Los Santos County Sheriff's Department."
+                    "description": "<b>General:</b> Added a Detective rank for the Los Santos County Sheriff's Department."
                 },
                 {
                     "id": 2,
                     "type": "feature",
-                    "description": "Caselaw & Legal Resources: Added a new Source & Year to each of the caselaws."
+                    "description": "<b>Caselaw & Legal Resources:</b> Added a new Source & Year to each of the caselaws."
                 },
                 {
                     "id": 3,
                     "type": "fix",
-                    "description": "Caselaw & Legal Resources: Adjusted the legal citing for the Traffic Citations resource."
+                    "description": "<b>Caselaw & Legal Resources:</b> Adjusted the legal citing for the Traffic Citations resource."
                 },
                 {
                     "id": 4,
                     "type": "feature",
-                    "description": "Simplified Penal Code: Added a way to filter by crime types."
+                    "description": "<b>Simplified Penal Code:</b> Added a way to filter by crime types."
                 },
                 {
                     "id": 5,
                     "type": "modification",
-                    "description": "Paperwork Generators: Modified the parking ticket citation to only offer the charge for Prohibited Parking."
+                    "description": "<b>Paperwork Generators:</b> Modified the parking ticket citation to only offer the charge for Prohibited Parking."
+                },
+                {
+                    "id": 6,
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> The arrest report will now show you the amount of days an impound / suspension should be in the summary."
+                },
+                {
+                    "id": 7,
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> Implemented the 25 day sentencing limit instituted by Legal Faction Management."
+                },
+                {
+                    "id": 7,
+                    "type": "fix",
+                    "description": "<b>Caselaw & Legal Resources:</b> Adjusted the language of certain caselaws, to stay in line with continuity, California -> San Andreas, Los Angeles -> Los Santos."
                 }
             ]
         },
@@ -40,17 +55,17 @@
                 {
                     "id": 1,
                     "type": "modification",
-                    "description": "General: Made the current version in the footer a clickable hyperlink to the changelog."
+                    "description": "<b>General:</b> Made the current version in the footer a clickable hyperlink to the changelog."
                 },
                 {
                     "id": 2,
                     "type": "fix",
-                    "description": "General: Fixed the github link on the sidebar."
+                    "description": "<b>General:</b> Fixed the github link on the sidebar."
                 },
                 {
                     "id": 3,
                     "type": "fix",
-                    "description": "General: Adjusted the dockerfile, fixing an issue regarding the serving of data to the production server."
+                    "description": "<b>General:</b> Adjusted the dockerfile, fixing an issue regarding the serving of data to the production server."
                 }
             ]
         },
@@ -62,42 +77,42 @@
                 {
                     "id": 1,
                     "type": "modification",
-                    "description": "General: The website has been re-built from the ground up via next.js and react."
+                    "description": "<b>General:</b> The website has been re-built from the ground up via next.js and react."
                 },
                 {
                     "id": 2,
                     "type": "modification",
-                    "description": "General: The frontend layout, design and UX of the website has been redesigned."
+                    "description": "<b>General:</b> The frontend layout, design and UX of the website has been redesigned."
                 },
                 {
                     "id": 3,
                     "type": "modification",
-                    "description": "Paperwork Generators: The paperwork generators have been re-made and now compile via json instead of them being hard-coded, making any modification super simple."
+                    "description": "<b>Paperwork Generators:</b> The paperwork generators have been re-made and now compile via json instead of them being hard-coded, making any modification super simple."
                 },
                 {
                     "id": 4,
                     "type": "modification",
-                    "description": "Arrest Report: The arrest report format has been changed to be as close to the realistic variant of the LA booking report"
+                    "description": "<b>Arrest Report:</b> The arrest report format has been changed to be as close to the realistic variant of the LA booking report"
                 },
                 {
                     "id": 5,
                     "type": "feature",
-                    "description": "Arrest Report: Added an advanced variant of the arrest report, allowing for the Los Santos Police Department to continue using the MDC Panel"
+                    "description": "<b>Arrest Report:</b> Added an advanced variant of the arrest report, allowing for the Los Santos Police Department to continue using the MDC Panel"
                 },
                 {
                     "id": 6,
                     "type": "feature",
-                    "description": "Simplified Penal Code: Added a simplified penal code to allow for quick-searching of charges and sentences."
+                    "description": "<b>Simplified Penal Code:</b> Added a simplified penal code to allow for quick-searching of charges and sentences."
                 },
                 {
                     "id": 7,
                     "type": "feature",
-                    "description": "Caselaw & Legal Resources: Added a simple interface that allows for searching of caselaw and provides a simple overview to some legal resources."
+                    "description": "<b>Caselaw & Legal Resources:</b> Added a simple interface that allows for searching of caselaw and provides a simple overview to some legal resources."
                 },
                 {
                     "id": 8,
                     "type": "feature",
-                    "description": "General: Added an announcements section to allow for more simple management of announcements."
+                    "description": "<b>General:</b> Added an announcements section to allow for more simple management of announcements."
                 }
             ]
         }
