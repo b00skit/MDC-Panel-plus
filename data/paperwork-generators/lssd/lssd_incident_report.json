@@ -1,6 +1,6 @@
 
 {
-    "id": "lssd-incident-report",
+    "id": "lssd_incident_report",
     "title": "Incident Report",
     "description": "Generate a standard LSSD incident report.",
     "icon": "FileSearch",
