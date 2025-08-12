@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: mdc-panel-plus
+    env_file:
+      - stack.env
     ports:
       - "3003:3003"
     restart: unless-stopped
