@@ -1,5 +1,5 @@
-
 'use client';
+
 import { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -37,6 +37,7 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '../ui/switch';
 
+// --- Helper Interfaces ---
 interface DeptRanks {
   [department: string]: string[];
 }
@@ -44,6 +45,63 @@ interface DeptRanks {
 interface SettingsPageProps {
     initialFactionGroups: FactionGroup[];
 }
+
+/**
+ * A comprehensive function to clear all types of browser storage for the current site origin.
+ * This includes localStorage, sessionStorage, cookies, IndexedDB, and service worker caches.
+ * @returns {Promise<boolean>} A promise that resolves to true on success and false on failure.
+ */
+async function clearAllSiteData() {
+  try {
+    // 1. Clear Local Storage
+    localStorage.clear();
+
+    // 2. Clear Session Storage
+    sessionStorage.clear();
+
+    // 3. Clear Cookies
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    }
+
+    // 4. Clear IndexedDB databases
+    if ('indexedDB' in window && indexedDB.databases) {
+      const dbs = await indexedDB.databases();
+      const deletePromises = dbs.map(db => 
+        new Promise((resolve, reject) => {
+          const deleteRequest = indexedDB.deleteDatabase(db.name);
+          deleteRequest.onsuccess = () => resolve(true);
+          deleteRequest.onerror = () => reject(deleteRequest.error);
+          deleteRequest.onblocked = () => {
+            console.warn(`IndexedDB ${db.name} deletion blocked.`);
+            resolve(false);
+          };
+        })
+      );
+      await Promise.all(deletePromises);
+    }
+    
+    // 5. Unregister Service Workers and Clear Caches
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        await registration.unregister();
+      }
+      const keys = await caches.keys();
+      await Promise.all(keys.map(key => caches.delete(key)));
+    }
+
+    return true; // Indicate success
+  } catch (error) {
+    console.error("Error clearing site data:", error);
+    return false; // Indicate failure
+  }
+}
+
 
 export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
   const { toast } = useToast();
@@ -65,7 +123,6 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
   const resetCharges = useChargeStore(state => state.resetCharges);
   const resetBasicForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
-
 
   useEffect(() => {
     setInitialOfficers(); 
@@ -104,29 +161,27 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     });
   };
 
-  const handleClearData = () => {
-    try {
-        localStorage.clear();
-        sessionStorage.clear();
+  const handleClearData = async () => {
+    const success = await clearAllSiteData();
+    
+    if (success) {
+      resetCharges();
+      resetBasicForm();
+      resetAdvancedForm();
+      resetOfficers();
+      
+      toast({
+        title: 'Data Cleared',
+        description: 'All local and session data has been successfully cleared.',
+      });
 
-        resetCharges();
-        resetBasicForm();
-        resetAdvancedForm();
-        resetOfficers();
-        
-        toast({
-            title: 'Data Cleared',
-            description: 'All local and session data has been successfully cleared.',
-        });
-
-        setTimeout(() => window.location.reload(), 1000);
-
-    } catch (error) {
-        toast({
-            title: 'Error',
-            description: 'Could not clear all site data.',
-            variant: 'destructive',
-          });
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Could not clear all site data. Check the console for details.',
+        variant: 'destructive',
+      });
     }
   }
 
@@ -166,22 +221,22 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                     <div className="relative flex items-center">
                         <Shield className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                          <Select 
-                            value={defaultOfficer.department && defaultOfficer.rank ? `${defaultOfficer.department}__${defaultOfficer.rank}` : ''}
-                            onValueChange={handleRankChange}>
-                            <SelectTrigger id="rank" className="pl-9">
-                                <SelectValue placeholder="Select Rank" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {Object.entries(deptRanks).map(([dept, ranks]) => (
-                                    <SelectGroup key={dept}>
-                                        <SelectLabel>{dept}</SelectLabel>
-                                        {ranks.map((rank) => (
-                                            <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                           value={defaultOfficer.department && defaultOfficer.rank ? `${defaultOfficer.department}__${defaultOfficer.rank}` : ''}
+                           onValueChange={handleRankChange}>
+                           <SelectTrigger id="rank" className="pl-9">
+                               <SelectValue placeholder="Select Rank" />
+                           </SelectTrigger>
+                           <SelectContent>
+                               {Object.entries(deptRanks).map(([dept, ranks]) => (
+                                   <SelectGroup key={dept}>
+                                       <SelectLabel>{dept}</SelectLabel>
+                                       {ranks.map((rank) => (
+                                           <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
+                                       ))}
+                                   </SelectGroup>
+                               ))}
+                           </SelectContent>
+                       </Select>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -216,11 +271,11 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
             {alternativeCharacters.map((altChar, index) => (
               <div key={altChar.id} className="space-y-4">
                  <div className="flex justify-between items-center">
-                    <Label className="text-lg font-medium">Character {index + 1}</Label>
-                    <Button variant="ghost" size="icon" onClick={() => removeAlternativeCharacter(altChar.id)}>
-                        <Trash2 className="h-4 w-4 text-red-500"/>
-                    </Button>
-                </div>
+                   <Label className="text-lg font-medium">Character {index + 1}</Label>
+                   <Button variant="ghost" size="icon" onClick={() => removeAlternativeCharacter(altChar.id)}>
+                       <Trash2 className="h-4 w-4 text-red-500"/>
+                   </Button>
+                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <Label htmlFor={`alt-officer-name-${altChar.id}`}>Full Name</Label>
@@ -272,7 +327,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                         </div>
                     </div>
                 </div>
-                 {index < 2 && <Separator />}
+                 {index < alternativeCharacters.length - 1 && index < 2 && <Separator />}
               </div>
             ))}
             {alternativeCharacters.length < 3 && (
