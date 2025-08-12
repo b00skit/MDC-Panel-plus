@@ -1,6 +1,28 @@
 {
     "changelogs": [
         {
+            "version": "3.0.1",
+            "type": "Hotfix",
+            "date": "2025-08-11",
+            "items": [
+                {
+                    "id": 1,
+                    "type": "modification",
+                    "description": "General: Made the current version in the footer a clickable hyperlink to the changelog."
+                },
+                {
+                    "id": 2,
+                    "type": "fix",
+                    "description": "General: Fixed the github link on the sidebar."
+                },
+                {
+                    "id": 3,
+                    "type": "fix",
+                    "description": "General: Adjusted the dockerfile, fixing an issue regarding the serving of data to the production server."
+                },
+            ]
+        },
+        {
             "version": "3.0.0",
             "type": "Major Update",
             "date": "2025-08-11",
