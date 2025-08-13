@@ -78,6 +78,7 @@ export function ArrestCalculatorPage() {
   }, [penalCode]);
 
   useEffect(() => {
+    // This ensures the calculator page always starts with a clean slate for the user.
     resetCharges();
     
     fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')

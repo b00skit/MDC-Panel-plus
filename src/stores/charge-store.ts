@@ -82,7 +82,7 @@ export const useChargeStore = create<ChargeState>()(
           ),
         })),
        setReport: (report) => set({ report }),
-       resetCharges: () => set(initialState),
+       resetCharges: () => set((state) => ({ ...state, charges: [] })),
     }),
     {
       name: 'charge-storage', // name of the item in the storage (must be unique)
