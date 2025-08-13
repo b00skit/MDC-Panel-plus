@@ -122,7 +122,7 @@ export function ArrestCalculatorPage() {
     setReport(charges);
     resetForm();
     resetAdvancedForm();
-    resetCharges();
+    //resetCharges();
     router.push('/arrest-report');
   }
 
