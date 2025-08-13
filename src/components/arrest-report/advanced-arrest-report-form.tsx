@@ -987,5 +987,3 @@ export function AdvancedArrestReportForm() {
     </form>
   );
 }
-
-    
