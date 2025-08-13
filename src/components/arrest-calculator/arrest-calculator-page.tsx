@@ -104,7 +104,7 @@ export function ArrestCalculatorPage() {
         setLoading(false);
       });
     
-    fetch('/data/depa.json')
+    fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_depa_categories.json')
         .then(res => res.json())
         .then(data => setDepaData(data));
 
