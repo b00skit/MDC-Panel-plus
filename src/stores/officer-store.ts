@@ -10,6 +10,8 @@ export interface Officer {
   rank: string;
   department: string;
   badgeNumber: string;
+  callSign?: string;
+  divDetail?: string;
 }
 
 interface OfficerState {
@@ -32,6 +34,8 @@ const getInitialOfficer = (): Officer => ({
     rank: '',
     department: '',
     badgeNumber: '',
+    callSign: '',
+    divDetail: '',
 });
 
 const createEmptyAltCharacter = (): Officer => ({
@@ -40,6 +44,8 @@ const createEmptyAltCharacter = (): Officer => ({
   rank: '',
   department: '',
   badgeNumber: '',
+  callSign: '',
+  divDetail: '',
 });
 
 
@@ -161,21 +167,15 @@ export const useOfficerStore = create<OfficerState>()(
               const officerToSwap = state.officers[officerToSwapIndex];
       
               // The character that was in the form, to be moved to alternatives
-              const newAltCharData = {
-                id: altCharToUse.id, // Keep the alt char's original ID
-                name: officerToSwap.name,
-                rank: officerToSwap.rank,
-                department: officerToSwap.department,
-                badgeNumber: officerToSwap.badgeNumber,
+              const newAltCharData: Officer = {
+                ...officerToSwap, // Keep all fields from the old officer
+                id: altCharToUse.id, // Use the alt char's original ID
               };
       
               // The character that will replace the officer in the form
-              const newOfficerData = {
-                id: officerToSwap.id, // Keep the form officer's original ID
-                name: altCharToUse.name,
-                rank: altCharToUse.rank,
-                department: altCharToUse.department,
-                badgeNumber: altCharToUse.badgeNumber,
+              const newOfficerData: Officer = {
+                ...altCharToUse, // Keep all fields from the alt char
+                id: officerToSwap.id, // Use the form officer's original ID
               };
       
               // Update officers list

@@ -6,15 +6,10 @@ import { FormState } from './advanced-report-store';
 
 
 interface AdvancedReportModifiersStore {
-    officerDetails: {
-        callSign: string;
-        divDetail: string;
-    },
     modifiers: Record<string, boolean>;
     presets: FormState['presets'];
     userModified: FormState['userModified'];
     narrative: Partial<FormState['narrative']>;
-    setOfficerDetails: (details: { callSign: string; divDetail: string }) => void;
     setModifiersState: (state: { modifiers: Record<string, boolean>, presets: FormState['presets'], userModified: FormState['userModified'] }) => void;
     setNarrativeField: <K extends keyof FormState['narrative']>(field: K, value: FormState['narrative'][K]) => void;
     setPreset: (preset: keyof FormState['presets'], value: boolean) => void;
@@ -22,11 +17,7 @@ interface AdvancedReportModifiersStore {
     reset: () => void;
 }
 
-const getInitialState = (): Omit<AdvancedReportModifiersStore, 'setOfficerDetails' | 'setModifiersState' | 'setNarrativeField' | 'setPreset' | 'setUserModified' | 'reset'> => ({
-    officerDetails: {
-        callSign: '',
-        divDetail: ''
-    },
+const getInitialState = (): Omit<AdvancedReportModifiersStore, 'setModifiersState' | 'setNarrativeField' | 'setPreset' | 'setUserModified' | 'reset'> => ({
     modifiers: {
         markedUnit: true,
         slicktop: false,
@@ -72,7 +63,6 @@ export const useAdvancedReportModifiersStore = create<AdvancedReportModifiersSto
     persist(
         (set) => ({
             ...getInitialState(),
-            setOfficerDetails: (details) => set({ officerDetails: details }),
             setModifiersState: (state) => set({
                 modifiers: state.modifiers,
                 presets: state.presets,

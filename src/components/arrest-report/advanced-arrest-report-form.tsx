@@ -49,10 +49,10 @@ export function AdvancedArrestReportForm() {
     // Session state for the current report
     const { formData: sessionFormData, setFields: setSessionFields } = useAdvancedReportStore();
     // Persistent state for user preferences
-    const { modifiers, presets, userModified, narrative: persistentNarrative, officerDetails, setModifiersState, setOfficerDetails, setNarrativeField, setPreset, setUserModified } = useAdvancedReportModifiersStore();
+    const { modifiers, presets, userModified, narrative: persistentNarrative, setModifiersState, setNarrativeField, setPreset, setUserModified } = useAdvancedReportModifiersStore();
 
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: initialOfficers, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
+    const { officers: officersFromStore, updateOfficer: updateOfficerInStore, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         // Default values will be populated by the useEffect hook
@@ -91,9 +91,14 @@ export function AdvancedArrestReportForm() {
             presets: currentValues.presets,
             userModified: currentValues.userModified
         });
-        setOfficerDetails({
-            callSign: currentValues.officers[0]?.callSign || '',
-            divDetail: currentValues.officers[0]?.divDetail || '',
+
+        currentValues.officers.forEach((officer: FormOfficer) => {
+            if (officer.id) {
+                updateOfficerInStore(officer.id, {
+                    callSign: officer.callSign,
+                    divDetail: officer.divDetail
+                });
+            }
         });
         
         // Save narrative fields to local store only if they meet the criteria
@@ -105,7 +110,7 @@ export function AdvancedArrestReportForm() {
             }
         });
 
-    }, [getValues, setSessionFields, setModifiersState, setOfficerDetails, setNarrativeField]);
+    }, [getValues, setSessionFields, setModifiersState, updateOfficerInStore, setNarrativeField]);
 
 
     const handleFormSubmit = () => {
@@ -429,14 +434,13 @@ export function AdvancedArrestReportForm() {
             };
     
             if (!mergedFormData.officers || mergedFormData.officers.length === 0) {
-                const { officers: initialOfficersFromStore } = useOfficerStore.getState();
-                const defaultOfficer = initialOfficersFromStore.length > 0 ? { ...initialOfficersFromStore[0] } : { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
-                defaultOfficer.callSign = officerDetails.callSign;
-                defaultOfficer.divDetail = officerDetails.divDetail;
+                const defaultOfficer = officersFromStore.length > 0 ? { ...officersFromStore[0] } : { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
                 mergedFormData.officers = [defaultOfficer as FormOfficer];
             } else {
-                mergedFormData.officers[0].callSign = officerDetails.callSign;
-                mergedFormData.officers[0].divDetail = officerDetails.divDetail;
+                 const defaultOfficerFromStore = officersFromStore.find(o => o.id === mergedFormData.officers[0].id);
+                 if(defaultOfficerFromStore) {
+                     mergedFormData.officers[0] = { ...defaultOfficerFromStore, ...mergedFormData.officers[0] };
+                 }
             }
 
             if (!mergedFormData.persons || mergedFormData.persons.length === 0) {
@@ -453,7 +457,7 @@ export function AdvancedArrestReportForm() {
             
             isInitialLoad.current = false;
         }
-    }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officerDetails]);
+    }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officersFromStore]);
 
 
     const handlePillClick = (officerIndex: number, altChar: Officer) => {
