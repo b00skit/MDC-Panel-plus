@@ -18,7 +18,7 @@ export function Layout({ children, footer }: LayoutProps) {
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-        <div className="absolute inset-0 z-0">
+        <div className="fixed inset-y-20 inset-x-16 z-0 md:inset-x-32 lg:inset-x-64">
           <Image
             src="/img/logos/Logo-SanAndreasSeal.png"
             alt="San Andreas Seal"
