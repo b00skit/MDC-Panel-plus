@@ -16,7 +16,7 @@ type EvidenceLog = {
     quantity: string;
 }
 
-type FormOfficer = Omit<Officer, 'id'> & { id?: number; callSign?: string, divDetail?: string };
+export type FormOfficer = Omit<Officer, 'id'> & { id?: number; callSign?: string, divDetail?: string };
 
 
 export interface FormState {
@@ -88,7 +88,7 @@ export interface FormState {
     };
 }
 
-const getInitialState = (): FormState => ({
+const getInitialState = (): Omit<FormState, 'modifiers' | 'presets' | 'userModified' | 'narrative'> => ({
     arrestee: {
         name: '', sex: '', hair: '', eyes: '', residence: '', age: '', height: '',
         descent: '', clothing: '', oddities: '', alias: '', gang: ''
@@ -98,51 +98,7 @@ const getInitialState = (): FormState => ({
         date: '', time: '', locationDistrict: '', locationStreet: ''
     },
     officers: [],
-    modifiers: {
-        markedUnit: true,
-        slicktop: false,
-        inUniform: true,
-        undercover: false,
-        inMetroUniform: false,
-        inG3Uniform: false,
-        wasSuspectInVehicle: false,
-        wasSuspectMirandized: true,
-        didSuspectUnderstandRights: true,
-        doYouHaveAVideo: false,
-        didYouTakePhotographs: false,
-        didYouObtainCctvFootage: false,
-        thirdPartyVideoFootage: false,
-        biometricsAlreadyOnFile: false,
-        didYouTransport: true,
-        didYouBook: true,
-    },
-    narrative: {
-        source: '', investigation: '', arrest: '', photographs: '', booking: '', evidence: '',
-        court: '', additional: '', vehicleColor: '', vehicleModel: '', vehiclePlate: '',
-        dicvsLink: '', cctvLink: '', photosLink: '', thirdPartyLink: '', plea: 'Guilty',
-        transportingRank: '', transportingName: '', bookingRank: '', bookingName: ''
-    },
     evidenceLogs: [],
-    presets: {
-        source: true,
-        investigation: true,
-        arrest: true,
-        photographs: true,
-        booking: true,
-        evidence: true,
-        court: true,
-        additional: true,
-    },
-    userModified: {
-        source: false,
-        investigation: false,
-        arrest: false,
-        photographs: false,
-        booking: false,
-        evidence: false,
-        court: false,
-        additional: false,
-    },
 });
 
 
@@ -150,7 +106,7 @@ interface AdvancedReportState {
   isAdvanced: boolean;
   toggleAdvanced: () => void;
   setAdvanced: (isAdvanced: boolean) => void;
-  formData: FormState;
+  formData: Omit<FormState, 'modifiers' | 'presets' | 'userModified' | 'narrative'> & { narrative: Partial<FormState['narrative']>};
   setFields: (fields: Partial<FormState>) => void;
   reset: () => void;
 }
@@ -161,14 +117,21 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
       isAdvanced: false,
       toggleAdvanced: () => set((state) => ({ isAdvanced: !state.isAdvanced })),
       setAdvanced: (isAdvanced) => set({ isAdvanced }),
-      formData: getInitialState(),
-      setFields: (fields) => set(state => ({
-        formData: {
-            ...state.formData,
-            ...fields,
+      formData: { ...getInitialState(), narrative: {} },
+      setFields: (fields) => set(state => {
+        const { modifiers, presets, userModified, narrative, ...rest } = fields;
+        return {
+            formData: {
+                ...state.formData,
+                ...rest,
+                narrative: {
+                    ...state.formData.narrative,
+                    ...narrative,
+                }
+            }
         }
-      })),
-      reset: () => set({ formData: getInitialState() }),
+      }),
+      reset: () => set({ formData: { ...getInitialState(), narrative: {} } }),
     }),
     {
       name: 'advanced-arrest-report-session-storage',

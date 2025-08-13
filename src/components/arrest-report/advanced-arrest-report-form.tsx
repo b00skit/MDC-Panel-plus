@@ -31,7 +31,8 @@ import {
   SelectGroup,
   SelectLabel,
 } from '../ui/select';
-import { useAdvancedReportStore, FormState } from '@/stores/advanced-report-store';
+import { useAdvancedReportStore, FormState, type FormOfficer } from '@/stores/advanced-report-store';
+import { useAdvancedReportModifiersStore } from '@/stores/advanced-report-modifiers-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { useOfficerStore, Officer } from '@/stores/officer-store';
 import { format } from 'date-fns';
@@ -45,12 +46,16 @@ interface DeptRanks {
 
 export function AdvancedArrestReportForm() {
     const router = useRouter();
-    const { formData, setFields } = useAdvancedReportStore();
+    // Session state for the current report
+    const { formData: sessionFormData, setFields: setSessionFields } = useAdvancedReportStore();
+    // Persistent state for user preferences
+    const { modifiers, presets, userModified, narrative: persistentNarrative, officerDetails, setModifiersState, setOfficerDetails, setNarrativeField, setPreset, setUserModified } = useAdvancedReportModifiersStore();
+
     const { report: charges, penalCode } = useChargeStore();
     const { officers: initialOfficers, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
-        defaultValues: formData,
+        // Default values will be populated by the useEffect hook
     });
     
     const { fields: personFields, append: appendPerson, remove: removePersonField } = useFieldArray({
@@ -74,8 +79,34 @@ export function AdvancedArrestReportForm() {
     const watchedFields = watch();
 
     const saveForm = useCallback(() => {
-        setFields(getValues());
-    }, [getValues, setFields]);
+        const currentValues = getValues();
+        
+        // Save transactional data to session store
+        const { modifiers, presets, userModified, ...sessionData } = currentValues;
+        setSessionFields(sessionData);
+
+        // Save persistent data to local store
+        setModifiersState({
+            modifiers: currentValues.modifiers,
+            presets: currentValues.presets,
+            userModified: currentValues.userModified
+        });
+        setOfficerDetails({
+            callSign: currentValues.officers[0]?.callSign || '',
+            divDetail: currentValues.officers[0]?.divDetail || '',
+        });
+        
+        // Save narrative fields to local store only if they meet the criteria
+        Object.keys(currentValues.narrative).forEach((key) => {
+            const narrativeKey = key as keyof FormState['narrative'];
+            const presetKey = key as keyof FormState['presets'];
+            if(currentValues.userModified[presetKey] || !currentValues.presets[presetKey]){
+                setNarrativeField(narrativeKey, currentValues.narrative[narrativeKey]);
+            }
+        });
+
+    }, [getValues, setSessionFields, setModifiersState, setOfficerDetails, setNarrativeField]);
+
 
     const handleFormSubmit = () => {
         saveForm();
@@ -358,16 +389,17 @@ export function AdvancedArrestReportForm() {
         setValue
     ]);
 
-    const handlePresetToggle = (preset: keyof FormState['presets']) => {
-        const isEnabled = !getValues(`presets.${preset}`);
-        setValue(`presets.${preset}`, isEnabled);
+    const handlePresetToggle = (presetName: keyof FormState['presets']) => {
+        const isEnabled = !getValues(`presets.${presetName}`);
+        setValue(`presets.${presetName}`, isEnabled);
+        setPreset(presetName, isEnabled);
         
-        if (!isEnabled && !getValues(`userModified.${preset}`)) {
-            setValue(`narrative.${preset}`, '');
+        if (!isEnabled && !getValues(`userModified.${presetName}`)) {
+            setValue(`narrative.${presetName}`, '');
         }
         saveForm();
     };
-
+    
     const handleTextareaChange = (
         e: React.ChangeEvent<HTMLTextAreaElement>,
         field: keyof FormState['narrative'] & keyof FormState['userModified']
@@ -377,37 +409,52 @@ export function AdvancedArrestReportForm() {
         
         if (value) {
             setValue(`userModified.${field}`, true);
+            setUserModified(field, true);
         } else {
             setValue(`userModified.${field}`, false);
+            setUserModified(field, false);
         }
         saveForm();
     };
 
     const isInitialLoad = useRef(true);
     useEffect(() => {
-      // This effect runs once on mount to set up the form correctly.
-      if (isInitialLoad.current) {
+        if (isInitialLoad.current) {
+            const mergedFormData: FormState = {
+                ...sessionFormData,
+                modifiers: { ...modifiers, ...sessionFormData.modifiers },
+                presets: { ...presets, ...sessionFormData.presets },
+                userModified: { ...userModified, ...sessionFormData.userModified },
+                narrative: { ...persistentNarrative, ...sessionFormData.narrative },
+            };
+    
+            if (!mergedFormData.officers || mergedFormData.officers.length === 0) {
+                const { officers: initialOfficersFromStore } = useOfficerStore.getState();
+                const defaultOfficer = initialOfficersFromStore.length > 0 ? { ...initialOfficersFromStore[0] } : { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
+                defaultOfficer.callSign = officerDetails.callSign;
+                defaultOfficer.divDetail = officerDetails.divDetail;
+                mergedFormData.officers = [defaultOfficer as FormOfficer];
+            } else {
+                mergedFormData.officers[0].callSign = officerDetails.callSign;
+                mergedFormData.officers[0].divDetail = officerDetails.divDetail;
+            }
 
-        const populatedFormData = { ...formData };
-        if (!populatedFormData.officers || populatedFormData.officers.length === 0) {
-            const { officers: initialOfficersFromStore } = useOfficerStore.getState();
-            populatedFormData.officers = initialOfficersFromStore.length > 0 ? initialOfficersFromStore : [{ id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' }];
+            if (!mergedFormData.persons || mergedFormData.persons.length === 0) {
+                mergedFormData.persons = [{ name: '', sex: '', gang: '' }];
+            }
+            if(!mergedFormData.incident.date) mergedFormData.incident.date = format(new Date(), 'dd/MMM/yyyy').toUpperCase();
+            if(!mergedFormData.incident.time) mergedFormData.incident.time = format(new Date(), 'HH:mm');
+            
+            if (!mergedFormData.evidenceLogs || mergedFormData.evidenceLogs.length === 0) {
+                mergedFormData.evidenceLogs = [{logNumber: '', description: '', quantity: '1'}];
+            }
+    
+            reset(mergedFormData);
+            
+            isInitialLoad.current = false;
         }
-        if (!populatedFormData.persons || populatedFormData.persons.length === 0) {
-            populatedFormData.persons = [{ name: '', sex: '', gang: '' }];
-        }
-        if(!populatedFormData.incident.date) populatedFormData.incident.date = format(new Date(), 'dd/MMM/yyyy').toUpperCase();
-        if(!populatedFormData.incident.time) populatedFormData.incident.time = format(new Date(), 'HH:mm');
-        
-        if (!populatedFormData.evidenceLogs || populatedFormData.evidenceLogs.length === 0) {
-            populatedFormData.evidenceLogs = [{logNumber: '', description: '', quantity: '1'}];
-        }
+    }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officerDetails]);
 
-        reset(populatedFormData);
-        
-        isInitialLoad.current = false;
-      }
-    }, [reset, formData]);
 
     const handlePillClick = (officerIndex: number, altChar: Officer) => {
         const currentOfficerInForm = getValues(`officers.${officerIndex}`);
