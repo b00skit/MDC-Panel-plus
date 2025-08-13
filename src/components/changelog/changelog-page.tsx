@@ -5,13 +5,13 @@ import { useMemo } from 'react';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Wrench, PlusCircle, Pencil, GitCommit } from 'lucide-react';
+import { Wrench, PlusCircle, Pencil, GitCommit, Server } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 type ChangelogItem = {
     id: number;
-    type: 'fix' | 'feature' | 'modification';
+    type: 'fix' | 'feature' | 'modification' | 'backend';
     description: string;
 };
 
@@ -37,6 +37,11 @@ const itemTypeDetails = {
         color: 'text-blue-500',
         label: 'Modification',
     },
+    backend: {
+        icon: Server,
+        color: 'text-purple-500',
+        label: 'Backend',
+    },
     fix: {
         icon: Wrench,
         color: 'text-orange-500',
@@ -50,7 +55,7 @@ const changelogTypeColors = {
     'Major Update': 'bg-green-500/10 text-green-500 border-green-500/50',
 };
 
-const typeOrder = ['feature', 'modification', 'fix'];
+const typeOrder = ['feature', 'modification', 'backend', 'fix'];
 
 export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
     const sortedChangelogs = useMemo(() => {
