@@ -78,6 +78,8 @@ export function ArrestCalculatorPage() {
   }, [penalCode]);
 
   useEffect(() => {
+    resetCharges();
+    
     fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
       .then((res) => res.json())
       .then((data: PenalCode) => {
@@ -88,7 +90,7 @@ export function ArrestCalculatorPage() {
         console.error('Failed to fetch penal code:', error);
         setLoading(false);
       });
-  }, [setPenalCode]);
+  }, [setPenalCode, resetCharges]);
   
   const handleCalculate = () => {
      if (charges.length === 0) {
@@ -122,7 +124,6 @@ export function ArrestCalculatorPage() {
     setReport(charges);
     resetForm();
     resetAdvancedForm();
-    //resetCharges();
     router.push('/arrest-report');
   }
 
