@@ -19,7 +19,7 @@ export function Layout({ children, footer }: LayoutProps) {
       </Sidebar>
       <SidebarInset>
         <div className="relative z-10 flex min-h-screen flex-col">
-            <div className="fixed inset-0 z-0 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
                 <div className="relative w-[60%] h-[60%]">
                     <Image
                         src="/img/logos/Logo-SanAndreasSeal.png"
