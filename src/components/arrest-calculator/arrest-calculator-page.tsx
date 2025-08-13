@@ -36,6 +36,9 @@ import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useToast } from '@/hooks/use-toast';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
+import configData from '../../../data/config.json';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Separator } from '../ui/separator';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -49,6 +52,15 @@ const getTypeClasses = (type: Charge['type']) => {
       return 'bg-gray-500 hover:bg-gray-500/80 text-white';
   }
 };
+
+interface DepaCategory {
+  title: string;
+  substances: string[];
+}
+
+interface DepaData {
+  categories: DepaCategory[];
+}
 
 export function ArrestCalculatorPage() {
   const router = useRouter();
@@ -71,6 +83,7 @@ export function ArrestCalculatorPage() {
   const [openChargeSelector, setOpenChargeSelector] = useState<number | null>(
     null
   );
+  const [depaData, setDepaData] = useState<DepaData | null>(null);
 
   const getChargeDetails = useCallback((chargeId: string | null): Charge | null => {
     if (!chargeId || !penalCode) return null;
@@ -78,7 +91,6 @@ export function ArrestCalculatorPage() {
   }, [penalCode]);
 
   useEffect(() => {
-    // This ensures the calculator page always starts with a clean slate for the user.
     resetCharges();
     
     fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
@@ -91,6 +103,11 @@ export function ArrestCalculatorPage() {
         console.error('Failed to fetch penal code:', error);
         setLoading(false);
       });
+    
+    fetch('/data/depa.json')
+        .then(res => res.json())
+        .then(data => setDepaData(data));
+
   }, [setPenalCode, resetCharges]);
   
   const handleCalculate = () => {
@@ -125,6 +142,7 @@ export function ArrestCalculatorPage() {
     setReport(charges);
     resetForm();
     resetAdvancedForm();
+    resetCharges();
     router.push('/arrest-report');
   }
 
@@ -457,9 +475,30 @@ export function ArrestCalculatorPage() {
                 <AlertTitle>Heads up!</AlertTitle>
                 <AlertDescription>
                    Please ensure you select the correct Category for drug charges. Check the warrant (if applicable) for more information.<br/>
-                   Reference: Drug Enforcement & Prevention Act of 2020 (DEPA)
+                   Reference: <a href={configData.URL_DEPA} target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-700">Drug Enforcement & Prevention Act of 2020 (DEPA)</a>
                 </AlertDescription>
             </Alert>
+        )}
+
+        {showDrugChargeWarning && depaData && (
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle>DEPA Controlled Substance Categories</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {depaData.categories.map((category, index) => (
+                <div key={index}>
+                  <h4 className="font-semibold text-lg">{category.title}</h4>
+                  <Separator className="my-2" />
+                  <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1 list-disc pl-5 text-muted-foreground">
+                    {category.substances.map(substance => (
+                      <li key={substance}>{substance}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
         )}
 
         {loading && <p>Loading penal code...</p>}
