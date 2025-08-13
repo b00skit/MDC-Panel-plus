@@ -29,11 +29,11 @@ export function Layout({ children, footer }: LayoutProps) {
                 />
             </div>
         </div>
-        <div className="relative z-10 flex min-h-screen flex-col">
-            <div className="flex-grow">
+        <div className="relative z-10 flex flex-col h-screen">
+            <div className="flex-grow overflow-y-auto">
                 {children}
+                {footer}
             </div>
-            {footer}
         </div>
       </SidebarInset>
     </SidebarProvider>

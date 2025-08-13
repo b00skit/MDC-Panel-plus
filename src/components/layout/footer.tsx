@@ -10,7 +10,7 @@ export async function Footer() {
     const config = JSON.parse(file);
 
     return (
-      <footer className="relative z-10 mt-auto py-4">
+      <footer className="relative z-10 py-4 mt-auto">
         <div className="container mx-auto flex flex-col items-center justify-center gap-2">
             <Image 
                 src={config.SITE_LOGO}
