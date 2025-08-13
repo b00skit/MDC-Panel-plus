@@ -41,22 +41,22 @@
                     "description": "<b>Arrest Report:</b> Added handling for saving custom officer data to your localstorage, making it so additional fields (such as the callsign and division) can be saved."
                 },
                 {
-                    "id": 7,
+                    "id": 8,
                     "type": "modification",
                     "description": "<b>General:</b> Adjusted the background image so it's a bit smaller."
                 },
                 {
-                    "id": 8,
+                    "id": 9,
                     "type": "fix",
                     "description": "<b>General:</b> The background image is now scroll-locked and will always appear no matter where you scroll."
                 },
                 {
-                    "id": 9,
+                    "id": 10,
                     "type": "feature",
                     "description": "<b>Arrest Calculator:</b> Added the ability to copy charges to clipboard directly from the arrest calculator results."
                 },
                 {
-                    "id": 10,
+                    "id": 11,
                     "type": "backend",
                     "description": "<b>Arrest Calculator:</b> Made the arrest calculator it's own UI component, so it can be re-used easily on new pages."
                 }
