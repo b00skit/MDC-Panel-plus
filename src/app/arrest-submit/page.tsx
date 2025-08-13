@@ -86,6 +86,7 @@ function ArrestSubmitContent() {
                 penalCode={penalCode}
                 showCharges={true}
                 showSummary={true}
+                clickToCopy={true}
              />
         )}
 

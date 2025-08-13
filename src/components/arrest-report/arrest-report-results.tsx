@@ -104,6 +104,7 @@ interface ArrestReportResultsProps {
     showStipulations?: boolean;
     showSummary?: boolean;
     showCopyables?: boolean;
+    clickToCopy?: boolean;
 }
 
 export function ArrestReportResults({ 
@@ -112,8 +113,10 @@ export function ArrestReportResults({
     showCharges = false, 
     showStipulations = false, 
     showSummary = false, 
-    showCopyables = false 
+    showCopyables = false,
+    clickToCopy = false,
 }: ArrestReportResultsProps) {
+    const { toast } = useToast();
   
     const extras = report.map(row => {
         const chargeDetails = penalCode[row.chargeId!];
@@ -219,6 +222,14 @@ export function ArrestReportResults({
         return `${parts.join(' ')} (${totalMinutes} mins)`;
       }
 
+      const handleCopyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        toast({
+            title: "Copied!",
+            description: `"${text}" copied to clipboard.`,
+        });
+    };
+
   return (
     <div className="space-y-6">
       {showCharges && (
@@ -289,7 +300,12 @@ export function ArrestReportResults({
 
                     return (
                         <TableRow key={row.uniqueId}>
-                            <TableCell className="font-medium">{title}</TableCell>
+                             <TableCell 
+                                className={cn("font-medium", clickToCopy && "cursor-pointer hover:text-primary")}
+                                onClick={clickToCopy ? () => handleCopyToClipboard(title) : undefined}
+                             >
+                                {title}
+                             </TableCell>
                             <TableCell>{row.addition}</TableCell>
                             <TableCell>{row.offense}</TableCell>
                             <TableCell>

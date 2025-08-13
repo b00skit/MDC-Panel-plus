@@ -55,6 +55,7 @@ export default function ArrestReportPage() {
                 showStipulations={true}
                 showSummary={true}
                 showCopyables={true}
+                clickToCopy={true}
             />
         )}
 
