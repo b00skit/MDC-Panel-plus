@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 
 type ChangelogItem = {
     id: number;
-    type: 'fix' | 'feature' | 'modification' | 'backend';
+    type: 'fix' | 'feature' | 'modification' | 'backend' | 'addition';
     description: string;
 };
 
@@ -31,6 +31,11 @@ const itemTypeDetails = {
         icon: PlusCircle,
         color: 'text-green-500',
         label: 'Feature',
+    },
+    addition: {
+        icon: PlusCircle,
+        color: 'text-green-500',
+        label: 'Addition',
     },
     modification: {
         icon: Pencil,
@@ -55,7 +60,7 @@ const changelogTypeColors = {
     'Major Update': 'bg-green-500/10 text-green-500 border-green-500/50',
 };
 
-const typeOrder = ['feature', 'modification', 'backend', 'fix'];
+const typeOrder = ['feature', 'addition', 'modification', 'backend', 'fix'];
 
 export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
     const sortedChangelogs = useMemo(() => {
