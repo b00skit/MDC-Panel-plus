@@ -18,14 +18,16 @@ export function Layout({ children, footer }: LayoutProps) {
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-        <div className="fixed inset-y-20 inset-x-16 z-0 md:inset-x-32 lg:inset-x-64">
-          <Image
-            src="/img/logos/Logo-SanAndreasSeal.png"
-            alt="San Andreas Seal"
-            fill
-            style={{ objectFit: 'contain' }}
-            className="opacity-5"
-          />
+        <div className="fixed inset-0 z-0 flex items-center justify-center pointer-events-none">
+            <div className="relative w-[60%] h-[60%]">
+                <Image
+                    src="/img/logos/Logo-SanAndreasSeal.png"
+                    alt="San Andreas Seal"
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    className="opacity-5"
+                />
+            </div>
         </div>
         <div className="relative z-10 flex min-h-screen flex-col">
             <div className="flex-grow">
