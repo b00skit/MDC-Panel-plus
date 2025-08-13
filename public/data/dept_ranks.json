@@ -50,8 +50,18 @@
     "District Attorney's Office": [
         "Deputy District Attorney",
         "Assistant District Attorney",
-        "District Attorney",
-        "Chief of Staff"
+        "Chief of Staff",
+        "Chief Deputy District Attorney",
+        "District Attorney"
+    ],
+    "Bureau of Investigations": [
+        "Investigator",
+        "Senior Investigator",
+        "Sergeant",
+        "Lieutenant",
+        "Captain",
+        "Deputy Chief",
+        "Chief"
     ],
     "San Andreas Department of Corrections": [
         "Correction Officer I",

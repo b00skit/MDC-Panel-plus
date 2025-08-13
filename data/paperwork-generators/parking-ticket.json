@@ -50,7 +50,6 @@
             "name": "charges",
             "showClass": false,
             "allowedTypes": { "I": true },
-            "allowedIds": "418",
             "customFields": [
                 {
                     "type": "text",

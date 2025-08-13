@@ -1,6 +1,68 @@
 {
     "changelogs": [
         {
+            "version": "3.0.4",
+            "type": "Hotfix",
+            "date": "2025-08-13",
+            "items": [
+                {
+                    "id": 1,
+                    "type": "modification",
+                    "description": "<b>General:</b> Added support for the missing DA and BOI ranks."
+                },
+                {
+                    "id": 2,
+                    "type": "addition",
+                    "description": "<b>Arrest Calculator:</b> Added a DEPA Category Table, allowing people to quickly see which drugs falls under which category."
+                },
+                {
+                    "id": 3,
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Reverted a previous change where only Prohibited Parking shows up in the parking citation section."
+                },
+                {
+                    "id": 4,
+                    "type": "modification",
+                    "description": "<b>Arrest Calculator:</b> Added a link to the Drug Enforcement & Prevention Act to the actual DEPA alert."
+                },
+                {
+                    "id": 5,
+                    "type": "backend",
+                    "description": "<b>Arrest Report:</b> Seperated the advanced and basic reports (and their outputs) into their own components, allowing the framework to re-use them if necessary."
+                },
+                {
+                    "id": 6,
+                    "type": "backend",
+                    "description": "<b>Arrest Report:</b> Adjusted better handling of saving arrest reports to session storage, making sure that information won't reset upon reload. The advanced report will now also save the modifiers to your actual local storage."
+                },
+                {
+                    "id": 7,
+                    "type": "backend",
+                    "description": "<b>Arrest Report:</b> Added handling for saving custom officer data to your localstorage, making it so additional fields (such as the callsign and division) can be saved."
+                },
+                {
+                    "id": 7,
+                    "type": "modification",
+                    "description": "<b>General:</b> Adjusted the background image so it's a bit smaller."
+                },
+                {
+                    "id": 8,
+                    "type": "fix",
+                    "description": "<b>General:</b> The background image is now scroll-locked and will always appear no matter where you scroll."
+                },
+                {
+                    "id": 9,
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added the ability to copy charges to clipboard directly from the arrest calculator results."
+                },
+                {
+                    "id": 10,
+                    "type": "backend",
+                    "description": "<b>Arrest Calculator:</b> Made the arrest calculator it's own UI component, so it can be re-used easily on new pages."
+                }
+            ]
+        },
+        {
             "version": "3.0.3",
             "type": "Hotfix",
             "date": "2025-08-11",
@@ -86,8 +148,8 @@
                 },
                 {
                     "id": 3,
-                    "type": "fix",
-                    "description": "<b>General:</b> Adjusted the dockerfile, fixing an issue regarding the serving of data to the production server."
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Adjusted the dockerfile, fixing an issue regarding the serving of data to the production server."
                 }
             ]
         },
@@ -98,8 +160,8 @@
             "items": [
                 {
                     "id": 1,
-                    "type": "modification",
-                    "description": "<b>General:</b> The website has been re-built from the ground up via next.js and react."
+                    "type": "backend",
+                    "description": "<b>Framework:</b> The website has been re-built from the ground up via next.js and react."
                 },
                 {
                     "id": 2,
@@ -108,7 +170,7 @@
                 },
                 {
                     "id": 3,
-                    "type": "modification",
+                    "type": "backend",
                     "description": "<b>Paperwork Generators:</b> The paperwork generators have been re-made and now compile via json instead of them being hard-coded, making any modification super simple."
                 },
                 {
