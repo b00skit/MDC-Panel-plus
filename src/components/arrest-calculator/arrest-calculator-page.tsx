@@ -65,7 +65,6 @@ export function ArrestCalculatorPage() {
   } = useChargeStore();
   const resetForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
-  const resetOfficers = useOfficerStore(state => state.setInitialOfficers);
 
 
   const [loading, setLoading] = useState(true);
@@ -125,7 +124,6 @@ export function ArrestCalculatorPage() {
     setReport(charges);
     resetForm();
     resetAdvancedForm();
-    resetOfficers();
     router.push('/arrest-report');
   }
 

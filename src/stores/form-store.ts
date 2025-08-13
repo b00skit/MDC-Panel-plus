@@ -78,7 +78,7 @@ export const useFormStore = create<FormStore>()(
       reset: () => set({ formData: initialState }),
     }),
     {
-      name: 'arrest-report-form-storage',
+      name: 'basic-arrest-report-form-storage',
       storage: createJSONStorage(() => sessionStorage),
     }
   )

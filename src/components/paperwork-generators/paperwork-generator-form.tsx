@@ -108,7 +108,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     });
     const { register, handleSubmit, control, watch, trigger } = methods;
 
-    const { setGeneratorData, setFormData } = usePaperworkStore();
+    const { setGeneratorData, setFormData, reset } = usePaperworkStore();
     const { toast } = useToast();
     
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
@@ -116,6 +116,10 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     const [vehicles, setVehicles] = useState<string[]>([]);
     const [vehiclesFetched, setVehiclesFetched] = useState(false);
     const [isFetchingVehicles, setIsFetchingVehicles] = useState(false);
+
+    useEffect(() => {
+        reset();
+    }, [generatorConfig.id, reset]);
 
     useEffect(() => {
         const hasChargeField = generatorConfig.form.some(field => field.type === 'charge' || field.fields?.some(f => f.type === 'charge'));

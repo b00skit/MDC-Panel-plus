@@ -168,11 +168,11 @@ export const useAdvancedReportStore = create<AdvancedReportState>()(
             ...fields,
         }
       })),
-      reset: () => set({ formData: getInitialState(), isAdvanced: false }),
+      reset: () => set({ formData: getInitialState() }),
     }),
     {
-      name: 'advanced-report-storage',
-      storage: createJSONStorage(() => localStorage),
+      name: 'advanced-arrest-report-session-storage',
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 );
