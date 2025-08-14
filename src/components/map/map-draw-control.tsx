@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -73,7 +74,7 @@ const MapDrawControl = () => {
             break;
           case 'freedraw':
             const freeDraw = new FreeDraw({
-                mode: FreeDraw.MODES.CREATE,
+                mode: 1, // Equivalent to FreeDraw.MODES.CREATE
                 smoothFactor: 0.3,
                 simplifyFactor: 1.5,
             });
