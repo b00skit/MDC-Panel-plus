@@ -1,12 +1,16 @@
 
 'use client';
 
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, FeatureGroup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-search/dist/leaflet-search.min.css';
+import 'leaflet-draw/dist/leaflet.draw.css';
+
 import L from 'leaflet';
+import 'leaflet-draw';
 import { useEffect, useState } from 'react';
 import 'leaflet-search';
+import MapDrawControl from './map-draw-control';
 
 // Fix for default icon issue with Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -98,6 +102,9 @@ const MapComponent = ({ streets }: { streets: any[] }) => {
         errorTileUrl={transparentPixel}
       />
       <SearchComponent streets={streets} />
+      <FeatureGroup>
+        <MapDrawControl />
+      </FeatureGroup>
     </MapContainer>
   );
 };

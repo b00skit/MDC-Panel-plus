@@ -1,4 +1,5 @@
 
+
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     background-color: hsla(var(--card) / 0.8) !important;
@@ -49,7 +50,7 @@
 }
 
 .leaflet-control-search .search-input {
-    background-color: hsla(var(--input) / 0.5) !important;
+    background-color: hsla(var(--input) / 0.8) !important;
     color: hsl(var(--foreground)) !important;
     border: 1px solid hsl(var(--border)) !important;
     height: 40px !important;
@@ -117,4 +118,71 @@
 .leaflet-control-search .search-cancel span {
     font-size: 20px !important;
     line-height: 20px !important;
+}
+
+/* Draw Controls */
+.leaflet-draw-custom-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.leaflet-custom-draw-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background-color: hsla(var(--card) / 0.8) !important;
+    padding: 8px;
+    border-radius: 0.5rem;
+    backdrop-filter: blur(4px);
+    border: 1px solid hsl(var(--border)) !important;
+}
+
+.leaflet-custom-draw-button {
+    color: hsl(var(--card-foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 0.25rem;
+}
+
+.leaflet-custom-draw-button:hover {
+    background-color: hsla(var(--accent) / 0.9);
+    color: hsl(var(--accent-foreground));
+}
+
+.leaflet-custom-color-picker {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid hsl(var(--border));
+}
+
+.leaflet-color-button {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.leaflet-color-button.selected {
+    border-color: hsl(var(--ring));
+    transform: scale(1.1);
+}
+
+.leaflet-draw-toolbar {
+    margin-top: 8px;
+}
+.leaflet-draw-toolbar a {
+    background-color: hsla(var(--card) / 0.8) !important;
+    color: hsl(var(--card-foreground)) !important;
+    border-radius: 0.25rem !important;
+}
+
+.leaflet-draw-toolbar a:hover {
+    background-color: hsla(var(--accent) / 0.9) !important;
 }
