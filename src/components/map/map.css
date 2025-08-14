@@ -1,6 +1,4 @@
 
-
-
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     background-color: hsla(var(--card) / 0.8) !important;
@@ -124,7 +122,7 @@
 /* Draw Controls */
 .leaflet-draw-custom-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.25rem;
 }
 
@@ -143,6 +141,7 @@
     border-radius: 0.5rem;
     backdrop-filter: blur(4px);
     border: 1px solid hsl(var(--border)) !important;
+    align-items: center;
 }
 
 .leaflet-custom-draw-button {
@@ -175,7 +174,8 @@
 
 
 .leaflet-custom-color-picker {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 4px;
     margin-top: 4px;
     padding-top: 4px;
