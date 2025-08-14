@@ -1,10 +1,12 @@
 
 'use client';
 
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-search/dist/leaflet-search.min.css';
 import L from 'leaflet';
 import { useEffect, useState } from 'react';
+import 'leaflet-search';
 
 // Fix for default icon issue with Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -20,7 +22,48 @@ L.Icon.Default.mergeOptions({
 
 const transparentPixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
-const MapComponent = () => {
+const SearchComponent = ({ streets }: { streets: any[] }) => {
+    const map = useMap();
+
+    useEffect(() => {
+        if (streets.length > 0 && map) {
+            const markersLayer = new L.LayerGroup();
+            map.addLayer(markersLayer);
+
+            for (const i in streets) {
+                const title = streets[i].title,
+                    loc = streets[i].loc,
+                    marker = new L.Marker(new L.latLng(loc), { title: title });
+                marker.setOpacity(0);
+                markersLayer.addLayer(marker);
+            }
+            
+            // @ts-ignore
+            const searchControl = new L.Control.Search({
+                layer: markersLayer,
+                propertyName: 'title',
+                marker: false,
+                moveToLocation: function(latlng: L.LatLng, title: string, map: L.Map) {
+                    map.setView(latlng, 5); // zoom to location
+                },
+                initial: false,
+                collapsed: false,
+                textPlaceholder: 'Search Street...'
+            });
+
+            map.addControl(searchControl);
+
+            return () => {
+                map.removeControl(searchControl);
+                map.removeLayer(markersLayer);
+            };
+        }
+    }, [streets, map]);
+
+    return null;
+}
+
+const MapComponent = ({ streets }: { streets: any[] }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -47,6 +90,7 @@ const MapComponent = () => {
         noWrap={true}
         errorTileUrl={transparentPixel}
       />
+      <SearchComponent streets={streets} />
     </MapContainer>
   );
 };

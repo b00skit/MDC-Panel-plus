@@ -195,11 +195,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/map')}
-              tooltip="Streets Guide"
+              tooltip="Interactive Map"
             >
               <Link href="/map">
                 <Map />
-                <span>Streets Guide</span>
+                <span>Interactive Map</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

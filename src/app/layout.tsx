@@ -85,6 +85,10 @@ export default async function RootLayout({
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossOrigin=""
         />
+        <link 
+            rel="stylesheet" 
+            href="https://unpkg.com/leaflet-search@4.0.0/dist/leaflet-search.min.css" 
+        />
       </head>
       <body className="font-body antialiased">
         <ThemeProvider
