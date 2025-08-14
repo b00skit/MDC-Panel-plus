@@ -8,8 +8,6 @@ import {
   LayoutGrid,
   Settings,
   LifeBuoy,
-  Sun,
-  Moon,
   Gavel,
   FileText,
   BookOpen,
@@ -45,7 +43,6 @@ type SiteConfig = {
 
 export function SidebarNav() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const { state } = useSidebar();
@@ -81,10 +78,6 @@ export function SidebarNav() {
 
   const isActive = (path: string) => {
     return pathname === path || pathname.startsWith(path + '/');
-  };
-
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   const siteName = config?.SITE_NAME.replace('+', '') || 'MDC Panel';
@@ -238,23 +231,6 @@ export function SidebarNav() {
                     <Github />
                     <span>Github</span>
                 </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={toggleTheme}
-              tooltip={
-                mounted ? (theme === 'light' ? 'Light Mode' : 'Dark Mode') : 'Dark Mode'
-              }
-            >
-              {mounted ? theme === 'light' ? <Sun /> : <Moon /> : <Moon />}
-              <span>
-                {mounted
-                  ? theme === 'light'
-                    ? 'Light Mode'
-                    : 'Dark Mode'
-                  : 'Dark Mode'}
-              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

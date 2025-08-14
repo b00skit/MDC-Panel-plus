@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -28,7 +29,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -36,6 +37,7 @@ import { Separator } from '../ui/separator';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '../ui/switch';
+import { useTheme } from 'next-themes';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
@@ -105,6 +107,7 @@ async function clearAllSiteData() {
 
 export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
   const { toast } = useToast();
+  const { setTheme, theme } = useTheme();
   const { 
     officers, 
     updateOfficer, 
@@ -192,6 +195,28 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
         description="Manage your application settings and data."
       />
       <div className="grid gap-8 mt-6">
+        <Card>
+            <CardHeader>
+                <CardTitle>Appearance</CardTitle>
+                <CardDescription>
+                    Customize the look and feel of the application.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-3 gap-4">
+                    <Button variant={theme === 'light' ? 'default' : 'outline'} onClick={() => setTheme('light')}>
+                        <Sun className="mr-2" /> Light
+                    </Button>
+                    <Button variant={theme === 'dark' ? 'default' : 'outline'} onClick={() => setTheme('dark')}>
+                        <Moon className="mr-2" /> Dark
+                    </Button>
+                    <Button variant={theme === 'system' ? 'default' : 'outline'} onClick={() => setTheme('system')}>
+                        <Monitor className="mr-2" /> System
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Default Officer Information</CardTitle>
