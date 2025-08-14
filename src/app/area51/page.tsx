@@ -41,13 +41,12 @@ export default function Area51Page() {
         name: "changelogs"
     });
     
-    const watchedChangelogs = watch('changelogs');
+    const watchedChangelogs = watch();
     const [jsonOutput, setJsonOutput] = useState('');
     const { toast } = useToast();
 
     useEffect(() => {
-        const formatted = { changelogs: watchedChangelogs };
-        setJsonOutput(JSON.stringify(formatted, null, 4));
+        setJsonOutput(JSON.stringify(watchedChangelogs, null, 4));
     }, [watchedChangelogs]);
 
     const copyJson = () => {
