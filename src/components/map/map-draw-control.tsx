@@ -87,8 +87,6 @@ const MapDrawControl = () => {
                     setHistory((prev) => [...prev, polyline]);
                     setRedoStack([]);
                 }
-                // We clear the freedraw layer to prevent multiple lines
-                freeDraw.clear();
             });
             drawer = freeDraw;
             break;
