@@ -17,6 +17,7 @@ import {
   Github,
   Bell,
   MessageSquare,
+  Map,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -187,6 +188,18 @@ export function SidebarNav() {
               <Link href="/caselaw">
                 <Landmark />
                 <span>Caselaw &amp; Legal Resources</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/map')}
+              tooltip="Streets Guide"
+            >
+              <Link href="/map">
+                <Map />
+                <span>Streets Guide</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
