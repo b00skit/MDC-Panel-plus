@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 type ChangelogItem = {
-    id: number;
+    id?: number;
     type: 'fix' | 'feature' | 'modification' | 'backend' | 'addition';
     description: string;
 };
@@ -96,11 +96,11 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-4">
-                                    {[...changelog.items].sort((a, b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type)).map((item) => {
+                                    {[...changelog.items].sort((a, b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type)).map((item, itemIndex) => {
                                         const details = itemTypeDetails[item.type];
                                         const Icon = details.icon;
                                         return (
-                                            <li key={item.id} className="flex items-start gap-4">
+                                            <li key={`${changelog.version}-${itemIndex}`} className="flex items-start gap-4">
                                                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary shrink-0">
                                                     <Icon className={cn("h-5 w-5", details.color)} />
                                                 </div>
