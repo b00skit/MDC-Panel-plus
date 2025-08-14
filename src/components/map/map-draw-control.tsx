@@ -1,7 +1,6 @@
-
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-draw';
@@ -156,7 +155,8 @@ const MapDrawControl = () => {
             btn.title = tool.title;
             
             // Render React component into the button
-            ReactDOM.render(tool.icon, btn);
+            const root = createRoot(btn);
+            root.render(tool.icon);
 
             btn.onclick = (e) => {
                 e.preventDefault();
