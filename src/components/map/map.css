@@ -1,4 +1,5 @@
 
+
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     background-color: hsl(var(--card)) !important;
@@ -14,8 +15,8 @@
 }
 
 .leaflet-control-attribution {
-    background-color: hsla(var(--card), 0.8) !important;
-    color: hsl(var(--card-foreground)) !important;
+    background-color: hsla(var(--background) / 0.8) !important;
+    color: hsl(var(--foreground)) !important;
 }
 .leaflet-control-attribution a {
     color: hsl(var(--primary)) !important;
@@ -61,10 +62,12 @@
     font-size: 1.2rem !important;
     background-image: none !important;
     border-radius: var(--radius-md) !important;
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
 }
 
 .leaflet-control-search .search-button:hover {
-    background-color: hsl(var(--accent)) !important;
+    background-color: hsl(var(--primary) / 0.9) !important;
 }
 
 .leaflet-control-search .search-tooltip {
@@ -81,6 +84,7 @@
     padding: 0.5rem 1rem !important;
     border-radius: 0 !important;
     font-family: 'Segoe UI', sans-serif !important;
+    background-color: transparent !important;
 }
 
 .leaflet-control-search .search-tip:hover, .leaflet-control-search .search-tip-select {
@@ -99,3 +103,4 @@
     font-size: 20px !important;
     line-height: 20px !important;
 }
+
