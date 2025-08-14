@@ -17,7 +17,7 @@ export function MapPage() {
   const [streets, setStreets] = useState([]);
 
   useEffect(() => {
-    fetch('/data/streets.json')
+    fetch('/map/streets.json')
       .then(res => res.json())
       .then(data => setStreets(data))
       .catch(err => console.error("Failed to fetch streets data:", err));
