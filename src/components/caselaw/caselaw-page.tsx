@@ -51,6 +51,7 @@ const ICONS: { [key: string]: React.ReactNode } = {
     BookOpen: <BookOpen className="w-8 h-8 text-primary" />,
     Landmark: <Landmark className="w-8 h-8 text-primary" />,
     ShieldCheck: <ShieldCheck className="w-8 h-8 text-primary" />,
+    Car: <BookOpen className="w-8 h-8 text-primary" />,
 };
 
 const jurisdictionMap: Record<Caselaw['jurisdiction'], string> = {
@@ -98,7 +99,7 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
               <DialogTitle>{resource.content.title}</DialogTitle>
             </DialogHeader>
             <DialogDescription asChild>
-                <div className="py-4" dangerouslySetInnerHTML={{ __html: resource.content.body }} />
+                <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none py-4" dangerouslySetInnerHTML={{ __html: resource.content.body }} />
             </DialogDescription>
           </DialogContent>
         </Dialog>
