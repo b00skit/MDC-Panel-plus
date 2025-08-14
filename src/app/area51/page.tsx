@@ -12,6 +12,7 @@ import { Plus, Trash2, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { useState, useEffect } from 'react';
+import changelogData from '../../../data/changelog.json';
 
 type ChangelogItem = {
     type: 'fix' | 'feature' | 'modification' | 'backend' | 'addition';
@@ -32,11 +33,11 @@ type FormValues = {
 export default function Area51Page() {
     const { register, control, handleSubmit, watch } = useForm<FormValues>({
         defaultValues: {
-            changelogs: [{ version: '', type: 'Minor Update', date: '', items: [] }]
+            changelogs: changelogData.changelogs || [{ version: '', type: 'Minor Update', date: '', items: [] }]
         }
     });
 
-    const { fields: versionFields, append: appendVersion, remove: removeVersion } = useFieldArray({
+    const { fields: versionFields, prepend: prependVersion, remove: removeVersion } = useFieldArray({
         control,
         name: "changelogs"
     });
@@ -62,6 +63,10 @@ export default function Area51Page() {
             <PageHeader title="Changelog Generator" description="Create changelog entries with ease." />
 
             <form className="space-y-6">
+                <Button type="button" variant="outline" onClick={() => prependVersion({ version: '', type: 'Minor Update', date: '', items: [] })}>
+                    <Plus className="mr-2 h-4 w-4" /> Add Version Entry
+                </Button>
+
                 {versionFields.map((versionField, versionIndex) => (
                     <Card key={versionField.id}>
                         <CardHeader className="flex flex-row items-center justify-between">
@@ -110,10 +115,6 @@ export default function Area51Page() {
                         </CardContent>
                     </Card>
                 ))}
-
-                <Button type="button" variant="outline" onClick={() => appendVersion({ version: '', type: 'Minor Update', date: '', items: [] })}>
-                    <Plus className="mr-2 h-4 w-4" /> Add Version Entry
-                </Button>
 
                  <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
