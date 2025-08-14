@@ -97,7 +97,9 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
             <DialogHeader>
               <DialogTitle>{resource.content.title}</DialogTitle>
             </DialogHeader>
-            <DialogDescription className="py-4 whitespace-pre-wrap">{resource.content.body}</DialogDescription>
+            <DialogDescription asChild>
+                <div className="py-4" dangerouslySetInnerHTML={{ __html: resource.content.body }} />
+            </DialogDescription>
           </DialogContent>
         </Dialog>
       );
@@ -242,5 +244,3 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
         </div>
     );
 }
-
-    
