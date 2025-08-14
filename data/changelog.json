@@ -1,6 +1,37 @@
 {
     "changelogs": [
         {
+            "version": "3.0.5",
+            "type": "Hotfix",
+            "date": "2025-08-14",
+            "items": [
+                {
+                    "type": "modification",
+                    "description": "<b>General:</b> Removed the theme mode selector from the sidebar and placed it into settings page."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>General:</b> Added a \"Send Feedback\" button to the sidebar."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Modified the way feedback is sent to also include the route it came from."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Caselaw & Legal Resources:</b> Modified the way legal resources are parased, allowing for markdown to be used."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Changelog:</b> Added some better handling for changelogs."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>General:</b> Added the missing Detective Ranks into the LSPD rank structure."
+                }
+            ]
+        },
+        {
             "version": "3.0.4",
             "type": "Hotfix",
             "date": "2025-08-13",
