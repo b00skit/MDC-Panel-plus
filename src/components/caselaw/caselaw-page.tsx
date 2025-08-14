@@ -62,6 +62,36 @@ const jurisdictionMap: Record<Caselaw['jurisdiction'], string> = {
     'local-appeals-civil': 'San Andreas (Civil Appeals Court)',
 };
 
+const SimpleMarkdownParser = (text: string) => {
+    let html = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+    const lines = html.split('\n');
+    let inList = false;
+    html = lines.map(line => {
+        if (line.startsWith('- ') || line.startsWith('* ')) {
+            const liContent = `<li>${line.substring(2)}</li>`;
+            if (!inList) {
+                inList = true;
+                return `<ul>${liContent}`;
+            }
+            return liContent;
+        } else {
+            if (inList) {
+                inList = false;
+                return `</ul><p>${line}</p>`;
+            }
+            return `<p>${line}</p>`;
+        }
+    }).join('');
+
+    if (inList) {
+        html += '</ul>';
+    }
+
+    return html.replace(/<p><\/p>/g, '<br/>');
+};
 
 const ResourceCard = ({ resource, config }: { resource: Resource, config: Config | null }) => {
     const cardContent = (
@@ -89,6 +119,7 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
     }
   
     if (resource.type === 'dialog' && resource.content) {
+      const parsedBody = SimpleMarkdownParser(resource.content.body);
       return (
         <Dialog>
           <DialogTrigger asChild>
@@ -99,7 +130,7 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
               <DialogTitle>{resource.content.title}</DialogTitle>
             </DialogHeader>
             <DialogDescription asChild>
-                <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none py-4" dangerouslySetInnerHTML={{ __html: resource.content.body }} />
+                <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none py-4" dangerouslySetInnerHTML={{ __html: parsedBody }} />
             </DialogDescription>
           </DialogContent>
         </Dialog>
