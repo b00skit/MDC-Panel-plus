@@ -1,6 +1,4 @@
 
-
-
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     background-color: hsla(var(--card) / 0.8) !important;
@@ -14,6 +12,15 @@
 .leaflet-control-zoom-out:hover {
     background-color: hsla(var(--accent) / 0.9) !important;
     color: hsl(var(--accent-foreground)) !important;
+}
+
+.leaflet-bar {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.leaflet-bar a, .leaflet-bar a:hover {
+    border-bottom: none !important;
 }
 
 .leaflet-control-attribution {
