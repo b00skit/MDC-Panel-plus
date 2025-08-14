@@ -145,7 +145,8 @@
     height: 16px;
 }
 
-.leaflet-custom-draw-button:hover {
+.leaflet-custom-draw-button:hover,
+.leaflet-custom-draw-button.active {
     background-color: hsla(var(--accent) / 0.9);
     color: hsl(var(--accent-foreground));
 }

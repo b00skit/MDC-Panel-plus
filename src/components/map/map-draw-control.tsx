@@ -8,8 +8,11 @@ import 'leaflet-draw';
 import FreeDraw from 'leaflet-freedraw';
 import { Undo, Redo, Eraser, MapPin, Spline, Hexagon, Pencil } from 'lucide-react';
 import './map.css';
+import { cn } from '@/lib/utils';
 
 const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f97316', '#a855f7', '#ec4899'];
+
+type ToolType = 'marker' | 'polyline' | 'polygon' | 'freedraw' | null;
 
 const MapDrawControl = () => {
   const map = useMap();
@@ -18,7 +21,7 @@ const MapDrawControl = () => {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const drawnItemsRef = useRef(new L.FeatureGroup());
   const activeDrawerRef = useRef<any>(null);
-
+  const [activeTool, setActiveTool] = useState<ToolType>(null);
 
   useEffect(() => {
     const drawnItems = drawnItemsRef.current;
@@ -37,6 +40,7 @@ const MapDrawControl = () => {
         if(activeDrawerRef.current?.disable) {
             activeDrawerRef.current.disable();
         }
+        setActiveTool(null);
     }
     
     map.on(L.Draw.Event.CREATED, handleCreated);
@@ -45,15 +49,36 @@ const MapDrawControl = () => {
         map.off(L.Draw.Event.CREATED, handleCreated);
     }
   }, [map, selectedColor]);
+
+  // Force map redraw when history changes to fix free-draw bug
+  useEffect(() => {
+    map.invalidateSize();
+  }, [history, map]);
   
-  const activateDrawer = (type: 'marker' | 'polyline' | 'polygon' | 'freedraw') => {
-      if (activeDrawerRef.current?.disable) {
-          activeDrawerRef.current.disable();
+  const stopCurrentDrawer = () => {
+    if (activeDrawerRef.current) {
+        if (activeDrawerRef.current.disable) {
+            activeDrawerRef.current.disable();
+        }
+        if (activeDrawerRef.current.stopDrawing) { // For FreeDraw
+            activeDrawerRef.current.stopDrawing();
+            map.removeLayer(activeDrawerRef.current);
+        }
+        activeDrawerRef.current = null;
+    }
+  };
+
+  const activateDrawer = (type: ToolType) => {
+      if (type === activeTool) {
+        stopCurrentDrawer();
+        setActiveTool(null);
+        return;
       }
-      if (activeDrawerRef.current?.stopDrawing) { // For FreeDraw
-        activeDrawerRef.current.stopDrawing();
-        map.removeLayer(activeDrawerRef.current);
-      }
+      
+      stopCurrentDrawer();
+      setActiveTool(type);
+
+      if (type === null) return;
 
       let drawer;
       const options = {
@@ -74,11 +99,14 @@ const MapDrawControl = () => {
             break;
           case 'freedraw':
             const freeDraw = new FreeDraw({
-                mode: 1, // Equivalent to FreeDraw.MODES.CREATE
+                mode: FreeDraw.MODES.CREATE | FreeDraw.MODES.EDIT,
                 smoothFactor: 0.3,
                 simplifyFactor: 1.5,
+                createExitMode: FreeDraw.MODES.EDIT,
+                editExitMode: FreeDraw.MODES.EDIT,
             });
             map.addLayer(freeDraw);
+            
             freeDraw.on('markers', (event: any) => {
                 const latlngs = event.latLngs;
                 if(latlngs.length > 1) {
@@ -93,8 +121,7 @@ const MapDrawControl = () => {
       }
       activeDrawerRef.current = drawer;
       
-      if(drawer.enable) drawer.enable();
-      if(drawer.startDrawing) drawer.startDrawing(); // For FreeDraw
+      if(drawer?.enable) drawer.enable();
   }
 
   const undo = () => {
@@ -135,11 +162,11 @@ const MapDrawControl = () => {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-custom-draw-controls');
         L.DomEvent.disableClickPropagation(container);
 
-        const drawTools = [
-            { icon: <Pencil />, title: 'Free Draw', action: () => activateDrawer('freedraw') },
-            { icon: <MapPin />, title: 'Draw a marker', action: () => activateDrawer('marker') },
-            { icon: <Spline />, title: 'Draw a polyline', action: () => activateDrawer('polyline') },
-            { icon: <Hexagon />, title: 'Draw a polygon', action: () => activateDrawer('polygon') },
+        const drawTools: {type: ToolType, icon: React.ReactNode, title: string}[] = [
+            { type: 'freedraw', icon: <Pencil />, title: 'Free Draw'},
+            { type: 'marker', icon: <MapPin />, title: 'Draw a marker'},
+            { type: 'polyline', icon: <Spline />, title: 'Draw a polyline'},
+            { type: 'polygon', icon: <Hexagon />, title: 'Draw a polygon'},
         ];
 
         const actionTools = [
@@ -153,14 +180,21 @@ const MapDrawControl = () => {
             btn.className = "leaflet-custom-draw-button";
             btn.title = tool.title;
             
-            // Render React component into the button
+            if (tool.type && tool.type === activeTool) {
+                btn.classList.add('active');
+            }
+
             const root = createRoot(btn);
             root.render(tool.icon);
 
             btn.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                tool.action();
+                if(tool.type) {
+                  activateDrawer(tool.type);
+                } else {
+                  tool.action();
+                }
             };
 
             if (tool.disabled) {
@@ -182,7 +216,7 @@ const MapDrawControl = () => {
         const drawContainer = L.DomUtil.create('div', 'leaflet-draw-custom-container', container);
         drawTools.forEach(tool => drawContainer.appendChild(createButton(tool)));
 
-        const actionContainer = L.DomUtil.create('div', 'leaflet-draw-custom-container leaflet-draw-action-container', container);
+        const actionContainer = L.DomUtil.create('div', 'leaflet-draw-action-container', container);
         actionTools.forEach(tool => actionContainer.appendChild(createButton(tool)));
 
         const colorPicker = L.DomUtil.create('div', 'leaflet-custom-color-picker', container);
@@ -211,7 +245,7 @@ const MapDrawControl = () => {
     return () => {
         map.removeControl(controlContainer);
     };
-  }, [map, selectedColor, history, redoStack]);
+  }, [map, selectedColor, history, redoStack, activeTool]);
 
   return null;
 };
