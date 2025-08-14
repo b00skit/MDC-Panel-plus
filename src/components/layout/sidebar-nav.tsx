@@ -16,6 +16,7 @@ import {
   ExternalLink,
   Github,
   Bell,
+  MessageSquare,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -34,6 +35,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import announcementsData from '../../../data/announcements.json';
+import { FeedbackDialog } from '../dashboard/feedback-dialog';
 
 type SiteConfig = {
   SITE_NAME: string;
@@ -47,6 +49,7 @@ export function SidebarNav() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const { state } = useSidebar();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -84,6 +87,7 @@ export function SidebarNav() {
 
   return (
     <>
+      <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
       <SidebarHeader>
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -202,6 +206,15 @@ export function SidebarNav() {
                 <Settings />
                 <span>Settings</span>
               </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setIsFeedbackDialogOpen(true)}
+              tooltip="Send Feedback"
+            >
+              <MessageSquare />
+              <span>Send Feedback</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
