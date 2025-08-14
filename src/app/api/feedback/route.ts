@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { isPositive, feedback, reasons } = body;
+    const { isPositive, feedback, reasons, pathname } = body;
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
     if (!webhookUrl) {
@@ -11,16 +11,28 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
     }
 
+    const fields = [];
+    if (reasons && reasons.length > 0) {
+        fields.push({
+            name: "Reasons:",
+            value: reasons.join('\n'),
+        });
+    }
+
+    if (pathname) {
+        fields.push({
+            name: "Page",
+            value: `\`${pathname}\``,
+            inline: true,
+        })
+    }
+
+
     const embed = {
         title: `New Feedback Received: ${isPositive ? "Positive" : "Negative"}`,
         description: feedback || "No detailed feedback provided.",
         color: isPositive ? 3066993 : 15158332, // Green for positive, Red for negative
-        fields: reasons && reasons.length > 0 ? [
-            {
-                name: "Reasons:",
-                value: reasons.join('\n'),
-            }
-        ] : [],
+        fields: fields,
         timestamp: new Date().toISOString(),
     };
 

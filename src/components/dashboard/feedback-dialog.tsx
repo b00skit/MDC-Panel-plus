@@ -2,6 +2,7 @@
 'use client';
 
 import * as React from 'react';
+import { usePathname } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -38,6 +39,7 @@ interface FeedbackDialogProps {
 }
 
 export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
+  const pathname = usePathname();
   const [feedbackType, setFeedbackType] = React.useState<'positive' | 'negative' | null>(null);
   const [feedbackText, setFeedbackText] = React.useState('');
   const [selectedReasons, setSelectedReasons] = React.useState<string[]>([]);
@@ -78,6 +80,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
                 isPositive: feedbackType === 'positive',
                 feedback: feedbackText,
                 reasons: selectedReasons,
+                pathname: pathname,
             }),
         });
 
