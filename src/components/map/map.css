@@ -1,0 +1,89 @@
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    background-color: hsl(var(--card)) !important;
+    color: hsl(var(--card-foreground)) !important;
+    border-color: hsl(var(--border)) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+}
+
+.leaflet-control-attribution {
+    background-color: hsla(var(--card), 0.8) !important;
+    color: hsl(var(--card-foreground)) !important;
+}
+
+.leaflet-control-search {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+}
+
+.leaflet-control-search .search-input {
+    background-color: hsl(var(--input));
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
+    height: 40px;
+    padding: 0 1rem;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+.leaflet-control-search .search-input:focus {
+    border-color: hsl(var(--ring));
+    box-shadow: none;
+}
+
+
+.leaflet-control-search .search-button {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    background-image: none !important;
+    border-radius: var(--radius-md);
+}
+
+.leaflet-control-search .search-button:hover {
+    background-color: hsl(var(--accent)) !important;
+}
+
+.leaflet-control-search .search-tooltip {
+    background-color: hsl(var(--popover));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 0.5rem;
+    max-height: 250px;
+}
+
+.leaflet-control-search .search-tip {
+    color: hsl(var(--popover-foreground));
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+}
+
+.leaflet-control-search .search-tip:hover, .leaflet-control-search .search-tip-select {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+}
+
+.leaflet-control-search .search-cancel {
+    width: 20px;
+    height: 20px;
+    right: 48px;
+    top: 10px;
+    background-size: 20px 20px;
+}
+.leaflet-control-search .search-cancel span {
+    font-size: 20px;
+    line-height: 20px;
+}
+

@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import L from 'leaflet';
 import 'leaflet-search';
+import './map.css';
 
 // You might need to create a simple CSS file for leaflet-search or import it if it's in your node_modules
 // For now, let's assume some basic styles are needed and can be added later.
