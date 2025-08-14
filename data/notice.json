@@ -1,6 +1,6 @@
 
 {
-    "enabled": true,
+    "enabled": false,
     "dismissible": false,
     "variant": "default",
     "icon": "Info",
