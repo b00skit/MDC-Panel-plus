@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from '@/components/dashboard/page-header';
@@ -21,7 +22,7 @@ export function MapPage() {
         title="Streets Guide"
         description="An interactive map of Los Santos & Blaine County."
       />
-      <div className="h-[calc(100vh-220px)] w-full">
+      <div className="h-[calc(100vh-220px)] w-full" style={{ backgroundColor: '#0fa8d2', borderRadius: '0.5rem' }}>
         <MapComponent />
       </div>
     </div>

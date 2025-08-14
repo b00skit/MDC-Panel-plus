@@ -18,6 +18,8 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+const transparentPixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
 const MapComponent = () => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -36,13 +38,14 @@ const MapComponent = () => {
       maxZoom={5}
       minZoom={2}
       scrollWheelZoom={true}
-      style={{ height: '100%', width: '100%', borderRadius: '0.5rem' }}
+      style={{ height: '100%', width: '100%', borderRadius: '0.5rem', backgroundColor: 'transparent' }}
       className="z-0"
     >
       <TileLayer
-        url="/img/mapStyles/styleStreet/{z}/{x}/{y}.jpg"
+        url="/map/mapStyles/styleStreet/{z}/{x}/{y}.jpg"
         attribution='San Andreas Street Guide - MDC'
         noWrap={true}
+        errorTileUrl={transparentPixel}
       />
     </MapContainer>
   );
