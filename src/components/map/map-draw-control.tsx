@@ -4,8 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-draw';
-import { Button } from '@/components/ui/button';
-import { Undo, Redo, Eraser, MapPin, Edit, Trash2 } from 'lucide-react';
+import FreeDraw from 'leaflet-freedraw';
+import { Undo, Redo, Eraser, MapPin, Edit, Trash2, Spline, Hexagon, Pencil } from 'lucide-react';
 import './map.css';
 import { cn } from '@/lib/utils';
 
@@ -46,9 +46,13 @@ const MapDrawControl = () => {
     }
   }, [map, selectedColor]);
   
-  const activateDrawer = (type: 'marker' | 'polyline' | 'polygon') => {
+  const activateDrawer = (type: 'marker' | 'polyline' | 'polygon' | 'freedraw') => {
       if (activeDrawerRef.current?.disable) {
           activeDrawerRef.current.disable();
+      }
+      if (activeDrawerRef.current?.stopDrawing) { // For FreeDraw
+        activeDrawerRef.current.stopDrawing();
+        map.removeLayer(activeDrawerRef.current);
       }
 
       let drawer;
@@ -68,9 +72,31 @@ const MapDrawControl = () => {
           case 'polygon':
             drawer = new L.Draw.Polygon(map, options);
             break;
+          case 'freedraw':
+            const freeDraw = new FreeDraw({
+                mode: FreeDraw.MODES.CREATE,
+                smoothFactor: 0.3,
+                simplifyFactor: 1.5,
+            });
+            map.addLayer(freeDraw);
+            freeDraw.on('markers', (event: any) => {
+                const latlngs = event.latLngs;
+                if(latlngs.length > 1) {
+                    const polyline = L.polyline(latlngs, { color: selectedColor });
+                    drawnItemsRef.current.addLayer(polyline);
+                    setHistory((prev) => [...prev, polyline]);
+                    setRedoStack([]);
+                }
+                // We clear the freedraw layer to prevent multiple lines
+                freeDraw.clear();
+            });
+            drawer = freeDraw;
+            break;
       }
       activeDrawerRef.current = drawer;
-      drawer.enable();
+      
+      if(drawer.enable) drawer.enable();
+      if(drawer.startDrawing) drawer.startDrawing(); // For FreeDraw
   }
 
   const undo = () => {
@@ -111,40 +137,62 @@ const MapDrawControl = () => {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-custom-draw-controls');
         L.DomEvent.disableClickPropagation(container);
 
-        const createButton = (icon: string, title: string, onClick: () => void, disabled?: () => boolean) => {
+        const drawTools = [
+            { icon: <Pencil />, title: 'Free Draw', action: () => activateDrawer('freedraw') },
+            { icon: <MapPin />, title: 'Draw a marker', action: () => activateDrawer('marker') },
+            { icon: <Spline />, title: 'Draw a polyline', action: () => activateDrawer('polyline') },
+            { icon: <Hexagon />, title: 'Draw a polygon', action: () => activateDrawer('polygon') },
+        ];
+
+        const actionTools = [
+            { icon: <Undo />, title: 'Undo', action: undo, disabled: () => history.length === 0 },
+            { icon: <Redo />, title: 'Redo', action: redo, disabled: () => redoStack.length === 0 },
+            { icon: <Eraser />, title: 'Clear All', action: clearAll, disabled: () => history.length === 0 },
+        ];
+
+        const createButton = (tool: any) => {
             const btn = document.createElement('button');
-            btn.className = "p-2 hover:bg-muted rounded-md disabled:opacity-50";
-            btn.title = title;
-            btn.innerHTML = icon;
+            btn.className = "leaflet-custom-draw-button";
+            btn.title = tool.title;
+
+            const iconContainer = document.createElement('span');
+            iconContainer.innerHTML = new XMLSerializer().serializeToString(tool.icon.props.children[1]);
+            const svg = iconContainer.firstElementChild as SVGElement;
+            if (svg) {
+                svg.setAttribute('width', '16');
+                svg.setAttribute('height', '16');
+                svg.setAttribute('stroke-width', '2');
+                svg.setAttribute('stroke', 'currentColor');
+                btn.innerHTML = svg.outerHTML;
+            }
+            
             btn.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                if (!disabled || !disabled()) onClick();
+                tool.action();
             };
-            
-            // This is a bit of a hack to re-render disabled state
-            const interval = setInterval(() => {
-                if(disabled) {
-                    btn.disabled = disabled();
-                }
-            }, 200)
 
-            // Cleanup
-            const observer = new MutationObserver(() => {
-                if (!document.body.contains(btn)) {
-                    clearInterval(interval);
-                    observer.disconnect();
-                }
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
-
+            if (tool.disabled) {
+                const interval = setInterval(() => {
+                    btn.disabled = tool.disabled();
+                }, 200);
+                
+                const observer = new MutationObserver(() => {
+                    if (!document.body.contains(btn)) {
+                        clearInterval(interval);
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
+            }
             return btn;
         };
-
+        
         const drawContainer = L.DomUtil.create('div', 'leaflet-draw-custom-container', container);
-        drawContainer.appendChild(createButton(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`, 'Draw a marker', () => activateDrawer('marker')));
-        drawContainer.appendChild(createButton(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-spline"><path d="M8 22c5 0 5-11.5 5-20"/><path d="M16 22c-5 0-5-11.5-5-20"/></svg>`, 'Draw a polyline', () => activateDrawer('polyline')));
-        drawContainer.appendChild(createButton(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hexagon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`, 'Draw a polygon', () => activateDrawer('polygon')));
+        drawTools.forEach(tool => drawContainer.appendChild(createButton(tool)));
+
+        const actionContainer = L.DomUtil.create('div', 'leaflet-draw-custom-container leaflet-draw-action-container', container);
+        actionTools.forEach(tool => actionContainer.appendChild(createButton(tool)));
 
         const colorPicker = L.DomUtil.create('div', 'leaflet-custom-color-picker', container);
         colors.forEach(color => {
@@ -163,10 +211,6 @@ const MapDrawControl = () => {
                 L.DomUtil.addClass(colorButton, 'selected');
             });
         });
-        
-        container.appendChild(createButton('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-undo-2"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>', 'Undo', undo, () => history.length === 0));
-        container.appendChild(createButton('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-redo-2"><path d="M15 14 20 9l-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/></svg>', 'Redo', redo, () => redoStack.length === 0));
-        container.appendChild(createButton('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eraser"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 12 5 5"/></svg>', 'Clear All', clearAll, () => history.length === 0));
         
         return container;
     };
