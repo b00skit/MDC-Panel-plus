@@ -1,13 +1,13 @@
 
 'use client';
 import { useEffect, useState, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-draw';
 import FreeDraw from 'leaflet-freedraw';
-import { Undo, Redo, Eraser, MapPin, Edit, Trash2, Spline, Hexagon, Pencil } from 'lucide-react';
+import { Undo, Redo, Eraser, MapPin, Spline, Hexagon, Pencil } from 'lucide-react';
 import './map.css';
-import { cn } from '@/lib/utils';
 
 const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f97316', '#a855f7', '#ec4899'];
 
@@ -154,18 +154,10 @@ const MapDrawControl = () => {
             const btn = document.createElement('button');
             btn.className = "leaflet-custom-draw-button";
             btn.title = tool.title;
-
-            const iconContainer = document.createElement('span');
-            iconContainer.innerHTML = new XMLSerializer().serializeToString(tool.icon.props.children[1]);
-            const svg = iconContainer.firstElementChild as SVGElement;
-            if (svg) {
-                svg.setAttribute('width', '16');
-                svg.setAttribute('height', '16');
-                svg.setAttribute('stroke-width', '2');
-                svg.setAttribute('stroke', 'currentColor');
-                btn.innerHTML = svg.outerHTML;
-            }
             
+            // Render React component into the button
+            ReactDOM.render(tool.icon, btn);
+
             btn.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();

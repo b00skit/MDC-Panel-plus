@@ -1,5 +1,6 @@
 
 
+
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     background-color: hsla(var(--card) / 0.8) !important;
@@ -155,6 +156,11 @@
     width: 30px;
     height: 30px;
     border-radius: 0.25rem;
+}
+
+.leaflet-custom-draw-button svg {
+    width: 16px;
+    height: 16px;
 }
 
 .leaflet-custom-draw-button:hover {
