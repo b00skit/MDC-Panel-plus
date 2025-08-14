@@ -6,12 +6,10 @@ import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function MapPage() {
-  const Map = useMemo(
+  const MapComponent = useMemo(
     () =>
-      dynamic(() => import('@/components/map/map'), {
-        loading: () => (
-          <Skeleton className="h-[600px] w-full rounded-lg" />
-        ),
+      dynamic(() => import('@/components/map/map-component'), {
+        loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />,
         ssr: false,
       }),
     [],
@@ -24,7 +22,7 @@ export function MapPage() {
         description="An interactive map of Los Santos & Blaine County."
       />
       <div className="h-[calc(100vh-220px)] w-full">
-        <Map />
+        <MapComponent />
       </div>
     </div>
   );
