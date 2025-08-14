@@ -99,11 +99,11 @@ const MapDrawControl = () => {
             break;
           case 'freedraw':
             const freeDraw = new FreeDraw({
-                mode: FreeDraw.MODES.CREATE | FreeDraw.MODES.EDIT,
+                mode: 3, // CREATE | EDIT
                 smoothFactor: 0.3,
                 simplifyFactor: 1.5,
-                createExitMode: FreeDraw.MODES.EDIT,
-                editExitMode: FreeDraw.MODES.EDIT,
+                createExitMode: 2, // EDIT
+                editExitMode: 2, // EDIT
             });
             map.addLayer(freeDraw);
             
@@ -183,9 +183,9 @@ const MapDrawControl = () => {
             if (tool.type && tool.type === activeTool) {
                 btn.classList.add('active');
             }
-
             const root = createRoot(btn);
             root.render(tool.icon);
+
 
             btn.onclick = (e) => {
                 e.preventDefault();
