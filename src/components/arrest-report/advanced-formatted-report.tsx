@@ -28,7 +28,7 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
             <h1 style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: 'black' }}>
                 LOS SANTOS POLICE DEPARTMENT<br />ARREST REPORT
             </h1>
-            <table border={1} cellPadding={2} style={{ width: '100%', borderCollapse: 'collapse', color: 'black' }}>
+            <table border={1} cellPadding={2} style={{ width: '100%', borderCollapse: 'collapse', color: 'black', backgroundColor: 'white' }}>
                 <tbody>
                     <tr>
                         <th colSpan={2} style={headerCellStyle}>ARRESTEE NAME (FIRST, MIDDLE, LAST)</th>
