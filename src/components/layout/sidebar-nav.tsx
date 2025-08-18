@@ -171,18 +171,6 @@ export function SidebarNav() {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              isActive={isActive('/report-archive')}
-              tooltip="Report Archive"
-            >
-              <Link href="/report-archive">
-                <History />
-                <span>Report Archive</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
               isActive={isActive('/simplified-penal-code')}
               tooltip="Simplified Penal Code"
             >
@@ -213,6 +201,18 @@ export function SidebarNav() {
               <Link href="/map">
                 <Map />
                 <span>Interactive Map</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/report-archive')}
+              tooltip="Report Archive"
+            >
+              <Link href="/report-archive">
+                <History />
+                <span>Report Archive</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
