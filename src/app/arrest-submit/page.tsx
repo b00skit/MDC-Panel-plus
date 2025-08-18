@@ -47,6 +47,7 @@ function ArrestSubmitContent() {
     useEffect(() => {
         if (hasReport && formData) {
             const archiveData = {
+                paperworkType: 'arrest-report',
                 type: reportType,
                 fields: formData,
                 charges: report,

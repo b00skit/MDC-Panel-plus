@@ -6,6 +6,7 @@ import type { SelectedCharge } from './charge-store';
 
 export interface ArchivedReport {
     id: number;
+    paperworkType: 'arrest-report' | string;
     type: 'basic' | 'advanced';
     fields: any; 
     charges: SelectedCharge[];
