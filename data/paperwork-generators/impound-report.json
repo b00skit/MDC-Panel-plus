@@ -28,5 +28,6 @@
         { "type": "section", "title": "Impound Details" },
         { "type": "text", "name": "impound_duration", "label": "Duration of Impound (Days)", "placeholder": "#", "required": true },
         { "type": "textarea", "name": "impound_reason", "label": "Impound Reason", "placeholder": "Vehicle was used in the comission of a crime, see arrest report #.\nVehicle was obstructing the flow of traffic, see parking ticket #.", "required": true }
-    ]
+    ],
+    "countyCityStipulation": true
 }

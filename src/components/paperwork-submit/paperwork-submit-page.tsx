@@ -15,7 +15,7 @@ import { ConditionalVariable } from '@/stores/paperwork-builder-store';
 const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
     const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
-    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; conditionals?: ConditionalVariable[] } | null>(null);
+    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; conditionals?: ConditionalVariable[], countyCityStipulation?: boolean } | null>(null);
   
     useEffect(() => {
         if (generatorId && generatorType) {
@@ -86,7 +86,15 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 });
             }
             
-            const parsed = compiledTemplate(processedData);
+            let parsed = compiledTemplate(processedData);
+
+            if (generatorConfig.countyCityStipulation && formData.officers?.[0]?.department) {
+                const cityFactions = ["Los Santos Police Department", "Los Santos Parking Enforcement"];
+                if (cityFactions.includes(formData.officers[0].department)) {
+                    parsed = parsed.replace(/COUNTY OF LOS SANTOS/g, 'CITY OF LOS SANTOS');
+                }
+            }
+
             setTemplate(parsed);
         }
     }, [generatorConfig, formData]);

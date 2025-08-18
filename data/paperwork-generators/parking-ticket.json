@@ -92,5 +92,6 @@
                 { "value": "In the immediate vicinity of the Bank's entrance, including the sidewalk adjacent to the metal barriers.", "label": "Obstructing Bank Entrance" }
             ]
         }
-    ]
+    ],
+    "countyCityStipulation": true
 }

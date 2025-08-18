@@ -57,5 +57,6 @@
                 "fine": true
             }
         }
-    ]
+    ],
+    "countyCityStipulation": true
 }

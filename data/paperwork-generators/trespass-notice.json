@@ -20,7 +20,6 @@
         { "type": "text", "name": "trespass_property", "label": "Property", "placeholder": "e.g., 1003 Mission Row Property", "required": true },
         { "type": "text", "name": "manager_name", "label": "Manager's Full Name", "placeholder": "Firstname Lastname", "required": true },
         { "type": "text", "name": "manager_phone", "label": "Manager's Phone Number", "placeholder": "###-###-###", "required": true }
-    ]
+    ],
+    "countyCityStipulation": true
 }
-
-    
