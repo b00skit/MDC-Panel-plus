@@ -11,11 +11,13 @@ import { useToast } from '@/hooks/use-toast';
 import { usePaperworkStore } from '@/stores/paperwork-store';
 import Handlebars from 'handlebars';
 import { ConditionalVariable } from '@/stores/paperwork-builder-store';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
-const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTMLDivElement> }) => {
+const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: React.RefObject<HTMLDivElement>, setReportTitle: (title: string) => void }) => {
     const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
-    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; conditionals?: ConditionalVariable[], countyCityStipulation?: boolean } | null>(null);
+    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; output_title?: string; conditionals?: ConditionalVariable[], countyCityStipulation?: boolean } | null>(null);
   
     useEffect(() => {
         if (generatorId && generatorType) {
@@ -34,7 +36,7 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
     }, [generatorId, generatorType, groupId]);
 
     useEffect(() => {
-        if(generatorConfig?.output && formData) {
+        if(generatorConfig && formData) {
             Handlebars.registerHelper('lookup', (obj, key) => obj && obj[key]);
             Handlebars.registerHelper('with', function(this: any, context, options) {
                 return options.fn(context);
@@ -56,11 +58,6 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                 return ret;
             });
             
-            const templateString = generatorConfig.output.replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}').replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
-
-
-            const compiledTemplate = Handlebars.compile(templateString, { noEscape: true });
-
             const processedData = { ...formData };
             if (generatorConfig.conditionals) {
                 generatorConfig.conditionals.forEach(cond => {
@@ -85,19 +82,29 @@ const GeneratedFormattedReport = ({ innerRef }: { innerRef: React.RefObject<HTML
                     }
                 });
             }
+
+            // Compile main output
+            const outputTemplateString = generatorConfig.output.replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}').replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
+            const compiledOutputTemplate = Handlebars.compile(outputTemplateString, { noEscape: true });
+            let parsedOutput = compiledOutputTemplate(processedData);
             
-            let parsed = compiledTemplate(processedData);
+            // Compile title if it exists
+            if (generatorConfig.output_title) {
+                const compiledTitleTemplate = Handlebars.compile(generatorConfig.output_title, { noEscape: true });
+                setReportTitle(compiledTitleTemplate(processedData));
+            }
+
 
             if (generatorConfig.countyCityStipulation && formData.officers?.[0]?.department) {
                 const cityFactions = ["Los Santos Police Department", "Los Santos Parking Enforcement"];
                 if (cityFactions.includes(formData.officers[0].department)) {
-                    parsed = parsed.replace(/COUNTY OF LOS SANTOS/g, 'CITY OF LOS SANTOS');
+                    parsedOutput = parsedOutput.replace(/COUNTY OF LOS SANTOS/g, 'CITY OF LOS SANTOS');
                 }
             }
 
-            setTemplate(parsed);
+            setTemplate(parsedOutput);
         }
-    }, [generatorConfig, formData]);
+    }, [generatorConfig, formData, setReportTitle]);
   
     return (
         <div ref={innerRef} className="p-4 border rounded-lg bg-card text-card-foreground">
@@ -113,6 +120,7 @@ function PaperworkSubmitContent() {
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
     const reportRef = useRef<HTMLDivElement>(null);
+    const [reportTitle, setReportTitle] = useState('');
   
     useEffect(() => {
       setIsClient(true);
@@ -173,7 +181,13 @@ function PaperworkSubmitContent() {
             </AlertDescription>
         </Alert>
           
-        <GeneratedFormattedReport innerRef={reportRef} />
+        {reportTitle && (
+            <div className="space-y-2">
+                <Label htmlFor="report-title">Report Title</Label>
+                <Input id="report-title" value={reportTitle} readOnly disabled />
+            </div>
+        )}
+        <GeneratedFormattedReport innerRef={reportRef} setReportTitle={setReportTitle} />
 
         <div className="flex justify-end mt-6">
             <Button onClick={handleCopy} disabled={!isClient}>
