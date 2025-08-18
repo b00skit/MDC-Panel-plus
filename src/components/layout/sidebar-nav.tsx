@@ -18,6 +18,7 @@ import {
   Bell,
   MessageSquare,
   Map,
+  History,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -164,6 +165,18 @@ export function SidebarNav() {
               <Link href="/paperwork-generators">
                 <Archive />
                 <span>Paperwork Generators</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/report-archive')}
+              tooltip="Report Archive"
+            >
+              <Link href="/report-archive">
+                <History />
+                <span>Report Archive</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

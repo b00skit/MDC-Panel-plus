@@ -16,12 +16,14 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { ArrestReportResults } from '@/components/arrest-report/arrest-report-results';
 import { BasicFormattedReport } from '@/components/arrest-report/basic-formatted-report';
 import { AdvancedFormattedReport } from '@/components/arrest-report/advanced-formatted-report';
+import { useArchiveStore } from '@/stores/archive-store';
 
 
 function ArrestSubmitContent() {
     const { report, penalCode } = useChargeStore();
     const { formData: basicFormData } = useFormStore();
     const { formData: advancedFormData } = useAdvancedReportStore();
+    const { archiveReport } = useArchiveStore();
 
     const searchParams = useSearchParams();
     const reportType = searchParams.get('type') || 'basic';
@@ -33,13 +35,25 @@ function ArrestSubmitContent() {
     useEffect(() => {
       setIsClient(true);
     }, []);
-  
+
     const isBasicReport = reportType === 'basic';
     const isAdvancedReport = reportType === 'advanced';
     
     const formData = isBasicReport ? basicFormData : advancedFormData;
     
     const hasReport = isClient && report.length > 0 && !!penalCode;
+
+    // Effect to archive the report once data is available
+    useEffect(() => {
+        if (hasReport && formData) {
+            const archiveData = {
+                type: reportType,
+                fields: formData,
+                charges: report,
+            };
+            archiveReport(archiveData);
+        }
+    }, [hasReport, formData, report, reportType, archiveReport]);
     
     const handleCopy = () => {
         if (reportRef.current) {
@@ -76,7 +90,7 @@ function ArrestSubmitContent() {
             <Info className="h-4 w-4" />
             <AlertTitle>Heads up!</AlertTitle>
             <AlertDescription>
-                The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC.
+                The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC. This report has also been archived.
             </AlertDescription>
         </Alert>
           
@@ -96,7 +110,7 @@ function ArrestSubmitContent() {
             {isBasicReport && hasReport && penalCode && (
                 <BasicFormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} />
             )}
-            {isAdvancedReport && (
+            {isAdvancedReport && hasReport && (
                 <AdvancedFormattedReport innerRef={reportRef} formData={formData} />
             )}
             </div>
