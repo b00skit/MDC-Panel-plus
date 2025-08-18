@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrestReportForm } from '@/components/arrest-report/arrest-report-form';
 import { Button } from '@/components/ui/button';
@@ -23,11 +23,23 @@ export default function ArrestReportPage() {
   const [isClient, setIsClient] = useState(false);
   const { isAdvanced, toggleAdvanced } = useAdvancedReportStore();
 
+  // Create refs for form components to call their save methods
+  const basicFormRef = useRef<{ saveDraft: () => void }>(null);
+  const advancedFormRef = useRef<{ saveForm: () => void }>(null);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
   
   const hasReport = isClient && report.length > 0 && !!penalCode;
+
+  const handleSaveDraft = () => {
+    if (isAdvanced) {
+      advancedFormRef.current?.saveForm();
+    } else {
+      basicFormRef.current?.saveDraft();
+    }
+  };
 
   const renderSkeleton = () => (
      <div className="space-y-6">
@@ -57,6 +69,7 @@ export default function ArrestReportPage() {
                 showCopyables={true}
                 clickToCopy={true}
                 showModifyChargesButton={true}
+                onModifyCharges={handleSaveDraft}
             />
         )}
 
@@ -90,9 +103,10 @@ export default function ArrestReportPage() {
         )}
         
         {isClient && hasReport && (
-            isAdvanced ? <AdvancedArrestReportForm /> : <ArrestReportForm />
+            isAdvanced 
+                ? <AdvancedArrestReportForm ref={advancedFormRef} /> 
+                : <ArrestReportForm ref={basicFormRef} />
         )}
     </div>
   );
 }
-

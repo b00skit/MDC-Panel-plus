@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import {
@@ -44,7 +44,7 @@ interface DeptRanks {
   [department: string]: string[];
 }
 
-export function AdvancedArrestReportForm() {
+export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     const router = useRouter();
     // Session state for the current report
     const { formData: sessionFormData, setFields: setSessionFields } = useAdvancedReportStore();
@@ -111,6 +111,10 @@ export function AdvancedArrestReportForm() {
         });
 
     }, [getValues, setSessionFields, setModifiersState, updateOfficerInStore, setNarrativeField]);
+
+    useImperativeHandle(ref, () => ({
+        saveForm
+    }));
 
 
     const handleFormSubmit = () => {
@@ -987,4 +991,6 @@ export function AdvancedArrestReportForm() {
       </div>
     </form>
   );
-}
+});
+
+AdvancedArrestReportForm.displayName = 'AdvancedArrestReportForm';

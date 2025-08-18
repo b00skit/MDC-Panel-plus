@@ -107,6 +107,7 @@ interface ArrestReportResultsProps {
     showCopyables?: boolean;
     clickToCopy?: boolean;
     showModifyChargesButton?: boolean;
+    onModifyCharges?: () => void;
 }
 
 export function ArrestReportResults({ 
@@ -118,6 +119,7 @@ export function ArrestReportResults({
     showCopyables = false,
     clickToCopy = false,
     showModifyChargesButton = false,
+    onModifyCharges,
 }: ArrestReportResultsProps) {
     const { toast } = useToast();
     const router = useRouter();
@@ -236,6 +238,7 @@ export function ArrestReportResults({
     };
 
     const handleModifyCharges = () => {
+      onModifyCharges?.();
       setChargesForModification(report);
       router.push('/arrest-calculator?modify=true');
     };

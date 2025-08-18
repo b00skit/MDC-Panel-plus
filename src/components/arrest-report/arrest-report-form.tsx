@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import {
   Card,
   CardContent,
@@ -135,7 +135,7 @@ const TextareaField = ({
 );
 
 
-export function ArrestReportForm() {
+export const ArrestReportForm = forwardRef((props, ref) => {
   const router = useRouter();
   const { toast } = useToast();
   const { formData, setAll } = useFormStore();
@@ -191,6 +191,21 @@ export function ArrestReportForm() {
     return null;
   };
 
+  const saveDraft = () => {
+    const latestFormData = getFormData();
+    if (latestFormData) {
+        setAll(latestFormData as any);
+    }
+    toast({
+        title: 'Draft Saved',
+        description: 'Your report has been saved as a draft.',
+    });
+  }
+
+  useImperativeHandle(ref, () => ({
+    saveDraft
+  }));
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
@@ -210,17 +225,6 @@ export function ArrestReportForm() {
     setAll(latestFormData as any);
     router.push('/arrest-submit?type=basic');
   };
-  
-  const saveDraft = () => {
-    const latestFormData = getFormData();
-    if (latestFormData) {
-        setAll(latestFormData as any);
-    }
-    toast({
-        title: 'Draft Saved',
-        description: 'Your report has been saved as a draft.',
-    });
-  }
 
   return (
     <FormProvider {...methods}>
@@ -302,4 +306,6 @@ export function ArrestReportForm() {
       </form>
     </FormProvider>
   );
-}
+});
+
+ArrestReportForm.displayName = 'ArrestReportForm';
