@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -64,6 +64,9 @@ interface DepaData {
 
 export function ArrestCalculatorPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isModifyMode = searchParams.get('modify') === 'true';
+
   const { toast } = useToast();
   const { 
     charges, 
@@ -74,6 +77,8 @@ export function ArrestCalculatorPage() {
     updateCharge, 
     setReport,
     resetCharges,
+    setCharges,
+    report,
   } = useChargeStore();
   const resetForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
@@ -91,7 +96,11 @@ export function ArrestCalculatorPage() {
   }, [penalCode]);
 
   useEffect(() => {
-    resetCharges();
+    if (isModifyMode) {
+      setCharges(report); // Load report charges into the calculator for editing
+    } else {
+      resetCharges();
+    }
     
     fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
       .then((res) => res.json())
@@ -108,7 +117,7 @@ export function ArrestCalculatorPage() {
         .then(res => res.json())
         .then(data => setDepaData(data));
 
-  }, [setPenalCode, resetCharges]);
+  }, [setPenalCode, resetCharges, isModifyMode, report, setCharges]);
   
   const handleCalculate = () => {
      if (charges.length === 0) {
@@ -140,8 +149,10 @@ export function ArrestCalculatorPage() {
       }
     }
     setReport(charges);
-    resetForm();
-    resetAdvancedForm();
+    if (!isModifyMode) {
+      resetForm();
+      resetAdvancedForm();
+    }
     resetCharges();
     router.push('/arrest-report');
   }

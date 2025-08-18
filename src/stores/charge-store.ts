@@ -44,6 +44,7 @@ interface ChargeState {
   updateCharge: (uniqueId: number, updatedFields: Partial<Omit<SelectedCharge, 'uniqueId'>>) => void;
   setReport: (report: SelectedCharge[]) => void;
   resetCharges: () => void;
+  setCharges: (charges: SelectedCharge[]) => void;
 }
 
 const initialState = {
@@ -83,6 +84,7 @@ export const useChargeStore = create<ChargeState>()(
         })),
        setReport: (report) => set({ report }),
        resetCharges: () => set((state) => ({ ...state, charges: [] })),
+       setCharges: (charges) => set({ charges }),
     }),
     {
       name: 'charge-storage', // name of the item in the storage (must be unique)

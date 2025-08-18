@@ -56,6 +56,7 @@ export default function ArrestReportPage() {
                 showSummary={true}
                 showCopyables={true}
                 clickToCopy={true}
+                showModifyChargesButton={true}
             />
         )}
 
@@ -94,3 +95,4 @@ export default function ArrestReportPage() {
     </div>
   );
 }
+

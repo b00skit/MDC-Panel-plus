@@ -13,13 +13,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, Clipboard } from 'lucide-react';
+import { AlertTriangle, Clipboard, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import config from '../../../data/config.json';
+import { useRouter } from 'next/navigation';
 
 
 const getType = (type: string | undefined) => {
@@ -105,6 +106,7 @@ interface ArrestReportResultsProps {
     showSummary?: boolean;
     showCopyables?: boolean;
     clickToCopy?: boolean;
+    showModifyChargesButton?: boolean;
 }
 
 export function ArrestReportResults({ 
@@ -115,8 +117,11 @@ export function ArrestReportResults({
     showSummary = false, 
     showCopyables = false,
     clickToCopy = false,
+    showModifyChargesButton = false,
 }: ArrestReportResultsProps) {
     const { toast } = useToast();
+    const router = useRouter();
+    const setChargesForModification = useChargeStore(state => state.setCharges);
   
     const extras = report.map(row => {
         const chargeDetails = penalCode[row.chargeId!];
@@ -230,12 +235,23 @@ export function ArrestReportResults({
         });
     };
 
+    const handleModifyCharges = () => {
+      setChargesForModification(report);
+      router.push('/arrest-calculator?modify=true');
+    };
+
   return (
     <div className="space-y-6">
       {showCharges && (
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Charges</CardTitle>
+            {showModifyChargesButton && (
+              <Button variant="outline" size="sm" onClick={handleModifyCharges}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Modify Charges
+              </Button>
+            )}
           </CardHeader>
           <CardContent>
             <Table>
