@@ -136,6 +136,14 @@ function PaperworkSubmitContent() {
           })
         }
     };
+
+    const handleCopyTitle = () => {
+        navigator.clipboard.writeText(reportTitle);
+        toast({
+          title: "Success",
+          description: "Report title copied to clipboard.",
+        })
+    };
   
     if (!isClient) {
       return (
@@ -184,7 +192,13 @@ function PaperworkSubmitContent() {
         {reportTitle && (
             <div className="space-y-2">
                 <Label htmlFor="report-title">Report Title</Label>
-                <Input id="report-title" value={reportTitle} readOnly disabled />
+                <div className="flex items-center gap-2">
+                    <Input id="report-title" value={reportTitle} readOnly />
+                    <Button type="button" variant="outline" onClick={handleCopyTitle}>
+                        <Clipboard className="mr-2 h-4 w-4" />
+                        Copy Title
+                    </Button>
+                </div>
             </div>
         )}
         <GeneratedFormattedReport innerRef={reportRef} setReportTitle={setReportTitle} />
