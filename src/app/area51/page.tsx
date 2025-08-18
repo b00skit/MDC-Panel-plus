@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Trash2, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import changelogData from '../../../data/changelog.json';
 
 type ChangelogItem = {
@@ -31,7 +31,7 @@ type FormValues = {
 };
 
 export default function Area51Page() {
-    const { register, control, handleSubmit, watch } = useForm<FormValues>({
+    const { register, control, handleSubmit, getValues } = useForm<FormValues>({
         defaultValues: {
             changelogs: changelogData.changelogs || [{ version: '', type: 'Minor Update', date: '', items: [] }]
         }
@@ -42,15 +42,27 @@ export default function Area51Page() {
         name: "changelogs"
     });
     
-    const watchedChangelogs = watch();
     const [jsonOutput, setJsonOutput] = useState('');
     const { toast } = useToast();
-
-    useEffect(() => {
-        setJsonOutput(JSON.stringify(watchedChangelogs, null, 4));
-    }, [watchedChangelogs]);
+    
+    const generateJson = () => {
+        const currentData = getValues();
+        setJsonOutput(JSON.stringify(currentData, null, 4));
+         toast({
+            title: "JSON Generated",
+            description: "The JSON output has been updated with the current form data.",
+        });
+    }
 
     const copyJson = () => {
+        if (!jsonOutput) {
+            toast({
+                title: "Nothing to copy",
+                description: "Please generate the JSON output first.",
+                variant: "destructive"
+            });
+            return;
+        }
         navigator.clipboard.writeText(jsonOutput);
         toast({
             title: "Copied!",
@@ -62,7 +74,7 @@ export default function Area51Page() {
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
             <PageHeader title="Changelog Generator" description="Create changelog entries with ease." />
 
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit(generateJson)} className="space-y-6">
                 <Button type="button" variant="outline" onClick={() => prependVersion({ version: '', type: 'Minor Update', date: '', items: [] })}>
                     <Plus className="mr-2 h-4 w-4" /> Add Version Entry
                 </Button>
@@ -115,7 +127,9 @@ export default function Area51Page() {
                         </CardContent>
                     </Card>
                 ))}
-
+                 <div className="flex justify-end">
+                    <Button type="button" onClick={generateJson}>Generate JSON</Button>
+                </div>
                  <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>JSON Output</CardTitle>
@@ -126,6 +140,7 @@ export default function Area51Page() {
                             readOnly
                             value={jsonOutput}
                             className="min-h-[400px] font-mono text-xs"
+                            placeholder="Click 'Generate JSON' to see the output here."
                         />
                     </CardContent>
                 </Card>
