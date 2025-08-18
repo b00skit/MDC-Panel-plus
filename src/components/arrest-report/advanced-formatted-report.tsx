@@ -19,8 +19,8 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
         ));
     };
 
-    const cellStyle = { fontSize: '14px', borderTop: 'none', color: 'black', fontFamily: "'Times New Roman', serif" };
-    const headerCellStyle: React.CSSProperties = { fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white', color: 'black', textAlign: 'left' };
+    const cellStyle = { fontSize: '14px', borderTop: 'none', fontFamily: "'Times New Roman', serif" };
+    const headerCellStyle: React.CSSProperties = { fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white', textAlign: 'left' };
     const sectionHeaderStyle: React.CSSProperties = { fontWeight: 'bold', fontSize: '10px', borderTop: '2px solid black', borderBottom: 'none', backgroundColor: 'white', textAlign: 'left' };
 
     return (

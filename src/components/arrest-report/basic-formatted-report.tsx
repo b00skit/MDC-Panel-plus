@@ -100,7 +100,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
       
 
     return (
-        <table ref={innerRef} style={{ width: '100%', fontFamily: "'Times New Roman', serif", borderCollapse: 'collapse', border: '4px solid black', backgroundColor: 'white' }}>
+        <table ref={innerRef} style={{ width: '100%', fontFamily: "'Times New Roman', serif", borderCollapse: 'collapse', border: '4px solid black', backgroundColor: 'white', color: 'black' }}>
             <tbody>
                 <tr>
                     <td colSpan={3} style={{ textAlign: 'center', paddingBottom: '2rem' }}>
