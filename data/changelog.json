@@ -1,6 +1,45 @@
 {
     "changelogs": [
         {
+            "version": "3.1.0",
+            "type": "Minor Update",
+            "date": "2025-08-18",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Interactive Map:</b> Created an interactive map with the restored ability to search streets and the new added ability to draw on the map as well as add your own markers to it."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Report Archive:</b> Arrest Reports will now be archived and you have the ability to restore them at a later date. Each report archives as you submit the report."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added the ability to modify charges after submitting them, this will also not reset any progress you made on the report."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Added a white background to arrest reports, making them visible on any version of the MDC (dark-mode or light-mode)."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Added a white background to all existing paperwork generators, making them visible on any version of the MDC (dark-mode or light-mode)."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>General:</b> Updated the server locale to be based on UTC, this will make it so all time components (such as the time of an arrest report) are based on UTC time rather then local time."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Added support for titles on paperwork generators, reports such as the trespass notice and impound report will now generate titles alongside the report itself."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>General:</b> Modified ranks for Bureau of Investigations, San Andreas Department of Corrections and Los Santos Parking Enforcement."
+                }
+            ]
+        },
+        {
             "version": "3.0.5",
             "type": "Hotfix",
             "date": "2025-08-14",

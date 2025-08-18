@@ -1,6 +1,16 @@
 {
     "announcements": [
         {
+            "id": 2,
+            "date": "2025-08-18",
+            "title": "New Release: 3.1.0",
+            "content": "New update is out enabling the ability to archive your reports, modify your charges while writing the arrest report and more, check it out!",
+            "button": {
+                "text": "View Changelog",
+                "href": "/changelog"
+            }
+        },
+        {
             "id": 1,
             "date": "2025-08-12",
             "title": "Welcome to the new MDC Panel!",
