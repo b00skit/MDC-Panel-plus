@@ -4,7 +4,7 @@
 
 # MDC Panel+
 
-MDC Panel+ is a multi-functional tool designed to assist Law Enforcement Officers with their daily tasks. It provides a suite of tools, generators, and resources for official government use within a roleplaying context. The application is built with Next.js and Tailwind CSS, offering a modern, intuitive, and responsive user experience.
+MDC Panel+ is a multi-functional tool designed to assist roleplay communities' Law Enforcement Officers with their daily tasks. It provides a suite of tools, generators, and resources for official government use within a roleplaying context. The application is built with Next.js and Tailwind CSS, offering a modern, intuitive, and responsive user experience.
 
 ---
 
