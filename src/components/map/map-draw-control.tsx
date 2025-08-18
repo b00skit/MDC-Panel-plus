@@ -22,6 +22,13 @@ const MapDrawControl = () => {
   const drawnItemsRef = useRef(new L.FeatureGroup());
   const activeDrawerRef = useRef<any>(null);
   const [activeTool, setActiveTool] = useState<ToolType>(null);
+  const freeDrawRef = useRef<FreeDraw | null>(null);
+
+  // Force map redraw when history changes to fix free-draw bug
+  useEffect(() => {
+    map.invalidateSize();
+  }, [history.length, map]);
+
 
   useEffect(() => {
     const drawnItems = drawnItemsRef.current;
@@ -47,24 +54,23 @@ const MapDrawControl = () => {
 
     return () => {
         map.off(L.Draw.Event.CREATED, handleCreated);
+        if (freeDrawRef.current) {
+            map.removeLayer(freeDrawRef.current);
+            freeDrawRef.current = null;
+        }
     }
   }, [map, selectedColor]);
-
-  // Force map redraw when history changes to fix free-draw bug
-  useEffect(() => {
-    map.invalidateSize();
-  }, [history, map]);
   
   const stopCurrentDrawer = () => {
     if (activeDrawerRef.current) {
         if (activeDrawerRef.current.disable) {
             activeDrawerRef.current.disable();
         }
-        if (activeDrawerRef.current.stopDrawing) { // For FreeDraw
-            activeDrawerRef.current.stopDrawing();
-            map.removeLayer(activeDrawerRef.current);
-        }
         activeDrawerRef.current = null;
+    }
+    if (freeDrawRef.current) {
+        map.removeLayer(freeDrawRef.current);
+        freeDrawRef.current = null;
     }
   };
 
@@ -117,6 +123,7 @@ const MapDrawControl = () => {
                 }
             });
             drawer = freeDraw;
+            freeDrawRef.current = freeDraw;
             break;
       }
       activeDrawerRef.current = drawer;
@@ -125,29 +132,23 @@ const MapDrawControl = () => {
   }
 
   const undo = () => {
-      setHistory((prev) => {
-          if (prev.length === 0) return prev;
-          const newHistory = [...prev];
-          const lastLayer = newHistory.pop();
-          if (lastLayer) {
-              drawnItemsRef.current.removeLayer(lastLayer);
-              setRedoStack((redo) => [...redo, lastLayer]);
-          }
-          return newHistory;
-      });
+      const newHistory = [...history];
+      const lastLayer = newHistory.pop();
+      if (lastLayer) {
+          drawnItemsRef.current.removeLayer(lastLayer);
+          setRedoStack((redo) => [lastLayer, ...redo]);
+          setHistory(newHistory);
+      }
   };
 
   const redo = () => {
-      setRedoStack((prev) => {
-          if (prev.length === 0) return prev;
-          const newRedoStack = [...prev];
-          const lastRedoLayer = newRedoStack.pop();
-          if (lastRedoLayer) {
-              drawnItemsRef.current.addLayer(lastRedoLayer);
-              setHistory((h) => [...h, lastRedoLayer]);
-          }
-          return newRedoStack;
-      });
+      const newRedoStack = [...redoStack];
+      const nextLayer = newRedoStack.shift();
+      if (nextLayer) {
+          drawnItemsRef.current.addLayer(nextLayer);
+          setHistory((h) => [...h, nextLayer]);
+          setRedoStack(newRedoStack);
+      }
   };
 
   const clearAll = () => {
