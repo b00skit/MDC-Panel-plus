@@ -35,7 +35,7 @@ import { useAdvancedReportStore, FormState, type FormOfficer } from '@/stores/ad
 import { useAdvancedReportModifiersStore } from '@/stores/advanced-report-modifiers-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { useOfficerStore, Officer } from '@/stores/officer-store';
-import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
 import { EvidenceLog, NarrativeSection } from './narrative-sections';
@@ -126,7 +126,7 @@ export function AdvancedArrestReportForm() {
         if (watchedFields.userModified?.source) return;
 
 
-        const date = watchedFields.incident?.date || '09/AUG/2025';
+        const date = watchedFields.incident?.date || formatInTimeZone(new Date(), 'UTC', 'dd/MMM/yyyy').toUpperCase();
         const rank = primaryOfficer.rank || '';
         const name = primaryOfficer.name || '';
         const badge = primaryOfficer.badgeNumber || '';
@@ -446,8 +446,9 @@ export function AdvancedArrestReportForm() {
             if (!mergedFormData.persons || mergedFormData.persons.length === 0) {
                 mergedFormData.persons = [{ name: '', sex: '', gang: '' }];
             }
-            if(!mergedFormData.incident.date) mergedFormData.incident.date = format(new Date(), 'dd/MMM/yyyy').toUpperCase();
-            if(!mergedFormData.incident.time) mergedFormData.incident.time = format(new Date(), 'HH:mm');
+
+            if(!mergedFormData.incident.date) mergedFormData.incident.date = formatInTimeZone(new Date(), 'UTC', 'dd/MMM/yyyy').toUpperCase();
+            if(!mergedFormData.incident.time) mergedFormData.incident.time = formatInTimeZone(new Date(), 'UTC', 'HH:mm');
             
             if (!mergedFormData.evidenceLogs || mergedFormData.evidenceLogs.length === 0) {
                 mergedFormData.evidenceLogs = [{logNumber: '', description: '', quantity: '1'}];

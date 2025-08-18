@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -87,10 +87,10 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
         const existingTime = useFormStore.getState().formData.general.time;
         
         if (!existingDate) {
-            setFormField('general', 'date', format(now, 'dd/MMM/yyyy').toUpperCase());
+            setFormField('general', 'date', formatInTimeZone(now, 'UTC', 'dd/MMM/yyyy').toUpperCase());
         }
         if (!existingTime) {
-            setFormField('general', 'time', format(now, 'HH:mm'));
+            setFormField('general', 'time', formatInTimeZone(now, 'UTC', 'HH:mm'));
         }
     }, [setFormField]);
 
