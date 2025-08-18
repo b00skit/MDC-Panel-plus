@@ -9,6 +9,8 @@ import L from 'leaflet';
 import 'leaflet-search';
 import './map.css';
 import 'leaflet-draw';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 
 
 export function MapPage() {
@@ -36,6 +38,13 @@ export function MapPage() {
         title="Interactive Map"
         description="An interactive map of Los Santos & Blaine County."
       />
+      <Alert variant="warning" className="mb-4">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle>Early Access</AlertTitle>
+        <AlertDescription>
+          This is very broken and I'm very aware, consider it "Early Access" while I fix up certain things.
+        </AlertDescription>
+      </Alert>
       <div className="h-[calc(100vh-220px)] w-full" style={{ backgroundColor: '#0fa8d2', borderRadius: '0.5rem' }}>
         <MapComponent streets={streets} />
       </div>
