@@ -26,7 +26,7 @@ import {
   } from "@/components/ui/alert-dialog"
 
 export default function ReportArchivePage() {
-    const { reports, deleteReport } = useArchiveStore();
+    const { reports, deleteReport, clearArchive } = useArchiveStore();
     const { setReport } = useChargeStore();
     const setBasicForm = useFormStore(state => state.setAll);
     const setAdvancedForm = useAdvancedReportStore(state => state.setFields);
@@ -63,10 +63,35 @@ export default function ReportArchivePage() {
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
-            <PageHeader
-                title="Report Archive"
-                description="View and restore your past arrest reports."
-            />
+            <div className="flex justify-between items-center">
+                <PageHeader
+                    title="Report Archive"
+                    description="View and restore your past arrest reports."
+                />
+                {reports.length > 0 && (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="destructive">
+                                <Trash2 className="mr-2 h-4 w-4" /> Delete All
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete all {reports.length} archived reports.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={clearArchive}>
+                                    Continue
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                )}
+            </div>
             <Card>
                 <CardContent className="p-0">
                     <Table>
