@@ -117,17 +117,25 @@ const MapDrawControl = () => {
                 map.addLayer(freeDraw);
 
                 freeDraw.on('markers', (event: any) => {
-                    const latlngs = event.latLngs;
-                    if (latlngs.length > 1) {
-                        const polyline = L.polyline(latlngs, { color: selectedColor });
-                        drawnItemsRef.current.addLayer(polyline);
+                    // event.latLngs contains an array for each drawn shape.
+                    // Convert each shape into a polyline and clear the FreeDraw layer
+                    // so shapes don't persist internally.
+                    event.latLngs.forEach((latlngs: L.LatLng[]) => {
+                        if (latlngs.length > 1) {
+                            const polyline = L.polyline(latlngs, { color: selectedColor });
+                            drawnItemsRef.current.addLayer(polyline);
 
-                        // ✅ Force refresh
-                        map.invalidateSize();
+                            // ✅ Force refresh so the new drawing is immediately visible
+                            map.invalidateSize();
 
-                        setHistory((prev) => [...prev, polyline]);
-                        setRedoStack([]);
-                    }
+                            setHistory((prev) => [...prev, polyline]);
+                            setRedoStack([]);
+                        }
+                    });
+
+                    // Remove the drawn shape from FreeDraw's internal layer to
+                    // prevent old drawings from reappearing on subsequent draws.
+                    freeDraw.clear();
                 });
                 drawer = freeDraw;
                 freeDrawRef.current = freeDraw;
@@ -162,6 +170,12 @@ const MapDrawControl = () => {
         drawnItemsRef.current.clearLayers();
         setHistory([]);
         setRedoStack([]);
+
+        // Also clear any shapes stored in the FreeDraw instance so they don't
+        // reappear when drawing again after clearing.
+        if (freeDrawRef.current) {
+            freeDrawRef.current.clear();
+        }
     }, []);
 
     // **EFFECT 1: Create and add the control to the map (runs once)**
