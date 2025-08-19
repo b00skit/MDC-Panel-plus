@@ -1,3 +1,4 @@
+
 {
     "resources": [
         {
@@ -26,6 +27,16 @@
                 "title": "Traffic Citations",
                 "body": "Upon the issuance of a traffic citation, the defendant must be legally informed of their rights and the associated legal process. A signature on the citation is not required, as it only serves to acknowledge receipt and is not an admission of guilt. Citations may also be issued electronically, in which case they are delivered via post to the defendant's registered address.\n\nKey information regarding citations:\n- A citation must be either paid or appealed within twenty-eight (28) days of its issue date. An appeal involves formally contesting the violation in court. **(SA P.C. 1007)**\n- Payment of the citation constitutes a legal admission of guilt, which results in automatic case dismissal if appealed **(SA People v. Wyse)**.\n- Failure to pay or appeal may result in a warrant being issued for the unpaid fine. This authorizes peace officers to seize or impound personal assets to cover the amount owed, and can lead to additional penalties such as a driver's license suspension. **(SA P.C. 1210 & 1211)**"
             }
+        },
+        {
+            "id": "miranda-rights",
+            "title": "Miranda Rights",
+            "description": "Understand when and how to properly issue the Miranda warning. Includes a quick-copy button for the verbatim rights.",
+            "icon": "ShieldCheck",
+            "type": "default",
+            "button_text": "Copy Verbatim Rights",
+            "button_action": "copy",
+            "button_content": "You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed for you, free of charge, before any questioning, if you want. Do you understand?"
         }
     ]
 }

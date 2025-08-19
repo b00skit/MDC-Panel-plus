@@ -33,9 +33,12 @@
     "State Fire Marshals": [
         "Deputy Fire Marshal Trainee",
         "Deputy Fire Marshal",
+        "Deputy Fire Marshal (Bonus)",
         "Deputy Fire Marshal II",
+        "Deputy Fire Marshal II (Bonus)",
         "Deputy Fire Marshal III",
         "Division Chief",
+        "Assistant State Fire Marshal",
         "State Fire Marshal",
         "Director"
     ],
@@ -71,18 +74,15 @@
         "Chief"
     ],
     "San Andreas Department of Corrections": [
-        "Correctional Officer (Apprentice)",
         "Correctional Officer",
         "Correctional Counselor I",
         "Correctional Counselor II (Specialist)",
         "Correctional Counselor II (Supervisor)",
         "Correctional Counselor III",
-        "Parole Agent I (Apprentice)",
         "Parole Agent I",
         "Parole Agent II (Specialist)",
         "Parole Agent II (Supervisor)",
         "Parole Agent III",
-        "Special Agent (Probationary)",
         "Special Agent",
         "Senior Special Agent",
         "Correctional Sergeant",

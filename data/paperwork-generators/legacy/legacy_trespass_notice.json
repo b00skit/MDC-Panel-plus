@@ -1,6 +1,6 @@
 
 {
-    "id": "legacy_trespass-notice",
+    "id": "legacy_trespass_notice",
     "title": "Trespass Notice",
     "description": "Issue a formal trespass notice.",
     "icon": "FileSearch",

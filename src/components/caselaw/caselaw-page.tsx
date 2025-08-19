@@ -4,9 +4,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink } from 'lucide-react';
+import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -19,18 +19,22 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 import { FeedbackDialog } from '@/components/dashboard/feedback-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 type Resource = {
     id: string;
     title: string;
     description: string;
     icon: string;
-    type: 'link' | 'dialog';
+    type: 'link' | 'dialog' | 'default';
     href?: string;
     content?: {
         title: string;
         body: string;
     };
+    button_text?: string;
+    button_action?: 'external_link' | 'copy';
+    button_content?: string;
 };
 
 type Caselaw = {
@@ -52,14 +56,6 @@ const ICONS: { [key: string]: React.ReactNode } = {
     Landmark: <Landmark className="w-8 h-8 text-primary" />,
     ShieldCheck: <ShieldCheck className="w-8 h-8 text-primary" />,
     Car: <BookOpen className="w-8 h-8 text-primary" />,
-};
-
-const jurisdictionMap: Record<Caselaw['jurisdiction'], string> = {
-    'federal': 'United States Supreme Court',
-    'federal-civil': 'United States Supreme Court (Civil Case)',
-    'local-supreme': 'San Andreas (Supreme Court)',
-    'local-appeals': 'San Andreas (Criminal Appeals Court)',
-    'local-appeals-civil': 'San Andreas (Civil Appeals Court)',
 };
 
 const SimpleMarkdownParser = (text: string) => {
@@ -94,6 +90,18 @@ const SimpleMarkdownParser = (text: string) => {
 };
 
 const ResourceCard = ({ resource, config }: { resource: Resource, config: Config | null }) => {
+    const { toast } = useToast();
+
+    const handleCopy = () => {
+        if (resource.button_content) {
+            navigator.clipboard.writeText(resource.button_content);
+            toast({
+                title: "Copied to Clipboard",
+                description: `${resource.title} content has been copied.`,
+            });
+        }
+    };
+
     const cardContent = (
       <Card className="h-full flex flex-col justify-between transition-all duration-300 ease-in-out group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:-translate-y-1">
         <CardHeader>
@@ -106,6 +114,16 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
           <CardTitle className="font-headline text-xl">{resource.title}</CardTitle>
           <CardDescription className="mt-2">{resource.description}</CardDescription>
         </CardContent>
+        {resource.button_text && (
+            <CardFooter>
+                {resource.button_action === 'copy' && (
+                    <Button onClick={handleCopy}><Copy className="mr-2 h-4 w-4" />{resource.button_text}</Button>
+                )}
+                {resource.button_action === 'external_link' && resource.button_content && (
+                     <Button asChild><a href={resource.button_content} target="_blank" rel="noopener noreferrer"><ExternalLink className="mr-2 h-4 w-4" />{resource.button_text}</a></Button>
+                )}
+            </CardFooter>
+        )}
       </Card>
     );
   
@@ -137,7 +155,9 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
       );
     }
   
-    return null;
+    return (
+        <div className="group block h-full cursor-pointer">{cardContent}</div>
+    );
   };
   
 

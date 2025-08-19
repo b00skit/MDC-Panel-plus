@@ -1,6 +1,6 @@
 
 {
-    "id": "legacy_parking-ticket",
+    "id": "legacy_parking_ticket",
     "title": "Parking Ticket",
     "description": "Generate a parking ticket citation.",
     "icon": "Car",

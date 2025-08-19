@@ -1,6 +1,6 @@
 
 {
-    "id": "legacy_traffic-report",
+    "id": "legacy_traffic_report",
     "title": "Traffic Report",
     "description": "Generate a traffic citation report.",
     "icon": "Car",

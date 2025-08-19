@@ -1,6 +1,6 @@
 
 {
-    "id": "legacy_impound-report",
+    "id": "legacy_impound_report",
     "title": "Impound Report",
     "description": "Generate a vehicle impound report.",
     "icon": "Car",

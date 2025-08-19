@@ -376,7 +376,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
             <CardContent className="space-y-4">
                 {hiddenGroups.map(group => (
                      <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <Label htmlFor={`toggle-hidden-${group.group_id}`} className="text-base">Show {group.group_name}</Label>
+                        <Label htmlFor={`toggle-hidden-${group.group_id}`} className="text-base">{group.group_name}</Label>
                         <Switch
                             id={`toggle-hidden-${group.group_id}`}
                             checked={showHiddenGroups[group.group_id] === true}
@@ -390,7 +390,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                 {visibleGroups.length > 0 ? (
                     visibleGroups.map(group => (
                         <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
-                            <Label htmlFor={`toggle-${group.group_id}`} className="text-base">Show {group.group_name}</Label>
+                            <Label htmlFor={`toggle-${group.group_id}`} className="text-base">{group.group_name}</Label>
                             <Switch
                                 id={`toggle-${group.group_id}`}
                                 checked={!hiddenFactions.includes(group.group_id)}
