@@ -31,12 +31,12 @@
         {
             "id": "miranda-rights",
             "title": "Miranda Rights",
-            "description": "Understand when and how to properly issue the Miranda warning. Includes a quick-copy button for the verbatim rights.",
+            "description": "Before questioning a suspect, they must be read their rights to make their statements admissible in court, as they have to be advised the risk to self-incrimination.",
             "icon": "ShieldCheck",
             "type": "default",
             "button_text": "Copy Verbatim Rights",
             "button_action": "copy",
-            "button_content": "You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed for you, free of charge, before any questioning, if you want. Do you understand?"
+            "button_content": "You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed for you. Do you understand?"
         }
     ]
 }
