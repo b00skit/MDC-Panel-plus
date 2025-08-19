@@ -146,7 +146,8 @@ const MapDrawControl = () => {
                     isDrawing = false;
                     map.dragging.enable();
                     map.invalidateSize();
-                    setHistory((prev) => [...prev, polyline as L.Layer]);
+                    const currentPolyline = polyline; // store before clearing
+                    setHistory((prev) => [...prev, currentPolyline as L.Layer]);
                     setRedoStack([]);
                     polyline = null;
                 };
