@@ -6,7 +6,7 @@ export default function PrivacyPolicyPage() {
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader
           title="Privacy Policy"
-          description="Last updated: August 08, 2025"
+          description="Last updated: August 19, 2025"
         />
         <Card>
           <CardContent className="prose prose-sm sm:prose-base dark:prose-invert max-w-none pt-6 space-y-4">
@@ -89,7 +89,7 @@ export default function PrivacyPolicyPage() {
 
             <h2 className="font-bold text-xl">Analytics</h2>
             <p>
-                We use Matomo to analyze the use of our website. Matomo is an open-source analytics platform that helps us understand how visitors interact with our site. We use this information to improve our user experience and service offerings. The data collected is anonymized and processed on our own servers, ensuring privacy and data sovereignty. We do not use this data for any purpose other than to analyze traffic patterns and site performance. For more information on Matomo's commitment to privacy, please visit the <a href="https://matomo.org/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Matomo Privacy Policy</a>.
+                We use Matomo to analyze the use of our website. Matomo is an open-source analytics platform that helps us understand how visitors interact with our site. We use this information to improve our user experience and service offerings. The data collected is anonymized and processed on our own servers, ensuring privacy and data sovereignty. We do not use this data for any purpose other than to analyze traffic patterns and site performance. While we do self-host the analytics platform, you are free to visit the <a href="https://matomo.org/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Matomo Privacy Policy</a> for more information on their commitment to privacy.
             </p>
             
             <h2 className="font-bold text-xl">Security of Your Personal Data</h2>

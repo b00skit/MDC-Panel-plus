@@ -6,7 +6,7 @@ export default function TermsOfServicePage() {
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader
           title="Terms of Service"
-          description="Last updated: August 08, 2025"
+          description="Last updated: August 19, 2025"
         />
         <Card>
           <CardContent className="prose prose-sm sm:prose-base dark:prose-invert max-w-none pt-6 space-y-4">
@@ -56,7 +56,7 @@ export default function TermsOfServicePage() {
             <p>
               These are the Terms and Conditions governing the use of this
               Service and the agreement that operates between You and the
-              Company. These Terms and Conditions set out the rights and
+              Developer. These Terms and Conditions set out the rights and
               obligations of all users regarding the use of the Service.
             </p>
             <p>
@@ -73,7 +73,7 @@ export default function TermsOfServicePage() {
             <p>
               Your access to and use of the Service is also conditioned on
               Your acceptance of and compliance with the Privacy Policy of the
-              Company. Our Privacy Policy describes Our policies and
+              Developer. Our Privacy Policy describes Our policies and
               procedures on the collection, use and disclosure of Your
               personal information when You use the Application or the Website
               and tells You about Your privacy rights and how the law protects
