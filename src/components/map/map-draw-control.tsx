@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-draw';
-import FreeDraw from 'leaflet-freedraw';
 import { Undo, Redo, Eraser, MapPin, Spline, Hexagon, Pencil } from 'lucide-react';
 import './map.css';
 
@@ -27,8 +26,14 @@ const MapDrawControl = () => {
 
     const drawnItemsRef = useRef(new L.FeatureGroup());
     const activeDrawerRef = useRef<any>(null);
-    const freeDrawRef = useRef<FreeDraw | null>(null);
     const controlContainerRef = useRef<HTMLDivElement | null>(null);
+
+    // Keep a ref of the selected color so that free draw uses the latest
+    // color even if the user changes the selection while the tool is active.
+    const colorRef = useRef(selectedColor);
+    useEffect(() => {
+        colorRef.current = selectedColor;
+    }, [selectedColor]);
 
     // Add the feature group to the map once
     useEffect(() => {
@@ -49,6 +54,14 @@ const MapDrawControl = () => {
             const layer = e.layer;
             if (layer instanceof L.Path) {
                 layer.setStyle({ color: selectedColor });
+            } else if (layer instanceof L.Marker) {
+                const icon = L.divIcon({
+                    className: '',
+                    html: `<div style="background:${selectedColor};width:16px;height:16px;border:2px solid white;border-radius:50%"></div>`,
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8],
+                });
+                layer.setIcon(icon);
             }
 
             // Always add to the FeatureGroup
@@ -77,11 +90,7 @@ const MapDrawControl = () => {
             activeDrawerRef.current.disable();
             activeDrawerRef.current = null;
         }
-        if (freeDrawRef.current) {
-            map.removeLayer(freeDrawRef.current);
-            freeDrawRef.current = null;
-        }
-    }, [map]);
+    }, []);
 
     const activateDrawer = useCallback((type: ToolType) => {
         if (type === activeTool) {
@@ -100,7 +109,14 @@ const MapDrawControl = () => {
 
         switch (type) {
             case 'marker':
-                drawer = new L.Draw.Marker(map);
+                drawer = new L.Draw.Marker(map, {
+                    icon: L.divIcon({
+                        className: '',
+                        html: `<div style="background:${selectedColor};width:16px;height:16px;border:2px solid white;border-radius:50%"></div>`,
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8],
+                    }),
+                });
                 break;
             case 'polyline':
                 drawer = new L.Draw.Polyline(map, options);
@@ -109,40 +125,46 @@ const MapDrawControl = () => {
                 drawer = new L.Draw.Polygon(map, options);
                 break;
             case 'freedraw':
-                const freeDraw = new FreeDraw({
-                    mode: 3,
-                    smoothFactor: 0.3,
-                    simplifyFactor: 1.5,
-                });
-                map.addLayer(freeDraw);
+                // Custom freehand drawing without external plugin
+                let isDrawing = false;
+                let polyline: L.Polyline | null = null;
 
-                const handleMarkers = (event: any) => {
-                    // event.latLngs contains an array for each drawn shape.
-                    // Convert each shape into a polyline and clear the FreeDraw layer
-                    // so shapes don't persist internally.
-                    event.latLngs.forEach((latlngs: L.LatLng[]) => {
-                        if (latlngs.length > 1) {
-                            const polyline = L.polyline(latlngs, { color: selectedColor });
-                            drawnItemsRef.current.addLayer(polyline);
-
-                            // ✅ Force refresh so the new drawing is immediately visible
-                            map.invalidateSize();
-
-                            setHistory((prev) => [...prev, polyline]);
-                            setRedoStack([]);
-                        }
-                    });
-
-                    // Remove the drawn shape from FreeDraw's internal layer to
-                    // prevent old drawings from reappearing on subsequent draws.
-                    freeDraw.off('markers', handleMarkers);
-                    freeDraw.clear();
-                    freeDraw.on('markers', handleMarkers);
+                const onMouseDown = (e: L.LeafletMouseEvent) => {
+                    isDrawing = true;
+                    polyline = L.polyline([e.latlng], { color: colorRef.current });
+                    drawnItemsRef.current.addLayer(polyline);
+                    map.dragging.disable();
                 };
 
-                freeDraw.on('markers', handleMarkers);
-                drawer = freeDraw;
-                freeDrawRef.current = freeDraw;
+                const onMouseMove = (e: L.LeafletMouseEvent) => {
+                    if (!isDrawing || !polyline) return;
+                    polyline.addLatLng(e.latlng);
+                };
+
+                const finish = () => {
+                    if (!isDrawing || !polyline) return;
+                    isDrawing = false;
+                    map.dragging.enable();
+                    map.invalidateSize();
+                    setHistory((prev) => [...prev, polyline as L.Layer]);
+                    setRedoStack([]);
+                    polyline = null;
+                };
+
+                map.on('mousedown', onMouseDown);
+                map.on('mousemove', onMouseMove);
+                map.on('mouseup', finish);
+                map.on('mouseleave', finish);
+
+                drawer = {
+                    disable: () => {
+                        map.off('mousedown', onMouseDown);
+                        map.off('mousemove', onMouseMove);
+                        map.off('mouseup', finish);
+                        map.off('mouseleave', finish);
+                        map.dragging.enable();
+                    },
+                };
                 break;
         }
         activeDrawerRef.current = drawer;
@@ -174,12 +196,6 @@ const MapDrawControl = () => {
         drawnItemsRef.current.clearLayers();
         setHistory([]);
         setRedoStack([]);
-
-        // Also clear any shapes stored in the FreeDraw instance so they don't
-        // reappear when drawing again after clearing.
-        if (freeDrawRef.current) {
-            freeDrawRef.current.clear();
-        }
     }, []);
 
     // **EFFECT 1: Create and add the control to the map (runs once)**
