@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
@@ -164,10 +164,12 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
            )}
         </div>
         <DialogFooter className="sm:justify-between">
-            <Button asChild variant="outline">
-                <Link href={config.URL_DISCORD} target='_blank'>
-                    <MessageSquare />
-                    <span>Join Discord</span>
+             <Button asChild variant="outline" size="icon">
+                <Link href={config.URL_DISCORD} target='_blank' aria-label="Join Discord">
+                    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="h-5 w-5">
+                        <title>Discord</title>
+                        <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284C13.5907 3.6448 12.825 3.5 12 3.5s-1.5907.1448-2.6852.6756c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371A19.7913 19.7913 0 003.683 4.3698a.0741.0741 0 00-.0371.0785v11.2461c0 .0412.0224.0741.0628.0894A19.851 19.851 0 0012 19.5a19.851 19.851 0 008.2543-3.7161.0894.0894 0 00.0628-.0894V4.4483a.0741.0741 0 00-.0371-.0785zM8.0215 13.6264c-1.1211 0-2.0302-.909-2.0302-2.0302s.909-2.0302 2.0302-2.0302c1.1211 0 2.0302.909 2.0302 2.0302s-.909 2.0302-2.0302 2.0302zm7.957 0c-1.1211 0-2.0302-.909-2.0302-2.0302s.909-2.0302 2.0302-2.0302c1.1211 0 2.0302.909 2.0302 2.0302s-.909 2.0302-2.0302 2.0302z"/>
+                    </svg>
                 </Link>
             </Button>
             <div className="flex gap-2">
