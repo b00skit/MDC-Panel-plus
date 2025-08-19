@@ -28,7 +28,6 @@ const MapDrawControl = () => {
 
     const drawnItemsRef = useRef(new L.FeatureGroup());
     const activeDrawerRef = useRef<any>(null);
-    const freeDrawRef = useRef<FreeDraw | null>(null);
     const controlContainerRef = useRef<HTMLDivElement | null>(null);
 
     // Add the feature group to the map once
@@ -94,6 +93,8 @@ const MapDrawControl = () => {
                 map.addLayer(freeDraw);
 
                 const handleMarkers = (event: any) => {
+                    if (!event || !event.latLngs) return;
+                    
                     event.latLngs.forEach((latlngs: L.LatLng[]) => {
                         if (latlngs.length > 1) {
                             const polyline = L.polyline(latlngs, { color: color });
@@ -103,7 +104,6 @@ const MapDrawControl = () => {
                         }
                     });
                     freeDraw.clear();
-                    // Force map to refresh immediately to prevent rendering lag
                     map.invalidateSize();
                 };
 
