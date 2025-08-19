@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy } from 'lucide-react';
+import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -55,8 +55,17 @@ const ICONS: { [key: string]: React.ReactNode } = {
     BookOpen: <BookOpen className="w-8 h-8 text-primary" />,
     Landmark: <Landmark className="w-8 h-8 text-primary" />,
     ShieldCheck: <ShieldCheck className="w-8 h-8 text-primary" />,
-    Car: <BookOpen className="w-8 h-8 text-primary" />,
+    Car: <Car className="w-8 h-8 text-primary" />,
 };
+
+const jurisdictionMap: { [key: string]: string } = {
+    'federal': 'Federal',
+    'federal-civil': 'Federal (Civil)',
+    'local-supreme': 'SA Supreme Court',
+    'local-appeals': 'SA Court of Appeals',
+    'local-appeals-civil': 'SA Court of Appeals (Civil)',
+};
+
 
 const SimpleMarkdownParser = (text: string) => {
     let html = text
