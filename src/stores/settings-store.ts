@@ -11,18 +11,18 @@ export interface FactionGroup {
 
 interface SettingsState {
   hiddenFactions: string[];
-  hiddenLegacy: boolean;
+  showHiddenGroups: Record<string, boolean>;
   factionGroups: FactionGroup[];
   toggleFactionVisibility: (groupId: string) => void;
   setFactionGroups: (groups: FactionGroup[]) => void;
-  toggleLegacyForms: () => void;
+  toggleHiddenGroupVisibility: (groupId: string) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
       hiddenFactions: [],
-      hiddenLegacy: false,
+      showHiddenGroups: {},
       factionGroups: [],
       toggleFactionVisibility: (groupId: string) => {
         const { hiddenFactions } = get();
@@ -32,14 +32,21 @@ export const useSettingsStore = create<SettingsState>()(
         set({ hiddenFactions: newHiddenFactions });
       },
       setFactionGroups: (groups) => set({ factionGroups: groups }),
-      toggleLegacyForms: () => set(state => ({ hiddenLegacy: !state.hiddenLegacy })),
+      toggleHiddenGroupVisibility: (groupId: string) => {
+        set(state => ({
+            showHiddenGroups: {
+                ...state.showHiddenGroups,
+                [groupId]: !state.showHiddenGroups[groupId]
+            }
+        }));
+      },
     }),
     {
       name: 'site-settings-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ 
         hiddenFactions: state.hiddenFactions,
-        hiddenLegacy: state.hiddenLegacy 
+        showHiddenGroups: state.showHiddenGroups 
       }),
     }
   )

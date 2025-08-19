@@ -118,7 +118,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     removeAlternativeCharacter,
     reset: resetOfficers
   } = useOfficerStore();
-  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, hiddenLegacy, toggleLegacyForms } = useSettingsStore();
+  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
@@ -187,6 +187,9 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
       });
     }
   }
+
+  const visibleGroups = initialFactionGroups.filter(g => !g.hidden);
+  const hiddenGroups = initialFactionGroups.filter(g => g.hidden);
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -371,19 +374,23 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                 <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <Label htmlFor="toggle-legacy" className="text-base">Show Legacy MDC Formats</Label>
-                    <Switch
-                        id="toggle-legacy"
-                        checked={hiddenLegacy}
-                        onCheckedChange={toggleLegacyForms}
-                    />
-                </div>
-                <Separator />
-                {initialFactionGroups.filter(g => !g.hidden).length > 0 ? (
-                    initialFactionGroups.filter(g => !g.hidden).map(group => (
+                {hiddenGroups.map(group => (
+                     <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <Label htmlFor={`toggle-hidden-${group.group_id}`} className="text-base">Show {group.group_name}</Label>
+                        <Switch
+                            id={`toggle-hidden-${group.group_id}`}
+                            checked={showHiddenGroups[group.group_id] === true}
+                            onCheckedChange={() => toggleHiddenGroupVisibility(group.group_id)}
+                        />
+                    </div>
+                ))}
+                
+                {hiddenGroups.length > 0 && <Separator />}
+
+                {visibleGroups.length > 0 ? (
+                    visibleGroups.map(group => (
                         <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
-                            <Label htmlFor={`toggle-${group.group_id}`} className="text-base">{group.group_name}</Label>
+                            <Label htmlFor={`toggle-${group.group_id}`} className="text-base">Show {group.group_name}</Label>
                             <Switch
                                 id={`toggle-${group.group_id}`}
                                 checked={!hiddenFactions.includes(group.group_id)}
@@ -392,7 +399,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                         </div>
                     ))
                 ) : (
-                    <p className="text-muted-foreground text-sm">No faction-specific form groups found.</p>
+                    <p className="text-muted-foreground text-sm">No toggleable faction form groups found.</p>
                 )}
             </CardContent>
         </Card>
@@ -424,8 +431,8 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                         </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleClearData}>Continue</AlertDialogAction>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleClearData}>Continue</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
