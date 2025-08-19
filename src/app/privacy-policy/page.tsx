@@ -86,6 +86,11 @@ export default function PrivacyPolicyPage() {
                     <strong>To provide and maintain our Service</strong>, including to monitor the usage of our Service.
                 </li>
             </ul>
+
+            <h2 className="font-bold text-xl">Analytics</h2>
+            <p>
+                We use Matomo to analyze the use of our website. Matomo is an open-source analytics platform that helps us understand how visitors interact with our site. We use this information to improve our user experience and service offerings. The data collected is anonymized and processed on our own servers, ensuring privacy and data sovereignty. We do not use this data for any purpose other than to analyze traffic patterns and site performance. For more information on Matomo's commitment to privacy, please visit the <a href="https://matomo.org/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Matomo Privacy Policy</a>.
+            </p>
             
             <h2 className="font-bold text-xl">Security of Your Personal Data</h2>
             <p>
