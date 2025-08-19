@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -42,61 +43,37 @@ const MapDrawControl = () => {
             }
         };
     }, [map]);
-
-    // Effect for handling the creation of a new drawing
-    useEffect(() => {
-        const handleCreated = (e: any) => {
-            const layer = e.layer;
-            if (layer instanceof L.Path) {
-                layer.setStyle({ color: selectedColor });
-            }
-
-            // Always add to the FeatureGroup
-            drawnItemsRef.current.addLayer(layer);
-
-            // ✅ Force map to refresh immediately
-            map.invalidateSize();
-
-            setHistory((prev) => [...prev, layer]);
-            setRedoStack([]); // Clear redo stack on new action
-
-            if (activeDrawerRef.current?.disable) {
+    
+    const stopCurrentDrawer = useCallback(() => {
+        if (activeDrawerRef.current) {
+            if (activeDrawerRef.current instanceof FreeDraw) {
+                // Special handling for FreeDraw
+                activeDrawerRef.current.off('markers');
+                map.removeLayer(activeDrawerRef.current);
+            } else if (activeDrawerRef.current.disable) {
+                // Standard L.Draw handler
                 activeDrawerRef.current.disable();
             }
-            setActiveTool(null); // Deactivate tool after drawing
-        };
-
-        map.on(L.Draw.Event.CREATED, handleCreated);
-        return () => {
-            map.off(L.Draw.Event.CREATED, handleCreated);
-        };
-    }, [map, selectedColor]);
-
-    const stopCurrentDrawer = useCallback(() => {
-        if (activeDrawerRef.current?.disable) {
-            activeDrawerRef.current.disable();
             activeDrawerRef.current = null;
-        }
-        if (freeDrawRef.current) {
-            map.removeLayer(freeDrawRef.current);
-            freeDrawRef.current = null;
         }
     }, [map]);
 
-    const activateDrawer = useCallback((type: ToolType) => {
+
+    const activateDrawer = useCallback((type: ToolType, color: string) => {
+        stopCurrentDrawer();
+
         if (type === activeTool) {
-            stopCurrentDrawer();
+            // If clicking the same tool again, just deactivate it.
             setActiveTool(null);
             return;
         }
-
-        stopCurrentDrawer();
+        
         setActiveTool(type);
 
         if (type === null) return;
 
         let drawer;
-        const options = { shapeOptions: { color: selectedColor } };
+        const options = { shapeOptions: { color: color } };
 
         switch (type) {
             case 'marker':
@@ -110,45 +87,75 @@ const MapDrawControl = () => {
                 break;
             case 'freedraw':
                 const freeDraw = new FreeDraw({
-                    mode: 3,
+                    mode: 3, // FreeDraw.MODES.CREATE
                     smoothFactor: 0.3,
                     simplifyFactor: 1.5,
                 });
                 map.addLayer(freeDraw);
 
                 const handleMarkers = (event: any) => {
-                    // event.latLngs contains an array for each drawn shape.
-                    // Convert each shape into a polyline and clear the FreeDraw layer
-                    // so shapes don't persist internally.
                     event.latLngs.forEach((latlngs: L.LatLng[]) => {
                         if (latlngs.length > 1) {
-                            const polyline = L.polyline(latlngs, { color: selectedColor });
+                            const polyline = L.polyline(latlngs, { color: color });
                             drawnItemsRef.current.addLayer(polyline);
-
-                            // ✅ Force refresh so the new drawing is immediately visible
-                            map.invalidateSize();
-
                             setHistory((prev) => [...prev, polyline]);
                             setRedoStack([]);
                         }
                     });
-
-                    // Remove the drawn shape from FreeDraw's internal layer to
-                    // prevent old drawings from reappearing on subsequent draws.
-                    freeDraw.off('markers', handleMarkers);
                     freeDraw.clear();
-                    freeDraw.on('markers', handleMarkers);
+                    // Force map to refresh immediately to prevent rendering lag
+                    map.invalidateSize();
                 };
 
                 freeDraw.on('markers', handleMarkers);
                 drawer = freeDraw;
-                freeDrawRef.current = freeDraw;
                 break;
+            default:
+                return;
         }
+        
         activeDrawerRef.current = drawer;
+        if (drawer?.enable) {
+            drawer.enable();
+        }
 
-        if (drawer?.enable) drawer.enable();
-    }, [activeTool, map, selectedColor, stopCurrentDrawer]);
+    }, [map, stopCurrentDrawer, activeTool]);
+    
+    // This effect ensures that if a color is changed while a tool is active, the tool is restarted with the new color.
+    useEffect(() => {
+        if(activeTool) {
+            activateDrawer(activeTool, selectedColor);
+        }
+    }, [selectedColor, activeTool, activateDrawer]);
+
+
+    // Effect for handling the creation of a new drawing for standard L.Draw tools
+    useEffect(() => {
+        const handleCreated = (e: any) => {
+            const layer = e.layer;
+            if (layer instanceof L.Path) {
+                layer.setStyle({ color: selectedColor });
+            }
+            
+            drawnItemsRef.current.addLayer(layer);
+            setHistory((prev) => [...prev, layer]);
+            setRedoStack([]);
+
+            // Deactivate tool after drawing is complete
+            if (activeDrawerRef.current?.disable) {
+                activeDrawerRef.current.disable();
+            }
+            setActiveTool(null);
+            // Force map refresh
+            map.invalidateSize();
+        };
+
+        map.on(L.Draw.Event.CREATED, handleCreated);
+        return () => {
+            map.off(L.Draw.Event.CREATED, handleCreated);
+        };
+    }, [map, selectedColor]);
+
 
     const undo = useCallback(() => {
         const newHistory = [...history];
@@ -171,16 +178,10 @@ const MapDrawControl = () => {
     }, [redoStack]);
 
     const clearAll = useCallback(() => {
-        drawnItemsRef.current.clearLayers();
+        setRedoStack([...history, ...redoStack]);
         setHistory([]);
-        setRedoStack([]);
-
-        // Also clear any shapes stored in the FreeDraw instance so they don't
-        // reappear when drawing again after clearing.
-        if (freeDrawRef.current) {
-            freeDrawRef.current.clear();
-        }
-    }, []);
+        drawnItemsRef.current.clearLayers();
+    }, [history, redoStack]);
 
     // **EFFECT 1: Create and add the control to the map (runs once)**
     useEffect(() => {
@@ -203,7 +204,7 @@ const MapDrawControl = () => {
                 btn.title = tool.title;
                 btn.dataset.toolType = tool.type;
                 createRoot(btn).render(tool.icon);
-                L.DomEvent.on(btn, 'click', () => activateDrawer(tool.type));
+                L.DomEvent.on(btn, 'click', () => activateDrawer(tool.type, selectedColor));
             });
 
             const actionContainer = L.DomUtil.create('div', 'leaflet-draw-action-container', container);
@@ -229,8 +230,9 @@ const MapDrawControl = () => {
         control.addTo(map);
         return () => {
             map.removeControl(control);
+            stopCurrentDrawer();
         };
-    }, [map, activateDrawer, undo, redo, clearAll]);
+    }, [map, activateDrawer, undo, redo, clearAll, selectedColor, stopCurrentDrawer]);
 
     // **EFFECT 2: Update the control's UI based on state changes**
     useEffect(() => {
