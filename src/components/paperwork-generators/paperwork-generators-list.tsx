@@ -19,11 +19,14 @@ interface PaperworkGeneratorsListProps {
 }
 
 export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: PaperworkGeneratorsListProps) {
-    const { hiddenFactions } = useSettingsStore();
+    const { hiddenFactions, hiddenLegacy } = useSettingsStore();
 
-    const visibleFactionGroups = factionGroups.filter(
-        (group) => !hiddenFactions.includes(group.group_id)
-    );
+    const visibleFactionGroups = factionGroups.filter(group => {
+        if (group.hidden) {
+            return hiddenLegacy;
+        }
+        return !hiddenFactions.includes(group.group_id);
+    });
 
     return (
         <div className="space-y-8">

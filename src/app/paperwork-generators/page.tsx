@@ -126,47 +126,47 @@ export default async function PaperworkGeneratorsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Your Custom Forms</CardTitle>
-                        <CardContent className="px-0 pb-0 pt-4">
-                            {userForms.length > 0 ? (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Title</TableHead>
-                                            <TableHead>Description</TableHead>
-                                            <TableHead>Last Modified</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {userForms.map((form: any) => (
-                                            <TableRow key={form.id}>
-                                                <TableCell className="font-medium flex items-center gap-2">
-                                                    <Badge variant="outline">{form.icon}</Badge> {form.title}
-                                                </TableCell>
-                                                <TableCell>{form.description}</TableCell>
-                                                <TableCell>{form.lastModified}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" asChild>
-                                                        <Link href={`/paperwork-generators/form?type=user&id=${form.id}`} title="Use Form">
-                                                            <Play className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" disabled>
-                                                        <Pencil className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" disabled>
-                                                        <Trash2 className="h-4 w-4 text-destructive" />
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            ): (
-                                <p className="text-muted-foreground">You haven't created any forms yet. Click "Create New Form" to get started.</p>
-                            )}
-                        </CardContent>
                     </CardHeader>
+                    <CardContent className="px-0 pb-0 pt-4">
+                        {userForms.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Title</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead>Last Modified</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {userForms.map((form: any) => (
+                                        <TableRow key={form.id}>
+                                            <TableCell className="font-medium flex items-center gap-2">
+                                                <Badge variant="outline">{form.icon}</Badge> {form.title}
+                                            </TableCell>
+                                            <TableCell>{form.description}</TableCell>
+                                            <TableCell>{form.lastModified}</TableCell>
+                                            <TableCell className="text-right">
+                                                <Button variant="ghost" size="icon" asChild>
+                                                    <Link href={`/paperwork-generators/form?type=user&id=${form.id}`} title="Use Form">
+                                                        <Play className="h-4 w-4" />
+                                                    </Link>
+                                                </Button>
+                                                <Button variant="ghost" size="icon" disabled>
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" disabled>
+                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ): (
+                            <p className="text-muted-foreground">You haven't created any forms yet. Click "Create New Form" to get started.</p>
+                        )}
+                    </CardContent>
                 </Card>
             </>
         )}

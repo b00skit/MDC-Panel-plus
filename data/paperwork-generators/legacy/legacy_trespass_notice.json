@@ -1,0 +1,25 @@
+
+{
+    "id": "legacy_trespass-notice",
+    "title": "Trespass Notice",
+    "description": "Issue a formal trespass notice.",
+    "icon": "FileSearch",
+    "output": "<strong>{{officers.0.rank}} {{officers.0.name}}</strong> (<strong>#{{officers.0.badgeNumber}}</strong>), on the <strong>{{general.date}}</strong> operating under <strong>{{general.callSign}}</strong>, <strong>{{general.time}}</strong>.<br>Issued trespass notice to <strong>{{suspect_name}}</strong>, for <strong>{{trespass_duration}}</strong>. At <strong>{{location.street}}</strong>, <strong>{{location.district}}</strong>.<br>\n\n\t\t\t\t<strong>Property:</strong>\n\t\t\t\t<ul><li>{{trespass_property}}</li></ul>\n\t\t\t\t\n\t\t\t\t<strong>Manager Information:</strong>\n\t\t\t\t<ul><li>{{manager_name}}</li>\n\t\t\t\t<li>PH #: {{manager_phone}}</li></ul>",
+    "form": [
+        { "type": "hidden", "name": "generatorType", "value": "TrespassNotice" },
+        { "type": "section", "title": "General Section" },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Officer Section" },
+        { "type": "officer", "name": "officers" },
+        { "type": "section", "title": "Location Details" },
+        { "type": "location", "name": "location", "showDistrict": true },
+        { "type": "section", "title": "Suspect Details" },
+        { "type": "text", "name": "suspect_name", "label": "Suspect's Full Name", "placeholder": "Firstname Lastname", "required": true },
+        { "type": "section", "title": "Trespass Details" },
+        { "type": "text", "name": "trespass_duration", "label": "Duration of Trespass", "placeholder": "e.g., 24 Hours, Indefinitely", "required": true },
+        { "type": "text", "name": "trespass_property", "label": "Property", "placeholder": "e.g., 1003 Mission Row Property", "required": true },
+        { "type": "text", "name": "manager_name", "label": "Manager's Full Name", "placeholder": "Firstname Lastname", "required": true },
+        { "type": "text", "name": "manager_phone", "label": "Manager's Phone Number", "placeholder": "###-###-###", "required": true }
+    ],
+    "countyCityStipulation": false
+}

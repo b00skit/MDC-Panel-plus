@@ -1,0 +1,97 @@
+
+{
+    "id": "legacy_parking-ticket",
+    "title": "Parking Ticket",
+    "description": "Generate a parking ticket citation.",
+    "icon": "Car",
+    "output": "<strong>{{officers.0.rank}} {{officers.0.name}}</strong> (<strong>#{{officers.0.badgeNumber}}</strong>),  on the <strong>{{general.date}}</strong>, <strong>{{general.time}}</strong>.<br>Cited a <strong>{{vehicle_make_model}}</strong>, identification plate reading <strong>{{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}}</strong>, registered to <strong>{{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</strong>, on <strong>{{location.street}}</strong>, <strong>{{location.district}}</strong>.<br>\n\t\t\t\t<br>\n\t\t\t\t<strong>Citation(s):</strong>\n\t\t\t\t<ul>{{#each charges}}<li><strong class=\"style-underline chargeCopy\" data-clipboard-target=\"#charge-{{chargeId}}\" data-toggle=\"tooltip\" title=\"Copied!\"><span id=\"charge-{{chargeId}}\"><strong style=\"color: #f39c12!important;\">{{#with (lookup @root.penalCode chargeId)}}{{this.type}}{{this.class}} {{this.id}}. {{this.charge}}{{/with}}</strong></span></strong> - <strong style=\"color: green!important;\">${{fine}}</strong> Citation.</li>{{/each}}</ul>\n\t\t\t\t<strong>Citation Reason(s):</strong>\n\t\t\t\t<ul>{{#each parking_reasons}}<li>{{this}}</li>{{/each}}</ul>\n\t\t\t\t<strong>Evidence:</strong><br/>{{#each photographs}}<img src=\"{{this.link}}\" style=\"max-width: 100%\" />{{/each}}",
+    "form": [
+        { "type": "hidden", "name": "generatorType", "value": "ParkingTicket" },
+        { "type": "section", "title": "General Section" },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Officer Section" },
+        { "type": "officer", "name": "officers" },
+        { "type": "section", "title": "Vehicle Details" },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Registered", "dataOff": "Unregistered", "defaultValue": true },
+            { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname", "stipulation": {"field": "vehicle_registered", "value": true}},
+            { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX", "stipulation": {"field": "vehicle_registered", "value": true}}
+          ]
+        },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "defaultValue": true },
+            { "type": "text", "name": "insurance_expired_date", "label": "Insurance Expired Date", "placeholder": "DD/MM/YYYY", "stipulation": {"field": "vehicle_insured", "value": false}}
+          ]
+        },
+        { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "optionsSource": "vehicles", "required": true, "defaultValue": "" },
+        { "type": "section", "title": "Location Details" },
+        { 
+            "type": "location", 
+            "name": "location", 
+            "showDistrict": true 
+        },
+        { "type": "section", "title": "Evidence Section" },
+        { 
+            "type": "input_group",
+            "name": "photographs",
+            "label": "Photograph Link(s)",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "link",
+                    "label": "Photograph Link",
+                    "placeholder": "https://i.imgur.com/example.png"
+                }
+            ]
+        },
+        { "type": "section", "title": "Charges" },
+        { 
+            "type": "charge", 
+            "name": "charges",
+            "showClass": true,
+            "allowedTypes": { "I": true, "M": true },
+            "customFields": [
+                {
+                    "type": "text",
+                    "name": "fine",
+                    "label": "Fine",
+                    "placeholder": "Fine Amount"
+                }
+            ],
+            "previewFields": {
+                "fine": true
+            }
+        },
+        { "type": "section", "title": "Parking Ticket Details" },
+        { 
+            "type": "multi-select",
+            "name": "parking_reasons",
+            "label": "Parking Ticket Reason(s)",
+            "placeholder": "Select all applicable reasons",
+            "options": [
+                { "value": "Failed to pay vehicular insurance within the time required by law on any public road.", "label": "Uninsured Vehicle" },
+                { "value": "Next to a fire hydrant, and/or on a firelane marked by red lines.", "label": "Fire Hydrant/Firelane" },
+                { "value": "Facing opposing traffic.", "label": "Facing Opposing Traffic" },
+                { "value": "Inside any tunnel.", "label": "In Tunnel" },
+                { "value": "On any freeway.", "label": "On Freeway" },
+                { "value": "On a bridge outside of the City of Los Santos.", "label": "On Bridge (Outside LS)" },
+                { "value": "Parking a non-electric vehicle into a parking space with an electric charger.", "label": "Non-EV in EV Spot" },
+                { "value": "In a manner that a vehicle takes up two parking spaces.", "label": "Taking Two Spaces" },
+                { "value": "No more than 2 motorcycles may park abreast in 1 parking space.", "label": "Motorcycle Parking Violation" },
+                { "value": "In a fashion which blocks the flow of traffic.", "label": "Blocking Traffic Flow" },
+                { "value": "In a manner that obstructs a lane of traffic and prevents traffic from properly flowing.", "label": "Obstructing Traffic Lane" },
+                { "value": "In a manner that obstructs an alleyway used by traffic.", "label": "Obstructing Alleyway" },
+                { "value": "In a manner that obstructs a parking lot and prevents vehicles from leaving or entering.", "label": "Obstructing Parking Lot" },
+                { "value": "In front of or obstructing a private driveway or an entrance or exit to a private road or path.", "label": "Obstructing Driveway/Entrance" },
+                { "value": "In the immediate ambulatory parking or bay area of a hospital or clinic.", "label": "Obstructing Hospital/Clinic Area" },
+                { "value": "On or within range of railroad tracks.", "label": "On Railroad Tracks" },
+                { "value": "At or near a helipad or an aircraft landing zone.", "label": "Obstructing Helipad/Landing Zone" },
+                { "value": "Within a marked crosswalk.", "label": "In Crosswalk" },
+                { "value": "On any part of a sidewalk.", "label": "On Sidewalk" },
+                { "value": "On any sidewalk that completely obstructs pedestrian foot traffic, or on any median.", "label": "Obstructing Sidewalk/Median" },
+                { "value": "In the immediate vicinity of the Bank's entrance, including the sidewalk adjacent to the metal barriers.", "label": "Obstructing Bank Entrance" }
+            ]
+        }
+    ],
+    "countyCityStipulation": false
+}

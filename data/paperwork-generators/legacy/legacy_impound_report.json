@@ -1,0 +1,33 @@
+
+{
+    "id": "legacy_impound-report",
+    "title": "Impound Report",
+    "description": "Generate a vehicle impound report.",
+    "icon": "Car",
+    "output": "<strong>{{officers.0.rank}} {{officers.0.name}}</strong> (<strong>#{{officers.0.badgeNumber}}</strong>), on the <strong>{{general.date}}</strong>, <strong>{{general.time}}</strong>.<br>Impounded a <strong>{{vehicle_make_model}}</strong>, identification plate reading <strong>{{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}}</strong>, for <strong>{{impound_duration}}</strong> days, registered to <strong>{{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</strong>, on <strong>{{location.street}}</strong>, <strong>{{location.district}}</strong>.<br>\n\n\t\t\t\t<strong>Impound Reason:</strong>\n\t\t\t\t<ul><li>{{impound_reason}}</li></ul>",
+    "form": [
+        { "type": "hidden", "name": "generatorType", "value": "ImpoundReport" },
+        { "type": "section", "title": "General Section" },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Officer Section" },
+        { "type": "officer", "name": "officers" },
+        { "type": "section", "title": "Vehicle Details" },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Registered", "dataOff": "Unregistered", "defaultValue": true },
+            { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname", "stipulation": {"field": "vehicle_registered", "value": true}},
+            { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX", "stipulation": {"field": "vehicle_registered", "value": true}}
+          ]
+        },
+        { "type": "datalist", "name": "vehicle_make_model", "label": "Make &amp; Model", "placeholder": "e.g. Benefactor Dubsta", "optionsSource": "vehicles", "required": true, "defaultValue": "" },
+        { "type": "section", "title": "Location Details" },
+        { 
+            "type": "location", 
+            "name": "location", 
+            "showDistrict": true 
+        },
+        { "type": "section", "title": "Impound Details" },
+        { "type": "text", "name": "impound_duration", "label": "Duration of Impound (Days)", "placeholder": "#", "required": true },
+        { "type": "textarea", "name": "impound_reason", "label": "Impound Reason", "placeholder": "Vehicle was used in the comission of a crime, see arrest report #.\nVehicle was obstructing the flow of traffic, see parking ticket #.", "required": true }
+    ],
+    "countyCityStipulation": false
+}

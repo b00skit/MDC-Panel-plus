@@ -75,7 +75,7 @@ async function clearAllSiteData() {
       const dbs = await indexedDB.databases();
       const deletePromises = dbs.map(db => 
         new Promise((resolve, reject) => {
-          const deleteRequest = indexedDB.deleteDatabase(db.name);
+          const deleteRequest = indexedDB.deleteDatabase(db.name!);
           deleteRequest.onsuccess = () => resolve(true);
           deleteRequest.onerror = () => reject(deleteRequest.error);
           deleteRequest.onblocked = () => {
@@ -118,7 +118,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     removeAlternativeCharacter,
     reset: resetOfficers
   } = useOfficerStore();
-  const { hiddenFactions, toggleFactionVisibility, setFactionGroups } = useSettingsStore();
+  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, hiddenLegacy, toggleLegacyForms } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
@@ -371,8 +371,17 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {initialFactionGroups.length > 0 ? (
-                    initialFactionGroups.map(group => (
+                 <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <Label htmlFor="toggle-legacy" className="text-base">Show Legacy MDC Formats</Label>
+                    <Switch
+                        id="toggle-legacy"
+                        checked={hiddenLegacy}
+                        onCheckedChange={toggleLegacyForms}
+                    />
+                </div>
+                <Separator />
+                {initialFactionGroups.filter(g => !g.hidden).length > 0 ? (
+                    initialFactionGroups.filter(g => !g.hidden).map(group => (
                         <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
                             <Label htmlFor={`toggle-${group.group_id}`} className="text-base">{group.group_name}</Label>
                             <Switch
