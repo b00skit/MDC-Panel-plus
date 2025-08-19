@@ -116,7 +116,7 @@ const MapDrawControl = () => {
                 });
                 map.addLayer(freeDraw);
 
-                freeDraw.on('markers', (event: any) => {
+                const handleMarkers = (event: any) => {
                     // event.latLngs contains an array for each drawn shape.
                     // Convert each shape into a polyline and clear the FreeDraw layer
                     // so shapes don't persist internally.
@@ -135,8 +135,12 @@ const MapDrawControl = () => {
 
                     // Remove the drawn shape from FreeDraw's internal layer to
                     // prevent old drawings from reappearing on subsequent draws.
+                    freeDraw.off('markers', handleMarkers);
                     freeDraw.clear();
-                });
+                    freeDraw.on('markers', handleMarkers);
+                };
+
+                freeDraw.on('markers', handleMarkers);
                 drawer = freeDraw;
                 freeDrawRef.current = freeDraw;
                 break;
