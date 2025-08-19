@@ -1,6 +1,37 @@
 {
     "changelogs": [
         {
+            "version": "3.1.1",
+            "type": "Hotfix",
+            "date": "2025-08-19",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added Legacy MDC Generators, which are by default disabled but can be enabled via Settings."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Caselaw & Legal Resources:</b> Added a Miranda Rights legal resource which will allow the end-user to copy the Miranda Rights to clipboard."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Interactive Map:</b> Fixed any outstanding issues with freedraw on the interactive map."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Interactive Map:</b> Adjusted the Interactive Map Draw UI to be a bit more compact."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>General:</b> Adjusted the San Andreas Department of Corrections & State Fire Marshals ranks."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>General:</b> Added a Discord button to the Feedback UI, making it easier to find the discord for this website."
+                }
+            ]
+        },
+        {
             "version": "3.1.0",
             "type": "Minor Update",
             "date": "2025-08-18",

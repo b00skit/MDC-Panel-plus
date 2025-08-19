@@ -1,11 +1,11 @@
 {
     "SITE_LIVE": true,
     "SITE_NAME": "MDC Panel+",
-    "SITE_VERSION": "3.1.0",
+    "SITE_VERSION": "3.1.1",
     "SITE_LOGO": "/img/logos/MDC-Panel.svg",
     "SITE_FAVICON": "/img/favicon/favicon.ico",
     "SITE_IMAGE": "/img/logos/MDC-Panel-OG.png",
-    "SITE_DESCRIPTION": "MDC Panel+ - Multi-functional tools, generators, and resources for official government use.",
+    "SITE_DESCRIPTION": "MDC Panel+ - Multi-functional tools, generators, and resources for community use.",
     "SITE_DISCORD_CONTACT": "booskit",
     "ENABLE_FORM_BUILDER": false,
     "MAX_SENTENCE_DAYS": 25,
@@ -22,7 +22,7 @@
     "URL_SASP": "https://saparks.gta.world",
     "URL_PENAL_CODE": "https://forum.gta.world/en/topic/78852-san-andreas-penal-code/",
     "URL_BAIL_SCHEDULE": "https://docs.google.com/spreadsheets/d/1qm04NZm-HEy-vdW2liNWcdok7eXFGty_rO-dA1H_k0g/",
-    "URL_BBCODERIP": "https://rebb.booskit.dev/",
+    "URL_REBB": "https://rebb.booskit.dev/",
     "URL_ST3FAN": "https://st3fannl.nl/gtaw/",
     "URL_DEPA": "https://forum.gta.world/en/topic/30297-drug-enforcement-prevention-act-of-2020-depa/"
 }

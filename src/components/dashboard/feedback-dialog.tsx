@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import {
   Dialog,
   DialogContent,
@@ -13,11 +14,12 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import config from '../../../data/config.json';
 
 const positiveReasons = [
     { id: 'design', label: 'The design is clean and intuitive.' },
@@ -161,11 +163,19 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
             </div>
            )}
         </div>
-        <DialogFooter>
-            <Button variant="ghost" onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSubmit} disabled={!feedbackType || isSubmitting}>
-                {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+        <DialogFooter className="sm:justify-between">
+            <Button asChild variant="outline">
+                <Link href={config.URL_DISCORD} target='_blank'>
+                    <MessageSquare />
+                    <span>Join Discord</span>
+                </Link>
             </Button>
+            <div className="flex gap-2">
+                <Button variant="ghost" onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleSubmit} disabled={!feedbackType || isSubmitting}>
+                    {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+                </Button>
+            </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
