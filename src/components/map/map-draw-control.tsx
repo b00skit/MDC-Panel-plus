@@ -28,6 +28,7 @@ const MapDrawControl = () => {
     const drawnItemsRef = useRef(new L.FeatureGroup());
     const activeDrawerRef = useRef<any>(null);
     const freeDrawRef = useRef<FreeDraw | null>(null);
+    const freeDrawHandlerRef = useRef<any>(null);
     const controlContainerRef = useRef<HTMLDivElement | null>(null);
 
     // Add the feature group to the map once
@@ -78,6 +79,11 @@ const MapDrawControl = () => {
             activeDrawerRef.current = null;
         }
         if (freeDrawRef.current) {
+            if (freeDrawHandlerRef.current) {
+                map.off('markers', freeDrawHandlerRef.current);
+                freeDrawHandlerRef.current = null;
+            }
+            freeDrawRef.current.clear();
             map.removeLayer(freeDrawRef.current);
             freeDrawRef.current = null;
         }
@@ -116,7 +122,7 @@ const MapDrawControl = () => {
                 });
                 map.addLayer(freeDraw);
 
-                freeDraw.on('markers', (event: any) => {
+                const handleMarkers = (event: any) => {
                     const latlngs = event.latLngs;
                     if (latlngs.length > 1) {
                         const polyline = L.polyline(latlngs, { color: selectedColor });
@@ -128,7 +134,14 @@ const MapDrawControl = () => {
                         setHistory((prev) => [...prev, polyline]);
                         setRedoStack([]);
                     }
-                });
+
+                    // Remove shapes from FreeDraw so they don't persist
+                    freeDraw.clear();
+                };
+
+                map.on('markers', handleMarkers);
+                freeDrawHandlerRef.current = handleMarkers;
+
                 drawer = freeDraw;
                 freeDrawRef.current = freeDraw;
                 break;
@@ -146,6 +159,9 @@ const MapDrawControl = () => {
             setRedoStack((redo) => [lastLayer, ...redo]);
             setHistory(newHistory);
         }
+        if (freeDrawRef.current) {
+            freeDrawRef.current.clear();
+        }
     }, [history]);
 
     const redo = useCallback(() => {
@@ -162,6 +178,9 @@ const MapDrawControl = () => {
         drawnItemsRef.current.clearLayers();
         setHistory([]);
         setRedoStack([]);
+        if (freeDrawRef.current) {
+            freeDrawRef.current.clear();
+        }
     }, []);
 
     // **EFFECT 1: Create and add the control to the map (runs once)**
