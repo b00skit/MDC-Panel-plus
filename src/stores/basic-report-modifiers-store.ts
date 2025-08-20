@@ -3,31 +3,26 @@
 import create from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-type Modifiers = {
-    arrestReportIntroduction: boolean;
+export type Modifier = {
+    name: string;
+    label: string;
+    generateText: () => string;
 };
 
-type Presets = {
-    narrative: boolean;
-};
-
-type UserModified = {
-    narrative: boolean;
-};
-
-type Narrative = {
-    narrative: string;
-};
+type ModifiersState = Record<string, boolean>;
+type PresetsState = Record<string, boolean>;
+type UserModifiedState = Record<string, boolean>;
+type NarrativeState = Record<string, string>;
 
 interface BasicReportModifiersState {
-    modifiers: Modifiers;
-    presets: Presets;
-    userModified: UserModified;
-    narrative: Narrative;
-    setModifier: <K extends keyof Modifiers>(modifier: K, value: boolean) => void;
-    setPreset: <K extends keyof Presets>(preset: K, value: boolean) => void;
-    setUserModified: <K extends keyof UserModified>(field: K, value: boolean) => void;
-    setNarrativeField: <K extends keyof Narrative>(field: K, value: string) => void;
+    modifiers: ModifiersState;
+    presets: PresetsState;
+    userModified: UserModifiedState;
+    narrative: NarrativeState;
+    setModifier: (modifier: string, value: boolean) => void;
+    setPreset: (preset: string, value: boolean) => void;
+    setUserModified: (field: string, value: boolean) => void;
+    setNarrativeField: (field: string, value: string) => void;
     reset: () => void;
 }
 
