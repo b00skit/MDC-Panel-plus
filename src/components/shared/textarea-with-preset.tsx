@@ -13,7 +13,7 @@ import Handlebars from 'handlebars';
 export type Modifier = {
     name: string;
     label: string;
-    generateText: string;
+    generateText: string | (() => string);
 };
 
 interface TextareaWithPresetProps {
@@ -40,10 +40,11 @@ export function TextareaWithPreset({
     const { watch, setValue, getValues } = useFormContext();
     const [localState, setLocalState] = useState(() => {
         if (noLocalStorage || typeof window === 'undefined') {
+            const initialModifiersState = modifiers.reduce((acc, mod) => ({...acc, [mod.name]: true }), {});
             return {
                 presets: { [presetName]: true },
                 userModified: { [presetName]: false },
-                modifiers: modifiers.reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
+                modifiers: initialModifiersState,
                 narrative: { [presetName]: '' }
             }
         }
@@ -56,17 +57,18 @@ export function TextareaWithPreset({
                 console.error("Failed to parse textarea preset from localStorage", e);
             }
         }
+         const initialModifiersState = modifiers.reduce((acc, mod) => ({...acc, [mod.name]: true }), {});
         return {
             presets: { [presetName]: true },
             userModified: { [presetName]: false },
-            modifiers: modifiers.reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
+            modifiers: initialModifiersState,
             narrative: { [presetName]: '' }
         };
     });
 
-    const isPresetEnabled = watch(`presets.${presetName}`, localState.presets[presetName]);
-    const isUserModified = watch(`userModified.${presetName}`, localState.userModified[presetName]);
-    const modifierValues = watch('modifiers', localState.modifiers);
+    const isPresetEnabled = watch(`presets.${presetName}`);
+    const isUserModified = watch(`userModified.${presetName}`);
+    const modifierValues = watch('modifiers');
     const formValues = watch();
 
     const generatePresetText = useCallback(() => {
@@ -76,7 +78,10 @@ export function TextareaWithPreset({
         modifiers.forEach(mod => {
             if (getValues(`modifiers.${mod.name}`)) {
                 try {
-                    const template = Handlebars.compile(mod.generateText, { noEscape: true });
+                    const textOrFn = mod.generateText;
+                    const templateString = typeof textOrFn === 'function' ? textOrFn() : textOrFn;
+                    
+                    const template = Handlebars.compile(templateString, { noEscape: true });
                     text += template(data) + '\n\n';
                 } catch (e) {
                     console.error(`Error compiling Handlebars template for modifier ${mod.name}`, e);
@@ -88,12 +93,20 @@ export function TextareaWithPreset({
     }, [modifiers, getValues]);
 
     useEffect(() => {
-        // Initialize form state from localState
-        setValue(`presets.${presetName}`, localState.presets[presetName]);
-        setValue(`userModified.${presetName}`, localState.userModified[presetName]);
-        setValue(`modifiers`, localState.modifiers);
-        setValue(`narrative.${presetName}`, localState.narrative[presetName]);
-    }, [presetName, setValue]);
+        const initialModifiersState = modifiers.reduce((acc, mod) => {
+            const existingValue = localState.modifiers[mod.name];
+            return {...acc, [mod.name]: existingValue !== false };
+        }, {});
+
+        setValue(`presets.${presetName}`, localState.presets[presetName] !== false);
+        setValue(`userModified.${presetName}`, localState.userModified[presetName] === true);
+        setValue(`modifiers`, initialModifiersState);
+        if(!localState.userModified[presetName]){
+            setValue(`narrative.${presetName}`, '');
+        } else {
+            setValue(`narrative.${presetName}`, localState.narrative[presetName] || '');
+        }
+    }, [presetName, setValue, modifiers, localState]);
 
 
     useEffect(() => {
@@ -186,12 +199,14 @@ export function TextareaWithPreset({
                         <Controller
                             name={`modifiers.${mod.name}`}
                             control={control}
-                            defaultValue={localState.modifiers[mod.name] !== false}
                             render={({ field }) => (
                                 <Checkbox
                                     id={mod.name}
                                     checked={field.value}
-                                    onCheckedChange={(checked) => handleModifierChange(mod.name, !!checked)}
+                                    onCheckedChange={(checked) => {
+                                        field.onChange(checked);
+                                        handleModifierChange(mod.name, !!checked);
+                                    }}
                                 />
                             )}
                         />
@@ -203,7 +218,6 @@ export function TextareaWithPreset({
             <Controller
                 name={`narrative.${presetName}`}
                 control={control}
-                defaultValue={localState.narrative[presetName]}
                 render={({ field }) => (
                     <Textarea
                         {...field}
