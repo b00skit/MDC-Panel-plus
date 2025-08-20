@@ -1,14 +1,20 @@
 
 'use client';
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
 import { Control, Controller, useFormContext } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
 import { Separator } from '../ui/separator';
+import Handlebars from 'handlebars';
+
+export type Modifier = {
+    name: string;
+    label: string;
+    generateText: string;
+};
 
 interface TextareaWithPresetProps {
     label: string;
@@ -18,6 +24,7 @@ interface TextareaWithPresetProps {
     control: Control<any>;
     modifiers: Modifier[];
     isInvalid: boolean;
+    noLocalStorage?: boolean;
 }
 
 export function TextareaWithPreset({
@@ -27,39 +34,98 @@ export function TextareaWithPreset({
     presetName,
     control,
     modifiers,
-    isInvalid
+    isInvalid,
+    noLocalStorage = false,
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues } = useFormContext();
-    const { setPreset, setUserModified, setNarrativeField, setModifier } = useBasicReportModifiersStore();
+    const [localState, setLocalState] = useState(() => {
+        if (noLocalStorage || typeof window === 'undefined') {
+            return {
+                presets: { [presetName]: true },
+                userModified: { [presetName]: false },
+                modifiers: modifiers.reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
+                narrative: { [presetName]: '' }
+            }
+        }
 
-    const isPresetEnabled = watch(`presets.${presetName}`);
-    const isUserModified = watch(`userModified.${presetName}`);
-    const modifierValues = watch('modifiers');
+        const saved = localStorage.getItem(`textarea-preset-${presetName}`);
+        if(saved) {
+            try {
+                return JSON.parse(saved);
+            } catch (e) {
+                console.error("Failed to parse textarea preset from localStorage", e);
+            }
+        }
+        return {
+            presets: { [presetName]: true },
+            userModified: { [presetName]: false },
+            modifiers: modifiers.reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
+            narrative: { [presetName]: '' }
+        };
+    });
+
+    const isPresetEnabled = watch(`presets.${presetName}`, localState.presets[presetName]);
+    const isUserModified = watch(`userModified.${presetName}`, localState.userModified[presetName]);
+    const modifierValues = watch('modifiers', localState.modifiers);
+    const formValues = watch();
 
     const generatePresetText = useCallback(() => {
         let text = '';
+        const data = getValues();
+        
         modifiers.forEach(mod => {
             if (getValues(`modifiers.${mod.name}`)) {
-                text += mod.generateText();
+                try {
+                    const template = Handlebars.compile(mod.generateText, { noEscape: true });
+                    text += template(data) + '\n\n';
+                } catch (e) {
+                    console.error(`Error compiling Handlebars template for modifier ${mod.name}`, e);
+                    text += `[Error in modifier: ${mod.name}]\n\n`;
+                }
             }
         });
-        return text;
+        return text.trim();
     }, [modifiers, getValues]);
+
+    useEffect(() => {
+        // Initialize form state from localState
+        setValue(`presets.${presetName}`, localState.presets[presetName]);
+        setValue(`userModified.${presetName}`, localState.userModified[presetName]);
+        setValue(`modifiers`, localState.modifiers);
+        setValue(`narrative.${presetName}`, localState.narrative[presetName]);
+    }, [presetName, setValue]);
+
 
     useEffect(() => {
         if (isPresetEnabled && !isUserModified) {
             setValue(`narrative.${presetName}`, generatePresetText());
         }
-    }, [isPresetEnabled, isUserModified, modifierValues, presetName, setValue, generatePresetText]);
+    }, [isPresetEnabled, isUserModified, modifierValues, presetName, setValue, generatePresetText, formValues]);
 
+    const updateLocalState = (key: keyof typeof localState, field: string, value: any) => {
+        if (noLocalStorage) return;
+        
+        setLocalState(prevState => {
+            const newState = {
+                ...prevState,
+                [key]: {
+                    ...prevState[key],
+                    [field]: value
+                }
+            };
+            localStorage.setItem(`textarea-preset-${presetName}`, JSON.stringify(newState));
+            return newState;
+        });
+    }
 
     const handleTogglePreset = () => {
         const newValue = !isPresetEnabled;
         setValue(`presets.${presetName}`, newValue);
-        setPreset(presetName, newValue);
+        updateLocalState('presets', presetName, newValue);
 
         if (!newValue && !isUserModified) {
             setValue(`narrative.${presetName}`, '');
+            updateLocalState('narrative', presetName, '');
         }
     };
 
@@ -69,18 +135,17 @@ export function TextareaWithPreset({
 
         if (value) {
             setValue(`userModified.${presetName}`, true);
-            setUserModified(presetName, true);
-            setNarrativeField(presetName, value);
+            updateLocalState('userModified', presetName, true);
         } else {
             setValue(`userModified.${presetName}`, false);
-            setUserModified(presetName, false);
-            setNarrativeField(presetName, '');
+            updateLocalState('userModified', presetName, false);
         }
+         updateLocalState('narrative', presetName, value);
     };
     
     const handleModifierChange = (modifierName: string, checked: boolean) => {
         setValue(`modifiers.${modifierName}`, checked);
-        setModifier(modifierName, checked);
+        updateLocalState('modifiers', modifierName, checked);
     };
 
     const CheckboxWithLabel = (
@@ -121,6 +186,7 @@ export function TextareaWithPreset({
                         <Controller
                             name={`modifiers.${mod.name}`}
                             control={control}
+                            defaultValue={localState.modifiers[mod.name] !== false}
                             render={({ field }) => (
                                 <Checkbox
                                     id={mod.name}
@@ -137,13 +203,17 @@ export function TextareaWithPreset({
             <Controller
                 name={`narrative.${presetName}`}
                 control={control}
+                defaultValue={localState.narrative[presetName]}
                 render={({ field }) => (
                     <Textarea
                         {...field}
                         id={presetName}
                         placeholder={placeholder}
                         className={cn('min-h-[150px]', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
-                        onChange={handleTextareaChange}
+                        onChange={(e) => {
+                            field.onChange(e);
+                            handleTextareaChange(e);
+                        }}
                     />
                 )}
             />

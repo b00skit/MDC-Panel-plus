@@ -25,9 +25,10 @@ import { Plus, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { MultiSelect } from '../ui/multi-select';
+import { TextareaWithPreset } from '../shared/textarea-with-preset';
 
 type FormField = {
-    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select';
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset';
     name: string;
     label?: string;
     placeholder?: string;
@@ -61,6 +62,9 @@ type FormField = {
     }
     // Location field specific config
     showDistrict?: boolean;
+    // Textarea with preset
+    modifiers?: any[];
+    noLocalStorage?: boolean;
 };
 
 type GeneratorConfig = {
@@ -255,6 +259,20 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         <Label htmlFor={path}>{field.label}</Label>
                         <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
                     </div>
+                );
+
+            case 'textarea-with-preset':
+                return (
+                    <TextareaWithPreset
+                        key={fieldKey}
+                        label={field.label || 'Narrative'}
+                        placeholder={field.placeholder}
+                        presetName={field.name}
+                        control={control}
+                        modifiers={field.modifiers || []}
+                        isInvalid={false} // This can be improved if needed
+                        noLocalStorage={field.noLocalStorage}
+                    />
                 );
 
             case 'dropdown':

@@ -1,0 +1,56 @@
+
+{
+    "id": "warrant-affidavit",
+    "title": "Warrant Affidavit",
+    "description": "Generate an affidavit for various types of warrants.",
+    "icon": "FileSearch",
+    "output_title": "{{warrant_type}} - {{general.date}}",
+    "output": "{{narrative}}",
+    "form": [
+        { "type": "section", "title": "General Information" },
+        { "type": "general", "name": "general" },
+        { "type": "officer", "name": "officers", "multi": false },
+        {
+            "type": "dropdown",
+            "name": "warrant_type",
+            "label": "Warrant Type",
+            "placeholder": "Select warrant type...",
+            "options": ["Arrest Warrant", "Search Warrant", "Electronic Search Warrant", "Financial Search Warrant"],
+            "required": true
+        },
+        { "type": "section", "title": "Affidavit" },
+        {
+            "type": "textarea-with-preset",
+            "name": "narrative",
+            "label": "Affidavit Narrative",
+            "noLocalStorage": true,
+            "modifiers": [
+                {
+                    "name": "introduction",
+                    "label": "Affiant Introduction",
+                    "generateText": "I, {{officers.0.rank}} {{officers.0.name}} (#{{officers.0.badgeNumber}}), am a peace officer employed with the {{officers.0.department}}, currently assigned to the {{officers.0.divDetail}}."
+                },
+                {
+                    "name": "submission_statement",
+                    "label": "Submission Statement",
+                    "generateText": "I submit this affidavit in support of an {{warrant_type}} for..."
+                },
+                {
+                    "name": "probable_cause",
+                    "label": "Probable Cause Statement",
+                    "generateText": "PROBABLE CAUSE STATEMENT\n\n"
+                },
+                {
+                    "name": "scope_of_request",
+                    "label": "Scope of Request",
+                    "generateText": "SCOPE OF REQUESTED SURVEILLANCE/SEARCH\n\n"
+                },
+                {
+                    "name": "conclusion",
+                    "label": "Conclusion",
+                    "generateText": "\n\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
+                }
+            ]
+        }
+    ]
+}
