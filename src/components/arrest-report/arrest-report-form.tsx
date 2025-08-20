@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -282,40 +282,40 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         <GeneralSection isSubmitted={submitted} />
         <OfficerSection isSubmitted={submitted} isArrestReport={true} />
 
-        <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
-          <div className="space-y-6">
-              <InputField
-                label="Suspect's Full Name"
-                id="suspect-name"
-                placeholder="Firstname Lastname"
-                icon={<User className="h-4 w-4 text-muted-foreground" />}
-                defaultValue={formData.arrest.suspectName}
-                onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-                isInvalid={submitted && !formData.arrest.suspectName}
-              />
-              <TextareaWithPreset
-                label="Arrest Narrative"
-                placeholder="Arrest Narrative"
-                description={
-                    <span className="text-red-500">
-                        Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
-                    </span>
-                }
-                presetName='narrative'
-                control={control}
-                modifiers={arrestReportModifiers}
-                isInvalid={submitted && !watchedNarrative}
-              />
-          </div>
+        <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
+            <LocationDetails 
+                districtFieldName="location.district"
+                streetFieldName="location.street"
+                showDistrict={true}
+                isSubmitted={submitted}
+            />
         </FormSection>
 
-        <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
-          <LocationDetails 
-            districtFieldName="location.district"
-            streetFieldName="location.street"
-            showDistrict={true}
-            isSubmitted={submitted}
-          />
+        <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
+            <div className="space-y-6">
+                <InputField
+                    label="Suspect's Full Name"
+                    id="suspect-name"
+                    placeholder="Firstname Lastname"
+                    icon={<User className="h-4 w-4 text-muted-foreground" />}
+                    defaultValue={formData.arrest.suspectName}
+                    onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+                    isInvalid={submitted && !formData.arrest.suspectName}
+                />
+                <TextareaWithPreset
+                    label="Arrest Narrative"
+                    placeholder="Arrest Narrative"
+                    description={
+                        <span className="text-red-500">
+                            Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
+                        </span>
+                    }
+                    presetName='narrative'
+                    control={control}
+                    modifiers={arrestReportModifiers}
+                    isInvalid={submitted && !watchedNarrative}
+                />
+            </div>
         </FormSection>
 
         <FormSection title="Evidence Section" icon={<Paperclip className="h-6 w-6" />}>
