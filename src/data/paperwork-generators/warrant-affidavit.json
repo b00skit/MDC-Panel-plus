@@ -28,27 +28,27 @@
                 {
                     "name": "introduction",
                     "label": "Affiant Introduction",
-                    "generateText": "I, {{officers.0.rank}} {{officers.0.name}} (#{{officers.0.badgeNumber}}), am a peace officer employed with the {{officers.0.department}}, currently assigned to the {{officers.0.divDetail}}."
+                    "generateText": "I, {{officers.0.rank}} {{officers.0.name}} (#{{officers.0.badgeNumber}}), am a peace officer employed with the {{officers.0.department}}, currently assigned to the {{officers.0.divDetail}}. I have been employed by this agency for [X] years and have extensive experience in [briefly describe experience, e.g., narcotics investigations, homicide, etc.]."
                 },
                 {
                     "name": "submission_statement",
                     "label": "Submission Statement",
-                    "generateText": "I submit this affidavit in support of an {{warrant_type}} for..."
+                    "generateText": "I submit this affidavit in support of an {{warrant_type}} for [SUBJECT/LOCATION]. This request is based on an ongoing investigation into [CRIME(S)] (Casefile #XXXXXX)."
                 },
                 {
                     "name": "probable_cause",
                     "label": "Probable Cause Statement",
-                    "generateText": " "
+                    "generateText": "The following facts establish probable cause for this warrant:\nOn [DATE] at approximately [TIME], [Describe initial event or discovery]. This was followed by [Describe subsequent investigative steps, e.g., witness interviews, evidence collection, surveillance]. Evidence gathered, including [mention key evidence like informant tips, physical evidence, or preliminary forensic results], indicates that [explain what the evidence shows and how it links the subject/location to the crime]."
                 },
                 {
                     "name": "scope_of_request",
                     "label": "Scope of Request",
-                    "generateText": " "
+                    "generateText": "Based on the probable cause outlined above, I request authorization to [search/arrest/monitor] the following:\n1. [SPECIFIC LOCATION/PERSON/VEHICLE/DEVICE]: I seek to seize [SPECIFIC ITEMS TO BE SEIZED, e.g., firearms, narcotics, financial records, electronic devices].\n2. [ADDITIONAL LOCATIONS/ITEMS AS NEEDED]"
                 },
                 {
                     "name": "conclusion",
                     "label": "Conclusion",
-                    "generateText": "\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
+                    "generateText": "Based on the information contained in this affidavit, I respectfully request that this court issue the requested {{warrant_type}}.\n\nI declare under penalty of perjury that the foregoing is true and correct.\n\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
                 }
             ]
         }
