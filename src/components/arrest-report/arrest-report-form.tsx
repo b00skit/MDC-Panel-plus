@@ -164,8 +164,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
   const arrestReportModifiers: Modifier[] = useMemo(() => [
     {
-        name: 'arrestReportIntroduction',
-        label: 'Arrest Report Introduction',
+        name: 'introduction',
+        label: 'Introduction',
         generateText: () => {
             const currentFormData = getValues();
             const primaryOfficer = officers[0];
@@ -173,7 +173,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
             const { date, time } = currentFormData.general;
             const { street } = currentFormData.location;
             const { suspectName } = currentFormData.arrest;
-            return `On the ${date || '{date}'}, I ${primaryOfficer.rank || '{rank}'} ${primaryOfficer.name || '{name}'} of the ${primaryOfficer.department || '{department}'} conducted an arrest on ${suspectName || '{suspect}'}. At approximately ${time || '{time}'} hours, I was driving on ${street || '{street}'} where I `;
+            return `On the ${date || ''}, I ${primaryOfficer.rank || ''} ${primaryOfficer.name || ''} of the ${primaryOfficer.department || ''} conducted an arrest on ${suspectName || ''}. At approximately ${time || ''} hours, I was driving on ${street || ''} where I `;
         }
     }
   ], [officers, getValues]);
