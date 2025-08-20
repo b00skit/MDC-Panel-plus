@@ -145,7 +145,17 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const { modifiers: modifierState, presets, userModified, narrative, setModifier, setPreset, setUserModified, setNarrativeField } = useBasicReportModifiersStore();
 
   const [submitted, setSubmitted] = useState(false);
-  const methods = useForm({ defaultValues: { ...formData, modifiers: modifierState, presets, userModified, narrative }});
+  const methods = useForm({
+    defaultValues: {
+      ...formData,
+      narrative: {
+        modifiers: { introduction: modifierState.introduction },
+        isPreset: presets.narrative,
+        userModified: userModified.narrative,
+        narrative: narrative.narrative,
+      },
+    },
+  });
   const { control, getValues, reset, watch } = methods;
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -159,45 +169,40 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   ], []);
 
   const narrativeText = useMemo(() => {
-    const isPresetActive = allWatchedFields.presets?.narrative;
-    const isUserModified = allWatchedFields.userModified?.narrative;
-    
+    const narrativeValues = allWatchedFields.narrative;
+    const isPresetActive = narrativeValues?.isPreset;
+    const isUserModified = narrativeValues?.userModified;
+
     if (!isPresetActive || isUserModified) {
-        return allWatchedFields.narrative?.narrative || '';
+        return narrativeValues?.narrative || '';
     }
 
     let text = '';
     const { general, location, arrest } = allWatchedFields;
     const primaryOfficer = officers[0];
-    
-    if (allWatchedFields.modifiers?.introduction && primaryOfficer) {
+
+    if (narrativeValues?.modifiers?.introduction && primaryOfficer) {
         const { date, time } = general;
         const { street } = location;
         const { suspectName } = arrest;
         text += `On the ${date || ''}, I ${primaryOfficer.rank || ''} ${primaryOfficer.name || ''} of the ${primaryOfficer.department || ''} conducted an arrest on ${suspectName || ''}. At approximately ${time || ''} hours, I was driving on ${street || ''} where I `;
     }
     return text;
-  }, [
-      allWatchedFields.presets?.narrative,
-      allWatchedFields.userModified?.narrative,
-      allWatchedFields.modifiers?.introduction,
-      allWatchedFields.general,
-      allWatchedFields.location,
-      allWatchedFields.arrest,
-      officers
-  ]);
+  }, [allWatchedFields, officers]);
 
 
   useEffect(() => {
     const mergedData = {
-        ...formData,
-        modifiers: { ...modifierState, ...formData.modifiers },
-        presets: { ...presets, ...formData.presets },
-        userModified: { ...userModified, ...formData.userModified },
-        narrative: { ...narrative, ...formData.narrative }
+      ...formData,
+      narrative: {
+        modifiers: { introduction: modifierState.introduction },
+        isPreset: presets.narrative,
+        userModified: userModified.narrative,
+        narrative: narrative.narrative,
+      },
     };
     reset(mergedData);
-  }, [formData, modifierState, presets, userModified, narrative, reset]);
+  }, [formData, modifierState.introduction, presets.narrative, userModified.narrative, narrative.narrative, reset]);
 
 
   const getFormData = () => {
@@ -217,9 +222,9 @@ export const ArrestReportForm = forwardRef((props, ref) => {
             dashcam: (form.elements.namedItem('dashcam') as HTMLTextAreaElement).value,
         },
         officers: officers,
-        modifiers: currentValues.modifiers,
-        presets: currentValues.presets,
-        userModified: currentValues.userModified,
+        modifiers: currentValues.narrative.modifiers,
+        presets: { narrative: currentValues.narrative.isPreset },
+        userModified: { narrative: currentValues.narrative.userModified },
         narrative: currentValues.narrative,
     };
     return data;
@@ -250,16 +255,22 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const saveDraft = () => {
     const latestFormData = getFormData();
     if (latestFormData) {
-        setAll(latestFormData as any);
+        setAll({
+            general: latestFormData.general,
+            arrest: latestFormData.arrest,
+            location: latestFormData.location,
+            evidence: latestFormData.evidence,
+            officers: latestFormData.officers,
+        } as any);
 
         Object.keys(latestFormData.modifiers).forEach(key => {
             setModifier(key, latestFormData.modifiers[key]);
-        })
+        });
 
         Object.keys(latestFormData.presets).forEach(key => {
             setPreset(key, latestFormData.presets[key]);
         });
-        
+
         Object.keys(latestFormData.userModified).forEach(key => {
             setUserModified(key, latestFormData.userModified[key]);
         });
