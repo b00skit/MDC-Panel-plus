@@ -38,17 +38,17 @@
                 {
                     "name": "probable_cause",
                     "label": "Probable Cause Statement",
-                    "generateText": "PROBABLE CAUSE STATEMENT\n\n"
+                    "generateText": " "
                 },
                 {
                     "name": "scope_of_request",
                     "label": "Scope of Request",
-                    "generateText": "SCOPE OF REQUESTED SURVEILLANCE/SEARCH\n\n"
+                    "generateText": " "
                 },
                 {
                     "name": "conclusion",
                     "label": "Conclusion",
-                    "generateText": "\n\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
+                    "generateText": "\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
                 }
             ]
         }
