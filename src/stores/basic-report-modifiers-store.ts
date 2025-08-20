@@ -28,7 +28,7 @@ interface BasicReportModifiersState {
 
 const getInitialState = (): Omit<BasicReportModifiersState, 'setModifier' | 'setPreset' | 'setUserModified' | 'setNarrativeField' | 'reset'> => ({
     modifiers: {
-        arrestReportIntroduction: true,
+        introduction: true,
     },
     presets: {
         narrative: true,
