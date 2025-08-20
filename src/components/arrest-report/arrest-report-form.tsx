@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -26,7 +26,10 @@ import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useToast } from '@/hooks/use-toast';
 import { LocationDetails } from '../shared/location-details';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { useBasicReportModifiersStore } from '@/stores/basic-report-modifiers-store';
+import { TextareaWithPreset } from '../shared/textarea-with-preset';
+import { Checkbox } from '../ui/checkbox';
 
 const FormSection = ({
   title,
@@ -138,55 +141,99 @@ const TextareaField = ({
 export const ArrestReportForm = forwardRef((props, ref) => {
   const router = useRouter();
   const { toast } = useToast();
-  const { formData, setAll } = useFormStore();
+  const { formData, setAll, setFormField } = useFormStore();
   const { officers } = useOfficerStore();
+  const { modifiers, presets, userModified, narrative, setModifier, setPreset, setUserModified, setNarrativeField } = useBasicReportModifiersStore();
+
   const [submitted, setSubmitted] = useState(false);
-  const methods = useForm({ defaultValues: formData });
+  const methods = useForm({ defaultValues: { ...formData, modifiers, presets, userModified, narrative }});
+  const { control, register, watch, setValue, getValues, reset } = methods;
+
+  const watchedModifiers = watch('modifiers');
+  const watchedFormData = watch();
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Load stored data on initial mount
+  useEffect(() => {
+    const mergedData = {
+        ...formData,
+        modifiers: { ...modifiers, ...formData.modifiers },
+        presets: { ...presets, ...formData.presets },
+        userModified: { ...userModified, ...formData.userModified },
+        narrative: { ...narrative, ...formData.narrative }
+    };
+    reset(mergedData);
+  }, [formData, modifiers, presets, userModified, narrative, reset]);
+
+
+   // Effect to update narrative based on preset
+   useEffect(() => {
+    if (watchedFormData.presets?.narrative && !watchedFormData.userModified?.narrative) {
+        let text = '';
+        const primaryOfficer = officers[0];
+        if (watchedFormData.modifiers?.arrestReportIntroduction && primaryOfficer) {
+            const { date, time } = formData.general;
+            const { street } = formData.location;
+            const { suspectName } = formData.arrest;
+
+            text = `On the ${date || '{date}'}, I ${primaryOfficer.rank || '{rank}'} ${primaryOfficer.name || '{name}'} of the ${primaryOfficer.department || '{department}'} conducted an arrest on ${suspectName || '{suspect}'}. At approximately ${time || '{time}'} hours, I was driving on ${street || '{street}'} where I `;
+        }
+        setValue('narrative.narrative', text);
+    }
+   }, [
+      watchedModifiers.arrestReportIntroduction, 
+      officers, 
+      formData.general, 
+      formData.location,
+      formData.arrest,
+      watchedFormData.presets?.narrative,
+      watchedFormData.userModified?.narrative,
+      setValue
+   ]);
 
   const getFormData = () => {
     if (!formRef.current) return null;
     const form = formRef.current;
+    const currentValues = getValues();
+
     const data = {
-        ...useFormStore.getState().formData,
+        general: formData.general,
         arrest: {
             suspectName: (form.elements.namedItem('suspect-name') as HTMLInputElement).value,
-            narrative: (form.elements.namedItem('narrative') as HTMLTextAreaElement).value,
+            narrative: currentValues.narrative.narrative,
         },
+        location: formData.location,
         evidence: {
             supporting: (form.elements.namedItem('supporting-evidence') as HTMLTextAreaElement).value,
             dashcam: (form.elements.namedItem('dashcam') as HTMLTextAreaElement).value,
         },
         officers: officers,
+        modifiers: currentValues.modifiers,
+        presets: currentValues.presets,
+        userModified: currentValues.userModified,
+        narrative: currentValues.narrative,
     };
     return data;
   }
 
   const validateForm = (data: any) => {
-    // General Section
     if (!data.general.callSign) return "Call Sign is required.";
     if (!data.general.date) return "Date is required.";
     if (!data.general.time) return "Time is required.";
     
-    // Officer Section
     for (const officer of data.officers) {
         if (!officer.name || !officer.rank || !officer.badgeNumber || !officer.department) {
             return `All fields for Officer ${officer.name || '(new officer)'} are required.`;
         }
     }
 
-    // Arrest Section
     if (!data.arrest.suspectName) return "Suspect's Full Name is required.";
     if (!data.arrest.narrative) return "Arrest Narrative is required.";
 
-    // Location Details
     if (!data.location.district) return "District is required.";
     if (!data.location.street) return "Street Name is required.";
     
-    // Evidence Section
     if (!data.evidence.dashcam) return "Dashboard Camera narrative is required.";
-    // Supporting evidence is not mandatory
 
     return null;
   };
@@ -195,6 +242,13 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     const latestFormData = getFormData();
     if (latestFormData) {
         setAll(latestFormData as any);
+
+        setModifier('arrestReportIntroduction', latestFormData.modifiers.arrestReportIntroduction);
+        setPreset('narrative', latestFormData.presets.narrative);
+        setUserModified('narrative', latestFormData.userModified.narrative);
+        if (latestFormData.userModified.narrative) {
+            setNarrativeField('narrative', latestFormData.narrative.narrative);
+        }
     }
     toast({
         title: 'Draft Saved',
@@ -206,7 +260,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     saveDraft
   }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     const latestFormData = getFormData();
@@ -222,13 +276,13 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       return;
     }
     
-    setAll(latestFormData as any);
+    saveDraft();
     router.push('/arrest-submit?type=basic');
   };
 
   return (
     <FormProvider {...methods}>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+      <form ref={formRef} onSubmit={handleSubmitForm} className="space-y-6">
         <GeneralSection isSubmitted={submitted} />
         <OfficerSection isSubmitted={submitted} isArrestReport={true} />
 
@@ -240,21 +294,42 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                 placeholder="Firstname Lastname"
                 icon={<User className="h-4 w-4 text-muted-foreground" />}
                 defaultValue={formData.arrest.suspectName}
+                onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
                 isInvalid={submitted && !formData.arrest.suspectName}
               />
-              <TextareaField 
-                  label="Arrest Narrative"
-                  id="narrative"
-                  placeholder="Arrest Narrative"
-                  icon={<FileText className="h-4 w-4 text-muted-foreground" />}
-                  description={
-                      <span className="text-red-500">
+              <Card>
+                  <CardHeader>
+                      <CardTitle className='text-lg'>Arrest Report Modifiers</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                      <div className="flex items-center space-x-2">
+                        <Controller 
+                            name="modifiers.arrestReportIntroduction"
+                            control={control}
+                            render={({ field }) => (
+                                <Checkbox 
+                                    id="arrestReportIntroduction"
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            )}
+                        />
+                        <Label htmlFor="arrestReportIntroduction">Arrest Report Introduction</Label>
+                      </div>
+                  </CardContent>
+              </Card>
+
+              <TextareaWithPreset
+                label="Arrest Narrative"
+                placeholder="Arrest Narrative"
+                description={
+                    <span className="text-red-500">
                         Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
-                      </span>
-                    }
-                    className="min-h-[150px]"
-                    defaultValue={formData.arrest.narrative}
-                    isInvalid={submitted && !formData.arrest.narrative}
+                    </span>
+                }
+                presetName='narrative'
+                control={control}
+                isInvalid={submitted && !getValues('narrative.narrative')}
               />
           </div>
         </FormSection>
@@ -278,6 +353,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                   description="Provide supporting evidence to aid the arrest report."
                   className="min-h-[150px]"
                   defaultValue={formData.evidence.supporting}
+                  onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
                   required={false}
               />
               <TextareaField 
@@ -294,6 +370,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                     }
                     className="min-h-[150px]"
                     defaultValue={formData.evidence.dashcam}
+                    onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
                     isInvalid={submitted && !formData.evidence.dashcam}
               />
           </div>
