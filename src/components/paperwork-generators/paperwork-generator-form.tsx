@@ -17,7 +17,7 @@ import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore as useBasicFormStore } from '@/stores/form-store';
 import { Switch } from '../ui/switch';
 import { type PenalCode } from '@/stores/charge-store';
-import { useEffect, useState, useCallback, Suspense } from 'react';
+import { useEffect, useState, useCallback, Suspense, useMemo } from 'react';
 import { Combobox } from '../ui/combobox';
 import { PaperworkChargeField } from './paperwork-generator-charge-field';
 import { LocationDetails } from '../shared/location-details';
@@ -26,6 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { MultiSelect } from '../ui/multi-select';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
+import Handlebars from 'handlebars';
 
 type FormField = {
     type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset';
@@ -90,6 +91,13 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
             Object.assign(defaults, buildDefaultValues(field.fields));
         } else if (field.type === 'input_group' && field.name) {
             defaults[field.name] = field.defaultValue ?? [];
+        } else if (field.type === 'textarea-with-preset' && field.name) {
+             defaults[field.name] = {
+                modifiers: (field.modifiers || []).reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
+                narrative: '',
+                isPreset: true,
+                userModified: false
+            };
         } else if (field.name) {
             if (field.type === 'toggle') {
                 defaults[field.name] = field.defaultValue === true;
@@ -111,7 +119,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         criteriaMode: 'all',
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
-    const { register, handleSubmit, control, watch, trigger } = methods;
+    const { register, handleSubmit, control, watch, trigger, getValues } = methods;
 
     const { setGeneratorData, setFormData, reset } = usePaperworkStore();
     const { toast } = useToast();
@@ -165,6 +173,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 setIsFetchingVehicles(false);
             });
     }, [vehiclesFetched, isFetchingVehicles]);
+
+    const allWatchedFields = watch();
 
     const renderField = (
         field: FormField, 
@@ -262,16 +272,49 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 );
 
             case 'textarea-with-preset':
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const narrativeText = useMemo(() => {
+                    const presetPath = `${path}.isPreset`;
+                    const userModifiedPath = `${path}.userModified`;
+                    const isPresetActive = getValues(presetPath);
+                    const isUserModified = getValues(userModifiedPath);
+                    
+                    if (!isPresetActive || isUserModified) {
+                        return getValues(`${path}.narrative`);
+                    }
+
+                    let text = '';
+                    const allData = getValues();
+                    const { officers } = useOfficerStore.getState();
+                    const { general } = useBasicFormStore.getState().formData;
+
+                    const dataForHandlebars = { ...allData, officers, general };
+                    
+                    (field.modifiers || []).forEach(mod => {
+                        if (getValues(`${path}.modifiers.${mod.name}`)) {
+                            try {
+                                const template = Handlebars.compile(mod.generateText || '', { noEscape: true });
+                                text += template(dataForHandlebars) + '\n\n';
+                            } catch (e) {
+                                console.error(`Error compiling Handlebars template for modifier ${mod.name}:`, e);
+                                text += `[Error in modifier: ${mod.name}]\n\n`;
+                            }
+                        }
+                    });
+                    return text.trim();
+                }, [allWatchedFields, field.modifiers, getValues, path]);
+
                 return (
                     <TextareaWithPreset
                         key={fieldKey}
                         label={field.label || 'Narrative'}
                         placeholder={field.placeholder}
-                        presetName={field.name}
+                        basePath={path}
                         control={control}
                         modifiers={field.modifiers || []}
-                        isInvalid={false} // This can be improved if needed
+                        isInvalid={false}
                         noLocalStorage={field.noLocalStorage}
+                        value={narrativeText}
                     />
                 );
 
