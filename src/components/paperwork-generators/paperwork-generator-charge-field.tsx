@@ -14,11 +14,12 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, ChevronsUpDown, Check } from 'lucide-react';
+import { Plus, Trash2, ChevronsUpDown, Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { type Charge, type PenalCode } from '@/stores/charge-store';
 import { Input } from '../ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -60,6 +61,35 @@ interface PaperworkChargeFieldProps {
   };
 }
 
+const CopyablePreviewField = ({ label, value }: { label: string, value: string }) => {
+    const { toast } = useToast();
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(value);
+        toast({
+            title: "Copied!",
+            description: `${label} copied to clipboard.`
+        })
+    }
+    return (
+        <div className="space-y-1">
+            <Label className="text-xs">{label}</Label>
+            <div className="flex items-center gap-2">
+                <Input
+                    readOnly
+                    value={value}
+                    className="h-8 text-xs bg-card"
+                    disabled
+                />
+                <Button type="button" variant="outline" size="icon" className="h-8 w-8" onClick={handleCopy}>
+                    <Copy className="h-4 w-4" />
+                </Button>
+            </div>
+        </div>
+    );
+};
+
+
 const ChargePreview = ({ charge, config }: { charge: Charge, config: PaperworkChargeFieldProps['config'] }) => {
     const isDrugCharge = !!charge.drugs;
 
@@ -80,20 +110,17 @@ const ChargePreview = ({ charge, config }: { charge: Charge, config: PaperworkCh
 
     const offense = '1'; // Defaulting to offense 1 for preview, this could be improved
 
+    const sentenceValue = isDrugCharge ? 'Varies' : `${formatTime(charge.time)} - ${formatTime(charge.maxtime)}`;
+    const fineValue = getFine(charge.fine, offense);
+    const impoundValue = charge.impound[offense as keyof typeof charge.impound] ? `${charge.impound[offense as keyof typeof charge.impound]} Days` : 'No';
+    const suspensionValue = charge.suspension[offense as keyof typeof charge.suspension] ? `${charge.suspension[offense as keyof typeof charge.suspension]} Days` : 'No';
+
     return (
-        <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2">
-            {config.previewFields?.sentence && (
-                <div><strong>Sentence:</strong> {isDrugCharge ? 'Varies' : `${formatTime(charge.time)} - ${formatTime(charge.maxtime)}`}</div>
-            )}
-            {config.previewFields?.fine && (
-                <div><strong>Fine:</strong> {getFine(charge.fine, offense)}</div>
-            )}
-            {config.previewFields?.impound && (
-                <div><strong>Impound:</strong> {charge.impound[offense as keyof typeof charge.impound] ? `${charge.impound[offense as keyof typeof charge.impound]} Days` : 'No'}</div>
-            )}
-            {config.previewFields?.suspension && (
-                <div><strong>Suspension:</strong> {charge.suspension[offense as keyof typeof charge.suspension] ? `${charge.suspension[offense as keyof typeof charge.suspension]} Days` : 'No'}</div>
-            )}
+        <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} />}
+            {config.previewFields?.fine && <CopyablePreviewField label="Fine" value={fineValue} />}
+            {config.previewFields?.impound && <CopyablePreviewField label="Impound" value={impoundValue} />}
+            {config.previewFields?.suspension && <CopyablePreviewField label="Suspension" value={suspensionValue} />}
         </div>
     );
 };
@@ -291,3 +318,4 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     </div>
   );
 }
+
