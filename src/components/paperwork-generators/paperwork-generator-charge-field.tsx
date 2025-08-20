@@ -61,11 +61,11 @@ interface PaperworkChargeFieldProps {
   };
 }
 
-const CopyablePreviewField = ({ label, value }: { label: string, value: string }) => {
+const CopyablePreviewField = ({ label, value }: { label: string, value: string | number }) => {
     const { toast } = useToast();
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(value);
+        navigator.clipboard.writeText(value.toString());
         toast({
             title: "Copied!",
             description: `${label} copied to clipboard.`
@@ -103,24 +103,24 @@ const ChargePreview = ({ charge, config }: { charge: Charge, config: PaperworkCh
     };
     
     const getFine = (fineObj: any, offense: string) => {
-        if (!fineObj) return '$0';
+        if (!fineObj) return '0';
         if(isDrugCharge) return 'Varies';
-        return `$${(fineObj[offense as keyof typeof fineObj] || 0).toLocaleString()}`;
+        return fineObj[offense as keyof typeof fineObj] || '0';
     }
 
     const offense = '1'; // Defaulting to offense 1 for preview, this could be improved
 
     const sentenceValue = isDrugCharge ? 'Varies' : `${formatTime(charge.time)} - ${formatTime(charge.maxtime)}`;
     const fineValue = getFine(charge.fine, offense);
-    const impoundValue = charge.impound[offense as keyof typeof charge.impound] ? `${charge.impound[offense as keyof typeof charge.impound]} Days` : 'No';
-    const suspensionValue = charge.suspension[offense as keyof typeof charge.suspension] ? `${charge.suspension[offense as keyof typeof charge.suspension]} Days` : 'No';
+    const impoundValue = charge.impound[offense as keyof typeof charge.impound] || 0;
+    const suspensionValue = charge.suspension[offense as keyof typeof charge.suspension] || 0;
 
     return (
         <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} />}
             {config.previewFields?.fine && <CopyablePreviewField label="Fine" value={fineValue} />}
-            {config.previewFields?.impound && <CopyablePreviewField label="Impound" value={impoundValue} />}
-            {config.previewFields?.suspension && <CopyablePreviewField label="Suspension" value={suspensionValue} />}
+            {config.previewFields?.impound && impoundValue > 0 && <CopyablePreviewField label="Impound (Days)" value={impoundValue} />}
+            {config.previewFields?.suspension && suspensionValue > 0 && <CopyablePreviewField label="Suspension (Days)" value={suspensionValue} />}
         </div>
     );
 };
@@ -318,4 +318,3 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     </div>
   );
 }
-
