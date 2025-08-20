@@ -11,7 +11,7 @@
         { "type": "section", "title": "General Section" },
         { "type": "general", "name": "general" },
         { "type": "section", "title": "Deputy Section" },
-        { "type": "officer", "name": "officers" },
+        { "type": "officer", "name": "officers", "multi": false },
         { "type": "section", "title": "Location Details" },
         { "type": "location", "name": "location", "showDistrict": true },
         { "type": "dropdown", "name": "reporting_district", "label": "Reporting District of Incident", "placeholder": "Select Reporting District", "options": ["Area of Davis", "Area of Senora"], "required": true },

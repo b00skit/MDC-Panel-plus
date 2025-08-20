@@ -11,7 +11,7 @@
         { "type": "section", "title": "General Section" },
         { "type": "general", "name": "general" },
         { "type": "section", "title": "Filing Deputies" },
-        { "type": "officer", "name": "officers" },
+        { "type": "officer", "name": "officers", "multi": true },
         { "type": "section", "title": "Location Details" },
         { "type": "location", "name": "location", "showDistrict": true },
         { 

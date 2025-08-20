@@ -36,11 +36,13 @@ const FormSection = ({
   icon,
   children,
   onAdd,
+  showAddButton,
 }: {
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
   onAdd: () => void;
+  showAddButton: boolean;
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -48,9 +50,11 @@ const FormSection = ({
             {icon}
             <CardTitle className="text-xl">{title}</CardTitle>
        </div>
-       <Button variant="outline" size="sm" onClick={onAdd} type="button">
-            <Plus className="mr-2 h-4 w-4" /> Add Officer
-        </Button>
+       {showAddButton && (
+            <Button variant="outline" size="sm" onClick={onAdd} type="button">
+                <Plus className="mr-2 h-4 w-4" /> Add Officer
+            </Button>
+       )}
     </CardHeader>
     <CardContent>{children}</CardContent>
   </Card>
@@ -130,7 +134,7 @@ const SelectField = ({
 );
 
 
-export function OfficerSection({ isSubmitted, isArrestReport = false }: { isSubmitted: boolean, isArrestReport?: boolean }) {
+export function OfficerSection({ isSubmitted, isArrestReport = false, isMultiOfficer = true }: { isSubmitted: boolean, isArrestReport?: boolean, isMultiOfficer?: boolean }) {
   const { 
     officers, 
     updateOfficer, 
@@ -162,7 +166,7 @@ export function OfficerSection({ isSubmitted, isArrestReport = false }: { isSubm
   }
 
   return (
-    <FormSection title="Officer Section" icon={<User className="h-6 w-6" />} onAdd={addOfficer}>
+    <FormSection title="Officer Section" icon={<User className="h-6 w-6" />} onAdd={addOfficer} showAddButton={isMultiOfficer}>
       <div className="space-y-6">
         {officers.map((officer, index) => (
           <div key={officer.id} className="p-4 border rounded-lg space-y-4">

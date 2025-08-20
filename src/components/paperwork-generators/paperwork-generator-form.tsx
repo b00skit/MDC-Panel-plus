@@ -39,6 +39,7 @@ type FormField = {
     dataOff?: string;
     defaultValue?: any;
     required?: boolean;
+    multi?: boolean;
     stipulation?: {
         field: string;
         value: any;
@@ -190,7 +191,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return <GeneralSection key={fieldKey} isSubmitted={false} />;
             
             case 'officer':
-                return <OfficerSection key={fieldKey} isSubmitted={false} isArrestReport={false} />;
+                return <OfficerSection key={fieldKey} isSubmitted={false} isArrestReport={false} isMultiOfficer={field.multi} />;
 
             case 'location':
                 return <LocationDetails 
