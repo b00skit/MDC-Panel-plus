@@ -177,7 +177,15 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         text += `On the ${date || ''}, I ${primaryOfficer.rank || ''} ${primaryOfficer.name || ''} of the ${primaryOfficer.department || ''} conducted an arrest on ${suspectName || ''}. At approximately ${time || ''} hours, I was driving on ${street || ''} where I `;
     }
     return text;
-}, [allWatchedFields, officers]);
+  }, [
+      allWatchedFields.presets?.narrative,
+      allWatchedFields.userModified?.narrative,
+      allWatchedFields.modifiers?.introduction,
+      allWatchedFields.general,
+      allWatchedFields.location,
+      allWatchedFields.arrest,
+      officers
+  ]);
 
 
   useEffect(() => {
@@ -295,7 +303,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       <form ref={formRef} onSubmit={handleSubmitForm} className="space-y-6">
         <GeneralSection isSubmitted={submitted} />
         <OfficerSection isSubmitted={submitted} isArrestReport={true} />
-
+        
         <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
             <LocationDetails 
                 districtFieldName="location.district"
