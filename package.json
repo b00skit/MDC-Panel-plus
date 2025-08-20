@@ -46,6 +46,7 @@
     "firebase": "^11.9.1",
     "genkit": "^1.14.1",
     "handlebars": "^4.7.8",
+    "html2canvas": "^1.4.1",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
     "leaflet-freedraw": "^2.14.0",

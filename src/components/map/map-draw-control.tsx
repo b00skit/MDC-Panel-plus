@@ -4,7 +4,8 @@ import { createRoot } from 'react-dom/client';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-draw';
-import { Undo, Redo, Eraser, MapPin, Spline, Hexagon, Pencil } from 'lucide-react';
+import { Undo, Redo, Eraser, MapPin, Spline, Hexagon, Pencil, Camera } from 'lucide-react';
+import html2canvas from 'html2canvas';
 import './map.css';
 
 const colors = ['#3b82f6', '#ef4444', '#22c55e', '#f97316', '#a855f7', '#ec4899'];
@@ -28,14 +29,11 @@ const MapDrawControl = () => {
     const activeDrawerRef = useRef<any>(null);
     const controlContainerRef = useRef<HTMLDivElement | null>(null);
 
-    // Keep a ref of the selected color so that free draw uses the latest
-    // color even if the user changes the selection while the tool is active.
     const colorRef = useRef(selectedColor);
     useEffect(() => {
         colorRef.current = selectedColor;
     }, [selectedColor]);
 
-    // Add the feature group to the map once
     useEffect(() => {
         const drawnItems = drawnItemsRef.current;
         if (!map.hasLayer(drawnItems)) {
@@ -48,7 +46,6 @@ const MapDrawControl = () => {
         };
     }, [map]);
 
-    // Effect for handling the creation of a new drawing
     useEffect(() => {
         const handleCreated = (e: any) => {
             const layer = e.layer;
@@ -64,19 +61,15 @@ const MapDrawControl = () => {
                 layer.setIcon(icon);
             }
 
-            // Always add to the FeatureGroup
             drawnItemsRef.current.addLayer(layer);
-
-            // ✅ Force map to refresh immediately
             map.invalidateSize();
-
             setHistory((prev) => [...prev, layer]);
-            setRedoStack([]); // Clear redo stack on new action
+            setRedoStack([]);
 
             if (activeDrawerRef.current?.disable) {
                 activeDrawerRef.current.disable();
             }
-            setActiveTool(null); // Deactivate tool after drawing
+            setActiveTool(null);
         };
 
         map.on(L.Draw.Event.CREATED, handleCreated);
@@ -125,7 +118,6 @@ const MapDrawControl = () => {
                 drawer = new L.Draw.Polygon(map, options);
                 break;
             case 'freedraw':
-                // Custom freehand drawing without external plugin
                 let isDrawing = false;
                 let polyline: L.Polyline | null = null;
 
@@ -146,7 +138,7 @@ const MapDrawControl = () => {
                     isDrawing = false;
                     map.dragging.enable();
                     map.invalidateSize();
-                    const currentPolyline = polyline; // store before clearing
+                    const currentPolyline = polyline;
                     setHistory((prev) => [...prev, currentPolyline as L.Layer]);
                     setRedoStack([]);
                     polyline = null;
@@ -199,7 +191,30 @@ const MapDrawControl = () => {
         setRedoStack([]);
     }, []);
 
-    // **EFFECT 1: Create and add the control to the map (runs once)**
+    const takeSnapshot = useCallback(() => {
+        const mapContainer = map.getContainer();
+        const uiControls = mapContainer.querySelectorAll<HTMLElement>('.leaflet-control, .leaflet-control-search, .leaflet-custom-draw-controls');
+
+        uiControls.forEach(control => control.style.display = 'none');
+
+        html2canvas(mapContainer, {
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: null, 
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'map_snapshot.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            uiControls.forEach(control => control.style.display = '');
+        }).catch(err => {
+            console.error("Failed to take snapshot:", err);
+            uiControls.forEach(control => control.style.display = '');
+        });
+    }, [map]);
+
+
     useEffect(() => {
         const control = L.control({ position: 'topright' });
 
@@ -212,6 +227,7 @@ const MapDrawControl = () => {
                 { id: 'undo', icon: <Undo />, title: 'Undo', action: undo },
                 { id: 'redo', icon: <Redo />, title: 'Redo', action: redo },
                 { id: 'clear', icon: <Eraser />, title: 'Clear All', action: clearAll },
+                { id: 'snapshot', icon: <Camera />, title: 'Take Snapshot', action: takeSnapshot },
             ];
 
             const drawContainer = L.DomUtil.create('div', 'leaflet-draw-custom-container', container);
@@ -247,9 +263,8 @@ const MapDrawControl = () => {
         return () => {
             map.removeControl(control);
         };
-    }, [map, activateDrawer, undo, redo, clearAll]);
+    }, [map, activateDrawer, undo, redo, clearAll, takeSnapshot]);
 
-    // **EFFECT 2: Update the control's UI based on state changes**
     useEffect(() => {
         if (!controlContainerRef.current) return;
         const container = controlContainerRef.current;
