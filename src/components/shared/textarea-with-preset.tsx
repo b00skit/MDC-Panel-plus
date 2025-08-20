@@ -69,6 +69,7 @@ export function TextareaWithPreset({
     const isPresetEnabled = watch(`presets.${presetName}`);
     const isUserModified = watch(`userModified.${presetName}`);
     const modifierValues = watch('modifiers');
+    const allFormValues = watch(); 
 
     const generatePresetText = useCallback(() => {
         let text = '';
@@ -83,7 +84,9 @@ export function TextareaWithPreset({
                     const template = Handlebars.compile(templateString || '', { noEscape: true });
                     text += template(data) + '\n\n';
                 } catch (e) {
-                    console.error(`Error compiling Handlebars template for modifier ${mod.name}`, e);
+                    console.error(`Error compiling Handlebars template for modifier ${mod.name}:`, e);
+                    const errorText = mod.generateText.toString();
+                    console.log("Template string that failed:", errorText)
                     text += `[Error in modifier: ${mod.name}]\n\n`;
                 }
             }
@@ -100,20 +103,21 @@ export function TextareaWithPreset({
 
         setValue(`presets.${presetName}`, localState.presets[presetName] !== false);
         setValue(`userModified.${presetName}`, localState.userModified[presetName] === true);
-        setValue(`modifiers`, initialModifiersState);
+        setValue(`modifiers`, { ...initialModifiersState, ...getValues('modifiers')});
+
         if(!localState.userModified[presetName]){
             setValue(`narrative.${presetName}`, '');
         } else {
             setValue(`narrative.${presetName}`, localState.narrative[presetName] || '');
         }
-    }, [presetName, setValue, modifiers, localState]);
+    }, [presetName, setValue, modifiers]);
 
 
     useEffect(() => {
         if (isPresetEnabled && !isUserModified) {
             setValue(`narrative.${presetName}`, generatePresetText());
         }
-    }, [isPresetEnabled, isUserModified, modifierValues, presetName, setValue, generatePresetText]);
+    }, [isPresetEnabled, isUserModified, modifierValues, presetName, setValue, generatePresetText, allFormValues]);
 
 
     const updateLocalState = (key: keyof typeof localState, field: string, value: any) => {
@@ -156,6 +160,11 @@ export function TextareaWithPreset({
         }
          updateLocalState('narrative', presetName, value);
     };
+
+    const handleTextareaBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+        const value = e.target.value;
+        updateLocalState('narrative', presetName, value);
+    }
     
     const handleModifierChange = (modifierName: string, checked: boolean) => {
         setValue(`modifiers.${modifierName}`, checked);
@@ -229,6 +238,7 @@ export function TextareaWithPreset({
                             field.onChange(e);
                             handleTextareaChange(e);
                         }}
+                        onBlur={handleTextareaBlur}
                     />
                 )}
             />
