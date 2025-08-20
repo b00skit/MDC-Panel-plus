@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useEffect, useCallback, useMemo, useState } from 'react';
+import React from 'react';
 import { Control, Controller, useFormContext } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,6 @@ import { Separator } from '../ui/separator';
 export type Modifier = {
     name: string;
     label: string;
-    generateText: string;
 };
 
 interface TextareaWithPresetProps {
@@ -38,7 +37,7 @@ export function TextareaWithPreset({
     noLocalStorage = false,
     value,
 }: TextareaWithPresetProps) {
-    const { watch, setValue, getValues } = useFormContext();
+    const { watch, setValue } = useFormContext();
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);

@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -26,7 +26,7 @@ import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useToast } from '@/hooks/use-toast';
 import { LocationDetails } from '../shared/location-details';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 
@@ -149,7 +149,36 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const { control, getValues, reset, watch } = methods;
 
   const formRef = useRef<HTMLFormElement>(null);
-  const watchedNarrative = watch('narrative.narrative');
+  const allWatchedFields = watch();
+
+  const arrestReportModifiers: Omit<Modifier, 'generateText'>[] = useMemo(() => [
+    {
+        name: 'introduction',
+        label: 'Arrest Report Introduction',
+    }
+  ], []);
+
+  const narrativeText = useMemo(() => {
+    const isPresetActive = allWatchedFields.presets?.narrative;
+    const isUserModified = allWatchedFields.userModified?.narrative;
+    
+    if (!isPresetActive || isUserModified) {
+        return allWatchedFields.narrative?.narrative || '';
+    }
+
+    let text = '';
+    const { general, location, arrest } = allWatchedFields;
+    const primaryOfficer = officers[0];
+    
+    if (allWatchedFields.modifiers?.introduction && primaryOfficer) {
+        const { date, time } = general;
+        const { street } = location;
+        const { suspectName } = arrest;
+        text += `On the ${date || ''}, I ${primaryOfficer.rank || ''} ${primaryOfficer.name || ''} of the ${primaryOfficer.department || ''} conducted an arrest on ${suspectName || ''}. At approximately ${time || ''} hours, I was driving on ${street || ''} where I `;
+    }
+    return text;
+}, [allWatchedFields, officers]);
+
 
   useEffect(() => {
     const mergedData = {
@@ -162,21 +191,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     reset(mergedData);
   }, [formData, modifierState, presets, userModified, narrative, reset]);
 
-  const arrestReportModifiers: Modifier[] = useMemo(() => [
-    {
-        name: 'introduction',
-        label: 'Introduction',
-        generateText: () => {
-            const currentFormData = getValues();
-            const primaryOfficer = officers[0];
-            if (!primaryOfficer) return '';
-            const { date, time } = currentFormData.general;
-            const { street } = currentFormData.location;
-            const { suspectName } = currentFormData.arrest;
-            return `On the ${date || ''}, I ${primaryOfficer.rank || ''} ${primaryOfficer.name || ''} of the ${primaryOfficer.department || ''} conducted an arrest on ${suspectName || ''}. At approximately ${time || ''} hours, I was driving on ${street || ''} where I `;
-        }
-    }
-  ], [officers, getValues]);
 
   const getFormData = () => {
     if (!formRef.current) return null;
@@ -310,10 +324,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                             Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
                         </span>
                     }
-                    presetName='narrative'
+                    basePath='narrative'
                     control={control}
                     modifiers={arrestReportModifiers}
-                    isInvalid={submitted && !watchedNarrative}
+                    isInvalid={submitted && !allWatchedFields.narrative?.narrative}
+                    value={narrativeText}
                 />
             </div>
         </FormSection>
