@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -162,20 +162,21 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     reset(mergedData);
   }, [formData, modifierState, presets, userModified, narrative, reset]);
 
-  const arrestReportModifiers: Modifier[] = [
+  const arrestReportModifiers: Modifier[] = useMemo(() => [
     {
         name: 'arrestReportIntroduction',
         label: 'Arrest Report Introduction',
         generateText: () => {
+            const currentFormData = getValues();
             const primaryOfficer = officers[0];
             if (!primaryOfficer) return '';
-            const { date, time } = formData.general;
-            const { street } = formData.location;
-            const { suspectName } = formData.arrest;
+            const { date, time } = currentFormData.general;
+            const { street } = currentFormData.location;
+            const { suspectName } = currentFormData.arrest;
             return `On the ${date || '{date}'}, I ${primaryOfficer.rank || '{rank}'} ${primaryOfficer.name || '{name}'} of the ${primaryOfficer.department || '{department}'} conducted an arrest on ${suspectName || '{suspect}'}. At approximately ${time || '{time}'} hours, I was driving on ${street || '{street}'} where I `;
         }
     }
-  ];
+  ], [officers, getValues]);
 
   const getFormData = () => {
     if (!formRef.current) return null;

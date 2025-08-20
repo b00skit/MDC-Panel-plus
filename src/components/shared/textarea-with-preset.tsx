@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Control, Controller, useFormContext } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -36,17 +36,21 @@ export function TextareaWithPreset({
     const isUserModified = watch(`userModified.${presetName}`);
     const modifierValues = watch('modifiers');
 
+    const generatePresetText = useCallback(() => {
+        let text = '';
+        modifiers.forEach(mod => {
+            if (getValues(`modifiers.${mod.name}`)) {
+                text += mod.generateText();
+            }
+        });
+        return text;
+    }, [modifiers, getValues]);
+
     useEffect(() => {
         if (isPresetEnabled && !isUserModified) {
-            let text = '';
-            modifiers.forEach(mod => {
-                if (modifierValues[mod.name]) {
-                    text += mod.generateText();
-                }
-            });
-            setValue(`narrative.${presetName}`, text);
+            setValue(`narrative.${presetName}`, generatePresetText());
         }
-    }, [modifierValues, isPresetEnabled, isUserModified, modifiers, presetName, setValue]);
+    }, [isPresetEnabled, isUserModified, modifierValues, presetName, setValue, generatePresetText]);
 
 
     const handleTogglePreset = () => {
