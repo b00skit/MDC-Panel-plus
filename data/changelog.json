@@ -1,6 +1,37 @@
 {
     "changelogs": [
         {
+            "version": "3.1.2",
+            "type": "Hotfix",
+            "date": "2025-08-20",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Adjusted handling of multiple officers on reports (traffic, impound, parking). They should now appear in the output format."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Modified the titles of certain reports to be in-line with the older MDC system."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Fixed the legacy paperwork generators not showing charges correctly - [Object object] error."
+                },
+                {
+                    "type": "addition",
+                    "description": "<b>Paperwork Generators:</b> The traffic report charge previews now also have impound and license suspensions as a copyable field."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Interactive Map:</b> The interactive map now has a \"snapshot\" button that downloads the current view into a png."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Adjusted titles for impound & trespass notices to be equal to that of the Legacy MDC."
+                }
+            ]
+        },
+        {
             "version": "3.1.1",
             "type": "Hotfix",
             "date": "2025-08-19",
