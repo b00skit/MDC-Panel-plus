@@ -69,7 +69,6 @@ export function TextareaWithPreset({
     const isPresetEnabled = watch(`presets.${presetName}`);
     const isUserModified = watch(`userModified.${presetName}`);
     const modifierValues = watch('modifiers');
-    const formValues = watch();
 
     const generatePresetText = useCallback(() => {
         let text = '';
@@ -81,7 +80,7 @@ export function TextareaWithPreset({
                     const textOrFn = mod.generateText;
                     const templateString = typeof textOrFn === 'function' ? textOrFn() : textOrFn;
                     
-                    const template = Handlebars.compile(templateString, { noEscape: true });
+                    const template = Handlebars.compile(templateString || '', { noEscape: true });
                     text += template(data) + '\n\n';
                 } catch (e) {
                     console.error(`Error compiling Handlebars template for modifier ${mod.name}`, e);
@@ -91,6 +90,7 @@ export function TextareaWithPreset({
         });
         return text.trim();
     }, [modifiers, getValues]);
+
 
     useEffect(() => {
         const initialModifiersState = modifiers.reduce((acc, mod) => {
@@ -113,7 +113,8 @@ export function TextareaWithPreset({
         if (isPresetEnabled && !isUserModified) {
             setValue(`narrative.${presetName}`, generatePresetText());
         }
-    }, [isPresetEnabled, isUserModified, modifierValues, presetName, setValue, generatePresetText, formValues]);
+    }, [isPresetEnabled, isUserModified, modifierValues, presetName, setValue, generatePresetText]);
+
 
     const updateLocalState = (key: keyof typeof localState, field: string, value: any) => {
         if (noLocalStorage) return;
