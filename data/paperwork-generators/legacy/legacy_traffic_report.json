@@ -54,7 +54,9 @@
                 }
             ],
             "previewFields": {
-                "fine": true
+                "fine": true,
+                "impound": true,
+                "suspension": true
             }
         }
     ],
