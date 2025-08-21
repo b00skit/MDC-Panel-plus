@@ -6,7 +6,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 export type Modifier = {
     name: string;
     label: string;
-    generateText: () => string;
+    text?: string;
+    requires?: string[];
 };
 
 type ModifiersState = Record<string, boolean>;
@@ -28,7 +29,7 @@ interface BasicReportModifiersState {
 
 const getInitialState = (): Omit<BasicReportModifiersState, 'setModifier' | 'setPreset' | 'setUserModified' | 'setNarrativeField' | 'reset'> => ({
     modifiers: {
-        introduction: true,
+        call_of_service: false,
     },
     presets: {
         narrative: true,
