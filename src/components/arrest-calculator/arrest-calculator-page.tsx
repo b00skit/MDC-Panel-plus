@@ -39,6 +39,7 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import configData from '../../../data/config.json';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
+import { useBasicReportModifiersStore } from '@/stores/basic-report-modifiers-store';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -82,6 +83,7 @@ export function ArrestCalculatorPage() {
   } = useChargeStore();
   const resetForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
+  const resetModifiers = useBasicReportModifiersStore(state => state.reset);
 
 
   const [loading, setLoading] = useState(true);
@@ -152,6 +154,7 @@ export function ArrestCalculatorPage() {
     if (!isModifyMode) {
       resetForm();
       resetAdvancedForm();
+      resetModifiers();
     }
     resetCharges();
     router.push('/arrest-report');
@@ -517,3 +520,5 @@ export function ArrestCalculatorPage() {
     </div>
   );
 }
+
+    
