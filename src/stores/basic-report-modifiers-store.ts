@@ -13,23 +13,20 @@ export type Modifier = {
 type ModifiersState = Record<string, boolean>;
 type PresetsState = Record<string, boolean>;
 type UserModifiedState = Record<string, boolean>;
-type NarrativeState = Record<string, string>;
 
 interface BasicReportModifiersState {
     modifiers: ModifiersState;
     presets: PresetsState;
     userModified: UserModifiedState;
-    narrative: NarrativeState;
     setModifier: (modifier: string, value: boolean) => void;
     setPreset: (preset: string, value: boolean) => void;
     setUserModified: (field: string, value: boolean) => void;
-    setNarrativeField: (field: string, value: string) => void;
     reset: () => void;
 }
 
-const getInitialState = (): Omit<BasicReportModifiersState, 'setModifier' | 'setPreset' | 'setUserModified' | 'setNarrativeField' | 'reset'> => ({
+const getInitialState = (): Omit<BasicReportModifiersState, 'setModifier' | 'setPreset' | 'setUserModified' | 'reset'> => ({
     modifiers: {
-        call_of_service: false,
+        callOfService: false,
         booking: false,
     },
     presets: {
@@ -37,9 +34,6 @@ const getInitialState = (): Omit<BasicReportModifiersState, 'setModifier' | 'set
     },
     userModified: {
         narrative: false,
-    },
-    narrative: {
-        narrative: '',
     },
 });
 
@@ -55,9 +49,6 @@ export const useBasicReportModifiersStore = create<BasicReportModifiersState>()(
             })),
             setUserModified: (field, value) => set(state => ({
                 userModified: { ...state.userModified, [field]: value }
-            })),
-            setNarrativeField: (field, value) => set(state => ({
-                narrative: { ...state.narrative, [field]: value }
             })),
             reset: () => set(getInitialState()),
         }),

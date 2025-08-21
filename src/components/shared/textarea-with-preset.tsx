@@ -26,6 +26,7 @@ interface TextareaWithPresetProps {
     isInvalid: boolean;
     noLocalStorage?: boolean;
     value: string;
+    onTextChange: (newValue: string) => void;
 }
 
 export function TextareaWithPreset({
@@ -38,6 +39,7 @@ export function TextareaWithPreset({
     isInvalid,
     noLocalStorage = false,
     value,
+    onTextChange,
 }: TextareaWithPresetProps) {
     const { watch, setValue } = useFormContext();
 
@@ -46,24 +48,24 @@ export function TextareaWithPreset({
 
     useEffect(() => {
         if (isPresetEnabled && !isUserModified) {
-            const current = watch(`${basePath}.narrative`);
+            const current = value;
             if (current !== value) {
-                setValue(`${basePath}.narrative`, value);
+                onTextChange(value);
             }
         }
-    }, [value, isPresetEnabled, isUserModified, basePath, setValue, watch]);
+    }, [value, isPresetEnabled, isUserModified, basePath, onTextChange]);
     
     const handleTogglePreset = () => {
         const newValue = !isPresetEnabled;
         setValue(`${basePath}.isPreset`, newValue);
         if (!newValue && !isUserModified) {
-            setValue(`${basePath}.narrative`, '');
+            onTextChange('');
         }
     };
 
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newValue = e.target.value;
-        setValue(`${basePath}.narrative`, newValue);
+        onTextChange(newValue);
 
         if (newValue) {
             setValue(`${basePath}.userModified`, true);
@@ -128,7 +130,6 @@ export function TextareaWithPreset({
                 placeholder={placeholder}
                 className={cn('min-h-[150px]', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
                 onChange={handleTextareaChange}
-                onBlur={(e) => setValue(`${basePath}.narrative`, e.target.value)}
             />
             {description && <p className="text-xs text-muted-foreground pt-2">{description}</p>}
         </div>

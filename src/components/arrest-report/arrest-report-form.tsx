@@ -24,7 +24,6 @@ import { GeneralSection } from './general-section';
 import { OfficerSection } from './officer-section';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
-import { useToast } from '@/hooks/use-toast';
 import { LocationDetails } from '../shared/location-details';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
@@ -131,7 +130,6 @@ const TextareaField = ({
 
 export const ArrestReportForm = forwardRef((props, ref) => {
   const router = useRouter();
-  const { toast } = useToast();
 
   const { formData, setFormField, setAll } = useFormStore();
   const { officers } = useOfficerStore();
@@ -139,11 +137,9 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     modifiers,
     presets,
     userModified,
-    narrative,
     setModifier,
     setPreset,
     setUserModified,
-    setNarrativeField,
   } = useBasicReportModifiersStore();
 
   const methods = useForm({
@@ -153,7 +149,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         modifiers: modifiers,
         isPreset: presets.narrative,
         userModified: userModified.narrative,
-        narrative: narrative.narrative,
+        narrative: formData.arrest.narrative,
       },
     },
   });
@@ -165,16 +161,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
   const arrestReportModifiers: Modifier[] = useMemo(
     () => [
-      {
-        name: 'call_of_service',
-        label: 'Call of Service',
-        text: 'received a call of service #',
-      },
-      {
-        name: 'booking',
-        label: 'Booking',
-        text: 'I transported {{suspect}} to the nearest department\'s station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training',
-      }
+      { name: 'callOfService', label: 'Call of Service', text: 'received a call of service #' },
+      { name: 'booking', label: 'Booking', text: 'I transported {{suspect}} to the nearest department\'s station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training' },
     ],
     []
   );
@@ -184,7 +172,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     const isUserModified = allWatchedFields.narrative?.userModified;
 
     if (!isPresetActive || isUserModified) {
-      return allWatchedFields.narrative?.narrative || '';
+      return allWatchedFields.arrest?.narrative || '';
     }
 
     const primaryOfficer = officers[0];
@@ -202,18 +190,19 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
     const activeModifiers = arrestReportModifiers.filter(mod => allWatchedFields.narrative?.modifiers?.[mod.name]);
     
-    if(activeModifiers.some(m => m.name === 'call_of_service')) {
-        baseText += 'received a call of service #';
-    }
+    activeModifiers.forEach(mod => {
+      if (mod.name === 'booking') return; // Handled separately
+      if (mod.text) {
+        const template = Handlebars.compile(mod.text, { noEscape: true });
+        baseText += template(data);
+      }
+    });
 
-    if(activeModifiers.some(m => m.name === 'booking')) {
-        const bookingModifier = arrestReportModifiers.find(m => m.name === 'booking');
-        if(bookingModifier?.text) {
-             const template = Handlebars.compile(bookingModifier.text, { noEscape: true });
-             baseText += `\n\n${template(data)}`;
-        }
+    const bookingModifier = arrestReportModifiers.find(m => m.name === 'booking');
+    if (allWatchedFields.narrative?.modifiers?.[bookingModifier!.name] && bookingModifier?.text) {
+      const template = Handlebars.compile(bookingModifier.text, { noEscape: true });
+      baseText += `\n\n${template(data)}`;
     }
-
 
     return baseText;
   }, [allWatchedFields, officers, arrestReportModifiers]);
@@ -223,7 +212,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     if (latestFormData) {
         setAll({
             general: latestFormData.general,
-            arrest: latestFormData.arrest,
+            arrest: { ...latestFormData.arrest, narrative: narrativeText },
             location: latestFormData.location,
             evidence: latestFormData.evidence,
         });
@@ -239,11 +228,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         if (latestFormData.narrative?.userModified !== undefined) {
             setUserModified('narrative', latestFormData.narrative.userModified);
         }
-        if (latestFormData.narrative?.userModified) {
-            setNarrativeField('narrative', latestFormData.narrative.narrative);
-        }
     }
-  }, [getValues, setAll, setModifier, setPreset, setUserModified, setNarrativeField]);
+  }, [getValues, setAll, setModifier, setPreset, setUserModified, narrativeText]);
 
 
   useImperativeHandle(ref, () => ({
@@ -256,7 +242,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         ...currentFormData,
         general: formData.general,
         officers: formData.officers,
-        arrest: { ...currentFormData.arrest, suspectName: formData.arrest?.suspectName },
+        arrest: { ...currentFormData.arrest, suspectName: formData.arrest?.suspectName, narrative: formData.arrest?.narrative },
         location: formData.location,
         evidence: formData.evidence,
     });
@@ -306,8 +292,9 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               basePath="narrative"
               control={control}
               modifiers={arrestReportModifiers}
-              isInvalid={!allWatchedFields.narrative?.narrative}
+              isInvalid={!allWatchedFields.arrest?.narrative}
               value={narrativeText}
+              onTextChange={(newValue) => setFormField('arrest', 'narrative', newValue)}
             />
           </div>
         </FormSection>
