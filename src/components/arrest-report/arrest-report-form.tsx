@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -58,7 +58,6 @@ const InputField = ({
   defaultValue,
   required = true,
   isInvalid = false,
-  onBlur,
   ...props
 }: {
   label: string;
@@ -70,7 +69,6 @@ const InputField = ({
   defaultValue?: string;
   required?: boolean;
   isInvalid?: boolean;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -88,7 +86,6 @@ const InputField = ({
         )}
         defaultValue={defaultValue}
         required={required}
-        onBlur={onBlur}
         {...props}
       />
     </div>
@@ -105,7 +102,6 @@ const TextareaField = ({
   defaultValue,
   required = true,
   isInvalid = false,
-  onBlur,
   ...props
 }: {
   label: string;
@@ -117,7 +113,6 @@ const TextareaField = ({
   defaultValue?: string;
   required?: boolean;
   isInvalid?: boolean;
-  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -134,7 +129,6 @@ const TextareaField = ({
         )}
         defaultValue={defaultValue}
         required={required}
-        onBlur={onBlur}
         {...props}
       />
     </div>
@@ -146,6 +140,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const router = useRouter();
   const { toast } = useToast();
 
+  // External stores
   const { formData, setAll, setFormField } = useFormStore();
   const { officers } = useOfficerStore();
   const {
@@ -160,8 +155,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   } = useBasicReportModifiersStore();
 
   const [submitted, setSubmitted] = useState(false);
-  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
+  // RHF
   const methods = useForm({
     defaultValues: {
       ...formData,
@@ -180,10 +175,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const allWatchedFields = watch();
   const narrativeValues = watch('narrative');
 
-  const handleBlur = (fieldName: string) => {
-    setTouchedFields(prev => ({ ...prev, [fieldName]: true }));
-  };
-
   const arrestReportModifiers: Modifier[] = useMemo(
     () => [
       {
@@ -196,18 +187,19 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   );
 
   const narrativeText = useMemo(() => {
-    const isPresetActive = allWatchedFields.narrative?.isPreset;
-    const isUserModified = allWatchedFields.narrative?.userModified;
+    const nv = allWatchedFields.narrative;
+    const isPresetActive = nv?.isPreset;
+    const isUserModified = nv?.userModified;
 
     if (!isPresetActive || isUserModified) {
-      return allWatchedFields.narrative?.narrative || '';
+      return nv?.narrative || '';
     }
 
     const { general, location, arrest } = allWatchedFields;
     const primaryOfficer = officers[0];
 
     const modifiersContext: Record<string, string> = {};
-    if (allWatchedFields.narrative?.modifiers?.call_of_service) {
+    if (nv?.modifiers?.call_of_service) {
       modifiersContext.call_of_service = 'received a call of service #';
     } else {
       modifiersContext.call_of_service = '';
@@ -228,21 +220,18 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       department: primaryOfficer?.department || '',
       ...modifiersContext,
     });
-  }, [
-    officers,
-    allWatchedFields.general,
-    allWatchedFields.location,
-    allWatchedFields.arrest,
-    allWatchedFields.narrative?.isPreset,
-    allWatchedFields.narrative?.userModified,
-    allWatchedFields.narrative?.narrative,
-    allWatchedFields.narrative?.modifiers?.call_of_service,
-  ]);
-  
+  }, [allWatchedFields, officers]);
+
+  /**
+   * IMPORTANT CHANGE:
+   * Instead of resetting the *entire* form on any store change, we only patch the
+   * specific slices we want to mirror from the store (general, location, evidence,
+   * and arrest.suspectName). We leave `narrative.*` as-is so modifiers & text persist.
+   */
   useEffect(() => {
     const current = getValues();
     reset({
-      ...current,
+      ...current, // keep RHF's current state (including narrative.*)
       general: formData.general,
       location: formData.location,
       evidence: formData.evidence,
@@ -250,16 +239,22 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         ...current.arrest,
         suspectName: formData.arrest?.suspectName ?? '',
       },
+      // DO NOT touch `narrative`: preserving RHF modifier checkbox values
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    formData.general,
-    formData.location,
-    formData.evidence,
+    // Narrow dependencies so we don't run unnecessarily:
+    formData.general?.callSign,
+    formData.general?.date,
+    formData.general?.time,
+    formData.location?.district,
+    formData.location?.street,
+    formData.evidence?.supporting,
+    formData.evidence?.dashcam,
     formData.arrest?.suspectName,
-    getValues,
-    reset,
   ]);
 
+  // Keep the modifiers/preset/userModified stores in sync with what the user does in the form.
   useEffect(() => {
     const currentCall = narrativeValues?.modifiers?.call_of_service ?? false;
     if (modifierState.call_of_service !== currentCall) {
@@ -281,10 +276,10 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     }
   }, [
     narrativeValues,
-    modifierState.call_of_service,
-    presets.narrative,
-    userModified.narrative,
-    narrative.narrative,
+    modifierState,
+    presets,
+    userModified,
+    narrative,
     setModifier,
     setPreset,
     setUserModified,
@@ -418,11 +413,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               placeholder="Firstname Lastname"
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               defaultValue={formData.arrest?.suspectName ?? ''}
-              onBlur={(e) => {
-                setFormField('arrest', 'suspectName', e.target.value);
-                handleBlur('suspectName');
-              }}
-              isInvalid={(submitted || touchedFields.suspectName) && !formData.arrest?.suspectName}
+              onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+              isInvalid={submitted && !formData.arrest?.suspectName}
             />
             <TextareaWithPreset
               label="Arrest Narrative"
@@ -436,9 +428,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               basePath="narrative"
               control={control}
               modifiers={arrestReportModifiers}
-              isInvalid={(submitted || touchedFields.narrative) && !allWatchedFields.narrative?.narrative}
+              isInvalid={submitted && !allWatchedFields.narrative?.narrative}
               value={narrativeText}
-              onBlur={() => handleBlur('narrative')}
             />
           </div>
         </FormSection>
@@ -470,11 +461,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               }
               className="min-h-[150px]"
               defaultValue={formData.evidence?.dashcam ?? ''}
-              onBlur={(e) => {
-                setFormField('evidence', 'dashcam', e.target.value);
-                handleBlur('dashcam');
-              }}
-              isInvalid={(submitted || touchedFields.dashcam) && !formData.evidence?.dashcam}
+              onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+              isInvalid={submitted && !formData.evidence?.dashcam}
             />
           </div>
         </FormSection>
