@@ -160,6 +160,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const { control, getValues, reset, watch } = methods;
 
   const formRef = useRef<HTMLFormElement>(null);
+  const isInitialized = useRef(false);
   const allWatchedFields = watch();
   const narrativeValues = watch('narrative');
 
@@ -209,6 +210,8 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
 
   useEffect(() => {
+    if (isInitialized.current) return;
+
     const mergedData = {
       ...formData,
       narrative: {
@@ -219,8 +222,9 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       },
     };
     reset(mergedData);
+    isInitialized.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData, reset]);
+  }, [formData]);
 
   useEffect(() => {
     setModifier('call_of_service', narrativeValues?.modifiers?.call_of_service ?? false);
