@@ -1,6 +1,7 @@
+
 'use client';
 import { useRouter } from 'next/navigation';
-import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
+import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -57,6 +58,7 @@ const InputField = ({
   className = '',
   defaultValue,
   required = true,
+  isInvalid = false,
   ...props
 }: {
   label: string;
@@ -67,6 +69,7 @@ const InputField = ({
   className?: string;
   defaultValue?: string;
   required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -77,7 +80,7 @@ const InputField = ({
         name={id}
         type={type}
         placeholder={placeholder}
-        className={cn('pl-9', className)}
+        className={cn('pl-9', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
         defaultValue={defaultValue}
         required={required}
         {...props}
@@ -95,6 +98,7 @@ const TextareaField = ({
   className = '',
   defaultValue,
   required = true,
+  isInvalid = false,
   ...props
 }: {
   label: string;
@@ -105,6 +109,7 @@ const TextareaField = ({
   className?: string;
   defaultValue?: string;
   required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -114,7 +119,7 @@ const TextareaField = ({
           id={id}
           name={id}
           placeholder={placeholder}
-          className={cn('pl-9 pt-3', className)}
+          className={cn('pl-9 pt-3', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
           defaultValue={defaultValue}
           required={required}
           {...props}
@@ -128,11 +133,10 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const router = useRouter();
   const { toast } = useToast();
 
-  // External stores
-  const { formData, setAll, setFormField } = useFormStore();
+  const { formData, setFormField, setAll } = useFormStore();
   const { officers } = useOfficerStore();
   const {
-    modifiers: modifierState,
+    modifiers,
     presets,
     userModified,
     narrative,
@@ -142,12 +146,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     setNarrativeField,
   } = useBasicReportModifiersStore();
 
-  // RHF
   const methods = useForm({
     defaultValues: {
       ...formData,
       narrative: {
-        modifiers: { call_of_service: modifierState.call_of_service },
+        modifiers: modifiers,
         isPreset: presets.narrative,
         userModified: userModified.narrative,
         narrative: narrative.narrative,
@@ -155,11 +158,10 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     },
   });
 
-  const { control, getValues, reset, watch } = methods;
+  const { control, getValues, reset, watch, formState: { errors } } = methods;
 
   const formRef = useRef<HTMLFormElement>(null);
   const allWatchedFields = watch();
-  const narrativeValues = watch('narrative');
 
   const arrestReportModifiers: Modifier[] = useMemo(
     () => [
@@ -168,209 +170,101 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         label: 'Call of Service',
         text: 'received a call of service #',
       },
+      {
+        name: 'booking',
+        label: 'Booking',
+        text: 'I transported {{suspect}} to the nearest department\'s station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training',
+      }
     ],
     []
   );
 
   const narrativeText = useMemo(() => {
-    const nv = allWatchedFields.narrative;
-    const isPresetActive = nv?.isPreset;
-    const isUserModified = nv?.userModified;
+    const isPresetActive = allWatchedFields.narrative?.isPreset;
+    const isUserModified = allWatchedFields.narrative?.userModified;
 
     if (!isPresetActive || isUserModified) {
-      return nv?.narrative || '';
+      return allWatchedFields.narrative?.narrative || '';
     }
 
-    const { general, location, arrest } = allWatchedFields;
     const primaryOfficer = officers[0];
-
-    const modifiersContext: Record<string, string> = {};
-    if (nv?.modifiers?.call_of_service) {
-      modifiersContext.call_of_service = 'received a call of service #';
-    } else {
-      modifiersContext.call_of_service = '';
-    }
-
-    const basePreset =
-      'On the {{date}}, I {{rank}} {{name}} of the {{department}} conducted an arrest on {{suspect}}. At approximately {{time}} hours, I was driving on {{street}} when I {{call_of_service}}';
-
-    const template = Handlebars.compile(basePreset, { noEscape: true });
-
-    return template({
-      date: general?.date || '',
-      time: general?.time || '',
-      street: location?.street || '',
-      suspect: arrest?.suspectName || '',
+    const data = {
+      date: allWatchedFields.general?.date || '',
+      time: allWatchedFields.general?.time || '',
+      street: allWatchedFields.location?.street || '',
+      suspect: allWatchedFields.arrest?.suspectName || '',
       rank: primaryOfficer?.rank || '',
       name: primaryOfficer?.name || '',
       department: primaryOfficer?.department || '',
-      ...modifiersContext,
-    });
-  }, [allWatchedFields, officers]);
-
-  /**
-   * IMPORTANT CHANGE:
-   * Instead of resetting the *entire* form on any store change, we only patch the
-   * specific slices we want to mirror from the store (general, location, evidence,
-   * and arrest.suspectName). We leave `narrative.*` as-is so modifiers & text persist.
-   */
-  useEffect(() => {
-    const current = getValues();
-    reset({
-      ...current, // keep RHF's current state (including narrative.*)
-      general: formData.general,
-      location: formData.location,
-      evidence: formData.evidence,
-      arrest: {
-        ...current.arrest,
-        suspectName: formData.arrest?.suspectName ?? '',
-      },
-      // DO NOT touch `narrative`: preserving RHF modifier checkbox values
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    // Narrow dependencies so we don't run unnecessarily:
-    formData.general?.callSign,
-    formData.general?.date,
-    formData.general?.time,
-    formData.location?.district,
-    formData.location?.street,
-    formData.evidence?.supporting,
-    formData.evidence?.dashcam,
-    formData.arrest?.suspectName,
-  ]);
-
-  // Keep the modifiers/preset/userModified stores in sync with what the user does in the form.
-  useEffect(() => {
-    const currentCall = narrativeValues?.modifiers?.call_of_service ?? false;
-    if (modifierState.call_of_service !== currentCall) {
-      setModifier('call_of_service', currentCall);
-    }
-
-    const currentPreset = narrativeValues?.isPreset ?? false;
-    if (presets.narrative !== currentPreset) {
-      setPreset('narrative', currentPreset);
-    }
-
-    const currentUserMod = narrativeValues?.userModified ?? false;
-    if (userModified.narrative !== currentUserMod) {
-      setUserModified('narrative', currentUserMod);
-    }
-
-    if (currentUserMod && narrative.narrative !== narrativeValues?.narrative) {
-      setNarrativeField('narrative', narrativeValues?.narrative ?? '');
-    }
-  }, [
-    narrativeValues,
-    modifierState,
-    presets,
-    userModified,
-    narrative,
-    setModifier,
-    setPreset,
-    setUserModified,
-    setNarrativeField,
-  ]);
-
-  const getFormData = () => {
-    if (!formRef.current) return null;
-    const form = formRef.current;
-    const currentValues = getValues();
-
-    const data = {
-      general: formData.general,
-      arrest: {
-        suspectName: (form.elements.namedItem('suspect-name') as HTMLInputElement)?.value ?? '',
-        narrative: currentValues.narrative.narrative,
-      },
-      location: formData.location,
-      evidence: {
-        supporting: (form.elements.namedItem('supporting-evidence') as HTMLTextAreaElement)?.value ?? '',
-        dashcam: (form.elements.namedItem('dashcam') as HTMLTextAreaElement)?.value ?? '',
-      },
-      officers: officers,
-      modifiers: currentValues.narrative.modifiers,
-      presets: { narrative: currentValues.narrative.isPreset },
-      userModified: { narrative: currentValues.narrative.userModified },
-      narrative: currentValues.narrative,
     };
-    return data;
-  };
+    
+    let baseText = `On the ${data.date}, I ${data.rank} ${data.name} of the ${data.department} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
 
-  const validateForm = (data: any) => {
-    if (!data.general?.callSign) return 'Call Sign is required.';
-    if (!data.general?.date) return 'Date is required.';
-    if (!data.general?.time) return 'Time is required.';
-
-    for (const officer of data.officers ?? []) {
-      if (!officer.name || !officer.rank || !officer.badgeNumber || !officer.department) {
-        return `All fields for Officer ${officer.name || '(new officer)'} are required.`;
-      }
+    const activeModifiers = arrestReportModifiers.filter(mod => allWatchedFields.narrative?.modifiers?.[mod.name]);
+    
+    if(activeModifiers.some(m => m.name === 'call_of_service')) {
+        baseText += 'received a call of service #';
     }
 
-    if (!data.arrest?.suspectName) return "Suspect's Full Name is required.";
-    if (!data.arrest?.narrative) return 'Arrest Narrative is required.';
+    if(activeModifiers.some(m => m.name === 'booking')) {
+        const bookingModifier = arrestReportModifiers.find(m => m.name === 'booking');
+        if(bookingModifier?.text) {
+             const template = Handlebars.compile(bookingModifier.text, { noEscape: true });
+             baseText += `\n\n${template(data)}`;
+        }
+    }
 
-    if (!data.location?.district) return 'District is required.';
-    if (!data.location?.street) return 'Street Name is required.';
 
-    if (!data.evidence?.dashcam) return 'Dashboard Camera narrative is required.';
+    return baseText;
+  }, [allWatchedFields, officers, arrestReportModifiers]);
 
-    return null;
-  };
-
-  const saveDraft = () => {
-    const latestFormData = getFormData();
+  const saveDraft = useCallback(() => {
+    const latestFormData = getValues();
     if (latestFormData) {
-      setAll({
-        general: latestFormData.general,
-        arrest: latestFormData.arrest,
-        location: latestFormData.location,
-        evidence: latestFormData.evidence,
-        officers: latestFormData.officers,
-      } as any);
+        setAll({
+            general: latestFormData.general,
+            arrest: latestFormData.arrest,
+            location: latestFormData.location,
+            evidence: latestFormData.evidence,
+        });
 
-      Object.keys(latestFormData.modifiers).forEach((key) => {
-        setModifier(key, (latestFormData.modifiers as any)[key]);
-      });
-
-      Object.keys(latestFormData.presets).forEach((key) => {
-        setPreset(key, (latestFormData.presets as any)[key]);
-      });
-
-      Object.keys(latestFormData.userModified).forEach((key) => {
-        setUserModified(key, (latestFormData.userModified as any)[key]);
-      });
-
-      if (latestFormData.userModified.narrative) {
-        setNarrativeField('narrative', latestFormData.narrative.narrative);
-      }
+        if (latestFormData.narrative?.modifiers) {
+            Object.keys(latestFormData.narrative.modifiers).forEach((key) => {
+                setModifier(key, latestFormData.narrative.modifiers[key]);
+            });
+        }
+        if (latestFormData.narrative?.isPreset !== undefined) {
+            setPreset('narrative', latestFormData.narrative.isPreset);
+        }
+        if (latestFormData.narrative?.userModified !== undefined) {
+            setUserModified('narrative', latestFormData.narrative.userModified);
+        }
+        if (latestFormData.narrative?.userModified) {
+            setNarrativeField('narrative', latestFormData.narrative.narrative);
+        }
     }
-    toast({
-      title: 'Draft Saved',
-      description: 'Your report has been saved as a draft.',
-    });
-  };
+  }, [getValues, setAll, setModifier, setPreset, setUserModified, setNarrativeField]);
+
 
   useImperativeHandle(ref, () => ({
     saveDraft,
   }));
 
+  useEffect(() => {
+    const currentFormData = getValues();
+    reset({
+        ...currentFormData,
+        general: formData.general,
+        officers: formData.officers,
+        arrest: { ...currentFormData.arrest, suspectName: formData.arrest?.suspectName },
+        location: formData.location,
+        evidence: formData.evidence,
+    });
+  }, [formData, getValues, reset]);
+
+
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
-    const latestFormData = getFormData();
-    if (!latestFormData) return;
-
-    const validationError = validateForm(latestFormData);
-    if (validationError) {
-      toast({
-        title: 'Missing Information',
-        description: validationError,
-        variant: 'destructive',
-      });
-      return;
-    }
-
     saveDraft();
     router.push('/arrest-submit?type=basic');
   };
@@ -398,6 +292,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               defaultValue={formData.arrest?.suspectName ?? ''}
               onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+              isInvalid={!allWatchedFields.arrest?.suspectName}
             />
             <TextareaWithPreset
               label="Arrest Narrative"
@@ -445,6 +340,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               className="min-h-[150px]"
               defaultValue={formData.evidence?.dashcam ?? ''}
               onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+              isInvalid={!allWatchedFields.evidence?.dashcam}
             />
           </div>
         </FormSection>

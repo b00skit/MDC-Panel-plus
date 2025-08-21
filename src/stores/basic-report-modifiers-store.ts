@@ -30,6 +30,7 @@ interface BasicReportModifiersState {
 const getInitialState = (): Omit<BasicReportModifiersState, 'setModifier' | 'setPreset' | 'setUserModified' | 'setNarrativeField' | 'reset'> => ({
     modifiers: {
         call_of_service: false,
+        booking: false,
     },
     presets: {
         narrative: true,
