@@ -11,16 +11,14 @@ interface LocationDetailsProps {
     districtFieldName: string;
     streetFieldName: string;
     showDistrict?: boolean;
-    isSubmitted?: boolean;
 }
 
-export function LocationDetails({ 
-    districtFieldName, 
-    streetFieldName, 
-    showDistrict = true, 
-    isSubmitted = false 
+export function LocationDetails({
+    districtFieldName,
+    streetFieldName,
+    showDistrict = true,
 }: LocationDetailsProps) {
-    const { control, getValues } = useFormContext();
+    const { control, watch } = useFormContext();
     const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
     const { setFormField } = useFormStore();
 
@@ -36,8 +34,10 @@ export function LocationDetails({
             .catch(err => console.error("Failed to fetch locations:", err));
     }, []);
 
-    const isDistrictInvalid = isSubmitted && !getValues(districtFieldName);
-    const isStreetInvalid = isSubmitted && !getValues(streetFieldName);
+    const districtValue = watch(districtFieldName);
+    const streetValue = watch(streetFieldName);
+    const isDistrictInvalid = !districtValue;
+    const isStreetInvalid = !streetValue;
 
     return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

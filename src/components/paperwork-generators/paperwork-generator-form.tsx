@@ -27,6 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { MultiSelect } from '../ui/multi-select';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
+import { cn } from '@/lib/utils';
 
 type FormField = {
     type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset';
@@ -206,18 +207,17 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 );
 
             case 'general':
-                return <GeneralSection key={fieldKey} isSubmitted={false} />;
+                return <GeneralSection key={fieldKey} />;
             
             case 'officer':
-                return <OfficerSection key={fieldKey} isSubmitted={false} isArrestReport={false} isMultiOfficer={field.multi} />;
+                return <OfficerSection key={fieldKey} isArrestReport={false} isMultiOfficer={field.multi} />;
 
             case 'location':
-                return <LocationDetails 
+                return <LocationDetails
                             key={fieldKey}
                             districtFieldName={`${field.name}.district`}
                             streetFieldName={`${field.name}.street`}
                             showDistrict={field.showDistrict !== false}
-                            isSubmitted={false}
                         />;
             case 'text':
                 return (
@@ -260,6 +260,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                         placeholder={field.placeholder}
                                         searchPlaceholder='Search...'
                                         emptyPlaceholder='No results.'
+                                        isInvalid={field.required && !value}
                                     />
                                 )
                             }}
@@ -327,7 +328,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         basePath={path}
                         control={control}
                         modifiers={field.modifiers || []}
-                        isInvalid={false}
+                        isInvalid={!!(field.required && !watch(`${path}.narrative`))}
                         noLocalStorage={field.noLocalStorage}
                         value={narrativeText}
                     />
@@ -344,7 +345,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             defaultValue={field.defaultValue}
                             render={({ field: { onChange, value } }) => (
                                 <Select onValueChange={onChange} value={value} defaultValue={field.defaultValue}>
-                                    <SelectTrigger id={path}>
+                                    <SelectTrigger id={path} className={cn(field.required && !value && 'border-red-500 focus-visible:ring-red-500')}>
                                         <SelectValue placeholder={field.placeholder} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -362,9 +363,10 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                  return (
                      <div key={fieldKey} className="w-full">
                          <Label htmlFor={path}>{field.label}</Label>
-                         <Controller
+                             <Controller
                              name={path}
                              control={control}
+                             rules={{ required: field.required }}
                              defaultValue={field.defaultValue || []}
                              render={({ field: { onChange, value } }) => (
                                  <MultiSelect
@@ -372,6 +374,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                      onValueChange={onChange}
                                      defaultValue={value}
                                      placeholder={field.placeholder}
+                                     className={cn(field.required && (!value || value.length === 0) && 'border-red-500 focus-visible:ring-red-500')}
                                  />
                              )}
                             />
