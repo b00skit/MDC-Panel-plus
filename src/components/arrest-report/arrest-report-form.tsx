@@ -161,6 +161,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
   const formRef = useRef<HTMLFormElement>(null);
   const allWatchedFields = watch();
+  const narrativeValues = watch('narrative');
 
   const arrestReportModifiers: Modifier[] = useMemo(() => [
     {
@@ -218,7 +219,17 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       },
     };
     reset(mergedData);
-  }, [formData, modifierState.call_of_service, presets.narrative, userModified.narrative, narrative.narrative, reset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData, reset]);
+
+  useEffect(() => {
+    setModifier('call_of_service', narrativeValues?.modifiers?.call_of_service ?? false);
+    setPreset('narrative', narrativeValues?.isPreset ?? false);
+    setUserModified('narrative', narrativeValues?.userModified ?? false);
+    if (narrativeValues?.userModified) {
+        setNarrativeField('narrative', narrativeValues.narrative);
+    }
+  }, [narrativeValues, setModifier, setPreset, setUserModified, setNarrativeField]);
 
 
   const getFormData = () => {

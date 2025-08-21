@@ -175,7 +175,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             });
     }, [vehiclesFetched, isFetchingVehicles]);
 
-    const allWatchedFields = watch();
 
     const renderField = (
         field: FormField, 
@@ -273,26 +272,23 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 );
 
             case 'textarea-with-preset':
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                const narrativeText = useMemo(() => {
-                    const presetPath = `${path}.isPreset`;
-                    const userModifiedPath = `${path}.userModified`;
-                    const isPresetActive = getValues(presetPath);
-                    const isUserModified = getValues(userModifiedPath);
+                const isPresetActive = watch(`${path}.isPreset`);
+                const isUserModified = watch(`${path}.userModified`);
 
+                const narrativeText = (() => {
                     if (!isPresetActive || isUserModified) {
-                        return getValues(`${path}.narrative`);
+                        return watch(`${path}.narrative`);
                     }
 
-                    const allData = getValues();
+                    const allData = watch();
                     const { officers } = useOfficerStore.getState();
                     const { general } = useBasicFormStore.getState().formData;
 
                     const dataForHandlebars: any = { ...allData, officers, general, modifiers: {} };
 
                     (field.modifiers || []).forEach(mod => {
-                        const isEnabled = getValues(`${path}.modifiers.${mod.name}`);
-                        const dependenciesMet = (mod.requires || []).every((dep: string) => getValues(`${path}.modifiers.${dep}`));
+                        const isEnabled = watch(`${path}.modifiers.${mod.name}`);
+                        const dependenciesMet = (mod.requires || []).every((dep: string) => watch(`${path}.modifiers.${dep}`));
                         if (isEnabled && dependenciesMet) {
                             try {
                                 const template = Handlebars.compile(mod.text || '', { noEscape: true });
@@ -313,7 +309,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         console.error('Error compiling base preset:', e);
                         return '';
                     }
-                }, [allWatchedFields, field.modifiers, field.preset, getValues, path]);
+                })();
 
                 return (
                     <TextareaWithPreset

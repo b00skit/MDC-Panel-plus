@@ -1,6 +1,6 @@
 
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Control, Controller, useFormContext } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -43,6 +43,12 @@ export function TextareaWithPreset({
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
+
+    useEffect(() => {
+        if (isPresetEnabled && !isUserModified) {
+            setValue(`${basePath}.narrative`, value);
+        }
+    }, [value, isPresetEnabled, isUserModified, basePath, setValue]);
     
     const handleTogglePreset = () => {
         const newValue = !isPresetEnabled;
