@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -33,8 +34,24 @@ export async function generateMetadata(): Promise<Metadata> {
         icon: config.SITE_FAVICON || '/favicon.ico',
     },
     openGraph: {
+        title: config.SITE_NAME,
+        description: config.SITE_DESCRIPTION,
+        type: 'website',
+        images: config.SITE_IMAGE ? [
+          {
+            url: config.SITE_IMAGE,
+            width: 1200,
+            height: 630,
+            alt: `${config.SITE_NAME} Logo`,
+          },
+        ] : [],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: config.SITE_NAME,
+        description: config.SITE_DESCRIPTION,
         images: config.SITE_IMAGE ? [config.SITE_IMAGE] : [],
-    }
+    },
   };
 }
 
