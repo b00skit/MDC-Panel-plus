@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Control, Controller, useFormContext } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -42,18 +42,26 @@ export function TextareaWithPreset({
     onTextChange,
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues } = useFormContext();
-    const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
+    const [localValue, setLocalValue] = useState('');
+    const isInitialMount = useRef(true);
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
+    
+    useEffect(() => {
+        // On initial mount, set the value from the form store.
+        if (isInitialMount.current) {
+            setLocalValue(getValues('arrest.narrative') || '');
+            isInitialMount.current = false;
+        }
+    }, [getValues]);
+
 
     useEffect(() => {
-        const formNarrative = getValues('arrest.narrative');
+        // This effect runs ONLY when the preset-related props change.
+        // It updates the local state if presets are active and not user-modified.
         if (isPresetEnabled && !isUserModified) {
             setLocalValue(presetValue);
-            onTextChange(presetValue);
-        } else if (localValue !== formNarrative) {
-             setLocalValue(formNarrative);
         }
     }, [presetValue, isPresetEnabled, isUserModified]);
     
@@ -68,15 +76,19 @@ export function TextareaWithPreset({
 
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newValue = e.target.value;
-        setLocalValue(newValue);
-        onTextChange(newValue);
+        setLocalValue(newValue); // Update local state immediately for responsiveness.
 
-        if (newValue) {
+        if (newValue && !isUserModified) {
             setValue(`${basePath}.userModified`, true);
-        } else {
+        } else if (!newValue && isUserModified) {
             setValue(`${basePath}.userModified`, false);
         }
     };
+
+    const handleBlur = () => {
+        // Update the central store only when the user is done editing.
+        onTextChange(localValue);
+    }
     
     const CheckboxWithLabel = (
         <div className="flex items-center space-x-2">
@@ -134,6 +146,7 @@ export function TextareaWithPreset({
                 placeholder={placeholder}
                 className={cn('min-h-[150px]', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
                 onChange={handleTextareaChange}
+                onBlur={handleBlur}
             />
             {description && <p className="text-xs text-muted-foreground pt-2">{description}</p>}
         </div>
