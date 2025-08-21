@@ -219,17 +219,40 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       },
     };
     reset(mergedData);
+    // intentionally only run on mount and when formData changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData, modifierState, presets, userModified, narrative, reset]);
+  }, [formData, reset]);
 
   useEffect(() => {
-    setModifier('call_of_service', narrativeValues?.modifiers?.call_of_service ?? false);
-    setPreset('narrative', narrativeValues?.isPreset ?? false);
-    setUserModified('narrative', narrativeValues?.userModified ?? false);
-    if (narrativeValues?.userModified) {
-        setNarrativeField('narrative', narrativeValues.narrative);
+    const currentCallOfService = narrativeValues?.modifiers?.call_of_service ?? false;
+    if (modifierState.call_of_service !== currentCallOfService) {
+      setModifier('call_of_service', currentCallOfService);
     }
-  }, [narrativeValues, setModifier, setPreset, setUserModified, setNarrativeField]);
+
+    const currentPreset = narrativeValues?.isPreset ?? false;
+    if (presets.narrative !== currentPreset) {
+      setPreset('narrative', currentPreset);
+    }
+
+    const currentUserModified = narrativeValues?.userModified ?? false;
+    if (userModified.narrative !== currentUserModified) {
+      setUserModified('narrative', currentUserModified);
+    }
+
+    if (currentUserModified && narrative.narrative !== narrativeValues?.narrative) {
+      setNarrativeField('narrative', narrativeValues?.narrative ?? '');
+    }
+  }, [
+    narrativeValues,
+    modifierState,
+    presets,
+    userModified,
+    narrative,
+    setModifier,
+    setPreset,
+    setUserModified,
+    setNarrativeField,
+  ]);
 
 
   const getFormData = () => {

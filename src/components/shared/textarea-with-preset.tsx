@@ -46,9 +46,12 @@ export function TextareaWithPreset({
 
     useEffect(() => {
         if (isPresetEnabled && !isUserModified) {
-            setValue(`${basePath}.narrative`, value);
+            const current = watch(`${basePath}.narrative`);
+            if (current !== value) {
+                setValue(`${basePath}.narrative`, value);
+            }
         }
-    }, [value, isPresetEnabled, isUserModified, basePath, setValue]);
+    }, [value, isPresetEnabled, isUserModified, basePath, setValue, watch]);
     
     const handleTogglePreset = () => {
         const newValue = !isPresetEnabled;
