@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Control, Controller, useFormContext } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -25,7 +25,7 @@ interface TextareaWithPresetProps {
     modifiers: Modifier[];
     isInvalid: boolean;
     noLocalStorage?: boolean;
-    value: string;
+    presetValue: string;
     onTextChange: (newValue: string) => void;
 }
 
@@ -38,33 +38,37 @@ export function TextareaWithPreset({
     modifiers,
     isInvalid,
     noLocalStorage = false,
-    value,
+    presetValue,
     onTextChange,
 }: TextareaWithPresetProps) {
-    const { watch, setValue } = useFormContext();
+    const { watch, setValue, getValues } = useFormContext();
+    const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
 
     useEffect(() => {
+        const formNarrative = getValues('arrest.narrative');
         if (isPresetEnabled && !isUserModified) {
-            const current = value;
-            if (current !== value) {
-                onTextChange(value);
-            }
+            setLocalValue(presetValue);
+            onTextChange(presetValue);
+        } else if (localValue !== formNarrative) {
+             setLocalValue(formNarrative);
         }
-    }, [value, isPresetEnabled, isUserModified, basePath, onTextChange]);
+    }, [presetValue, isPresetEnabled, isUserModified]);
     
     const handleTogglePreset = () => {
         const newValue = !isPresetEnabled;
         setValue(`${basePath}.isPreset`, newValue);
         if (!newValue && !isUserModified) {
+            setLocalValue('');
             onTextChange('');
         }
     };
 
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newValue = e.target.value;
+        setLocalValue(newValue);
         onTextChange(newValue);
 
         if (newValue) {
@@ -125,7 +129,7 @@ export function TextareaWithPreset({
                 ))}
             </div>
             <Textarea
-                value={value}
+                value={localValue}
                 id={`${basePath}.narrative`}
                 placeholder={placeholder}
                 className={cn('min-h-[150px]', isInvalid && 'border-red-500 focus-visible:ring-red-500')}

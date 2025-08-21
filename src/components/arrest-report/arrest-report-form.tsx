@@ -205,7 +205,16 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     }
 
     return baseText;
-  }, [allWatchedFields, officers, arrestReportModifiers]);
+  }, [
+    allWatchedFields.general,
+    allWatchedFields.location,
+    allWatchedFields.arrest?.suspectName,
+    allWatchedFields.narrative?.isPreset,
+    allWatchedFields.narrative?.userModified,
+    JSON.stringify(allWatchedFields.narrative?.modifiers),
+    officers,
+    arrestReportModifiers,
+  ]);
 
   const saveDraft = useCallback(() => {
     const latestFormData = getValues();
@@ -219,7 +228,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
         if (latestFormData.narrative?.modifiers) {
             Object.keys(latestFormData.narrative.modifiers).forEach((key) => {
-                setModifier(key, latestFormData.narrative.modifiers[key]);
+                setModifier(key as keyof typeof modifiers, latestFormData.narrative.modifiers[key]);
             });
         }
         if (latestFormData.narrative?.isPreset !== undefined) {
@@ -293,7 +302,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               control={control}
               modifiers={arrestReportModifiers}
               isInvalid={!allWatchedFields.arrest?.narrative}
-              value={narrativeText}
+              presetValue={narrativeText}
               onTextChange={(newValue) => setFormField('arrest', 'narrative', newValue)}
             />
           </div>
