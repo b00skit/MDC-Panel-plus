@@ -65,6 +65,7 @@ type FormField = {
     showDistrict?: boolean;
     // Textarea with preset
     modifiers?: any[];
+    preset?: string;
     noLocalStorage?: boolean;
 };
 
@@ -174,7 +175,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             });
     }, [vehiclesFetched, isFetchingVehicles]);
 
-    const allWatchedFields = watch();
 
     const renderField = (
         field: FormField, 
@@ -272,37 +272,44 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 );
 
             case 'textarea-with-preset':
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                const narrativeText = useMemo(() => {
-                    const presetPath = `${path}.isPreset`;
-                    const userModifiedPath = `${path}.userModified`;
-                    const isPresetActive = getValues(presetPath);
-                    const isUserModified = getValues(userModifiedPath);
-                    
+                const isPresetActive = watch(`${path}.isPreset`);
+                const isUserModified = watch(`${path}.userModified`);
+
+                const narrativeText = (() => {
                     if (!isPresetActive || isUserModified) {
-                        return getValues(`${path}.narrative`);
+                        return watch(`${path}.narrative`);
                     }
 
-                    let text = '';
-                    const allData = getValues();
+                    const allData = watch();
                     const { officers } = useOfficerStore.getState();
                     const { general } = useBasicFormStore.getState().formData;
 
-                    const dataForHandlebars = { ...allData, officers, general };
-                    
+                    const dataForHandlebars: any = { ...allData, officers, general, modifiers: {} };
+
                     (field.modifiers || []).forEach(mod => {
-                        if (getValues(`${path}.modifiers.${mod.name}`)) {
+                        const isEnabled = watch(`${path}.modifiers.${mod.name}`);
+                        const dependenciesMet = (mod.requires || []).every((dep: string) => watch(`${path}.modifiers.${dep}`));
+                        if (isEnabled && dependenciesMet) {
                             try {
-                                const template = Handlebars.compile(mod.generateText || '', { noEscape: true });
-                                text += template(dataForHandlebars) + '\n\n';
+                                const template = Handlebars.compile(mod.text || '', { noEscape: true });
+                                dataForHandlebars.modifiers[mod.name] = template(dataForHandlebars);
                             } catch (e) {
                                 console.error(`Error compiling Handlebars template for modifier ${mod.name}:`, e);
-                                text += `[Error in modifier: ${mod.name}]\n\n`;
+                                dataForHandlebars.modifiers[mod.name] = `[Error in modifier: ${mod.name}]`;
                             }
+                        } else {
+                            dataForHandlebars.modifiers[mod.name] = '';
                         }
                     });
-                    return text.trim();
-                }, [allWatchedFields, field.modifiers, getValues, path]);
+
+                    try {
+                        const presetTemplate = Handlebars.compile(field.preset || '', { noEscape: true });
+                        return presetTemplate(dataForHandlebars).trim();
+                    } catch (e) {
+                        console.error('Error compiling base preset:', e);
+                        return '';
+                    }
+                })();
 
                 return (
                     <TextareaWithPreset

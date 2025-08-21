@@ -1,4 +1,3 @@
-
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
@@ -29,6 +28,7 @@ import { LocationDetails } from '../shared/location-details';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
+import Handlebars from 'handlebars';
 
 const FormSection = ({
   title,
@@ -60,7 +60,7 @@ const InputField = ({
   isInvalid = false,
   ...props
 }: {
-  label:string;
+  label: string;
   id: string;
   placeholder: string;
   icon: React.ReactNode;
@@ -80,9 +80,9 @@ const InputField = ({
         type={type}
         placeholder={placeholder}
         className={cn(
-            'pl-9',
-            isInvalid && 'border-red-500 focus-visible:ring-red-500',
-            className
+          'pl-9',
+          isInvalid && 'border-red-500 focus-visible:ring-red-500',
+          className
         )}
         defaultValue={defaultValue}
         required={required}
@@ -123,9 +123,9 @@ const TextareaField = ({
         name={id}
         placeholder={placeholder}
         className={cn(
-            'pl-9 pt-3',
-            isInvalid && 'border-red-500 focus-visible:ring-red-500',
-            className
+          'pl-9 pt-3',
+          isInvalid && 'border-red-500 focus-visible:ring-red-500',
+          className
         )}
         defaultValue={defaultValue}
         required={required}
@@ -136,74 +136,155 @@ const TextareaField = ({
   </div>
 );
 
-
 export const ArrestReportForm = forwardRef((props, ref) => {
   const router = useRouter();
   const { toast } = useToast();
+
+  // External stores
   const { formData, setAll, setFormField } = useFormStore();
   const { officers } = useOfficerStore();
-  const { modifiers: modifierState, presets, userModified, narrative, setModifier, setPreset, setUserModified, setNarrativeField } = useBasicReportModifiersStore();
+  const {
+    modifiers: modifierState,
+    presets,
+    userModified,
+    narrative,
+    setModifier,
+    setPreset,
+    setUserModified,
+    setNarrativeField,
+  } = useBasicReportModifiersStore();
 
   const [submitted, setSubmitted] = useState(false);
+
+  // RHF
   const methods = useForm({
     defaultValues: {
       ...formData,
       narrative: {
-        modifiers: { introduction: modifierState.introduction },
+        modifiers: { call_of_service: modifierState.call_of_service },
         isPreset: presets.narrative,
         userModified: userModified.narrative,
         narrative: narrative.narrative,
       },
     },
   });
+
   const { control, getValues, reset, watch } = methods;
 
   const formRef = useRef<HTMLFormElement>(null);
   const allWatchedFields = watch();
+  const narrativeValues = watch('narrative');
 
-  const arrestReportModifiers: Omit<Modifier, 'generateText'>[] = useMemo(() => [
-    {
-        name: 'introduction',
-        label: 'Arrest Report Introduction',
-    }
-  ], []);
+  const arrestReportModifiers: Modifier[] = useMemo(
+    () => [
+      {
+        name: 'call_of_service',
+        label: 'Call of Service',
+        text: 'received a call of service #',
+      },
+    ],
+    []
+  );
 
   const narrativeText = useMemo(() => {
-    const narrativeValues = allWatchedFields.narrative;
-    const isPresetActive = narrativeValues?.isPreset;
-    const isUserModified = narrativeValues?.userModified;
+    const nv = allWatchedFields.narrative;
+    const isPresetActive = nv?.isPreset;
+    const isUserModified = nv?.userModified;
 
     if (!isPresetActive || isUserModified) {
-        return narrativeValues?.narrative || '';
+      return nv?.narrative || '';
     }
 
-    let text = '';
     const { general, location, arrest } = allWatchedFields;
     const primaryOfficer = officers[0];
 
-    if (narrativeValues?.modifiers?.introduction && primaryOfficer) {
-        const { date, time } = general;
-        const { street } = location;
-        const { suspectName } = arrest;
-        text += `On the ${date || ''}, I ${primaryOfficer.rank || ''} ${primaryOfficer.name || ''} of the ${primaryOfficer.department || ''} conducted an arrest on ${suspectName || ''}. At approximately ${time || ''} hours, I was driving on ${street || ''} where I `;
+    const modifiersContext: Record<string, string> = {};
+    if (nv?.modifiers?.call_of_service) {
+      modifiersContext.call_of_service = 'received a call of service #';
+    } else {
+      modifiersContext.call_of_service = '';
     }
-    return text;
+
+    const basePreset =
+      'On the {{date}}, I {{rank}} {{name}} of the {{department}} conducted an arrest on {{suspect}}. At approximately {{time}} hours, I was driving on {{street}} when I {{call_of_service}}';
+
+    const template = Handlebars.compile(basePreset, { noEscape: true });
+
+    return template({
+      date: general?.date || '',
+      time: general?.time || '',
+      street: location?.street || '',
+      suspect: arrest?.suspectName || '',
+      rank: primaryOfficer?.rank || '',
+      name: primaryOfficer?.name || '',
+      department: primaryOfficer?.department || '',
+      ...modifiersContext,
+    });
   }, [allWatchedFields, officers]);
 
-
+  /**
+   * IMPORTANT CHANGE:
+   * Instead of resetting the *entire* form on any store change, we only patch the
+   * specific slices we want to mirror from the store (general, location, evidence,
+   * and arrest.suspectName). We leave `narrative.*` as-is so modifiers & text persist.
+   */
   useEffect(() => {
-    const mergedData = {
-      ...formData,
-      narrative: {
-        modifiers: { introduction: modifierState.introduction },
-        isPreset: presets.narrative,
-        userModified: userModified.narrative,
-        narrative: narrative.narrative,
+    const current = getValues();
+    reset({
+      ...current, // keep RHF's current state (including narrative.*)
+      general: formData.general,
+      location: formData.location,
+      evidence: formData.evidence,
+      arrest: {
+        ...current.arrest,
+        suspectName: formData.arrest?.suspectName ?? '',
       },
-    };
-    reset(mergedData);
-  }, [formData, modifierState.introduction, presets.narrative, userModified.narrative, narrative.narrative, reset]);
+      // DO NOT touch `narrative`: preserving RHF modifier checkbox values
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    // Narrow dependencies so we don't run unnecessarily:
+    formData.general?.callSign,
+    formData.general?.date,
+    formData.general?.time,
+    formData.location?.district,
+    formData.location?.street,
+    formData.evidence?.supporting,
+    formData.evidence?.dashcam,
+    formData.arrest?.suspectName,
+  ]);
 
+  // Keep the modifiers/preset/userModified stores in sync with what the user does in the form.
+  useEffect(() => {
+    const currentCall = narrativeValues?.modifiers?.call_of_service ?? false;
+    if (modifierState.call_of_service !== currentCall) {
+      setModifier('call_of_service', currentCall);
+    }
+
+    const currentPreset = narrativeValues?.isPreset ?? false;
+    if (presets.narrative !== currentPreset) {
+      setPreset('narrative', currentPreset);
+    }
+
+    const currentUserMod = narrativeValues?.userModified ?? false;
+    if (userModified.narrative !== currentUserMod) {
+      setUserModified('narrative', currentUserMod);
+    }
+
+    if (currentUserMod && narrative.narrative !== narrativeValues?.narrative) {
+      setNarrativeField('narrative', narrativeValues?.narrative ?? '');
+    }
+  }, [
+    narrativeValues,
+    modifierState,
+    presets,
+    userModified,
+    narrative,
+    setModifier,
+    setPreset,
+    setUserModified,
+    setNarrativeField,
+  ]);
 
   const getFormData = () => {
     if (!formRef.current) return null;
@@ -211,43 +292,43 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     const currentValues = getValues();
 
     const data = {
-        general: formData.general,
-        arrest: {
-            suspectName: (form.elements.namedItem('suspect-name') as HTMLInputElement).value,
-            narrative: currentValues.narrative.narrative,
-        },
-        location: formData.location,
-        evidence: {
-            supporting: (form.elements.namedItem('supporting-evidence') as HTMLTextAreaElement).value,
-            dashcam: (form.elements.namedItem('dashcam') as HTMLTextAreaElement).value,
-        },
-        officers: officers,
-        modifiers: currentValues.narrative.modifiers,
-        presets: { narrative: currentValues.narrative.isPreset },
-        userModified: { narrative: currentValues.narrative.userModified },
-        narrative: currentValues.narrative,
+      general: formData.general,
+      arrest: {
+        suspectName: (form.elements.namedItem('suspect-name') as HTMLInputElement)?.value ?? '',
+        narrative: currentValues.narrative.narrative,
+      },
+      location: formData.location,
+      evidence: {
+        supporting: (form.elements.namedItem('supporting-evidence') as HTMLTextAreaElement)?.value ?? '',
+        dashcam: (form.elements.namedItem('dashcam') as HTMLTextAreaElement)?.value ?? '',
+      },
+      officers: officers,
+      modifiers: currentValues.narrative.modifiers,
+      presets: { narrative: currentValues.narrative.isPreset },
+      userModified: { narrative: currentValues.narrative.userModified },
+      narrative: currentValues.narrative,
     };
     return data;
-  }
+  };
 
   const validateForm = (data: any) => {
-    if (!data.general.callSign) return "Call Sign is required.";
-    if (!data.general.date) return "Date is required.";
-    if (!data.general.time) return "Time is required.";
-    
-    for (const officer of data.officers) {
-        if (!officer.name || !officer.rank || !officer.badgeNumber || !officer.department) {
-            return `All fields for Officer ${officer.name || '(new officer)'} are required.`;
-        }
+    if (!data.general?.callSign) return 'Call Sign is required.';
+    if (!data.general?.date) return 'Date is required.';
+    if (!data.general?.time) return 'Time is required.';
+
+    for (const officer of data.officers ?? []) {
+      if (!officer.name || !officer.rank || !officer.badgeNumber || !officer.department) {
+        return `All fields for Officer ${officer.name || '(new officer)'} are required.`;
+      }
     }
 
-    if (!data.arrest.suspectName) return "Suspect's Full Name is required.";
-    if (!data.arrest.narrative) return "Arrest Narrative is required.";
+    if (!data.arrest?.suspectName) return "Suspect's Full Name is required.";
+    if (!data.arrest?.narrative) return 'Arrest Narrative is required.';
 
-    if (!data.location.district) return "District is required.";
-    if (!data.location.street) return "Street Name is required.";
-    
-    if (!data.evidence.dashcam) return "Dashboard Camera narrative is required.";
+    if (!data.location?.district) return 'District is required.';
+    if (!data.location?.street) return 'Street Name is required.';
+
+    if (!data.evidence?.dashcam) return 'Dashboard Camera narrative is required.';
 
     return null;
   };
@@ -255,38 +336,38 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const saveDraft = () => {
     const latestFormData = getFormData();
     if (latestFormData) {
-        setAll({
-            general: latestFormData.general,
-            arrest: latestFormData.arrest,
-            location: latestFormData.location,
-            evidence: latestFormData.evidence,
-            officers: latestFormData.officers,
-        } as any);
+      setAll({
+        general: latestFormData.general,
+        arrest: latestFormData.arrest,
+        location: latestFormData.location,
+        evidence: latestFormData.evidence,
+        officers: latestFormData.officers,
+      } as any);
 
-        Object.keys(latestFormData.modifiers).forEach(key => {
-            setModifier(key, latestFormData.modifiers[key]);
-        });
+      Object.keys(latestFormData.modifiers).forEach((key) => {
+        setModifier(key, (latestFormData.modifiers as any)[key]);
+      });
 
-        Object.keys(latestFormData.presets).forEach(key => {
-            setPreset(key, latestFormData.presets[key]);
-        });
+      Object.keys(latestFormData.presets).forEach((key) => {
+        setPreset(key, (latestFormData.presets as any)[key]);
+      });
 
-        Object.keys(latestFormData.userModified).forEach(key => {
-            setUserModified(key, latestFormData.userModified[key]);
-        });
+      Object.keys(latestFormData.userModified).forEach((key) => {
+        setUserModified(key, (latestFormData.userModified as any)[key]);
+      });
 
-        if (latestFormData.userModified.narrative) {
-            setNarrativeField('narrative', latestFormData.narrative.narrative);
-        }
+      if (latestFormData.userModified.narrative) {
+        setNarrativeField('narrative', latestFormData.narrative.narrative);
+      }
     }
     toast({
-        title: 'Draft Saved',
-        description: 'Your report has been saved as a draft.',
+      title: 'Draft Saved',
+      description: 'Your report has been saved as a draft.',
     });
-  }
+  };
 
   useImperativeHandle(ref, () => ({
-    saveDraft
+    saveDraft,
   }));
 
   const handleSubmitForm = (e: React.FormEvent) => {
@@ -304,7 +385,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       });
       return;
     }
-    
+
     saveDraft();
     router.push('/arrest-submit?type=basic');
   };
@@ -314,80 +395,83 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       <form ref={formRef} onSubmit={handleSubmitForm} className="space-y-6">
         <GeneralSection isSubmitted={submitted} />
         <OfficerSection isSubmitted={submitted} isArrestReport={true} />
-        
+
         <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
-            <LocationDetails 
-                districtFieldName="location.district"
-                streetFieldName="location.street"
-                showDistrict={true}
-                isSubmitted={submitted}
-            />
+          <LocationDetails
+            districtFieldName="location.district"
+            streetFieldName="location.street"
+            showDistrict={true}
+            isSubmitted={submitted}
+          />
         </FormSection>
 
         <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
-            <div className="space-y-6">
-                <InputField
-                    label="Suspect's Full Name"
-                    id="suspect-name"
-                    placeholder="Firstname Lastname"
-                    icon={<User className="h-4 w-4 text-muted-foreground" />}
-                    defaultValue={formData.arrest.suspectName}
-                    onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-                    isInvalid={submitted && !formData.arrest.suspectName}
-                />
-                <TextareaWithPreset
-                    label="Arrest Narrative"
-                    placeholder="Arrest Narrative"
-                    description={
-                        <span className="text-red-500">
-                            Describe the events leading up to the arrest in first person and in chronological order, ensure you explain your probable cause of each of the charges and the arrest.
-                        </span>
-                    }
-                    basePath='narrative'
-                    control={control}
-                    modifiers={arrestReportModifiers}
-                    isInvalid={submitted && !allWatchedFields.narrative?.narrative}
-                    value={narrativeText}
-                />
-            </div>
+          <div className="space-y-6">
+            <InputField
+              label="Suspect's Full Name"
+              id="suspect-name"
+              placeholder="Firstname Lastname"
+              icon={<User className="h-4 w-4 text-muted-foreground" />}
+              defaultValue={formData.arrest?.suspectName ?? ''}
+              onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
+              isInvalid={submitted && !formData.arrest?.suspectName}
+            />
+            <TextareaWithPreset
+              label="Arrest Narrative"
+              placeholder="Arrest Narrative"
+              description={
+                <span className="text-red-500">
+                  Describe the events leading up to the arrest in first person and in chronological order, ensure you
+                  explain your probable cause of each of the charges and the arrest.
+                </span>
+              }
+              basePath="narrative"
+              control={control}
+              modifiers={arrestReportModifiers}
+              isInvalid={submitted && !allWatchedFields.narrative?.narrative}
+              value={narrativeText}
+            />
+          </div>
         </FormSection>
 
         <FormSection title="Evidence Section" icon={<Paperclip className="h-6 w-6" />}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <TextareaField 
-                  label="Supporting Evidence"
-                  id="supporting-evidence"
-                  placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
-                  icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
-                  description="Provide supporting evidence to aid the arrest report."
-                  className="min-h-[150px]"
-                  defaultValue={formData.evidence.supporting}
-                  onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
-                  required={false}
-              />
-              <TextareaField 
-                  label="Dashboard Camera"
-                  id="dashcam"
-                  placeholder="The dashboard camera captures audio and video footage showcasing..."
-                  icon={<Video className="h-4 w-4 text-muted-foreground" />}
-                  description={
-                      <span>
-                        Roleplay what the dashboard camera captures OR provide Streamable/YouTube links.
-                        <br/>
-                        <span className="text-red-500">(( Lying in this section will lead to OOC punishment ))</span>
-                      </span>
-                    }
-                    className="min-h-[150px]"
-                    defaultValue={formData.evidence.dashcam}
-                    onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-                    isInvalid={submitted && !formData.evidence.dashcam}
-              />
+            <TextareaField
+              label="Supporting Evidence"
+              id="supporting-evidence"
+              placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
+              icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
+              description="Provide supporting evidence to aid the arrest report."
+              className="min-h-[150px]"
+              defaultValue={formData.evidence?.supporting ?? ''}
+              onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
+              required={false}
+            />
+            <TextareaField
+              label="Dashboard Camera"
+              id="dashcam"
+              placeholder="The dashboard camera captures audio and video footage showcasing..."
+              icon={<Video className="h-4 w-4 text-muted-foreground" />}
+              description={
+                <span>
+                  Roleplay what the dashboard camera captures OR provide Streamable/YouTube links.
+                  <br />
+                  <span className="text-red-500">(( Lying in this section will lead to OOC punishment ))</span>
+                </span>
+              }
+              className="min-h-[150px]"
+              defaultValue={formData.evidence?.dashcam ?? ''}
+              onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
+              isInvalid={submitted && !formData.evidence?.dashcam}
+            />
           </div>
         </FormSection>
 
         <div className="flex justify-end gap-4">
-            <Button variant="outline" type="button" onClick={saveDraft}>Save as Draft</Button>
-            <Button type="submit">Submit Report</Button>
+          <Button variant="outline" type="button" onClick={saveDraft}>
+            Save as Draft
+          </Button>
+          <Button type="submit">Submit Report</Button>
         </div>
       </form>
     </FormProvider>
