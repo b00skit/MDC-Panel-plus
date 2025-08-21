@@ -60,7 +60,7 @@ const formatTimeInMinutes = (time: { days: number; hours: number; min: number })
 }
 
 const BailStatusBadge = ({ bailInfo }: { bailInfo: any }) => {
-  if (!bailInfo) return <Badge variant="destructive">NO BAIL</Badge>;
+  if (!bailInfo) return <Badge variant="secondary">N/A</Badge>;
   if (bailInfo.auto === false) return <Badge variant="destructive">NO BAIL</Badge>;
   if (bailInfo.auto === true) return <Badge className="bg-green-500 hover:bg-green-600 text-white">AUTO BAIL</Badge>;
   if (bailInfo.auto === 2) return <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">DISCRETIONARY</Badge>;
@@ -171,37 +171,38 @@ export function ArrestReportResults({
           const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
           if (suspension) acc.suspension += suspension;
     
-          const getBailAuto = () => {
-            if (!chargeDetails.bail) return false;
-            if (typeof chargeDetails.bail.auto === 'object' && row.category) {
-                return chargeDetails.bail.auto[row.category];
+          if (chargeDetails.bail) {
+            acc.bailStatus.hasBailCharge = true;
+            const getBailAuto = () => {
+                if (typeof chargeDetails.bail.auto === 'object' && row.category) {
+                    return chargeDetails.bail.auto[row.category];
+                }
+                return chargeDetails.bail.auto;
             }
-            return chargeDetails.bail.auto;
-          }
-    
-          const bailAuto = getBailAuto();
-          if(bailAuto === false) acc.bailStatus.noBail = true;
-          if(bailAuto === 2) acc.bailStatus.discretionary = true;
-          if(bailAuto === true) acc.bailStatus.eligible = true;
-          
-          const getBailCost = () => {
-             if (!chargeDetails.bail) return 0;
-             if (typeof chargeDetails.bail.cost === 'object' && row.category) {
-                return chargeDetails.bail.cost[row.category];
+        
+            const bailAuto = getBailAuto();
+            if(bailAuto === false) acc.bailStatus.noBail = true;
+            if(bailAuto === 2) acc.bailStatus.discretionary = true;
+            if(bailAuto === true) acc.bailStatus.eligible = true;
+            
+            const getBailCost = () => {
+                if (typeof chargeDetails.bail.cost === 'object' && row.category) {
+                    return chargeDetails.bail.cost[row.category];
+                }
+                return chargeDetails.bail.cost;
             }
-            return chargeDetails.bail.cost;
-          }
-          
-          if (bailAuto !== false) {
-            const currentBail = getBailCost() || 0;
-            if (currentBail > acc.highestBail) {
-                acc.highestBail = currentBail;
+            
+            if (bailAuto !== false) {
+                const currentBail = getBailCost() || 0;
+                if (currentBail > acc.highestBail) {
+                    acc.highestBail = currentBail;
+                }
             }
           }
           
           return acc;
         },
-        { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: 0, suspension: 0, bailStatus: { eligible: false, discretionary: false, noBail: false }, highestBail: 0 }
+        { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: 0, suspension: 0, bailStatus: { eligible: false, discretionary: false, noBail: false, hasBailCharge: false }, highestBail: 0 }
       );
     
       if (totals.minTime > totals.maxTime) {
@@ -209,10 +210,11 @@ export function ArrestReportResults({
       }
       
       const getBailStatus = () => {
-        if(totals.bailStatus.noBail) return 'NOT ELIGIBLE';
-        if(totals.bailStatus.discretionary) return 'DISCRETIONARY';
-        if(totals.bailStatus.eligible) return 'ELIGIBLE';
-        return 'NOT ELIGIBLE';
+        if (!totals.bailStatus.hasBailCharge) return 'N/A';
+        if (totals.bailStatus.noBail) return 'NOT ELIGIBLE';
+        if (totals.bailStatus.discretionary) return 'DISCRETIONARY';
+        if (totals.bailStatus.eligible) return 'ELIGIBLE';
+        return 'N/A';
       }
       
       const maxSentenceMinutes = config.MAX_SENTENCE_DAYS * 1440;
