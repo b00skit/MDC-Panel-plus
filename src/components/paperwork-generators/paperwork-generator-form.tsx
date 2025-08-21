@@ -67,6 +67,7 @@ type FormField = {
     modifiers?: any[];
     preset?: string;
     noLocalStorage?: boolean;
+    refreshOn?: string[];
 };
 
 type GeneratorConfig = {
@@ -121,6 +122,9 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
     const { register, handleSubmit, control, watch, trigger, getValues } = methods;
+
+    const officers = useOfficerStore(state => state.officers);
+    const generalData = useBasicFormStore(state => state.formData.general);
 
     const { setGeneratorData, setFormData, reset } = usePaperworkStore();
     const { toast } = useToast();
@@ -281,10 +285,14 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                     }
 
                     const allData = watch();
-                    const { officers } = useOfficerStore.getState();
-                    const { general } = useBasicFormStore.getState().formData;
+                    const externalData: any = {};
 
-                    const dataForHandlebars: any = { ...allData, officers, general, modifiers: {} };
+                    (field.refreshOn || []).forEach(dep => {
+                        if (dep === 'officers') externalData.officers = officers;
+                        else if (dep === 'general') externalData.general = generalData;
+                    });
+
+                    const dataForHandlebars: any = { ...allData, ...externalData, modifiers: {} };
 
                     (field.modifiers || []).forEach(mod => {
                         const isEnabled = watch(`${path}.modifiers.${mod.name}`);

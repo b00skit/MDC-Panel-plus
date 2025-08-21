@@ -24,6 +24,7 @@
             "name": "narrative",
             "label": "Affidavit Narrative",
             "noLocalStorage": true,
+            "refreshOn": ["officers", "general"],
             "preset": "{{modifiers.introduction}}\n\n{{modifiers.submission_statement}}\n\n{{modifiers.probable_cause}}\n\n{{modifiers.scope_of_request}}\n\n{{modifiers.conclusion}}",
             "modifiers": [
                 {
