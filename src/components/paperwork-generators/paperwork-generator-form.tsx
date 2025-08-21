@@ -42,6 +42,7 @@ type FormField = {
     defaultValue?: any;
     required?: boolean;
     multi?: boolean;
+    noLocalStorage?: boolean;
     stipulation?: {
         field: string;
         value: any;
@@ -66,7 +67,6 @@ type FormField = {
     // Textarea with preset
     modifiers?: any[];
     preset?: string;
-    noLocalStorage?: boolean;
 };
 
 type GeneratorConfig = {
@@ -75,9 +75,11 @@ type GeneratorConfig = {
     description: string;
     icon: string;
     output: string;
+    output_title?: string;
     formAction?: string;
     formMethod?: string;
     form: FormField[];
+    countyCityStipulation?: boolean;
 };
 
 interface PaperworkGeneratorFormProps {
@@ -125,6 +127,10 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     const { setGeneratorData, setFormData, reset } = usePaperworkStore();
     const { toast } = useToast();
     
+    // Subscribe to external stores
+    const { officers } = useOfficerStore();
+    const { general } = useBasicFormStore();
+
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
     const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
     const [vehicles, setVehicles] = useState<string[]>([]);
@@ -136,7 +142,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     }, [generatorConfig.id, reset]);
 
     useEffect(() => {
-        const hasChargeField = generatorConfig.form.some(field => field.type === 'charge' || field.fields?.some(f => f.type === 'charge'));
+        const hasChargeField = generatorConfig.form.some(field => field.type === 'charge' || (field.fields && field.fields.some(f => f.type === 'charge')));
         const hasLocationFields = generatorConfig.form.some(field => field.type === 'location' || field.optionsSource === 'districts' || field.optionsSource === 'streets');
         
         if (hasChargeField && !penalCode) {
@@ -272,45 +278,23 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 );
 
             case 'textarea-with-preset':
-                const isPresetActive = watch(`${path}.isPreset`);
-                const isUserModified = watch(`${path}.userModified`);
+                const allWatchedFields = watch();
+                const narrativeText = useMemo(() => {
+                    const presetPath = `${path}.isPreset`;
+                    const modifiedPath = `${path}.userModified`;
+                    const narrativePath = `${path}.narrative`;
 
-                const narrativeText = (() => {
-                    if (!isPresetActive || isUserModified) {
-                        return watch(`${path}.narrative`);
+                    if (!getValues(presetPath) || getValues(modifiedPath)) {
+                        return getValues(narrativePath);
                     }
+                    
+                    const dataForHandlebars = { ...allWatchedFields, officers, general };
+                    const compiledTemplate = Handlebars.compile(field.preset || '', { noEscape: true });
+                    
+                    return compiledTemplate(dataForHandlebars);
 
-                    const allData = watch();
-                    const { officers } = useOfficerStore.getState();
-                    const { general } = useBasicFormStore.getState().formData;
-
-                    const dataForHandlebars: any = { ...allData, officers, general, modifiers: {} };
-
-                    (field.modifiers || []).forEach(mod => {
-                        const isEnabled = watch(`${path}.modifiers.${mod.name}`);
-                        const dependenciesMet = (mod.requires || []).every((dep: string) => watch(`${path}.modifiers.${dep}`));
-                        if (isEnabled && dependenciesMet) {
-                            try {
-                                const template = Handlebars.compile(mod.text || '', { noEscape: true });
-                                dataForHandlebars.modifiers[mod.name] = template(dataForHandlebars);
-                            } catch (e) {
-                                console.error(`Error compiling Handlebars template for modifier ${mod.name}:`, e);
-                                dataForHandlebars.modifiers[mod.name] = `[Error in modifier: ${mod.name}]`;
-                            }
-                        } else {
-                            dataForHandlebars.modifiers[mod.name] = '';
-                        }
-                    });
-
-                    try {
-                        const presetTemplate = Handlebars.compile(field.preset || '', { noEscape: true });
-                        return presetTemplate(dataForHandlebars).trim();
-                    } catch (e) {
-                        console.error('Error compiling base preset:', e);
-                        return '';
-                    }
-                })();
-
+                }, [allWatchedFields, officers, general, field.preset, path, getValues]);
+                
                 return (
                     <TextareaWithPreset
                         key={fieldKey}
@@ -519,8 +503,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     };
 
     const onSubmit = (data: any) => {
-        const { officers } = useOfficerStore.getState();
-        const { general } = useBasicFormStore.getState().formData;
         const fullData = {
             ...data,
             officers,
