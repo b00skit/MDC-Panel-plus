@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { formatInTimeZone } from 'date-fns-tz';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -33,14 +33,13 @@ const InputField = ({
   id,
   placeholder,
   icon,
-  type = 'text',
-  value,
-  onChange,
-  onBlur,
-  readOnly = false,
-  required = true,
-  isInvalid = false,
-}: {
+    type = 'text',
+    value,
+    onChange,
+    onBlur,
+    readOnly = false,
+    required = true,
+  }: {
   label: string;
   id: string;
   placeholder: string;
@@ -50,32 +49,28 @@ const InputField = ({
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
-  required?: boolean;
-  isInvalid?: boolean;
-}) => (
+    required?: boolean;
+  }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
     <div className="relative flex items-center">
       <div className="absolute left-2.5 z-10">{icon}</div>
-      <Input
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        readOnly={readOnly}
-        className={cn(
-            'pl-9',
-            isInvalid && 'border-red-500 focus-visible:ring-red-500'
-        )}
-        required={required}
-      />
+        <Input
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          readOnly={readOnly}
+          className={cn('pl-9')}
+          required={required}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
 
-export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
+export function GeneralSection() {
     const { general, setFormField } = useFormStore(state => ({
         general: state.formData.general,
         setFormField: state.setFormField,
@@ -97,38 +92,37 @@ export function GeneralSection({ isSubmitted }: { isSubmitted: boolean }) {
 
   return (
     <FormSection title="General Section" icon={<CalendarDays className="h-6 w-6" />}>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <InputField
-          label="Date"
-          id="date"
-          placeholder="DD/MMM/YYYY"
-          icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
-          type="text"
-          value={general?.date || ''}
-          onChange={(e) => setFormField('general', 'date', e.target.value)}
-          onBlur={(e) => setFormField('general', 'date', e.target.value)}
-        />
-        <InputField
-          label="Time"
-          id="time"
-          placeholder="HH:MM"
-          icon={<Clock className="h-4 w-4 text-muted-foreground" />}
-          type="text"
-          value={general?.time || ''}
-          onChange={(e) => setFormField('general', 'time', e.target.value)}
-          onBlur={(e) => setFormField('general', 'time', e.target.value)}
-        />
-        <InputField
-          label="Call Sign"
-          id="call-sign"
-          placeholder="CALL SIGN"
-          icon={<Radio className="h-4 w-4 text-muted-foreground" />}
-          value={general?.callSign || ''}
-          onChange={(e) => setFormField('general', 'callSign', e.target.value)}
-          onBlur={(e) => setFormField('general', 'callSign', e.target.value)}
-          isInvalid={isSubmitted && !general.callSign}
-        />
-      </div>
-    </FormSection>
-  );
-}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <InputField
+            label="Date"
+            id="date"
+            placeholder="DD/MMM/YYYY"
+            icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
+            type="text"
+            value={general?.date || ''}
+            onChange={(e) => setFormField('general', 'date', e.target.value)}
+            onBlur={(e) => setFormField('general', 'date', e.target.value)}
+          />
+          <InputField
+            label="Time"
+            id="time"
+            placeholder="HH:MM"
+            icon={<Clock className="h-4 w-4 text-muted-foreground" />}
+            type="text"
+            value={general?.time || ''}
+            onChange={(e) => setFormField('general', 'time', e.target.value)}
+            onBlur={(e) => setFormField('general', 'time', e.target.value)}
+          />
+          <InputField
+            label="Call Sign"
+            id="call-sign"
+            placeholder="CALL SIGN"
+            icon={<Radio className="h-4 w-4 text-muted-foreground" />}
+            value={general?.callSign || ''}
+            onChange={(e) => setFormField('general', 'callSign', e.target.value)}
+            onBlur={(e) => setFormField('general', 'callSign', e.target.value)}
+          />
+        </div>
+      </FormSection>
+    );
+  }

@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
+import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -57,7 +57,6 @@ const InputField = ({
   className = '',
   defaultValue,
   required = true,
-  isInvalid = false,
   ...props
 }: {
   label: string;
@@ -68,7 +67,6 @@ const InputField = ({
   className?: string;
   defaultValue?: string;
   required?: boolean;
-  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -79,11 +77,7 @@ const InputField = ({
         name={id}
         type={type}
         placeholder={placeholder}
-        className={cn(
-          'pl-9',
-          isInvalid && 'border-red-500 focus-visible:ring-red-500',
-          className
-        )}
+        className={cn('pl-9', className)}
         defaultValue={defaultValue}
         required={required}
         {...props}
@@ -101,7 +95,6 @@ const TextareaField = ({
   className = '',
   defaultValue,
   required = true,
-  isInvalid = false,
   ...props
 }: {
   label: string;
@@ -112,25 +105,20 @@ const TextareaField = ({
   className?: string;
   defaultValue?: string;
   required?: boolean;
-  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
     <div className="relative">
       <div className="absolute left-3 top-3.5">{icon}</div>
-      <Textarea
-        id={id}
-        name={id}
-        placeholder={placeholder}
-        className={cn(
-          'pl-9 pt-3',
-          isInvalid && 'border-red-500 focus-visible:ring-red-500',
-          className
-        )}
-        defaultValue={defaultValue}
-        required={required}
-        {...props}
-      />
+        <Textarea
+          id={id}
+          name={id}
+          placeholder={placeholder}
+          className={cn('pl-9 pt-3', className)}
+          defaultValue={defaultValue}
+          required={required}
+          {...props}
+        />
     </div>
     {description && <p className="text-xs text-muted-foreground">{description}</p>}
   </div>
@@ -153,8 +141,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     setUserModified,
     setNarrativeField,
   } = useBasicReportModifiersStore();
-
-  const [submitted, setSubmitted] = useState(false);
 
   // RHF
   const methods = useForm({
@@ -372,7 +358,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
     const latestFormData = getFormData();
     if (!latestFormData) return;
 
@@ -393,15 +378,14 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   return (
     <FormProvider {...methods}>
       <form ref={formRef} onSubmit={handleSubmitForm} className="space-y-6">
-        <GeneralSection isSubmitted={submitted} />
-        <OfficerSection isSubmitted={submitted} isArrestReport={true} />
+        <GeneralSection />
+        <OfficerSection isArrestReport={true} />
 
         <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
           <LocationDetails
             districtFieldName="location.district"
             streetFieldName="location.street"
             showDistrict={true}
-            isSubmitted={submitted}
           />
         </FormSection>
 
@@ -414,7 +398,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               defaultValue={formData.arrest?.suspectName ?? ''}
               onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-              isInvalid={submitted && !formData.arrest?.suspectName}
             />
             <TextareaWithPreset
               label="Arrest Narrative"
@@ -428,7 +411,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               basePath="narrative"
               control={control}
               modifiers={arrestReportModifiers}
-              isInvalid={submitted && !allWatchedFields.narrative?.narrative}
+              isInvalid={!allWatchedFields.narrative?.narrative}
               value={narrativeText}
             />
           </div>
@@ -462,7 +445,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               className="min-h-[150px]"
               defaultValue={formData.evidence?.dashcam ?? ''}
               onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-              isInvalid={submitted && !formData.evidence?.dashcam}
             />
           </div>
         </FormSection>

@@ -68,7 +68,6 @@ const InputField = ({
   value,
   onChange,
   required = true,
-  isInvalid = false,
 }: {
   label: string;
   id: string;
@@ -77,7 +76,6 @@ const InputField = ({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
-  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -86,10 +84,7 @@ const InputField = ({
       <Input
         id={id}
         placeholder={placeholder}
-        className={cn(
-            'pl-9',
-            isInvalid && 'border-red-500 focus-visible:ring-red-500'
-        )}
+        className={cn('pl-9')}
         value={value}
         onChange={onChange}
         required={required}
@@ -107,7 +102,6 @@ const SelectField = ({
   onValueChange,
   children,
   required = true,
-  isInvalid = false,
 }: {
   label: string;
   id: string;
@@ -117,14 +111,13 @@ const SelectField = ({
   onValueChange: (value: string) => void;
   children: React.ReactNode;
   required?: boolean;
-  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
     <div className="relative flex items-center">
       <div className="absolute left-2.5 z-10">{icon}</div>
       <Select value={value} onValueChange={onValueChange} required={required}>
-        <SelectTrigger id={id} className={cn('pl-9', isInvalid && 'border-red-500 focus-visible:ring-red-500')}>
+        <SelectTrigger id={id} className={cn('pl-9', !value && required && 'border-red-500 focus-visible:ring-red-500')}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>{children}</SelectContent>
@@ -134,7 +127,7 @@ const SelectField = ({
 );
 
 
-export function OfficerSection({ isSubmitted, isArrestReport = false, isMultiOfficer = true }: { isSubmitted: boolean, isArrestReport?: boolean, isMultiOfficer?: boolean }) {
+export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }: { isArrestReport?: boolean, isMultiOfficer?: boolean }) {
   const { 
     officers, 
     updateOfficer, 
@@ -171,48 +164,45 @@ export function OfficerSection({ isSubmitted, isArrestReport = false, isMultiOff
         {officers.map((officer, index) => (
           <div key={officer.id} className="p-4 border rounded-lg space-y-4">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-12 items-end">
-              <div className="md:col-span-4">
-                  <InputField
-                      label="Full Name"
-                      id={`officer-name-${officer.id}`}
-                      placeholder="John Doe"
-                      icon={<User className="h-4 w-4 text-muted-foreground" />}
-                      value={officer.name}
-                      onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
-                      isInvalid={isSubmitted && !officer.name}
-                  />
-              </div>
-              <div className="md:col-span-4">
-                  <SelectField
-                      label="Rank"
-                      id={`rank-${officer.id}`}
-                      placeholder="Select Rank"
-                      icon={<Shield className="h-4 w-4 text-muted-foreground" />}
-                      value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
-                      onValueChange={(value) => handleRankChange(officer.id, value)}
-                      isInvalid={isSubmitted && (!officer.rank || !officer.department)}
-                  >
-                      {Object.entries(deptRanks).map(([dept, ranks]) => (
-                          <SelectGroup key={dept}>
-                              <SelectLabel>{dept}</SelectLabel>
-                              {ranks.map((rank) => (
-                                  <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
-                              ))}
-                          </SelectGroup>
-                      ))}
-                  </SelectField>
-              </div>
-              <div className="md:col-span-3">
-                  <InputField
-                      label="Badge"
-                      id={`badge-${officer.id}`}
-                      placeholder="12345"
-                      icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
-                      value={officer.badgeNumber}
-                      onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
-                      isInvalid={isSubmitted && !officer.badgeNumber}
-                  />
-              </div>
+                <div className="md:col-span-4">
+                    <InputField
+                        label="Full Name"
+                        id={`officer-name-${officer.id}`}
+                        placeholder="John Doe"
+                        icon={<User className="h-4 w-4 text-muted-foreground" />}
+                        value={officer.name}
+                        onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
+                    />
+                </div>
+                <div className="md:col-span-4">
+                    <SelectField
+                        label="Rank"
+                        id={`rank-${officer.id}`}
+                        placeholder="Select Rank"
+                        icon={<Shield className="h-4 w-4 text-muted-foreground" />}
+                        value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
+                        onValueChange={(value) => handleRankChange(officer.id, value)}
+                    >
+                        {Object.entries(deptRanks).map(([dept, ranks]) => (
+                            <SelectGroup key={dept}>
+                                <SelectLabel>{dept}</SelectLabel>
+                                {ranks.map((rank) => (
+                                    <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
+                                ))}
+                            </SelectGroup>
+                        ))}
+                    </SelectField>
+                </div>
+                <div className="md:col-span-3">
+                    <InputField
+                        label="Badge"
+                        id={`badge-${officer.id}`}
+                        placeholder="12345"
+                        icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
+                        value={officer.badgeNumber}
+                        onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
+                    />
+                </div>
               <div className="md:col-span-1">
                   {index > 0 && (
                       <Button variant="ghost" size="icon" onClick={() => removeOfficer(officer.id)} type="button">
