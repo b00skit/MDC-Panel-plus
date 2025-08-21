@@ -29,6 +29,7 @@ import { LocationDetails } from '../shared/location-details';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
+import Handlebars from 'handlebars';
 
 const FormSection = ({
   title,
@@ -149,7 +150,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     defaultValues: {
       ...formData,
       narrative: {
-        modifiers: { introduction: modifierState.introduction },
+        modifiers: { call_of_service: modifierState.call_of_service },
         isPreset: presets.narrative,
         userModified: userModified.narrative,
         narrative: narrative.narrative,
@@ -161,10 +162,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const formRef = useRef<HTMLFormElement>(null);
   const allWatchedFields = watch();
 
-  const arrestReportModifiers: Omit<Modifier, 'generateText'>[] = useMemo(() => [
+  const arrestReportModifiers: Modifier[] = useMemo(() => [
     {
-        name: 'introduction',
-        label: 'Arrest Report Introduction',
+        name: 'call_of_service',
+        label: 'Call of Service',
+        text: 'received a call of service #',
     }
   ], []);
 
@@ -177,17 +179,31 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         return narrativeValues?.narrative || '';
     }
 
-    let text = '';
     const { general, location, arrest } = allWatchedFields;
     const primaryOfficer = officers[0];
 
-    if (narrativeValues?.modifiers?.introduction && primaryOfficer) {
-        const { date, time } = general;
-        const { street } = location;
-        const { suspectName } = arrest;
-        text += `On the ${date || ''}, I ${primaryOfficer.rank || ''} ${primaryOfficer.name || ''} of the ${primaryOfficer.department || ''} conducted an arrest on ${suspectName || ''}. At approximately ${time || ''} hours, I was driving on ${street || ''} where I `;
+    const modifiersContext: Record<string, string> = {};
+
+    if (narrativeValues?.modifiers?.call_of_service) {
+        modifiersContext.call_of_service = 'received a call of service #';
+    } else {
+        modifiersContext.call_of_service = '';
     }
-    return text;
+
+    const basePreset = 'On the {{date}}, I {{rank}} {{name}} of the {{department}} conducted an arrest on {{suspect}}. At approximately {{time}} hours, I was driving on {{street}} when I {{call_of_service}}';
+
+    const template = Handlebars.compile(basePreset, { noEscape: true });
+
+    return template({
+        date: general.date || '',
+        time: general.time || '',
+        street: location.street || '',
+        suspect: arrest.suspectName || '',
+        rank: primaryOfficer?.rank || '',
+        name: primaryOfficer?.name || '',
+        department: primaryOfficer?.department || '',
+        ...modifiersContext,
+    });
   }, [allWatchedFields, officers]);
 
 
@@ -195,14 +211,14 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     const mergedData = {
       ...formData,
       narrative: {
-        modifiers: { introduction: modifierState.introduction },
+        modifiers: { call_of_service: modifierState.call_of_service },
         isPreset: presets.narrative,
         userModified: userModified.narrative,
         narrative: narrative.narrative,
       },
     };
     reset(mergedData);
-  }, [formData, modifierState.introduction, presets.narrative, userModified.narrative, narrative.narrative, reset]);
+  }, [formData, modifierState.call_of_service, presets.narrative, userModified.narrative, narrative.narrative, reset]);
 
 
   const getFormData = () => {

@@ -12,6 +12,8 @@ import { Separator } from '../ui/separator';
 export type Modifier = {
     name: string;
     label: string;
+    text?: string;
+    requires?: string[];
 };
 
 interface TextareaWithPresetProps {

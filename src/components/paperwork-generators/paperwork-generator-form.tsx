@@ -65,6 +65,7 @@ type FormField = {
     showDistrict?: boolean;
     // Textarea with preset
     modifiers?: any[];
+    preset?: string;
     noLocalStorage?: boolean;
 };
 
@@ -278,31 +279,41 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                     const userModifiedPath = `${path}.userModified`;
                     const isPresetActive = getValues(presetPath);
                     const isUserModified = getValues(userModifiedPath);
-                    
+
                     if (!isPresetActive || isUserModified) {
                         return getValues(`${path}.narrative`);
                     }
 
-                    let text = '';
                     const allData = getValues();
                     const { officers } = useOfficerStore.getState();
                     const { general } = useBasicFormStore.getState().formData;
 
-                    const dataForHandlebars = { ...allData, officers, general };
-                    
+                    const dataForHandlebars: any = { ...allData, officers, general, modifiers: {} };
+
                     (field.modifiers || []).forEach(mod => {
-                        if (getValues(`${path}.modifiers.${mod.name}`)) {
+                        const isEnabled = getValues(`${path}.modifiers.${mod.name}`);
+                        const dependenciesMet = (mod.requires || []).every((dep: string) => getValues(`${path}.modifiers.${dep}`));
+                        if (isEnabled && dependenciesMet) {
                             try {
-                                const template = Handlebars.compile(mod.generateText || '', { noEscape: true });
-                                text += template(dataForHandlebars) + '\n\n';
+                                const template = Handlebars.compile(mod.text || '', { noEscape: true });
+                                dataForHandlebars.modifiers[mod.name] = template(dataForHandlebars);
                             } catch (e) {
                                 console.error(`Error compiling Handlebars template for modifier ${mod.name}:`, e);
-                                text += `[Error in modifier: ${mod.name}]\n\n`;
+                                dataForHandlebars.modifiers[mod.name] = `[Error in modifier: ${mod.name}]`;
                             }
+                        } else {
+                            dataForHandlebars.modifiers[mod.name] = '';
                         }
                     });
-                    return text.trim();
-                }, [allWatchedFields, field.modifiers, getValues, path]);
+
+                    try {
+                        const presetTemplate = Handlebars.compile(field.preset || '', { noEscape: true });
+                        return presetTemplate(dataForHandlebars).trim();
+                    } catch (e) {
+                        console.error('Error compiling base preset:', e);
+                        return '';
+                    }
+                }, [allWatchedFields, field.modifiers, field.preset, getValues, path]);
 
                 return (
                     <TextareaWithPreset
