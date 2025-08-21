@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -27,6 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { MultiSelect } from '../ui/multi-select';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
+import { cn } from '@/lib/utils';
 
 type FormField = {
     type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset';
@@ -121,7 +121,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         criteriaMode: 'all',
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
-    const { register, handleSubmit, control, watch, trigger, getValues } = methods;
+    const { register, handleSubmit, control, watch, trigger, getValues, formState: { errors } } = methods;
 
     const officers = useOfficerStore(state => state.officers);
     const generalData = useBasicFormStore(state => state.formData.general);
@@ -186,6 +186,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         index?: number,
     ) => {
         const fieldKey = `${path}-${index}`;
+        const fieldError = errors[path];
 
         if (field.stipulation) {
             const watchedValue = watch(field.stipulation.field);
@@ -223,7 +224,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} defaultValue={field.defaultValue} />
+                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} defaultValue={field.defaultValue} className={cn(fieldError && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
             case 'datalist':
@@ -235,7 +236,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             name={path}
                             defaultValue={field.defaultValue}
                             rules={{ required: field.required }}
-                            render={({ field: { onChange, value } }) => {
+                            render={({ field: { onChange, value }, fieldState }) => {
                                 let options: string[] = [];
                                 let onOpen: (() => void) | undefined = undefined;
                                 let isLoading = false;
@@ -260,6 +261,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                         placeholder={field.placeholder}
                                         searchPlaceholder='Search...'
                                         emptyPlaceholder='No results.'
+                                        isInvalid={!!fieldState.error}
                                     />
                                 )
                             }}
@@ -271,29 +273,24 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
+                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn("min-h-[120px]", fieldError && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
 
             case 'textarea-with-preset':
-                const isPresetActive = watch(`${path}.isPreset`);
-                const isUserModified = watch(`${path}.userModified`);
-
                 const narrativeText = (() => {
+                    const isPresetActive = watch(`${path}.isPreset`);
+                    const isUserModified = watch(`${path}.userModified`);
                     if (!isPresetActive || isUserModified) {
                         return watch(`${path}.narrative`);
                     }
-
                     const allData = watch();
                     const externalData: any = {};
-
                     (field.refreshOn || []).forEach(dep => {
                         if (dep === 'officers') externalData.officers = officers;
                         else if (dep === 'general') externalData.general = generalData;
                     });
-
                     const dataForHandlebars: any = { ...allData, ...externalData, modifiers: {} };
-
                     (field.modifiers || []).forEach(mod => {
                         const isEnabled = watch(`${path}.modifiers.${mod.name}`);
                         const dependenciesMet = (mod.requires || []).every((dep: string) => watch(`${path}.modifiers.${dep}`));
@@ -309,7 +306,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             dataForHandlebars.modifiers[mod.name] = '';
                         }
                     });
-
                     try {
                         const presetTemplate = Handlebars.compile(field.preset || '', { noEscape: true });
                         return presetTemplate(dataForHandlebars).trim();
@@ -318,7 +314,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         return '';
                     }
                 })();
-
                 return (
                     <TextareaWithPreset
                         key={fieldKey}
@@ -327,7 +322,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         basePath={path}
                         control={control}
                         modifiers={field.modifiers || []}
-                        isInvalid={false}
+                        isInvalid={!!errors[path]}
                         noLocalStorage={field.noLocalStorage}
                         value={narrativeText}
                     />
@@ -342,9 +337,9 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             name={path}
                             rules={{ required: field.required }}
                             defaultValue={field.defaultValue}
-                            render={({ field: { onChange, value } }) => (
+                            render={({ field: { onChange, value }, fieldState }) => (
                                 <Select onValueChange={onChange} value={value} defaultValue={field.defaultValue}>
-                                    <SelectTrigger id={path}>
+                                    <SelectTrigger id={path} className={cn(fieldState.error && 'border-red-500 focus-visible:ring-red-500')}>
                                         <SelectValue placeholder={field.placeholder} />
                                     </SelectTrigger>
                                     <SelectContent>
