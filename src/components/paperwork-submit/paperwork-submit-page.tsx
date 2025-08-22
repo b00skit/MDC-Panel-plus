@@ -128,7 +128,7 @@ function PaperworkSubmitContent() {
 
     const handleCopy = () => {
         if (reportRef.current?.firstChild) {
-          navigator.clipboard.writeText((reportRef.current.firstChild as HTMLElement).outerHTML);
+          navigator.clipboard.writeText((reportRef.current.firstChild as HTMLElement).innerHTML);
           toast({
             title: "Success",
             description: "Paperwork content copied to clipboard.",
