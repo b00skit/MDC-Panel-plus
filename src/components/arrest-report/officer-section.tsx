@@ -67,7 +67,8 @@ const InputField = ({
   icon,
   value,
   onChange,
-  required = true,
+  onBlur,
+  isInvalid
 }: {
   label: string;
   id: string;
@@ -75,7 +76,8 @@ const InputField = ({
   icon: React.ReactNode;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
@@ -84,10 +86,10 @@ const InputField = ({
       <Input
         id={id}
         placeholder={placeholder}
-        className={cn('pl-9')}
+        className={cn('pl-9', isInvalid && 'border-red-500 focus-visible:ring-red-500')}
         value={value}
         onChange={onChange}
-        required={required}
+        onBlur={onBlur}
       />
     </div>
   </div>
@@ -101,7 +103,7 @@ const SelectField = ({
   value,
   onValueChange,
   children,
-  required = true,
+  isInvalid,
 }: {
   label: string;
   id: string;
@@ -110,14 +112,14 @@ const SelectField = ({
   value: string;
   onValueChange: (value: string) => void;
   children: React.ReactNode;
-  required?: boolean;
+  isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
     <Label htmlFor={id}>{label}</Label>
     <div className="relative flex items-center">
       <div className="absolute left-2.5 z-10">{icon}</div>
-      <Select value={value} onValueChange={onValueChange} required={required}>
-        <SelectTrigger id={id} className={cn('pl-9', !value && required && 'border-red-500 focus-visible:ring-red-500')}>
+      <Select value={value} onValueChange={onValueChange}>
+        <SelectTrigger id={id} className={cn('pl-9', isInvalid && 'border-red-500 focus-visible:ring-red-500')}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>{children}</SelectContent>
@@ -143,20 +145,19 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
   const showLspdWarning = isArrestReport && officers.some(o => o.department === 'Los Santos Police Department');
 
   useEffect(() => {
-    setInitialOfficers();
+    setInitialOfficers(); 
     fetch('/data/dept_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
   }, [setInitialOfficers]);
-
-  const handleRankChange = (id: number, value: string) => {
-    const [department, rank] = value.split('__');
-    updateOfficer(id, { department, rank });
-  };
   
   const handlePillClick = (officerId: number, altChar: Officer) => {
     swapOfficer(officerId, altChar);
   }
+  
+  const isOfficerInvalid = (officer: Officer, field: keyof Officer) => {
+    return !officer[field];
+  };
 
   return (
     <FormSection title="Officer Section" icon={<User className="h-6 w-6" />} onAdd={addOfficer} showAddButton={isMultiOfficer}>
@@ -172,6 +173,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                         icon={<User className="h-4 w-4 text-muted-foreground" />}
                         value={officer.name}
                         onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
+                        isInvalid={isOfficerInvalid(officer, 'name')}
                     />
                 </div>
                 <div className="md:col-span-4">
@@ -181,7 +183,11 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                         placeholder="Select Rank"
                         icon={<Shield className="h-4 w-4 text-muted-foreground" />}
                         value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
-                        onValueChange={(value) => handleRankChange(officer.id, value)}
+                        onValueChange={(value) => {
+                            const [department, rank] = value.split('__');
+                            updateOfficer(officer.id, { department, rank });
+                        }}
+                        isInvalid={isOfficerInvalid(officer, 'rank')}
                     >
                         {Object.entries(deptRanks).map(([dept, ranks]) => (
                             <SelectGroup key={dept}>
@@ -201,6 +207,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                         icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
                         value={officer.badgeNumber}
                         onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
+                         isInvalid={isOfficerInvalid(officer, 'badgeNumber')}
                     />
                 </div>
               <div className="md:col-span-1">

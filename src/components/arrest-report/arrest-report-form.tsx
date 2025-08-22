@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
+import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -25,7 +25,7 @@ import { OfficerSection } from './officer-section';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { LocationDetails } from '../shared/location-details';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
@@ -56,9 +56,8 @@ const InputField = ({
   type = 'text',
   className = '',
   defaultValue,
-  required = true,
-  isInvalid = false,
-  ...props
+  onBlur,
+  isInvalid,
 }: {
   label: string;
   id: string;
@@ -67,7 +66,7 @@ const InputField = ({
   type?: string;
   className?: string;
   defaultValue?: string;
-  required?: boolean;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
@@ -81,8 +80,7 @@ const InputField = ({
         placeholder={placeholder}
         className={cn('pl-9', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
         defaultValue={defaultValue}
-        required={required}
-        {...props}
+        onBlur={onBlur}
       />
     </div>
   </div>
@@ -96,9 +94,8 @@ const TextareaField = ({
   description,
   className = '',
   defaultValue,
-  required = true,
-  isInvalid = false,
-  ...props
+  onBlur,
+  isInvalid,
 }: {
   label: string;
   id: string;
@@ -107,7 +104,7 @@ const TextareaField = ({
   description?: React.ReactNode;
   className?: string;
   defaultValue?: string;
-  required?: boolean;
+  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
   isInvalid?: boolean;
 }) => (
   <div className="grid gap-2">
@@ -120,8 +117,7 @@ const TextareaField = ({
           placeholder={placeholder}
           className={cn('pl-9 pt-3', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
           defaultValue={defaultValue}
-          required={required}
-          {...props}
+          onBlur={onBlur}
         />
     </div>
     {description && <p className="text-xs text-muted-foreground">{description}</p>}
@@ -141,9 +137,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     setPreset,
     setUserModified,
   } = useBasicReportModifiersStore();
+  
+  const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
 
   const methods = useForm({
-    defaultValues: {
+    defaultValues: useMemo(() => ({
       ...formData,
       narrative: {
         modifiers: modifiers,
@@ -151,10 +149,22 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         userModified: userModified.narrative,
         narrative: formData.arrest.narrative,
       },
-    },
+    }), [formData, modifiers, presets, userModified]),
   });
 
-  const { control, getValues, reset, watch, formState: { errors } } = methods;
+  const { control, getValues, reset, watch, trigger, formState: { errors } } = methods;
+
+  useEffect(() => {
+    reset({
+        ...formData,
+        narrative: {
+            modifiers: modifiers,
+            isPreset: presets.narrative,
+            userModified: userModified.narrative,
+            narrative: formData.arrest.narrative,
+        },
+    });
+  }, [formData, modifiers, presets, userModified, reset]);
 
   const formRef = useRef<HTMLFormElement>(null);
   const allWatchedFields = watch();
@@ -170,7 +180,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const narrativeText = useMemo(() => {
     const isPresetActive = allWatchedFields.narrative?.isPreset;
     const isUserModified = allWatchedFields.narrative?.userModified;
-
+    
     if (!isPresetActive || isUserModified) {
       return allWatchedFields.arrest?.narrative || '';
     }
@@ -215,15 +225,28 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     officers,
     arrestReportModifiers,
   ]);
+  
+  const validateForm = useCallback(() => {
+      const currentValues = getValues();
+      const newErrors: Record<string, boolean> = {};
+      if (!currentValues.arrest?.suspectName) newErrors.suspectName = true;
+      if (!currentValues.evidence?.dashcam) newErrors.dashcam = true;
+      if (!currentValues.location?.district) newErrors.district = true;
+      if (!currentValues.location?.street) newErrors.street = true;
+      setFormErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+  }, [getValues]);
 
   const saveDraft = useCallback(() => {
     const latestFormData = getValues();
     if (latestFormData) {
+        const currentOfficerState = useOfficerStore.getState().officers;
         setAll({
             general: latestFormData.general,
             arrest: { ...latestFormData.arrest, narrative: narrativeText },
             location: latestFormData.location,
             evidence: latestFormData.evidence,
+            officers: currentOfficerState,
         });
 
         if (latestFormData.narrative?.modifiers) {
@@ -244,25 +267,21 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     saveDraft,
   }));
-
+  
   useEffect(() => {
-    const currentFormData = getValues();
-    reset({
-        ...currentFormData,
-        general: formData.general,
-        officers: formData.officers,
-        arrest: { ...currentFormData.arrest, suspectName: formData.arrest?.suspectName, narrative: formData.arrest?.narrative },
-        location: formData.location,
-        evidence: formData.evidence,
-    });
-  }, [formData, getValues, reset]);
+    validateForm();
+  }, [allWatchedFields, validateForm]);
 
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
-    saveDraft();
-    router.push('/arrest-submit?type=basic');
+    if(validateForm()) {
+        saveDraft();
+        router.push('/arrest-submit?type=basic');
+    }
   };
+  
+  const isInvalid = (field: string) => !!formErrors[field];
 
   return (
     <FormProvider {...methods}>
@@ -287,23 +306,30 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               defaultValue={formData.arrest?.suspectName ?? ''}
               onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-              isInvalid={!allWatchedFields.arrest?.suspectName}
+              isInvalid={isInvalid('suspectName')}
             />
-            <TextareaWithPreset
-              label="Arrest Narrative"
-              placeholder="Arrest Narrative"
-              description={
-                <span className="text-red-500">
-                  Describe the events leading up to the arrest in first person and in chronological order, ensure you
-                  explain your probable cause of each of the charges and the arrest.
-                </span>
-              }
-              basePath="narrative"
-              control={control}
-              modifiers={arrestReportModifiers}
-              isInvalid={!allWatchedFields.arrest?.narrative}
-              presetValue={narrativeText}
-              onTextChange={(newValue) => setFormField('arrest', 'narrative', newValue)}
+            <Controller
+                name="arrest.narrative"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                     <TextareaWithPreset
+                        label="Arrest Narrative"
+                        placeholder="Arrest Narrative"
+                        description={
+                            <span className="text-red-500">
+                            Describe the events leading up to the arrest in first person and in chronological order, ensure you
+                            explain your probable cause of each of the charges and the arrest.
+                            </span>
+                        }
+                        basePath="narrative"
+                        control={control}
+                        modifiers={arrestReportModifiers}
+                        isInvalid={isInvalid('narrative')}
+                        presetValue={narrativeText}
+                        onTextChange={(newValue) => field.onChange(newValue)}
+                        />
+                )}
             />
           </div>
         </FormSection>
@@ -319,7 +345,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               className="min-h-[150px]"
               defaultValue={formData.evidence?.supporting ?? ''}
               onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
-              required={false}
             />
             <TextareaField
               label="Dashboard Camera"
@@ -336,7 +361,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               className="min-h-[150px]"
               defaultValue={formData.evidence?.dashcam ?? ''}
               onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-              isInvalid={!allWatchedFields.evidence?.dashcam}
+              isInvalid={isInvalid('dashcam')}
             />
           </div>
         </FormSection>
@@ -353,3 +378,5 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 });
 
 ArrestReportForm.displayName = 'ArrestReportForm';
+
+    
