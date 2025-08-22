@@ -2,6 +2,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback, useState } from 'react';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import {
   Card,
   CardContent,
@@ -25,7 +26,6 @@ import { OfficerSection } from './officer-section';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { LocationDetails } from '../shared/location-details';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
@@ -138,8 +138,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     setUserModified,
   } = useBasicReportModifiersStore();
   
-  const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
-
   const methods = useForm({
     defaultValues: useMemo(() => ({
       ...formData,
@@ -233,7 +231,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       if (!currentValues.evidence?.dashcam) newErrors.dashcam = true;
       if (!currentValues.location?.district) newErrors.district = true;
       if (!currentValues.location?.street) newErrors.street = true;
-      setFormErrors(newErrors);
       return Object.keys(newErrors).length === 0;
   }, [getValues]);
 
@@ -261,27 +258,27 @@ export const ArrestReportForm = forwardRef((props, ref) => {
             setUserModified('narrative', latestFormData.narrative.userModified);
         }
     }
-  }, [getValues, setAll, setModifier, setPreset, setUserModified, narrativeText]);
+  }, [getValues, setAll, setModifier, setPreset, setUserModified, narrativeText, modifiers]);
 
 
   useImperativeHandle(ref, () => ({
     saveDraft,
   }));
   
-  useEffect(() => {
-    validateForm();
-  }, [allWatchedFields, validateForm]);
-
-
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
-    if(validateForm()) {
+    const currentOfficerState = useOfficerStore.getState().officers;
+    if (validateForm() && currentOfficerState.every(o => o.name && o.rank && o.badgeNumber)) {
         saveDraft();
+        setAll({ officers: currentOfficerState });
         router.push('/arrest-submit?type=basic');
     }
   };
-  
-  const isInvalid = (field: string) => !!formErrors[field];
+
+  const isInvalid = (field: keyof FormState | keyof ArrestState | keyof EvidenceState, value: string | undefined) => {
+    const requiredFields = ['suspectName', 'dashcam', 'district', 'street', 'officerName', 'officerRank', 'officerBadge'];
+    return requiredFields.includes(field) && !value;
+  };
 
   return (
     <FormProvider {...methods}>
@@ -306,7 +303,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               defaultValue={formData.arrest?.suspectName ?? ''}
               onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-              isInvalid={isInvalid('suspectName')}
+              isInvalid={isInvalid('suspectName', formData.arrest?.suspectName)}
             />
             <Controller
                 name="arrest.narrative"
@@ -325,9 +322,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                         basePath="narrative"
                         control={control}
                         modifiers={arrestReportModifiers}
-                        isInvalid={isInvalid('narrative')}
+                        isInvalid={isInvalid('narrative', field.value)}
                         presetValue={narrativeText}
-                        onTextChange={(newValue) => field.onChange(newValue)}
+                        onTextChange={(newValue) => {
+                            setFormField('arrest', 'narrative', newValue)
+                        }}
                         />
                 )}
             />
@@ -361,7 +360,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               className="min-h-[150px]"
               defaultValue={formData.evidence?.dashcam ?? ''}
               onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-              isInvalid={isInvalid('dashcam')}
+              isInvalid={isInvalid('dashcam', formData.evidence?.dashcam)}
             />
           </div>
         </FormSection>
@@ -378,5 +377,3 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 });
 
 ArrestReportForm.displayName = 'ArrestReportForm';
-
-    
