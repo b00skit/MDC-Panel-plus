@@ -1,6 +1,25 @@
 {
     "changelogs": [
         {
+            "version": "3.1.4",
+            "type": "Hotfix",
+            "date": "2025-08-22",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed the arrest reports not parsing the officer information."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed the basic/advanced arrest reports not generating a white background for it's paperwork."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Fixed the paperwork generator output always appending a <div></div> between the report."
+                }
+            ]
+        },
+        {
             "version": "3.1.3",
             "type": "Hotfix",
             "date": "2025-08-21",
