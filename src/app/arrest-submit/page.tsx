@@ -58,7 +58,7 @@ function ArrestSubmitContent() {
     
     const handleCopy = () => {
         if (reportRef.current) {
-          navigator.clipboard.writeText(reportRef.current.innerHTML);
+          navigator.clipboard.writeText(reportRef.current.outerHTML);
           toast({
             title: "Success",
             description: "Paperwork HTML copied to clipboard.",
