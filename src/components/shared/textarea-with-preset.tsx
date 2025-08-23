@@ -29,6 +29,7 @@ interface TextareaWithPresetProps {
     onTextChange?: (value: string) => void;
     onUserModifiedChange?: (value: boolean) => void;
     onModifierChange?: (name: string, value: boolean) => void;
+    onPresetChange?: (value: boolean) => void;
 }
 
 export function TextareaWithPreset({
@@ -44,6 +45,7 @@ export function TextareaWithPreset({
     onTextChange,
     onUserModifiedChange,
     onModifierChange,
+    onPresetChange,
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues, trigger } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
@@ -68,6 +70,7 @@ export function TextareaWithPreset({
     const handleTogglePreset = () => {
         const newValue = !isPresetEnabled;
         setValue(`${basePath}.isPreset`, newValue, { shouldDirty: true });
+        onPresetChange?.(newValue);
         if (!newValue && !isUserModified) {
             setLocalValue('');
             setValue(`${basePath}.narrative`, '', { shouldDirty: true });

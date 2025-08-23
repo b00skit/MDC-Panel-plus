@@ -329,6 +329,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                         }}
                         onUserModifiedChange={(value) => setUserModified('narrative', value)}
                         onModifierChange={(name, value) => setModifier(name, value)}
+                        onPresetChange={(value) => setPreset('narrative', value)}
                         />
                 )}
             />
