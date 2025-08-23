@@ -1,9 +1,19 @@
-
 {
     "changelogs": [
         {
-            "version": "3.1.4",
-            "type": "Minor Update",
+            "version": "3.1.3b",
+            "type": "Hotfix",
+            "date": "2025-08-23",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed the arrest report narrative resetting your progress if you click out of it."
+                }
+            ]
+        },
+        {
+            "version": "3.1.3a",
+            "type": "Hotfix",
             "date": "2025-08-22",
             "items": [
                 {
