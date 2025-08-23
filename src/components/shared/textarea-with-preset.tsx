@@ -26,6 +26,10 @@ interface TextareaWithPresetProps {
     isInvalid: boolean;
     noLocalStorage?: boolean;
     presetValue: string;
+    onTextChange?: (value: string) => void;
+    onUserModifiedChange?: (value: boolean) => void;
+    onModifierChange?: (name: string, value: boolean) => void;
+    onPresetChange?: (value: boolean) => void;
 }
 
 export function TextareaWithPreset({
@@ -38,6 +42,10 @@ export function TextareaWithPreset({
     isInvalid,
     noLocalStorage = false,
     presetValue,
+    onTextChange,
+    onUserModifiedChange,
+    onModifierChange,
+    onPresetChange,
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues, trigger } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
@@ -51,19 +59,22 @@ export function TextareaWithPreset({
             isInitialMount.current = false;
             return;
         }
-        if (isPresetEnabled && !isUserModified) {
+        if (isPresetEnabled && !isUserModified && localValue !== presetValue) {
             setLocalValue(presetValue);
-             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
+            setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
+            onTextChange?.(presetValue);
         }
-    }, [presetValue, isPresetEnabled, isUserModified, setValue]);
+    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange, localValue]);
 
 
-    const handleTogglePreset = () => {
-        const newValue = !isPresetEnabled;
+    const handleTogglePreset = (checked: boolean) => {
+        const newValue = Boolean(checked);
         setValue(`${basePath}.isPreset`, newValue, { shouldDirty: true });
+        onPresetChange?.(newValue);
         if (!newValue && !isUserModified) {
             setLocalValue('');
             setValue(`${basePath}.narrative`, '', { shouldDirty: true });
+            onTextChange?.('');
         }
     };
     
@@ -73,9 +84,13 @@ export function TextareaWithPreset({
 
         if (newValue && !isUserModified) {
             setValue(`${basePath}.userModified`, true, { shouldDirty: true });
+            onUserModifiedChange?.(true);
         } else if (!newValue && isUserModified) {
             setValue(`${basePath}.userModified`, false, { shouldDirty: true });
+            onUserModifiedChange?.(false);
         }
+
+        onTextChange?.(newValue);
     };
     
     const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
@@ -126,7 +141,10 @@ export function TextareaWithPreset({
                                 <Checkbox
                                     id={`${basePath}-${mod.name}`}
                                     checked={field.value}
-                                    onCheckedChange={field.onChange}
+                                    onCheckedChange={(value) => {
+                                        field.onChange(value);
+                                        onModifierChange?.(mod.name, Boolean(value));
+                                    }}
                                     disabled={isUserModified}
                                 />
                             )}
