@@ -26,8 +26,6 @@ interface TextareaWithPresetProps {
     isInvalid: boolean;
     noLocalStorage?: boolean;
     presetValue: string;
-    onTextChange: (newValue: string) => void;
-    onUserModifiedChange?: (newValue: boolean) => void;
 }
 
 export function TextareaWithPreset({
@@ -40,59 +38,51 @@ export function TextareaWithPreset({
     isInvalid,
     noLocalStorage = false,
     presetValue,
-    onTextChange,
-    onUserModifiedChange,
 }: TextareaWithPresetProps) {
-    const { watch, setValue, getValues } = useFormContext();
-    const [localValue, setLocalValue] = useState('');
+    const { watch, setValue, getValues, trigger } = useFormContext();
+    const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
     const isInitialMount = useRef(true);
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
     
     useEffect(() => {
-        // On initial mount, set the value from the form store.
         if (isInitialMount.current) {
-            setLocalValue(getValues('arrest.narrative') || '');
             isInitialMount.current = false;
+            return;
         }
-    }, [getValues]);
-
-
-    useEffect(() => {
-        // This effect runs ONLY when the preset-related props change.
-        // It updates the local state if presets are active and not user-modified.
         if (isPresetEnabled && !isUserModified) {
             setLocalValue(presetValue);
+             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
         }
-    }, [presetValue, isPresetEnabled, isUserModified]);
-    
+    }, [presetValue, isPresetEnabled, isUserModified, setValue]);
+
+
     const handleTogglePreset = () => {
         const newValue = !isPresetEnabled;
-        setValue(`${basePath}.isPreset`, newValue);
+        setValue(`${basePath}.isPreset`, newValue, { shouldDirty: true });
         if (!newValue && !isUserModified) {
             setLocalValue('');
-            onTextChange('');
+            setValue(`${basePath}.narrative`, '', { shouldDirty: true });
         }
     };
-
+    
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newValue = e.target.value;
-        setLocalValue(newValue); // Update local state immediately for responsiveness.
+        setLocalValue(newValue);
 
         if (newValue && !isUserModified) {
-            setValue(`${basePath}.userModified`, true);
-            onUserModifiedChange?.(true);
+            setValue(`${basePath}.userModified`, true, { shouldDirty: true });
         } else if (!newValue && isUserModified) {
-            setValue(`${basePath}.userModified`, false);
-            onUserModifiedChange?.(false);
+            setValue(`${basePath}.userModified`, false, { shouldDirty: true });
         }
     };
-
-    const handleBlur = () => {
-        // Update the central store only when the user is done editing.
-        onTextChange(localValue);
+    
+    const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+        setValue(`${basePath}.narrative`, e.target.value, { shouldDirty: true });
+        trigger(`${basePath}.narrative`);
     }
+
     
     const CheckboxWithLabel = (
         <div className="flex items-center space-x-2">
@@ -137,6 +127,7 @@ export function TextareaWithPreset({
                                     id={`${basePath}-${mod.name}`}
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
+                                    disabled={isUserModified}
                                 />
                             )}
                         />
