@@ -2,7 +2,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback, useState } from 'react';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { useForm, FormProvider, Controller, useWatch } from 'react-hook-form';
 import {
   Card,
   CardContent,
@@ -150,7 +150,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     }), [formData, modifiers, presets, userModified]),
   });
 
-  const { control, getValues, reset, watch, trigger, formState: { errors } } = methods;
+  const { control, getValues, reset } = methods;
 
   useEffect(() => {
     reset({
@@ -165,7 +165,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   }, [formData, modifiers, presets, userModified, reset]);
 
   const formRef = useRef<HTMLFormElement>(null);
-  const allWatchedFields = watch();
+
+  const watchedGeneral = useWatch({ control, name: 'general' });
+  const watchedLocation = useWatch({ control, name: 'location' });
+  const watchedArrest = useWatch({ control, name: 'arrest' });
+  const watchedNarrative = useWatch({ control, name: 'narrative' });
 
   const arrestReportModifiers: Modifier[] = useMemo(
     () => [
@@ -176,28 +180,28 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   );
 
   const narrativeText = useMemo(() => {
-    const isPresetActive = allWatchedFields.narrative?.isPreset;
-    const isUserModified = allWatchedFields.narrative?.userModified;
-    
+    const isPresetActive = watchedNarrative?.isPreset;
+    const isUserModified = watchedNarrative?.userModified;
+
     if (!isPresetActive || isUserModified) {
-      return allWatchedFields.arrest?.narrative || '';
+      return watchedArrest?.narrative || '';
     }
 
     const primaryOfficer = officers[0];
     const data = {
-      date: allWatchedFields.general?.date || '',
-      time: allWatchedFields.general?.time || '',
-      street: allWatchedFields.location?.street || '',
-      suspect: allWatchedFields.arrest?.suspectName || '',
+      date: watchedGeneral?.date || '',
+      time: watchedGeneral?.time || '',
+      street: watchedLocation?.street || '',
+      suspect: watchedArrest?.suspectName || '',
       rank: primaryOfficer?.rank || '',
       name: primaryOfficer?.name || '',
       department: primaryOfficer?.department || '',
     };
-    
+
     let baseText = `On the ${data.date}, I ${data.rank} ${data.name} of the ${data.department} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
 
-    const activeModifiers = arrestReportModifiers.filter(mod => allWatchedFields.narrative?.modifiers?.[mod.name]);
-    
+    const activeModifiers = arrestReportModifiers.filter(mod => watchedNarrative?.modifiers?.[mod.name]);
+
     activeModifiers.forEach(mod => {
       if (mod.name === 'booking') return; // Handled separately
       if (mod.text) {
@@ -207,19 +211,17 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     });
 
     const bookingModifier = arrestReportModifiers.find(m => m.name === 'booking');
-    if (allWatchedFields.narrative?.modifiers?.[bookingModifier!.name] && bookingModifier?.text) {
+    if (watchedNarrative?.modifiers?.[bookingModifier!.name] && bookingModifier?.text) {
       const template = Handlebars.compile(bookingModifier.text, { noEscape: true });
       baseText += `\n\n${template(data)}`;
     }
 
     return baseText;
   }, [
-    allWatchedFields.general,
-    allWatchedFields.location,
-    allWatchedFields.arrest?.suspectName,
-    allWatchedFields.narrative?.isPreset,
-    allWatchedFields.narrative?.userModified,
-    JSON.stringify(allWatchedFields.narrative?.modifiers),
+    watchedGeneral,
+    watchedLocation,
+    watchedArrest,
+    watchedNarrative,
     officers,
     arrestReportModifiers,
   ]);
