@@ -21,7 +21,7 @@ type ChangelogItem = {
 
 type ChangelogEntry = {
     version: string;
-    type: 'Hotfix' | 'Minor Update' | 'Major Update';
+    type: 'Release' | 'Major Update' | 'Minor Update' | 'Hotfix';
     date: string;
     items: ChangelogItem[];
 };
@@ -102,9 +102,10 @@ export default function Area51Page() {
                                             <Select onValueChange={field.onChange} value={field.value}>
                                                 <SelectTrigger><SelectValue /></SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="Hotfix">Hotfix</SelectItem>
-                                                    <SelectItem value="Minor Update">Minor Update</SelectItem>
+                                                    <SelectItem value="Release">Release</SelectItem>
                                                     <SelectItem value="Major Update">Major Update</SelectItem>
+                                                    <SelectItem value="Minor Update">Minor Update</SelectItem>
+                                                    <SelectItem value="Hotfix">Hotfix</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         )}

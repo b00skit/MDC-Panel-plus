@@ -17,7 +17,7 @@ type ChangelogItem = {
 
 type ChangelogEntry = {
     version: string;
-    type: 'Hotfix' | 'Minor Update' | 'Major Update';
+    type: 'Release' | 'Major Update' | 'Minor Update' | 'Hotfix';
     date: string;
     items: ChangelogItem[];
 };
@@ -55,9 +55,10 @@ const itemTypeDetails = {
 };
 
 const changelogTypeColors = {
+    'Release': 'bg-green-500/10 text-green-500 border-green-500/50',
+    'Major Update': 'bg-blue-500/10 text-blue-500 border-blue-500/50',
+    'Minor Update': 'bg-yellow-500/10 text-yellow-500 border-yellow-500/50',
     'Hotfix': 'bg-red-500/10 text-red-500 border-red-500/50',
-    'Minor Update': 'bg-blue-500/10 text-blue-500 border-blue-500/50',
-    'Major Update': 'bg-green-500/10 text-green-500 border-green-500/50',
 };
 
 const typeOrder = ['feature', 'addition', 'modification', 'backend', 'fix'];

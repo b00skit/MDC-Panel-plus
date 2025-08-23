@@ -1,8 +1,9 @@
+
 {
     "changelogs": [
         {
             "version": "3.1.4",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-22",
             "items": [
                 {
@@ -21,7 +22,7 @@
         },
         {
             "version": "3.1.3",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-21",
             "items": [
                 {
@@ -44,7 +45,7 @@
         },
         {
             "version": "3.1.2",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-20",
             "items": [
                 {
@@ -75,7 +76,7 @@
         },
         {
             "version": "3.1.1",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-19",
             "items": [
                 {
@@ -106,7 +107,7 @@
         },
         {
             "version": "3.1.0",
-            "type": "Minor Update",
+            "type": "Major Update",
             "date": "2025-08-18",
             "items": [
                 {
@@ -145,7 +146,7 @@
         },
         {
             "version": "3.0.5",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-14",
             "items": [
                 {
@@ -176,7 +177,7 @@
         },
         {
             "version": "3.0.4",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-13",
             "items": [
                 {
@@ -238,7 +239,7 @@
         },
         {
             "version": "3.0.3",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-11",
             "items": [
                 {
@@ -260,7 +261,7 @@
         },
         {
             "version": "3.0.2",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-11",
             "items": [
                 {
@@ -307,7 +308,7 @@
         },
         {
             "version": "3.0.1",
-            "type": "Hotfix",
+            "type": "Minor Update",
             "date": "2025-08-11",
             "items": [
                 {
@@ -329,7 +330,7 @@
         },
         {
             "version": "3.0.0",
-            "type": "Major Update",
+            "type": "Release",
             "date": "2025-08-11",
             "items": [
                 {
