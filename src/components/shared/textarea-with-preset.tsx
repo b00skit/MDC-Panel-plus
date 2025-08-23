@@ -55,12 +55,12 @@ export function TextareaWithPreset({
             isInitialMount.current = false;
             return;
         }
-        if (isPresetEnabled && !isUserModified) {
+        if (isPresetEnabled && !isUserModified && localValue !== presetValue) {
             setLocalValue(presetValue);
             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
             onTextChange?.(presetValue);
         }
-    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange]);
+    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange, localValue]);
 
 
     const handleTogglePreset = () => {
