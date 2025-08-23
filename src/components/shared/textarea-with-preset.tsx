@@ -26,6 +26,8 @@ interface TextareaWithPresetProps {
     isInvalid: boolean;
     noLocalStorage?: boolean;
     presetValue: string;
+    onTextChange?: (value: string) => void;
+    onUserModifiedChange?: (value: boolean) => void;
 }
 
 export function TextareaWithPreset({
@@ -38,6 +40,8 @@ export function TextareaWithPreset({
     isInvalid,
     noLocalStorage = false,
     presetValue,
+    onTextChange,
+    onUserModifiedChange,
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues, trigger } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
@@ -53,9 +57,10 @@ export function TextareaWithPreset({
         }
         if (isPresetEnabled && !isUserModified) {
             setLocalValue(presetValue);
-             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
+            setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
+            onTextChange?.(presetValue);
         }
-    }, [presetValue, isPresetEnabled, isUserModified, setValue]);
+    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange]);
 
 
     const handleTogglePreset = () => {
@@ -64,6 +69,7 @@ export function TextareaWithPreset({
         if (!newValue && !isUserModified) {
             setLocalValue('');
             setValue(`${basePath}.narrative`, '', { shouldDirty: true });
+            onTextChange?.('');
         }
     };
     
@@ -73,9 +79,13 @@ export function TextareaWithPreset({
 
         if (newValue && !isUserModified) {
             setValue(`${basePath}.userModified`, true, { shouldDirty: true });
+            onUserModifiedChange?.(true);
         } else if (!newValue && isUserModified) {
             setValue(`${basePath}.userModified`, false, { shouldDirty: true });
+            onUserModifiedChange?.(false);
         }
+
+        onTextChange?.(newValue);
     };
     
     const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
