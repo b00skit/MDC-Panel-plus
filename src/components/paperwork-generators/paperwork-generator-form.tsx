@@ -330,7 +330,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         modifiers={field.modifiers || []}
                         isInvalid={!!(field.required && !watch(`${path}.narrative`))}
                         noLocalStorage={field.noLocalStorage}
-                        value={narrativeText}
+                        presetValue={narrativeText}
                     />
                 );
 
