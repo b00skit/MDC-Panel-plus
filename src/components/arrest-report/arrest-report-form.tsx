@@ -327,6 +327,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                         onTextChange={(newValue) => {
                             setFormField('arrest', 'narrative', newValue)
                         }}
+                        onUserModifiedChange={(value) => setUserModified('narrative', value)}
                         />
                 )}
             />
