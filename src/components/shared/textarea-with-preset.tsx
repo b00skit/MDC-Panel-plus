@@ -27,6 +27,7 @@ interface TextareaWithPresetProps {
     noLocalStorage?: boolean;
     presetValue: string;
     onTextChange: (newValue: string) => void;
+    onUserModifiedChange?: (newValue: boolean) => void;
 }
 
 export function TextareaWithPreset({
@@ -40,6 +41,7 @@ export function TextareaWithPreset({
     noLocalStorage = false,
     presetValue,
     onTextChange,
+    onUserModifiedChange,
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues } = useFormContext();
     const [localValue, setLocalValue] = useState('');
@@ -80,8 +82,10 @@ export function TextareaWithPreset({
 
         if (newValue && !isUserModified) {
             setValue(`${basePath}.userModified`, true);
+            onUserModifiedChange?.(true);
         } else if (!newValue && isUserModified) {
             setValue(`${basePath}.userModified`, false);
+            onUserModifiedChange?.(false);
         }
     };
 
