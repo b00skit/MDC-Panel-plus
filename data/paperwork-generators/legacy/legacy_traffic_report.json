@@ -40,7 +40,8 @@
                 "type": "dropdown", 
                 "name": "vehicle_tint_level", 
                 "label": "Tint Level", 
-                "placeholder": "Select Tint Level", 
+                "placeholder": "Select Tint Level",
+                "defaultValue": "Uninspected",
                 "options": [
                     "Uninspected",
                     {
