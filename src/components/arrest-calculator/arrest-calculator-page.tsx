@@ -104,7 +104,7 @@ export function ArrestCalculatorPage() {
       resetCharges();
     }
     
-    fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
+    fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
       .then((res) => res.json())
       .then((data: PenalCode) => {
         setPenalCode(data);
@@ -115,7 +115,7 @@ export function ArrestCalculatorPage() {
         setLoading(false);
       });
     
-    fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_depa_categories.json')
+    fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_depa_categories.json')
         .then(res => res.json())
         .then(data => setDepaData(data));
 

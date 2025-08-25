@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import configData from '../../../data/config.json';
 
 const additionMapping: { [key: string]: string } = {
   '1': 'Offender',
@@ -97,7 +98,7 @@ function ArrestCalculationContent() {
 
   useEffect(() => {
     if (!penalCode) {
-      fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
+      fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
         .then((res) => res.json())
         .then((data: PenalCode) => {
           setPenalCode(data);

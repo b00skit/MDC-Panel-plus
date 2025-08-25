@@ -39,6 +39,7 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
 import { EvidenceLog, NarrativeSection } from './narrative-sections';
+import configData from '../../../data/config.json';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -485,7 +486,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             .then((res) => res.json())
             .then((data) => setDeptRanks(data));
 
-        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_locations.json')
             .then(res => res.json())
             .then(data => {
                 const uniqueDistricts = [...new Set((data.districts || []) as string[])];

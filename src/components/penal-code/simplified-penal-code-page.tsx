@@ -12,6 +12,7 @@ import { type PenalCode, type Charge } from '@/stores/charge-store';
 import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
+import configData from '../../../data/config.json';
 
 const getTypeClasses = (type: Charge['type']) => {
     switch (type) {
@@ -140,7 +141,7 @@ export function SimplifiedPenalCodePage() {
     const [typeFilter, setTypeFilter] = useState<'all' | 'F' | 'M' | 'I'>('all');
 
     useEffect(() => {
-        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
+        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
             .then(res => {
                 if (!res.ok) {
                     throw new Error('Failed to fetch penal code data');

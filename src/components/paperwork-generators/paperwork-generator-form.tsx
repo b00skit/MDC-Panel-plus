@@ -9,8 +9,8 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Button } from '../ui/button';
-import { OfficerSection } from '../arrest-report/officer-section';
-import { GeneralSection } from '../arrest-report/general-section';
+import { OfficerSection } from '../shared/officer-section';
+import { GeneralSection } from '../shared/general-section';
 import { Separator } from '../ui/separator';
 import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useOfficerStore } from '@/stores/officer-store';
@@ -28,6 +28,7 @@ import { MultiSelect } from '../ui/multi-select';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
 import { cn } from '@/lib/utils';
+import configData from '../../../data/config.json';
 
 type FormField = {
     type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset';
@@ -145,12 +146,12 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         const hasLocationFields = generatorConfig.form.some(field => field.type === 'location' || field.optionsSource === 'districts' || field.optionsSource === 'streets');
         
         if (hasChargeField && !penalCode) {
-            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_penal_code.json')
+            fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
                 .then((res) => res.json())
                 .then((data) => setPenalCode(data));
         }
         if (hasLocationFields && locations.districts.length === 0) {
-            fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_locations.json')
+            fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_locations.json')
                 .then(res => res.json())
                 .then(data => {
                     const uniqueDistricts = [...new Set<string>(data.districts || [])];
@@ -167,7 +168,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             return;
         }
         setIsFetchingVehicles(true);
-        fetch('https://sys.booskit.dev/cdn/serve.php?file=gtaw_vehicles.json')
+        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_vehicles.json')
             .then(res => res.json())
             .then(data => {
                 const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);

@@ -9,6 +9,7 @@
     "SITE_DISCORD_CONTACT": "booskit",
     "ENABLE_FORM_BUILDER": false,
     "MAX_SENTENCE_DAYS": 25,
+    "CONTENT_DELIVERY_NETWORK": "https://sys.booskit.dev/cdn/serve.php",
     "URL_GITHUB": "https://github.com/b00skit/MDC-Panel-plus",
     "URL_DISCORD": "https://discord.gg/rxfYd23TNz",
     "URL_MDC": "https://mdc.gta.world",
