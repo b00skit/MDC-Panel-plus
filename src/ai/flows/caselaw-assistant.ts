@@ -114,7 +114,7 @@ export const caselawAssistantFlow = ai.defineFlow(
       outputSchema: CaselawOutputSchema,
     },
     async (input) => {
-        const result = await ai.run(caselawAgent, {input: input.query});
+        const result = await caselawAgent.run(input.query);
 
         if (result.output) {
             return result.output;
@@ -129,3 +129,4 @@ export const caselawAssistantFlow = ai.defineFlow(
         return finalAction.output as CaselawOutput;
     }
 );
+
