@@ -18,7 +18,7 @@ const CaselawOutputSchema = z.object({
     implication: z.string().describe('The implication of the case for law enforcement.'),
     jurisdiction: z.string().describe('The jurisdiction of the case.'),
     year: z.string().describe('The year the case was decided.'),
-  }).optional().describe("The most relevant case found in the provided caselaw data. Omit if no relevant case is found."),
+  }).optional().nullable().describe("The most relevant case found in the provided caselaw data. Omit or set to null if no relevant case is found."),
   oyez_cases: z.array(z.object({
       name: z.string().describe("The name of the similar case found on Oyez."),
       href: z.string().describe("The direct URL to the case on Oyez.org."),
@@ -33,7 +33,15 @@ const caselawTool = ai.defineTool(
       inputSchema: z.object({
         query: z.string(),
       }),
-      outputSchema: CaselawOutputSchema,
+      outputSchema: z.object({ 
+        found_case: z.object({
+            case: z.string(),
+            summary: z.string(),
+            implication: z.string(),
+            jurisdiction: z.string(),
+            year: z.string(),
+          }).optional().nullable(),
+      }),
     },
     async (input) => {
         console.log(`Searching for caselaw with query: ${input.query}`);
@@ -62,7 +70,7 @@ const caselawTool = ai.defineTool(
             }
         }
         
-        return {};
+        return { found_case: null };
     },
 );
 
