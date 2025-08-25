@@ -19,6 +19,7 @@ import { Skeleton } from '../ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
+import { sanitizeLocations } from '@/lib/sanitize-locations';
 
 const jurisdictionMap: { [key: string]: string } = {
     'federal': 'Federal',
@@ -50,7 +51,7 @@ export function CaselawAIDialog({ open, onOpenChange }: CaselawAIDialogProps) {
 
     try {
       const flowResult = await caselawAssistantFlow({ query });
-      setResult(flowResult);
+      setResult(sanitizeLocations(flowResult));
     } catch (err) {
       console.error(err);
       setError('An error occurred while fetching the answer. Please try again.');

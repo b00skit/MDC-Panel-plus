@@ -5,6 +5,7 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import caselaws from '@/../data/caselaws.json';
 import { Action, Tool } from 'genkit/experimental/ai';
+import { sanitizeLocations } from '@/lib/sanitize-locations';
 
 const CaselawInputSchema = z.object({
     query: z.string().describe('The user\'s question about a caselaw.'),
@@ -71,12 +72,7 @@ const oyezSearchTool = ai.defineTool({
         { name: "Brandenburg v. Ohio", href: "https://www.oyez.org/cases/1968/492" }
     ];
 
-    const processedResults = MOCKED_OYEZ_RESULTS.map(caseInfo => ({
-        ...caseInfo,
-        name: caseInfo.name
-            .replace(/California/g, 'San Andreas')
-            .replace(/Los Angeles/g, 'Los Santos')
-    }));
+    const processedResults = sanitizeLocations(MOCKED_OYEZ_RESULTS);
 
     return { oyez_cases: processedResults };
 });
@@ -118,6 +114,7 @@ export const caselawAssistantFlow = ai.defineFlow(
         if (!output) {
             throw new Error("The AI failed to produce a valid output.");
         }
-        return output;
+        const sanitized = sanitizeLocations(output) as CaselawOutput;
+        return sanitized;
     }
 );
