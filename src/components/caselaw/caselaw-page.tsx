@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car } from 'lucide-react';
+import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car, Sparkles } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 import { FeedbackDialog } from '@/components/dashboard/feedback-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { CaselawAIDialog } from './caselaw-ai-dialog';
 
 type Resource = {
     id: string;
@@ -234,6 +235,7 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     const [searchTerm, setSearchTerm] = useState('');
     const [jurisdictionFilter, setJurisdictionFilter] = useState<'all' | 'federal' | 'local'>('all');
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
 
 
     const filteredCaselaws = useMemo(() => {
@@ -254,6 +256,8 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
             <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
+            <CaselawAIDialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen} />
+
             <PageHeader
                 title="Caselaw & Legal Resources"
                 description="Quickly access legal documents, schedules, and important caselaw."
@@ -264,10 +268,15 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
                  {resources.map(resource => <ResourceCard key={resource.id} resource={resource} config={config} />)}
              </div>
             }
-
-            <div className="text-center text-muted-foreground p-4 border-2 border-dashed rounded-lg">
-                <p className="mb-2">Is what you're looking for not here? Submit feedback</p>
-                <Button onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
+            
+            <div className="flex flex-wrap gap-4 items-center justify-center p-4 border-2 border-dashed rounded-lg">
+                 <p className="text-center text-muted-foreground">Is what you're looking for not here? Can't find a case?</p>
+                 <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
+                    <Button onClick={() => setIsAIDialogOpen(true)}>
+                        <Sparkles className="mr-2 h-4 w-4" /> Ask an AI
+                    </Button>
+                 </div>
             </div>
 
             <div>
