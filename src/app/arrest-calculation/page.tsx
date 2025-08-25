@@ -47,9 +47,9 @@ function ArrestCalculationContent() {
     chargeStrings.forEach((chargeStr, index) => {
         if (parsingError) return;
 
-        const parts = chargeStr.split('+');
+        const parts = chargeStr.split(/[\s+]/); // Split by space or plus
         if (parts.length < 3) {
-            setError(`Invalid charge format for parameter #${index + 1}.`);
+            setError(`Invalid charge format for parameter #${index + 1}. Expected at least 3 parts, received ${parts.length}.`);
             parsingError = true;
             return;
         }
