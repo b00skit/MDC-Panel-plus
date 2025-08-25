@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     const body = await request.json();
     const { error, info, path } = body;
-    const webhookUrl = process.env.DISCORD_ERROR_WEBHOOK_URL;
+    const webhookUrl = process.env.DISCORD_LOGS_WEBHOOK_URL;
 
     if (!webhookUrl) {
         // If no webhook is configured, just log the error to the console.
