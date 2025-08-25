@@ -4,7 +4,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import caselaws from '@/../data/caselaws.json';
-import { Agent, Action, Tool } from 'genkit/experimental/ai';
+import { Action, Tool } from 'genkit/experimental/ai';
 
 const CaselawInputSchema = z.object({
     query: z.string().describe('The user\'s question about a caselaw.'),
@@ -88,24 +88,23 @@ const oyezSearchTool = ai.defineTool({
     return { oyez_cases: MOCKED_OYEZ_RESULTS };
 });
 
-const caselawAgent: Agent = {
-    name: 'caselaw-assistant',
-    model: 'googleai/gemini-2.0-flash',
+const caselawAssistantPrompt = ai.definePrompt({
+    name: "caselawAssistantPrompt",
     tools: [caselawTool, oyezSearchTool],
-    prompt: {
-        system: `You are a helpful legal assistant for Law Enforcement Officers.
-        Your goal is to answer questions about caselaw.
-        First, use the caselawSearch tool to check if a relevant case exists in the local database.
-        Then, use the oyezSearch tool to find similar cases on Oyez.org for broader context.
-        Finally, synthesize the results into a helpful answer based on the provided schema.
-        If no local case is found, state that clearly but still provide the Oyez results.
-        Your instructions are to respond ONLY in the format defined by the CaselawOutputSchema. Do not add any conversational text or markdown.
-        `,
-        output: {
-            schema: CaselawOutputSchema
-        }
-    },
-};
+    prompt: `You are a helpful legal assistant for Law Enforcement Officers.
+    Your goal is to answer questions about caselaw.
+    First, use the caselawSearch tool to check if a relevant case exists in the local database.
+    Then, use the oyezSearch tool to find similar cases on Oyez.org for broader context.
+    Finally, synthesize the results into a helpful answer based on the provided schema.
+    If no local case is found, state that clearly but still provide the Oyez results.
+    Your instructions are to respond ONLY in the format defined by the CaselawOutputSchema. Do not add any conversational text or markdown.
+    
+    User Query: {{query}}`,
+    output: {
+        schema: CaselawOutputSchema
+    }
+});
+
 
 export const caselawAssistantFlow = ai.defineFlow(
     {
@@ -114,18 +113,11 @@ export const caselawAssistantFlow = ai.defineFlow(
       outputSchema: CaselawOutputSchema,
     },
     async (input) => {
-        const result = await ai.run(caselawAgent, input.query);
-
-        if (result.output) {
-            return result.output;
+        const result = await caselawAssistantPrompt(input);
+        const output = result.output;
+        if (!output) {
+            throw new Error("The AI failed to produce a valid output.");
         }
-        
-        const finalAction = result.actions[result.actions.length -1] as Action<any,any>
-
-        if (!finalAction.output) {
-            throw new Error("The agent failed to produce a final output.");
-        }
-
-        return finalAction.output as CaselawOutput;
+        return output;
     }
 );
