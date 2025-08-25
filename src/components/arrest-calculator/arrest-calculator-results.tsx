@@ -265,12 +265,12 @@ export function ArrestCalculatorResults({
             const offense = charge.offense || '1';
             const addition = additionMapping[charge.addition!] || '1';
 
-            let chargeStr = `${classChar}${chargeId} ${offense} ${addition}`;
+            let chargeStr = `${classChar}${chargeId}-${offense}-${addition}`;
 
             if (charge.category && chargeDetails.drugs) {
                 const categoryIndex = Object.keys(chargeDetails.drugs).find(key => chargeDetails.drugs![key] === charge.category);
                 if (categoryIndex) {
-                    chargeStr += ` ${categoryIndex}`;
+                    chargeStr += `-${categoryIndex}`;
                 }
             }
             return `c=${encodeURIComponent(chargeStr)}`;
