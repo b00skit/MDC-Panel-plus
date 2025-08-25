@@ -4,10 +4,10 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     const body = await request.json();
     const { isPositive, feedback, reasons, pathname } = body;
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    const webhookUrl = process.env.DISCORD_FEEDBACK_WEBHOOK_URL;
 
     if (!webhookUrl) {
-        console.error("Discord webhook URL not set in environment variables.");
+        console.error("Discord feedback webhook URL not set in environment variables.");
         return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
     }
 

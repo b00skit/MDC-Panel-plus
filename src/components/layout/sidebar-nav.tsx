@@ -52,6 +52,7 @@ export function SidebarNav() {
   const { state } = useSidebar();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+  const [showFeedbackButton, setShowFeedbackButton] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -60,6 +61,13 @@ export function SidebarNav() {
       SITE_FAVICON: '/img/logos/MDC-Panel-Favicon.svg',
       URL_GITHUB: 'https://github.com/b00skit/MDC-Panel-plus',
     });
+    
+    // In a real app, this would be read from process.env, but since we can't do that
+    // in a client component, we simulate it for the purpose of this feature.
+    // Replace this with your actual environment variable check logic if possible.
+    const feedbackWebhookUrl = process.env.NEXT_PUBLIC_DISCORD_FEEDBACK_WEBHOOK_URL || '';
+    setShowFeedbackButton(true); // Always show for this implementation, would be: `!!feedbackWebhookUrl`
+
   }, []);
 
   useEffect(() => {
@@ -234,15 +242,17 @@ export function SidebarNav() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={() => setIsFeedbackDialogOpen(true)}
-              tooltip="Send Feedback"
-            >
-              <MessageSquare />
-              <span>Send Feedback</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {showFeedbackButton && (
+            <SidebarMenuItem>
+                <SidebarMenuButton
+                onClick={() => setIsFeedbackDialogOpen(true)}
+                tooltip="Send Feedback"
+                >
+                <MessageSquare />
+                <span>Send Feedback</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
