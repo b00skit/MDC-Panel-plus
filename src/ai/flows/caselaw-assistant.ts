@@ -70,7 +70,15 @@ const oyezSearchTool = ai.defineTool({
         { name: "Gideon v. Wainwright", href: "https://www.oyez.org/cases/1962/155" },
         { name: "Brandenburg v. Ohio", href: "https://www.oyez.org/cases/1968/492" }
     ];
-    return { oyez_cases: MOCKED_OYEZ_RESULTS };
+
+    const processedResults = MOCKED_OYEZ_RESULTS.map(caseInfo => ({
+        ...caseInfo,
+        name: caseInfo.name
+            .replace(/California/g, 'San Andreas')
+            .replace(/Los Angeles/g, 'Los Santos')
+    }));
+
+    return { oyez_cases: processedResults };
 });
 
 const caselawAssistantPrompt = ai.definePrompt({
@@ -79,7 +87,7 @@ const caselawAssistantPrompt = ai.definePrompt({
     prompt: `You are a helpful legal assistant for Law Enforcement Officers.
     Your goal is to answer questions about caselaw based on the user's query.
     
-    First, analyze the user's query and compare it against the provided list of local San Andreas caselaws. Find the single most relevant case from this list. A case is relevant if its summary or implication directly addresses the user's question. If you find a strong match, populate the 'found_case' field in your response. If no local case is a strong match, leave the 'found_case' field as null.
+    First, analyze the user's query and compare it against the provided list of local caselaws. Find the single most relevant case from this list. A case is relevant if its summary or implication directly addresses the user's question. If you find a strong match, populate the 'found_case' field in your response. If no local case is a strong match, leave the 'found_case' field as null.
 
     Then, use the oyezSearch tool to find similar cases on Oyez.org for broader context.
     Finally, synthesize the results into a helpful answer based on the provided schema.

@@ -128,7 +128,7 @@ export function CaselawAIDialog({ open, onOpenChange }: CaselawAIDialogProps) {
                             <CardHeader>
                                 <div className="flex justify-between items-start gap-2">
                                     <div>
-                                        <p className="text-sm font-semibold text-primary">LOCAL CASELAW</p>
+                                        <p className="text-sm font-semibold text-primary">FROM LOCAL DATABASE</p>
                                         <CardTitle>{result.found_case.case} ({result.found_case.year})</CardTitle>
                                     </div>
                                      <Badge variant="secondary">{jurisdictionMap[result.found_case.jurisdiction]}</Badge>
