@@ -7,7 +7,7 @@ import { PageHeader } from '../dashboard/page-header';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '../ui/select';
 import { Button } from '../ui/button';
 import { OfficerSection } from '../shared/officer-section';
 import { GeneralSection } from '../shared/general-section';
@@ -350,9 +350,22 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                         <SelectValue placeholder={field.placeholder} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                    {field.options?.map((option) => (
-                                        <SelectItem key={option} value={option}>{option}</SelectItem>
-                                    ))}
+                                        {field.options?.map((option) => {
+                                            if (typeof option === 'string') {
+                                                return <SelectItem key={option} value={option}>{option}</SelectItem>;
+                                            }
+                                            if (typeof option === 'object' && option.label && option.items) {
+                                                return (
+                                                    <SelectGroup key={option.label}>
+                                                        <SelectLabel>{option.label}</SelectLabel>
+                                                        {option.items.map((item: string) => (
+                                                            <SelectItem key={item} value={item}>{item}</SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                );
+                                            }
+                                            return null;
+                                        })}
                                     </SelectContent>
                                 </Select>
                             )}
