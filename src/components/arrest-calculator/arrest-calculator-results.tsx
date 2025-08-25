@@ -13,7 +13,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, Clipboard, Pencil } from 'lucide-react';
+import { AlertTriangle, Clipboard, Pencil, Link2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -250,18 +250,60 @@ export function ArrestCalculatorResults({
       router.push('/arrest-calculator?modify=true');
     };
 
+    const handleCopyCalculationLink = () => {
+        const additionMapping: { [key: string]: number } = {
+            'Offender': 1, 'Accomplice': 2, 'Accessory': 3,
+            'Conspiracy': 4, 'Attempt': 5, 'Solicitation': 6, 'Parole Violation': 7,
+        };
+
+        const chargeParams = report.map(charge => {
+            const chargeDetails = penalCode[charge.chargeId!];
+            if (!chargeDetails) return null;
+
+            const classChar = charge.class?.charAt(0).toLowerCase() || '';
+            const chargeId = chargeDetails.id;
+            const offense = charge.offense || '1';
+            const addition = additionMapping[charge.addition!] || '1';
+
+            let chargeStr = `${classChar}${chargeId}+${offense}+${addition}`;
+
+            if (charge.category && chargeDetails.drugs) {
+                const categoryIndex = Object.keys(chargeDetails.drugs).find(key => chargeDetails.drugs![key] === charge.category);
+                if (categoryIndex) {
+                    chargeStr += `+${categoryIndex}`;
+                }
+            }
+            return `c=${chargeStr}`;
+        }).filter(Boolean);
+
+        if (chargeParams.length > 0) {
+            const url = `${window.location.origin}/arrest-calculation?${chargeParams.join('&')}`;
+            navigator.clipboard.writeText(url);
+            toast({
+                title: "Link Copied!",
+                description: "Arrest calculation link copied to clipboard.",
+            });
+        }
+    }
+
   return (
     <div className="space-y-6">
       {showCharges && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Charges</CardTitle>
-            {showModifyChargesButton && (
-              <Button variant="outline" size="sm" onClick={handleModifyCharges}>
-                <Pencil className="mr-2 h-4 w-4" />
-                Modify Charges
-              </Button>
-            )}
+            <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleCopyCalculationLink}>
+                    <Link2 className="mr-2 h-4 w-4" />
+                    Copy Calculation Link
+                </Button>
+                {showModifyChargesButton && (
+                <Button variant="outline" size="sm" onClick={handleModifyCharges}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Modify Charges
+                </Button>
+                )}
+            </div>
           </CardHeader>
           <CardContent>
             <Table>
