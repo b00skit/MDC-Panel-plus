@@ -261,6 +261,11 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
             <PageHeader
                 title="Caselaw & Legal Resources"
                 description="Quickly access legal documents, schedules, and important caselaw."
+                actions={
+                    <Button onClick={() => setIsAIDialogOpen(true)}>
+                        <Sparkles className="mr-2 h-4 w-4" /> AI Caselaw Assistant
+                    </Button>
+                }
             />
             
             {loading ? <SkeletonGrid count={3} CardComponent={Card} /> :
@@ -270,13 +275,8 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
             }
             
             <div className="flex flex-wrap gap-4 items-center justify-center p-4 border-2 border-dashed rounded-lg">
-                 <p className="text-center text-muted-foreground">Is what you're looking for not here? Can't find a case?</p>
-                 <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
-                    <Button onClick={() => setIsAIDialogOpen(true)}>
-                        <Sparkles className="mr-2 h-4 w-4" /> Ask an AI
-                    </Button>
-                 </div>
+                 <p className="text-center text-muted-foreground">Can't find a case? Is something incorrect?</p>
+                 <Button variant="outline" onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
             </div>
 
             <div>
