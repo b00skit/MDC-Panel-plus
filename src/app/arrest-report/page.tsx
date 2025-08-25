@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { AdvancedArrestReportForm } from '@/components/arrest-report/advanced-arrest-report-form';
-import { ArrestReportResults } from '@/components/arrest-report/arrest-report-results';
+import { ArrestCalculatorResults } from '@/components/arrest-calculator/arrest-calculator-results';
 
 
 export default function ArrestReportPage() {
@@ -60,7 +60,7 @@ export default function ArrestReportPage() {
       />
         {!isClient && renderSkeleton()}
         {hasReport && penalCode && (
-            <ArrestReportResults 
+            <ArrestCalculatorResults 
                 report={report} 
                 penalCode={penalCode}
                 showCharges={true}

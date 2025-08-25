@@ -1,7 +1,7 @@
 
 'use client';
 import { useRouter } from 'next/navigation';
-import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback, useState } from 'react';
+import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 import {
   Card,
@@ -21,8 +21,8 @@ import {
   User,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { GeneralSection } from './general-section';
-import { OfficerSection } from './officer-section';
+import { GeneralSection } from '@/components/shared/general-section';
+import { OfficerSection } from '@/components/shared/officer-section';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { LocationDetails } from '../shared/location-details';
@@ -177,10 +177,10 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
   const narrativeText = useMemo(() => {
     const isPresetActive = allWatchedFields.narrative?.isPreset;
-    const isUserModified = allWatchedFields.narrative?.userModified;
+    const isUserModified = userModified.narrative;
     
     if (!isPresetActive || isUserModified) {
-      return allWatchedFields.arrest?.narrative || '';
+      return getValues('arrest.narrative') || '';
     }
 
     const primaryOfficer = officers[0];
@@ -218,48 +218,50 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     allWatchedFields.location,
     allWatchedFields.arrest?.suspectName,
     allWatchedFields.narrative?.isPreset,
-    allWatchedFields.narrative?.userModified,
     JSON.stringify(allWatchedFields.narrative?.modifiers),
     officers,
     arrestReportModifiers,
+    getValues,
+    userModified.narrative
   ]);
   
-  const validateForm = useCallback(() => {
-      const currentValues = getValues();
-      const newErrors: Record<string, boolean> = {};
-      if (!currentValues.arrest?.suspectName) newErrors.suspectName = true;
-      if (!currentValues.evidence?.dashcam) newErrors.dashcam = true;
-      if (!currentValues.location?.district) newErrors.district = true;
-      if (!currentValues.location?.street) newErrors.street = true;
-      return Object.keys(newErrors).length === 0;
-  }, [getValues]);
+  const isInvalid = (fieldName: string) => {
+    const fields = fieldName.split('.');
+    let error = errors;
+    for (const field of fields) {
+      if (error && field in error) {
+        error = error[field];
+      } else {
+        return false;
+      }
+    }
+    return !!error;
+  };
 
   const saveDraft = useCallback(() => {
     const latestFormData = getValues();
-    if (latestFormData) {
-        const currentOfficerState = useOfficerStore.getState().officers;
-        setAll({
-            general: latestFormData.general,
-            arrest: { ...latestFormData.arrest, narrative: narrativeText },
-            location: latestFormData.location,
-            evidence: latestFormData.evidence,
-            officers: currentOfficerState,
+    const currentOfficerState = useOfficerStore.getState().officers;
+
+    setAll({
+        general: latestFormData.general,
+        arrest: { ...latestFormData.arrest, narrative: latestFormData.narrative.narrative },
+        location: latestFormData.location,
+        evidence: latestFormData.evidence,
+        officers: currentOfficerState,
+    });
+
+    if (latestFormData.narrative?.modifiers) {
+        Object.keys(latestFormData.narrative.modifiers).forEach((key) => {
+            setModifier(key as keyof typeof modifiers, latestFormData.narrative.modifiers[key]);
         });
-
-        if (latestFormData.narrative?.modifiers) {
-            Object.keys(latestFormData.narrative.modifiers).forEach((key) => {
-                setModifier(key as keyof typeof modifiers, latestFormData.narrative.modifiers[key]);
-            });
-        }
-        if (latestFormData.narrative?.isPreset !== undefined) {
-            setPreset('narrative', latestFormData.narrative.isPreset);
-        }
-        if (latestFormData.narrative?.userModified !== undefined) {
-            setUserModified('narrative', latestFormData.narrative.userModified);
-        }
     }
-  }, [getValues, setAll, setModifier, setPreset, setUserModified, narrativeText, modifiers]);
-
+    if (latestFormData.narrative?.isPreset !== undefined) {
+        setPreset('narrative', latestFormData.narrative.isPreset);
+    }
+    if (latestFormData.narrative?.userModified !== undefined) {
+        setUserModified('narrative', latestFormData.narrative.userModified);
+    }
+  }, [getValues, setAll, setModifier, setPreset, setUserModified, modifiers]);
 
   useImperativeHandle(ref, () => ({
     saveDraft,
@@ -268,17 +270,12 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
     const currentOfficerState = useOfficerStore.getState().officers;
-    if (validateForm() && currentOfficerState.every(o => o.name && o.rank && o.badgeNumber)) {
+    if (currentOfficerState.every(o => o.name && o.rank && o.badgeNumber)) {
         saveDraft();
-        setAll({ officers: currentOfficerState });
         router.push('/arrest-submit?type=basic');
     }
   };
 
-  const isInvalid = (field: keyof FormState | keyof ArrestState | keyof EvidenceState, value: string | undefined) => {
-    const requiredFields = ['suspectName', 'dashcam', 'district', 'street', 'officerName', 'officerRank', 'officerBadge'];
-    return requiredFields.includes(field) && !value;
-  };
 
   return (
     <FormProvider {...methods}>
@@ -303,12 +300,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               defaultValue={formData.arrest?.suspectName ?? ''}
               onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-              isInvalid={isInvalid('suspectName', formData.arrest?.suspectName)}
+              isInvalid={isInvalid('arrest.suspectName')}
             />
             <Controller
-                name="arrest.narrative"
+                name="narrative"
                 control={control}
-                rules={{ required: true }}
                 render={({ field }) => (
                      <TextareaWithPreset
                         label="Arrest Narrative"
@@ -322,7 +318,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                         basePath="narrative"
                         control={control}
                         modifiers={arrestReportModifiers}
-                        isInvalid={isInvalid('narrative', field.value)}
+                        isInvalid={isInvalid('arrest.narrative')}
                         presetValue={narrativeText}
                         onTextChange={(newValue) => {
                             setFormField('arrest', 'narrative', newValue)
@@ -363,7 +359,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
               className="min-h-[150px]"
               defaultValue={formData.evidence?.dashcam ?? ''}
               onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-              isInvalid={isInvalid('dashcam', formData.evidence?.dashcam)}
+              isInvalid={isInvalid('evidence.dashcam')}
             />
           </div>
         </FormSection>

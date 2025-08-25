@@ -155,8 +155,8 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
     swapOfficer(officerId, altChar);
   }
   
-  const isOfficerInvalid = (officer: Officer, field: keyof Officer) => {
-    return !officer[field];
+  const isOfficerInvalid = (officer: Officer) => {
+    return !officer.name || !officer.rank || !officer.badgeNumber;
   };
 
   return (
@@ -173,7 +173,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                         icon={<User className="h-4 w-4 text-muted-foreground" />}
                         value={officer.name}
                         onChange={(e) => updateOfficer(officer.id, { name: e.target.value })}
-                        isInvalid={isOfficerInvalid(officer, 'name')}
+                        isInvalid={!officer.name}
                     />
                 </div>
                 <div className="md:col-span-4">
@@ -187,7 +187,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                             const [department, rank] = value.split('__');
                             updateOfficer(officer.id, { department, rank });
                         }}
-                        isInvalid={isOfficerInvalid(officer, 'rank')}
+                        isInvalid={!officer.rank}
                     >
                         {Object.entries(deptRanks).map(([dept, ranks]) => (
                             <SelectGroup key={dept}>
@@ -207,7 +207,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                         icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
                         value={officer.badgeNumber}
                         onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
-                         isInvalid={isOfficerInvalid(officer, 'badgeNumber')}
+                         isInvalid={!officer.badgeNumber}
                     />
                 </div>
               <div className="md:col-span-1">

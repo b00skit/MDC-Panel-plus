@@ -13,7 +13,7 @@ import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
-import { ArrestReportResults } from '@/components/arrest-report/arrest-report-results';
+import { ArrestCalculatorResults } from '@/components/arrest-calculator/arrest-calculator-results';
 import { BasicFormattedReport } from '@/components/arrest-report/basic-formatted-report';
 import { AdvancedFormattedReport } from '@/components/arrest-report/advanced-formatted-report';
 import { useArchiveStore } from '@/stores/archive-store';
@@ -57,8 +57,8 @@ function ArrestSubmitContent() {
     }, [hasReport, formData, report, reportType, archiveReport]);
     
     const handleCopy = () => {
-        if (reportRef.current) {
-          navigator.clipboard.writeText(reportRef.current.outerHTML);
+        if (reportRef.current?.firstChild) {
+          navigator.clipboard.writeText((reportRef.current.firstChild as HTMLElement).outerHTML);
           toast({
             title: "Success",
             description: "Paperwork HTML copied to clipboard.",
@@ -96,7 +96,7 @@ function ArrestSubmitContent() {
         </Alert>
           
         {hasReport && penalCode && (
-             <ArrestReportResults
+             <ArrestCalculatorResults
                 report={report}
                 penalCode={penalCode}
                 showCharges={true}

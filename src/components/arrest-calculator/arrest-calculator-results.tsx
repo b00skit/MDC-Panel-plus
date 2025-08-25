@@ -99,7 +99,7 @@ const CopyableCard = ({ label, value }: { label: string, value: string | number 
     );
 };
 
-interface ArrestReportResultsProps {
+interface ArrestCalculatorResultsProps {
     report: SelectedCharge[];
     penalCode: PenalCode;
     showCharges?: boolean;
@@ -111,7 +111,7 @@ interface ArrestReportResultsProps {
     onModifyCharges?: () => void;
 }
 
-export function ArrestReportResults({ 
+export function ArrestCalculatorResults({ 
     report, 
     penalCode, 
     showCharges = false, 
@@ -121,7 +121,7 @@ export function ArrestReportResults({
     clickToCopy = false,
     showModifyChargesButton = false,
     onModifyCharges,
-}: ArrestReportResultsProps) {
+}: ArrestCalculatorResultsProps) {
     const { toast } = useToast();
     const router = useRouter();
     const setChargesForModification = useChargeStore(state => state.setCharges);
