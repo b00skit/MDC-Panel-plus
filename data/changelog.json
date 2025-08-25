@@ -1,6 +1,37 @@
 {
     "changelogs": [
         {
+            "version": "3.1.4",
+            "type": "Minor Update",
+            "date": "2025-08-25",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Caselaw & Legal Resources:</b> Added an AI Search to the Caselaw Section, allowing you to quickly ask a question and get a result regarding caselaw."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>General:</b> Made a UI change to the footer, making it stick to the bottom regardless of the page length."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added support for sharing your current calculation of charges, making it easier to outsource your current arrests when someone's booking suspects on your behalf."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> Made the CDN fetching into a constant, so that the endpoint can easily be configured in a config file."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Made the Illegal / Legal categories under the tint level on traffic reports and automatically by default picked the uninspected tint level."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> Added support for certain meta tags so that the website embeds on discord and any other social media."
+                }
+            ]
+        },
+        {
             "version": "3.1.3b",
             "type": "Hotfix",
             "date": "2025-08-23",

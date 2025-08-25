@@ -87,6 +87,33 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+      <meta property="og:title" content={config.SITE_NAME} />
+        <meta
+          property="og:description"
+          content={config.SITE_DESCRIPTION}
+        />
+        <meta
+          property="og:image"
+          content={config.SITE_IMAGE || '/img/logos/MDC-Panel.svg'}
+        />
+        <meta
+          property="og:image:alt"
+          content={`${config.SITE_NAME} logo`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={config.SITE_NAME} />
+        <meta
+          name="twitter:description"
+          content={config.SITE_DESCRIPTION}
+        />
+        <meta
+          name="twitter:image"
+          content={config.SITE_IMAGE || '/img/logos/MDC-Panel.svg'}
+        />
+        <meta
+          name="twitter:image:alt"
+          content={`${config.SITE_NAME} logo`}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
