@@ -40,37 +40,14 @@ const caselawTool = ai.defineTool(
             implication: z.string(),
             jurisdiction: z.string(),
             year: z.string(),
+            id: z.string(),
+            source: z.string().optional()
           }).optional().nullable(),
       }),
     },
-    async (input) => {
-        console.log(`Searching for caselaw with query: ${input.query}`);
-        
-        const localCaseFinder = ai.definePrompt({
-            name: 'findLocalCasePrompt',
-            input: { schema: z.object({ query: z.string(), available_cases: z.any() }) },
-            output: { schema: z.object({
-                best_match_id: z.string().optional().describe("The ID of the best matching case from the available cases. Omit if no good match is found.")
-            })},
-            prompt: `You are a legal assistant. Find the most relevant caselaw ID from the provided list based on the user's query. Only return an ID if it's a strong match.
-
-            Available Cases:
-            {{{json available_cases}}}
-            
-            User Query: {{{query}}}
-            `,
-        });
-
-        const { output } = await localCaseFinder({ query: input.query, available_cases: caselaws.caselaws.map(c => ({id: c.id, case: c.case, summary: c.summary})) });
-        
-        if (output?.best_match_id) {
-            const found = caselaws.caselaws.find(c => c.id === output.best_match_id);
-            if (found) {
-                return { found_case: found };
-            }
-        }
-        
-        return { found_case: null };
+    async () => {
+        // This tool now just acts as a data provider. The filtering will happen in the prompt.
+        return { found_case: null }; // Returning null as we are not performing search here anymore.
     },
 );
 
@@ -98,14 +75,18 @@ const oyezSearchTool = ai.defineTool({
 
 const caselawAssistantPrompt = ai.definePrompt({
     name: "caselawAssistantPrompt",
-    tools: [caselawTool, oyezSearchTool],
+    tools: [oyezSearchTool],
     prompt: `You are a helpful legal assistant for Law Enforcement Officers.
-    Your goal is to answer questions about caselaw.
-    First, use the caselawSearch tool to check if a relevant case exists in the local database.
+    Your goal is to answer questions about caselaw based on the user's query.
+    
+    First, analyze the user's query and compare it against the provided list of local San Andreas caselaws. Find the single most relevant case from this list. A case is relevant if its summary or implication directly addresses the user's question. If you find a strong match, populate the 'found_case' field in your response. If no local case is a strong match, leave the 'found_case' field as null.
+
     Then, use the oyezSearch tool to find similar cases on Oyez.org for broader context.
     Finally, synthesize the results into a helpful answer based on the provided schema.
-    If no local case is found, state that clearly but still provide the Oyez results.
     Your instructions are to respond ONLY in the format defined by the CaselawOutputSchema. Do not add any conversational text or markdown.
+
+    LOCAL CASELOWS:
+    {{{json localCaselaws}}}
     
     User Query: {{query}}`,
     output: {
@@ -121,7 +102,10 @@ export const caselawAssistantFlow = ai.defineFlow(
       outputSchema: CaselawOutputSchema,
     },
     async (input) => {
-        const result = await caselawAssistantPrompt(input);
+        const result = await caselawAssistantPrompt({ 
+            query: input.query,
+            localCaselaws: caselaws.caselaws
+        });
         const output = result.output;
         if (!output) {
             throw new Error("The AI failed to produce a valid output.");
