@@ -261,11 +261,6 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
             <PageHeader
                 title="Caselaw & Legal Resources"
                 description="Quickly access legal documents, schedules, and important caselaw."
-                actions={
-                    <Button onClick={() => setIsAIDialogOpen(true)}>
-                        <Sparkles className="mr-2 h-4 w-4" /> AI Caselaw Assistant
-                    </Button>
-                }
             />
             
             {loading ? <SkeletonGrid count={3} CardComponent={Card} /> :
@@ -274,9 +269,17 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
              </div>
             }
             
-            <div className="flex flex-wrap gap-4 items-center justify-center p-4 border-2 border-dashed rounded-lg">
-                 <p className="text-center text-muted-foreground">Can't find a case? Is something incorrect?</p>
-                 <Button variant="outline" onClick={() => setIsFeedbackDialogOpen(true)}>Submit Feedback</Button>
+            <div className="flex flex-col items-center justify-center text-center gap-4 p-6 border-2 border-dashed rounded-lg bg-card">
+                 <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                 </div>
+                 <h3 className="text-xl font-semibold">Need a quick answer?</h3>
+                 <p className="text-center text-muted-foreground max-w-md">
+                    Use the experimental AI assistant to find relevant caselaw by describing a situation in plain English.
+                 </p>
+                 <Button onClick={() => setIsAIDialogOpen(true)}>
+                    <Sparkles className="mr-2 h-4 w-4" /> AI Caselaw Assistant
+                 </Button>
             </div>
 
             <div>
