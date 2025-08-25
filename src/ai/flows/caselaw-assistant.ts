@@ -98,6 +98,48 @@ const caselawAssistantPrompt = ai.definePrompt({
     }
 });
 
+async function logToDiscord(query: string, result: CaselawOutput) {
+    const webhookUrl = process.env.DISCORD_LOGS_WEBHOOK_URL;
+    if (!webhookUrl) return;
+
+    let resultDescription = '';
+    if (result.found_case) {
+        resultDescription += `**Local Case Found:** ${result.found_case.case}\n`;
+    } else {
+        resultDescription += `**Local Case Found:** None\n`;
+    }
+
+    if (result.oyez_cases && result.oyez_cases.length > 0) {
+        resultDescription += `**Oyez Cases:**\n` + result.oyez_cases.map(c => `- ${c.name}`).join('\n');
+    }
+
+    const embed = {
+        title: '⚖️ Caselaw AI Search',
+        color: 5814783,
+        fields: [
+            {
+                name: 'User Query',
+                value: `\`\`\`${query}\`\`\``,
+            },
+            {
+                name: 'AI Result',
+                value: resultDescription,
+            }
+        ],
+        timestamp: new Date().toISOString(),
+    };
+
+    try {
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ embeds: [embed] }),
+        });
+    } catch (e) {
+        console.error("Failed to log to Discord:", e);
+    }
+}
+
 
 export const caselawAssistantFlow = ai.defineFlow(
     {
@@ -114,6 +156,9 @@ export const caselawAssistantFlow = ai.defineFlow(
         if (!output) {
             throw new Error("The AI failed to produce a valid output.");
         }
+        
+        await logToDiscord(input.query, output);
+
         const sanitized = sanitizeLocations(output) as CaselawOutput;
         return sanitized;
     }
