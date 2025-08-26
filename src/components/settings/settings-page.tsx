@@ -54,54 +54,83 @@ interface SettingsPageProps {
  * @returns {Promise<boolean>} A promise that resolves to true on success and false on failure.
  */
 async function clearAllSiteData() {
+  let success = true;
+
+  // 1. Clear Local Storage
   try {
-    // 1. Clear Local Storage
     localStorage.clear();
+  } catch (error) {
+    console.error('Error clearing localStorage:', error);
+    success = false;
+  }
 
-    // 2. Clear Session Storage
+  // 2. Clear Session Storage
+  try {
     sessionStorage.clear();
+  } catch (error) {
+    console.error('Error clearing sessionStorage:', error);
+    success = false;
+  }
 
-    // 3. Clear Cookies
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i];
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+  // 3. Clear Cookies
+  try {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const eqPos = cookie.indexOf('=');
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
     }
+  } catch (error) {
+    console.error('Error clearing cookies:', error);
+    success = false;
+  }
 
-    // 4. Clear IndexedDB databases
-    if ('indexedDB' in window && indexedDB.databases) {
-      const dbs = await indexedDB.databases();
-      const deletePromises = dbs.map(db => 
-        new Promise((resolve, reject) => {
-          const deleteRequest = indexedDB.deleteDatabase(db.name!);
-          deleteRequest.onsuccess = () => resolve(true);
-          deleteRequest.onerror = () => reject(deleteRequest.error);
-          deleteRequest.onblocked = () => {
-            console.warn(`IndexedDB ${db.name} deletion blocked.`);
-            resolve(false);
-          };
-        })
+  // 4. Clear IndexedDB databases
+  try {
+    if ('indexedDB' in window) {
+      const dbs = await (indexedDB.databases ? indexedDB.databases() : []);
+      const deletePromises = dbs.map(
+        db =>
+          new Promise<void>((resolve, reject) => {
+            const deleteRequest = indexedDB.deleteDatabase(db.name!);
+            deleteRequest.onsuccess = () => resolve();
+            deleteRequest.onerror = () => reject(deleteRequest.error);
+            deleteRequest.onblocked = () => {
+              console.warn(`IndexedDB ${db.name} deletion blocked.`);
+              resolve();
+            };
+          })
       );
       await Promise.all(deletePromises);
     }
-    
-    // 5. Unregister Service Workers and Clear Caches
+  } catch (error) {
+    console.error('Error clearing IndexedDB:', error);
+    success = false;
+  }
+
+  // 5. Unregister Service Workers
+  try {
     if ('serviceWorker' in navigator) {
       const registrations = await navigator.serviceWorker.getRegistrations();
-      for (const registration of registrations) {
-        await registration.unregister();
-      }
+      await Promise.all(registrations.map(r => r.unregister()));
+    }
+  } catch (error) {
+    console.error('Error unregistering service workers:', error);
+    success = false;
+  }
+
+  // 6. Clear Cache Storage
+  try {
+    if (typeof caches !== 'undefined') {
       const keys = await caches.keys();
       await Promise.all(keys.map(key => caches.delete(key)));
     }
-
-    return true; // Indicate success
   } catch (error) {
-    console.error("Error clearing site data:", error);
-    return false; // Indicate failure
+    console.error('Error clearing caches:', error);
+    success = false;
   }
+
+  return success;
 }
 
 
@@ -166,27 +195,22 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
 
   const handleClearData = async () => {
     const success = await clearAllSiteData();
-    
-    if (success) {
-      resetCharges();
-      resetBasicForm();
-      resetAdvancedForm();
-      resetOfficers();
-      
-      toast({
-        title: 'Data Cleared',
-        description: 'All local and session data has been successfully cleared.',
-      });
 
-      setTimeout(() => window.location.reload(), 1000);
-    } else {
-      toast({
-        title: 'Error',
-        description: 'Could not clear all site data. Check the console for details.',
-        variant: 'destructive',
-      });
-    }
-  }
+    resetCharges();
+    resetBasicForm();
+    resetAdvancedForm();
+    resetOfficers();
+
+    toast({
+      title: success ? 'Data Cleared' : 'Error',
+      description: success
+        ? 'All local and session data has been successfully cleared.'
+        : 'Could not clear all site data. Check the console for details.',
+      ...(success ? {} : { variant: 'destructive' }),
+    });
+
+    setTimeout(() => window.location.reload(), 1000);
+  };
 
   const visibleGroups = initialFactionGroups.filter(g => !g.hidden);
   const hiddenGroups = initialFactionGroups.filter(g => g.hidden);
