@@ -49,22 +49,21 @@ export function TextareaWithPreset({
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues, trigger } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
-    const isInitialMount = useRef(true);
-
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
-    
+    const onTextChangeRef = useRef(onTextChange);
+
     useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-        if (isPresetEnabled && !isUserModified && localValue !== presetValue) {
+        onTextChangeRef.current = onTextChange;
+    }, [onTextChange]);
+
+    useEffect(() => {
+        if (isPresetEnabled && !isUserModified && presetValue !== localValue) {
             setLocalValue(presetValue);
             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
-            onTextChange?.(presetValue);
+            onTextChangeRef.current?.(presetValue);
         }
-    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange, localValue]);
+    }, [presetValue, isPresetEnabled, isUserModified, localValue, setValue]);
 
 
     const handleTogglePreset = (checked: boolean) => {
