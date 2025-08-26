@@ -99,6 +99,8 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
             Object.assign(defaults, buildDefaultValues(field.fields));
         } else if (field.type === 'input_group' && field.name) {
             defaults[field.name] = field.defaultValue ?? [];
+        } else if (field.type === 'charge' && field.name) {
+            defaults[field.name] = field.defaultValue ?? [];
         } else if (field.type === 'textarea-with-preset' && field.name) {
              defaults[field.name] = {
                 modifiers: (field.modifiers || []).reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
@@ -123,9 +125,14 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     const router = useRouter();
     const searchParams = useSearchParams();
 
+    const defaultValues = useMemo(
+        () => buildDefaultValues(generatorConfig.form),
+        [generatorConfig.form]
+    );
+
     const methods = useForm({
         criteriaMode: 'all',
-        defaultValues: buildDefaultValues(generatorConfig.form)
+        defaultValues
     });
     const { register, handleSubmit, control, watch, trigger, getValues } = methods;
 
