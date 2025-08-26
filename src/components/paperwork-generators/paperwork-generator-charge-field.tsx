@@ -133,46 +133,41 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
   });
   
   const [openChargeSelector, setOpenChargeSelector] = React.useState<number | null>(null);
-  const [filteredPenalCode, setFilteredPenalCode] = React.useState<Charge[]>([]);
 
-  React.useEffect(() => {
-    if (!penalCode) {
-        setFilteredPenalCode([]);
-        return;
-    }
+  const filteredPenalCode = React.useMemo(() => {
+    if (!penalCode) return [] as Charge[];
+
     const parseAllowedIds = (allowedIdsStr: string | undefined): Set<number> => {
-        if (!allowedIdsStr) return new Set();
-        const allowed = new Set<number>();
-        const parts = allowedIdsStr.split(',').map(p => p.trim());
+      if (!allowedIdsStr) return new Set();
+      const allowed = new Set<number>();
+      const parts = allowedIdsStr.split(',').map(p => p.trim());
 
-        parts.forEach(part => {
-            if (part.includes('-')) {
-                const [start, end] = part.split('-').map(Number);
-                if (!isNaN(start) && !isNaN(end)) {
-                    for (let i = start; i <= end; i++) {
-                        allowed.add(i);
-                    }
-                }
-            } else {
-                const num = Number(part);
-                if (!isNaN(num)) {
-                    allowed.add(num);
-                }
+      parts.forEach(part => {
+        if (part.includes('-')) {
+          const [start, end] = part.split('-').map(Number);
+          if (!isNaN(start) && !isNaN(end)) {
+            for (let i = start; i <= end; i++) {
+              allowed.add(i);
             }
-        });
-        return allowed;
+          }
+        } else {
+          const num = Number(part);
+          if (!isNaN(num)) {
+            allowed.add(num);
+          }
+        }
+      });
+      return allowed;
     };
-    
+
     const allowedTypes = config.allowedTypes ? Object.entries(config.allowedTypes).filter(([, v]) => v).map(([k]) => k) : [];
     const allowedIds = parseAllowedIds(config.allowedIds);
-    
-    const filtered = Object.values(penalCode).filter(charge => {
-        const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
-        const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
-        return typeMatch && idMatch;
-    });
 
-    setFilteredPenalCode(filtered);
+    return Object.values(penalCode).filter(charge => {
+      const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
+      const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
+      return typeMatch && idMatch;
+    });
   }, [penalCode, config.allowedTypes, config.allowedIds]);
 
   const handleChargeSelect = (index: number, chargeId: string) => {
