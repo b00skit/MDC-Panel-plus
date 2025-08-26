@@ -1,8 +1,7 @@
-# **App Name**: LEO Assistant+
+# **App Name**: MDC Panel+
 
 ## Core Features:
 
-- Dashboard: Provide an overview of available tools. Lay down a skeleton for the website in the future.
 - Modules: Future development will be done via modules, ensure that the skeleton of the app is setup in a way that supports module-development so that we can tackle issues one by one.
 
 ## Style Guidelines:
