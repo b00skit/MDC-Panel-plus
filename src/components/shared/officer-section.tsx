@@ -145,11 +145,12 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
   const showLspdWarning = isArrestReport && officers.some(o => o.department === 'Los Santos Police Department');
 
   useEffect(() => {
-    setInitialOfficers(); 
+    setInitialOfficers();
     fetch('/data/dept_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
-  }, [setInitialOfficers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   const handlePillClick = (officerId: number, altChar: Officer) => {
     swapOfficer(officerId, altChar);
