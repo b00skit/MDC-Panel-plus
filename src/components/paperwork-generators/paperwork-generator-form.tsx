@@ -119,6 +119,25 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
     return defaults;
 };
 
+// Helper to transform react-hook-form's field values into plain objects/arrays
+// so that Handlebars can properly iterate over multi-item groups.
+const normalizeData = (data: any): any => {
+    if (Array.isArray(data)) {
+        return data.map(normalizeData);
+    }
+    if (data && typeof data === 'object') {
+        const entries = Object.entries(data).map(([key, value]) => [key, normalizeData(value)]);
+        const isArrayLike = entries.every(([key]) => /^\d+$/.test(key));
+        if (isArrayLike) {
+            return entries
+                .sort((a, b) => Number(a[0]) - Number(b[0]))
+                .map(([, value]) => value);
+        }
+        return Object.fromEntries(entries);
+    }
+    return data;
+};
+
 function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -297,7 +316,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         return watch(`${path}.narrative`);
                     }
 
-                    const allData = watch();
+                    const allData = normalizeData(watch());
                     const externalData: any = {};
 
                     (field.refreshOn || []).forEach(dep => {
