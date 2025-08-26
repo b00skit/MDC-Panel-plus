@@ -99,6 +99,8 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
             Object.assign(defaults, buildDefaultValues(field.fields));
         } else if (field.type === 'input_group' && field.name) {
             defaults[field.name] = field.defaultValue ?? [];
+        } else if (field.type === 'charge' && field.name) {
+            defaults[field.name] = field.defaultValue ?? [];
         } else if (field.type === 'textarea-with-preset' && field.name) {
              defaults[field.name] = {
                 modifiers: (field.modifiers || []).reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
