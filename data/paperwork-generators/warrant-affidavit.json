@@ -25,8 +25,7 @@
 
         { "type": "section", "title": "Submission Statement Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
         { "type": "text", "name": "submission_subject", "label": "Subject/Location", "placeholder": "e.g., John Doe or 1234 Imagination Ave", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
-        { "type": "text", "name": "submission_crimes", "label": "Crime(s)", "placeholder": "e.g., PC 11351, PC 11378", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
-        { "type": "text", "name": "submission_casefile", "label": "Casefile Number", "placeholder": "e.g., DR#12345-24", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
+        { "type": "text", "name": "submission_crimes", "label": "Crime(s)", "placeholder": "e.g., FC. 115 Evading a Peace Officer, FA. 201 Capital Murder", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
         
         { "type": "section", "title": "Probable Cause Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.probable_cause", "value": true}] },
         { "type": "text", "name": "pc_date", "label": "Date of Initial Event", "placeholder": "e.g., 01/JAN/2024", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.probable_cause", "value": true}] },
@@ -56,7 +55,7 @@
                 {
                     "name": "submission_statement",
                     "label": "Submission Statement",
-                    "generateText": "I submit this affidavit in support of an {{warrant_type}} for {{submission_subject}}. This request is based on an ongoing investigation into {{submission_crimes}} (Casefile #{{submission_casefile}})."
+                    "generateText": "I submit this affidavit in support of an {{warrant_type}} for {{submission_subject}}. This request is based on an ongoing investigation into {{submission_crimes}}."
                 },
                 {
                     "name": "probable_cause",
