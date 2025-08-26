@@ -17,7 +17,7 @@ import { Label } from '../ui/label';
 const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: React.RefObject<HTMLDivElement>, setReportTitle: (title: string) => void }) => {
     const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
-    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; output_title?: string; conditionals?: ConditionalVariable[], countyCityStipulation?: boolean } | null>(null);
+    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; output_title?: string; conditionals?: ConditionalVariable[], countyCityStipulation?: boolean, is_html_output?: boolean } | null>(null);
   
     useEffect(() => {
         if (generatorId && generatorType) {
@@ -48,11 +48,17 @@ const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: Reac
                     return options.inverse(this);
                 }
             });
-            Handlebars.registerHelper('start_loop', function(this: any, context, options) {
+            Handlebars.registerHelper('each', function(context, options) {
                 let ret = "";
                 if (Array.isArray(context)) {
                     for(let i = 0; i < context.length; i++) {
-                        ret = ret + options.fn(context[i]);
+                        // Pass index and other helpful properties to the template
+                        const data = options.data ? Handlebars.createFrame(options.data) : {};
+                        data.index = i;
+                        data.index_1 = i + 1;
+                        data.first = (i === 0);
+                        data.last = (i === context.length - 1);
+                        ret = ret + options.fn(context[i], { data: data });
                     }
                 }
                 return ret;
@@ -84,7 +90,7 @@ const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: Reac
             }
 
             // Compile main output
-            const outputTemplateString = generatorConfig.output.replace(/\{@start_(\w+)\}/g, '{{#start_loop $1}}').replace(/\{@end_(\w+)\}/g, '{{/start_loop}}');
+            const outputTemplateString = generatorConfig.output
             const compiledOutputTemplate = Handlebars.compile(outputTemplateString, { noEscape: true });
             let parsedOutput = compiledOutputTemplate(processedData);
             
@@ -108,7 +114,11 @@ const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: Reac
   
     return (
         <div ref={innerRef} className="p-4 border rounded-lg bg-card text-card-foreground">
-            <div dangerouslySetInnerHTML={{ __html: template || "Generating..." }} />
+             {generatorConfig?.is_html_output ? (
+                <div dangerouslySetInnerHTML={{ __html: template || "Generating..." }} />
+             ) : (
+                <div style={{ whiteSpace: 'pre-wrap' }}>{template || "Generating..."}</div>
+             )}
         </div>
     );
 };

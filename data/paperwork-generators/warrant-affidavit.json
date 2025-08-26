@@ -6,6 +6,7 @@
     "icon": "FileSearch",
     "generator_disabled": false,
     "output_title": "{{warrant_type}} - {{general.date}}",
+    "is_html_output": false,
     "output": "{{narrative.narrative}}",
     "form": [
         { "type": "section", "title": "General Information" },
@@ -25,7 +26,7 @@
 
         { "type": "section", "title": "Submission Statement Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
         { "type": "text", "name": "submission_subject", "label": "Subject/Location", "placeholder": "e.g., John Doe or 1234 Imagination Ave", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
-        { "type": "text", "name": "submission_crimes", "label": "Crime(s)", "placeholder": "e.g., FC. 115 Evading a Peace Officer, FA. 201 Capital Murder", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
+        { "type": "charge", "name": "submission_crimes", "label": "Crime(s)", "showClass": true, "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
         
         { "type": "section", "title": "Probable Cause Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.probable_cause", "value": true}] },
         { "type": "text", "name": "pc_date", "label": "Date of Initial Event", "placeholder": "e.g., 01/JAN/2024", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.probable_cause", "value": true}] },
@@ -36,7 +37,20 @@
         { "type": "textarea", "name": "pc_conclusion", "label": "Evidence Conclusion", "placeholder": "Explain what the evidence shows and how it links the subject/location to the crime.", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.probable_cause", "value": true}] },
 
         { "type": "section", "title": "Scope of Request Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.scope_of_request", "value": true}] },
-        { "type": "textarea", "name": "scope_items", "label": "Items to be Searched/Seized/Monitored", "placeholder": "List specific items, one per line. e.g.,\n- One (1) black Glock 19 handgun\n- Any and all illicit narcotics...", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.scope_of_request", "value": true}] },
+        { 
+            "type": "input_group",
+            "name": "scope_items",
+            "label": "Items to be Searched/Seized/Monitored",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "item",
+                    "label": "Item",
+                    "placeholder": "e.g., One (1) black Glock 19 handgun"
+                }
+            ],
+            "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.scope_of_request", "value": true}]
+        },
 
         { "type": "section", "title": "Affidavit" },
         {
@@ -55,7 +69,7 @@
                 {
                     "name": "submission_statement",
                     "label": "Submission Statement",
-                    "generateText": "I submit this affidavit in support of an {{warrant_type}} for {{submission_subject}}. This request is based on an ongoing investigation into {{submission_crimes}}."
+                    "generateText": "I submit this affidavit in support of an {{warrant_type}} for {{submission_subject}}. This request is based on an ongoing investigation into the following crimes: {{#each submission_crimes}}{{#with (lookup @root.penalCode this.chargeId)}}{{this.type}}{{../class}} {{this.id}}. {{this.charge}}{{/with}}{{#unless @last}}, {{/unless}}{{/each}}."
                 },
                 {
                     "name": "probable_cause",
@@ -65,7 +79,7 @@
                 {
                     "name": "scope_of_request",
                     "label": "Scope of Request",
-                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\n{{scope_items}}"
+                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\n{{#each scope_items}}\n- {{this.item}}\n{{/each}}"
                 },
                 {
                     "name": "conclusion",

@@ -5,6 +5,7 @@
     "description": "Generate a vehicle impound report.",
     "icon": "Car",
     "output_title": "{{vehicle_make_model}} - {{vehicle_plate}}",
+    "is_html_output": false,
     "output": "{{#each officers}}<strong>{{this.rank}} {{this.name}}</strong> (<strong>#{{this.badgeNumber}}</strong>), {{/each}} on the <strong>{{general.date}}</strong>, <strong>{{general.time}}</strong>.<br>Impounded a <strong>{{vehicle_make_model}}</strong>, identification plate reading <strong>{{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}}</strong>, for <strong>{{impound_duration}}</strong> days, registered to <strong>{{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</strong>, on <strong>{{location.street}}</strong>, <strong>{{location.district}}</strong>.<br>\n\n\t\t\t\t<strong>Impound Reason:</strong>\n\t\t\t\t<ul><li>{{impound_reason}}</li></ul>",
     "form": [
         { "type": "hidden", "name": "generatorType", "value": "ImpoundReport" },
