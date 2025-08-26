@@ -5,7 +5,6 @@
     "description": "Generate an affidavit for various types of warrants.",
     "icon": "FileSearch",
     "generator_disabled": false,
-    "output_title": "{{warrant_type}} - {{general.date}}",
     "is_html_output": false,
     "output": "{{narrative.narrative}}",
     "form": [
