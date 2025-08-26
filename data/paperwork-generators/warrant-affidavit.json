@@ -31,7 +31,7 @@
                 {
                     "name": "introduction",
                     "label": "Affiant Introduction",
-                    "generateText": "I, {{officers.0.rank}} {{officers.0.name}} (#{{officers.0.badgeNumber}}), am a peace officer employed with the {{officers.0.department}}, currently assigned to the {{officers.0.divDetail}}. I have been employed by this agency for [X] years and have extensive experience in [briefly describe experience, e.g., narcotics investigations, homicide, etc.]."
+                    "generateText": "I, {{officers.0.rank}} {{officers.0.name}} (#{{officers.0.badgeNumber}}), am a peace officer employed with the {{officers.0.department}}, currently assigned to the {{officers.0.divDetail}}. I have been employed by this agency for {{introduction_years}} years and have extensive experience in {{introduction_experience}}."
                 },
                 {
                     "name": "submission_statement",
@@ -54,6 +54,9 @@
                     "generateText": "Based on the information contained in this affidavit, I respectfully request that this court issue the requested {{warrant_type}}.\n\nI declare under penalty of perjury that the foregoing is true and correct.\n\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
                 }
             ]
-        }
+        },
+        { "type": "section", "title": "Affiant Introduction Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
+        { "type": "text", "name": "introduction_years", "label": "Years of Experience", "placeholder": "e.g. 5", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
+        { "type": "text", "name": "introduction_experience", "label": "Extensive Experience", "placeholder": "e.g. narcotics investigations", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] }
     ]
 }
