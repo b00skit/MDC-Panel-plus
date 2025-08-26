@@ -162,10 +162,10 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
         });
         return allowed;
     };
-    
+
     const allowedTypes = config.allowedTypes ? Object.entries(config.allowedTypes).filter(([, v]) => v).map(([k]) => k) : [];
     const allowedIds = parseAllowedIds(config.allowedIds);
-    
+
     const filtered = Object.values(penalCode).filter(charge => {
         const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(charge.type);
         const idMatch = allowedIds.size === 0 || allowedIds.has(Number(charge.id));
@@ -173,7 +173,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     });
 
     setFilteredPenalCode(filtered);
-  }, [penalCode, config.allowedTypes, config.allowedIds]);
+  }, [penalCode, config.allowedIds, JSON.stringify(config.allowedTypes)]);
 
   const handleChargeSelect = (index: number, chargeId: string) => {
     if (!penalCode) return;
