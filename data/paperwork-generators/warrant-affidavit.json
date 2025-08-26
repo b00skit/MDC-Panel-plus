@@ -72,7 +72,7 @@
                 {
                     "name": "scope_of_request",
                     "label": "Scope of Request",
-                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\n{{#each scope_items}}\n- {{this.item}}\n{{/each}}"
+                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\n{{scope_items}}"
                 },
                 {
                     "name": "conclusion",
