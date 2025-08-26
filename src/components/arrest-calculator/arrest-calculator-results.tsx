@@ -346,11 +346,18 @@ export function ArrestCalculatorResults({
                     const minTime = getTime(chargeDetails.time, true);
                     const maxTime = getTime(chargeDetails.maxtime, true);
 
-                    const getFine = (fineObj: any) => {
-                        if (!fineObj) return '$0';
-                        if(isDrugCharge && row.category) return `$${(fineObj[row.category] || 0).toLocaleString()}`;
-                        return `$${(fineObj[row.offense!] || 0).toLocaleString()}`;
-                    }
+                    const getFine = (fineObj: any, isRaw?: boolean) => {
+                        if (!fineObj) return isRaw ? 0 : '$0';
+                    
+                        let value = 0;
+                        if (isDrugCharge && row.category) {
+                            value = fineObj[row.category] || 0;
+                        } else {
+                            value = fineObj[row.offense!] || 0;
+                        }
+                    
+                        return isRaw ? value : `$${value.toLocaleString()}`;
+                    };
                     
                     const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
                     const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
@@ -389,7 +396,10 @@ export function ArrestCalculatorResults({
                             <TableCell>{minTime}</TableCell>
                             <TableCell>{maxTime}</TableCell>
                             <TableCell>{chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0}</TableCell>
-                            <TableCell>{getFine(chargeDetails.fine)}</TableCell>
+                            <TableCell 
+                                className={cn(clickToCopy && "cursor-pointer hover:text-primary")}
+                                onClick={clickToCopy ? () => handleCopyToClipboard(getFine(chargeDetails.fine, true)) : undefined}
+                             >{getFine(chargeDetails.fine)}</TableCell>
                             <TableCell>{impound ? `${impound} Day(s)` : 'No'}</TableCell>
                             <TableCell>{suspension ? `${suspension} Day(s)` : 'No'}</TableCell>
                             <TableCell><BailStatusBadge bailInfo={bailInfo} /></TableCell>

@@ -146,6 +146,7 @@ function ArrestCalculationContent() {
                 showCharges={true}
                 showStipulations={true}
                 showSummary={true}
+                clickToCopy={true}
                 showCopyables={true}
             />
         ) : (
