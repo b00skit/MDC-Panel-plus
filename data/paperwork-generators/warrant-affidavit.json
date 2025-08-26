@@ -12,14 +12,7 @@
         { "type": "section", "title": "General Information" },
         { "type": "general", "name": "general" },
         { "type": "officer", "name": "officers", "multi": false },
-        {
-            "type": "dropdown",
-            "name": "warrant_type",
-            "label": "Warrant Type",
-            "placeholder": "Select warrant type...",
-            "options": ["Arrest Warrant", "Search Warrant", "Electronic Search Warrant", "Financial Search Warrant"],
-            "required": true
-        },
+        { "type": "textarea", "name": "scope_items", "label": "Items to be Searched/Seized/Monitored", "placeholder": "List specific items, one per line. e.g.,\n- One (1) black Glock 19 handgun\n- Any and all illicit narcotics...", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.scope_of_request", "value": true}] },
         { "type": "section", "title": "Affiant Introduction Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
         { "type": "text", "name": "introduction_years", "label": "Years of Experience", "placeholder": "e.g. 5", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
         { "type": "text", "name": "introduction_experience", "label": "Extensive Experience", "placeholder": "e.g. narcotics investigations", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
