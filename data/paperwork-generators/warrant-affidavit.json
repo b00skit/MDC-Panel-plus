@@ -4,7 +4,7 @@
     "title": "Warrant Affidavit",
     "description": "Generate an affidavit for various types of warrants.",
     "icon": "FileSearch",
-    "generator_disabled": true,
+    "generator_disabled": false,
     "output_title": "{{warrant_type}} - {{general.date}}",
     "output": "{{narrative.narrative}}",
     "form": [
@@ -19,6 +19,9 @@
             "options": ["Arrest Warrant", "Search Warrant", "Electronic Search Warrant", "Financial Search Warrant"],
             "required": true
         },
+        { "type": "section", "title": "Affiant Introduction Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
+        { "type": "text", "name": "introduction_years", "label": "Years of Experience", "placeholder": "e.g. 5", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
+        { "type": "text", "name": "introduction_experience", "label": "Extensive Experience", "placeholder": "e.g. narcotics investigations", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
         { "type": "section", "title": "Affidavit" },
         {
             "type": "textarea-with-preset",
@@ -31,7 +34,7 @@
                 {
                     "name": "introduction",
                     "label": "Affiant Introduction",
-                    "generateText": "I, {{officers.0.rank}} {{officers.0.name}} (#{{officers.0.badgeNumber}}), am a peace officer employed with the {{officers.0.department}}, currently assigned to the {{officers.0.divDetail}}. I have been employed by this agency for [X] years and have extensive experience in [briefly describe experience, e.g., narcotics investigations, homicide, etc.]."
+                    "generateText": "I, {{officers.0.rank}} {{officers.0.name}} (#{{officers.0.badgeNumber}}), am a peace officer employed with the {{officers.0.department}}, currently assigned to the {{officers.0.divDetail}}. I have been employed by this agency for {{introduction_years}} years and have extensive experience in {{introduction_experience}}."
                 },
                 {
                     "name": "submission_statement",

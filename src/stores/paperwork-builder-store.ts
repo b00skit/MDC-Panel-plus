@@ -19,6 +19,10 @@ export type Field = {
       field: string;
       value: any;
     },
+    stipulations?: {
+      field: string;
+      value: any;
+    }[],
     fields?: Field[]; // For group type
     // Charge field specific config
     showClass?: boolean;
