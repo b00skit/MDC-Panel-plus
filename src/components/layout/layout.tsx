@@ -18,7 +18,9 @@ export function Layout({ children, footer }: LayoutProps) {
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+      <div
+          className="fixed top-0 bottom-0 right-0 left-0 md:left-[var(--sidebar-width)] z-0 flex items-center justify-center pointer-events-none"
+        >
             <div className="relative w-[60%] h-[60%]">
                 <Image
                     src="/img/logos/Logo-SanAndreasSeal.png"
