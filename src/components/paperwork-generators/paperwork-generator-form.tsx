@@ -301,7 +301,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         const dependenciesMet = (mod.requires || []).every((dep: string) => watch(`${path}.modifiers.${dep}`));
                         if (isEnabled && dependenciesMet) {
                             try {
-                                const template = Handlebars.compile(mod.text || '', { noEscape: true });
+                                const templateSource = (mod as any).generateText || mod.text || '';
+                                const template = Handlebars.compile(templateSource, { noEscape: true });
                                 dataForHandlebars.modifiers[mod.name] = template(dataForHandlebars);
                             } catch (e) {
                                 console.error(`Error compiling Handlebars template for modifier ${mod.name}:`, e);
