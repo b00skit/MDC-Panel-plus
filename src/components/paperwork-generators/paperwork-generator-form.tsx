@@ -48,6 +48,10 @@ type FormField = {
         field: string;
         value: any;
     },
+    stipulations?: {
+        field: string;
+        value: any;
+    }[],
     fields?: FormField[]; // For group and input_group types
     // Charge field specific config
     showClass?: boolean;
@@ -188,8 +192,15 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         index?: number,
     ) => {
         const fieldKey = `${path}-${index}`;
-
-        if (field.stipulation) {
+        if (field.stipulations) {
+            const allMet = field.stipulations.every(stip => {
+                const watchedValue = watch(stip.field);
+                return String(watchedValue) === String(stip.value);
+            });
+            if (!allMet) {
+                return null;
+            }
+        } else if (field.stipulation) {
             const watchedValue = watch(field.stipulation.field);
             if (String(watchedValue) !== String(field.stipulation.value)) {
                 return null;
