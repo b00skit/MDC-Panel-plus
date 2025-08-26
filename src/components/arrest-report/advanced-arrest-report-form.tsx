@@ -179,7 +179,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         // Uniform part
         if (watchedFields.modifiers?.inUniform) {
              if (watchedFields.modifiers?.inG3Uniform) {
-                const uniformType = isLSSD ? "SEB" : "metropolitan G3";
+                const uniformType = isLSSD ? "SEB G3" : "metropolitan G3";
                 sourceText += `I was wearing my department-issued ${uniformType} uniform and was openly displaying my badge of office on my uniform.`;
             } else if (watchedFields.modifiers?.inMetroUniform) {
                 const uniformType = isLSSD ? "SEB BDU" : "metropolitan BDU";
@@ -718,7 +718,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 <TableRow className="h-3" />
                 <TableRow>
                   <TableHead className="bg-secondary h-12" colSpan={5}>
-                    HANDLING OFFICER(S)
+                    HANDLING {isLSSD ? 'OFFICER(S)' : 'DEPUTIES'}
                   </TableHead>
                 </TableRow>
                 <TableRow>

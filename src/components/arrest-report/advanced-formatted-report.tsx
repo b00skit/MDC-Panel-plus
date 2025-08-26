@@ -93,7 +93,7 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                         <td colSpan={3} style={cellStyle}>{incident.locationStreet || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th style={headerCellStyle}>OFFICER</th>
+                        <th style={headerCellStyle}>{isLSSD ? 'OFFICER' : 'DEPUTY'}</th>
                         <th style={headerCellStyle}>{isLSSD ? "BADGE NO." : "SERIAL NO."}</th>
                         <th style={headerCellStyle}>CALLSIGN</th>
                         <th colSpan={2} style={headerCellStyle}>{isLSSD ? "UNIT/DETAIL" : "DIV/DETAIL"}</th>
