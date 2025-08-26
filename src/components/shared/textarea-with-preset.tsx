@@ -67,17 +67,19 @@ export function TextareaWithPreset({
             setLocalValue(getValues(`${basePath}.narrative`) || '');
             return;
         }
+
+        const currentValue = getValues(`${basePath}.narrative`);
         if (
             isPresetEnabled &&
             !isUserModified &&
             presetValue !== previousPreset.current &&
-            localValue !== presetValue
+            currentValue !== presetValue
         ) {
             setLocalValue(presetValue);
             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
             onTextChangeRef.current?.(presetValue);
-            previousPreset.current = presetValue;
         }
+        previousPreset.current = presetValue;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [presetValue, isPresetEnabled, isUserModified]);
 
