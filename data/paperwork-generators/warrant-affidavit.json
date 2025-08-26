@@ -4,7 +4,7 @@
     "title": "Warrant Affidavit",
     "description": "Generate an affidavit for various types of warrants.",
     "icon": "FileSearch",
-    "generator_disabled": true,
+    "generator_disabled": false,
     "output_title": "{{warrant_type}} - {{general.date}}",
     "output": "{{narrative.narrative}}",
     "form": [
@@ -19,6 +19,9 @@
             "options": ["Arrest Warrant", "Search Warrant", "Electronic Search Warrant", "Financial Search Warrant"],
             "required": true
         },
+        { "type": "section", "title": "Affiant Introduction Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
+        { "type": "text", "name": "introduction_years", "label": "Years of Experience", "placeholder": "e.g. 5", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
+        { "type": "text", "name": "introduction_experience", "label": "Extensive Experience", "placeholder": "e.g. narcotics investigations", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
         { "type": "section", "title": "Affidavit" },
         {
             "type": "textarea-with-preset",
@@ -54,9 +57,6 @@
                     "generateText": "Based on the information contained in this affidavit, I respectfully request that this court issue the requested {{warrant_type}}.\n\nI declare under penalty of perjury that the foregoing is true and correct.\n\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
                 }
             ]
-        },
-        { "type": "section", "title": "Affiant Introduction Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
-        { "type": "text", "name": "introduction_years", "label": "Years of Experience", "placeholder": "e.g. 5", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
-        { "type": "text", "name": "introduction_experience", "label": "Extensive Experience", "placeholder": "e.g. narcotics investigations", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] }
+        }
     ]
 }
