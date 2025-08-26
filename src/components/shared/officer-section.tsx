@@ -130,26 +130,25 @@ const SelectField = ({
 
 
 export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }: { isArrestReport?: boolean, isMultiOfficer?: boolean }) {
-  const { 
-    officers, 
-    updateOfficer, 
-    removeOfficer, 
-    setInitialOfficers, 
-    addOfficer,
-    alternativeCharacters,
-    swapOfficer,
-  } = useOfficerStore();
+  const officers = useOfficerStore(state => state.officers);
+  const updateOfficer = useOfficerStore(state => state.updateOfficer);
+  const removeOfficer = useOfficerStore(state => state.removeOfficer);
+  const setInitialOfficers = useOfficerStore(state => state.setInitialOfficers);
+  const addOfficer = useOfficerStore(state => state.addOfficer);
+  const alternativeCharacters = useOfficerStore(state => state.alternativeCharacters);
+  const swapOfficer = useOfficerStore(state => state.swapOfficer);
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const { toggleAdvanced } = useAdvancedReportStore();
 
   const showLspdWarning = isArrestReport && officers.some(o => o.department === 'Los Santos Police Department');
 
   useEffect(() => {
-    setInitialOfficers(); 
+    setInitialOfficers();
     fetch('/data/dept_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
-  }, [setInitialOfficers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   const handlePillClick = (officerId: number, altChar: Officer) => {
     swapOfficer(officerId, altChar);
