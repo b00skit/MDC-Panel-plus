@@ -195,12 +195,6 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
 
   const handleClearData = async () => {
     const success = await clearAllSiteData();
-
-    resetCharges();
-    resetBasicForm();
-    resetAdvancedForm();
-    resetOfficers();
-
     toast({
       title: success ? 'Data Cleared' : 'Error',
       description: success
