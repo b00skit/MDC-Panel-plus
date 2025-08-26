@@ -8,6 +8,7 @@ interface AdvancedFormattedReportProps {
 
 export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormattedReportProps) {
     const { arrestee, persons, incident, officers, narrative } = formData;
+    const isLSSD = officers && officers[0]?.department === "Los Santos County Sheriff's Department";
     
     const renderWithBreaks = (text: string | undefined) => {
         if (!text) return <span style={{ fontFamily: "'Times New Roman', serif" }}>N/A</span>;
@@ -26,7 +27,7 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
     return (
         <div ref={innerRef} style={{ padding: '2px', border: '1px solid #000', backgroundColor: 'white', width: '100%', color: 'black', fontFamily: 'Arial, sans-serif' }}>
             <h1 style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: 'black' }}>
-                LOS SANTOS POLICE DEPARTMENT<br />ARREST REPORT
+                {isLSSD ? "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT" : "LOS SANTOS POLICE DEPARTMENT"}<br />ARREST REPORT
             </h1>
             <table border={1} cellPadding={2} style={{ width: '100%', borderCollapse: 'collapse', color: 'black', backgroundColor: 'white' }}>
                 <tbody>
@@ -93,9 +94,9 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                     </tr>
                     <tr>
                         <th style={headerCellStyle}>OFFICER</th>
-                        <th style={headerCellStyle}>SERIAL NO.</th>
+                        <th style={headerCellStyle}>{isLSSD ? "BADGE NO." : "SERIAL NO."}</th>
                         <th style={headerCellStyle}>CALLSIGN</th>
-                        <th colSpan={2} style={headerCellStyle}>DIV / DETAIL</th>
+                        <th colSpan={2} style={headerCellStyle}>{isLSSD ? "UNIT/DETAIL" : "DIV/DETAIL"}</th>
                     </tr>
                     {officers && officers.map((officer: any, index: number) => (
                          <tr key={index}>

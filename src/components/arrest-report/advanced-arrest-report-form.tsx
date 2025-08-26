@@ -58,6 +58,8 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         // Default values will be populated by the useEffect hook
     });
+
+    const isLSSD = watch('officers.0.department') === "Los Santos County Sheriff's Department";
     
     const { fields: personFields, append: appendPerson, remove: removePersonField } = useFieldArray({
       control,
@@ -177,9 +179,11 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         // Uniform part
         if (watchedFields.modifiers?.inUniform) {
              if (watchedFields.modifiers?.inG3Uniform) {
-                sourceText += 'I was wearing my department-issued metropolitan G3 uniform and was openly displaying my badge of office on my uniform.';
+                const uniformType = isLSSD ? "SEB" : "metropolitan G3";
+                sourceText += `I was wearing my department-issued ${uniformType} uniform and was openly displaying my badge of office on my uniform.`;
             } else if (watchedFields.modifiers?.inMetroUniform) {
-                sourceText += 'I was wearing my department-issued metropolitan BDU uniform and was openly displaying my badge of office on my uniform.';
+                const uniformType = isLSSD ? "SEB BDU" : "metropolitan BDU";
+                sourceText += `I was wearing my department-issued ${uniformType} uniform and was openly displaying my badge of office on my uniform.`;
             } else {
                 sourceText += 'I was wearing my department-issued patrol uniform and was openly displaying my badge of office on my uniform.';
             }
@@ -194,6 +198,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         setValue('narrative.source', sourceText.trim());
 
     }, [
+        isLSSD,
         watchedFields.modifiers?.markedUnit, 
         watchedFields.modifiers?.slicktop, 
         watchedFields.modifiers?.inUniform, 
@@ -241,17 +246,19 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         let arrestText = '';
         const suspectName = watchedFields.arrestee?.name || 'the suspect';
         if (watchedFields.modifiers?.wasSuspectMirandized) {
+            const notebookType = isLSSD ? "Sheriff's Reference Book" : "Field Officer’s Notebook";
             const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
-            arrestText += `I admonished ${suspectName} utilizing my Field Officer’s Notebook, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
+            arrestText += `I admonished ${suspectName} utilizing my ${notebookType}, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
         }
 
         const transportingRank = watchedFields.narrative?.transportingRank || '';
         const transportingName = watchedFields.narrative?.transportingName || '';
         
+        const station = isLSSD ? "the nearest booking station" : "Mission Row Station";
         if (watchedFields.modifiers?.didYouTransport) {
-            arrestText += `\nI transported ${suspectName} to Mission Row Station.`;
+            arrestText += `\nI transported ${suspectName} to ${station}.`;
         } else {
-            arrestText += `\n${transportingRank} ${transportingName} transported ${suspectName} to Mission Row Station.`;
+            arrestText += `\n${transportingRank} ${transportingName} transported ${suspectName} to ${station}.`;
         }
 
         const chargesList = charges.map(c => {
@@ -264,6 +271,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
 
         setValue('narrative.arrest', arrestText.trim() || '');
     }, [
+        isLSSD,
         watchedFields.modifiers?.wasSuspectMirandized, 
         watchedFields.modifiers?.didSuspectUnderstandRights,
         watchedFields.modifiers?.didYouTransport,
@@ -280,6 +288,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     useEffect(() => {
         if (!watchedFields.presets?.photographs) return;
         if (watchedFields.userModified?.photographs) return;
+        
         let photosText = '';
         if (watchedFields.modifiers?.doYouHaveAVideo) {
             photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${watchedFields.narrative?.dicvsLink || ''}\n`;
@@ -294,7 +303,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             photosText += `I obtained third party video footage - ${watchedFields.narrative?.thirdPartyLink || ''}\n`;
         }
 
-        setValue('narrative.photographs', photosText.trim() || '');
+        setValue('narrative.photographs', photosText.trim());
     }, [
         watchedFields.modifiers?.doYouHaveAVideo,
         watchedFields.modifiers?.didYouTakePhotographs,
@@ -349,7 +358,10 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     useEffect(() => {
         if (!watchedFields.presets?.evidence) return;
         if (watchedFields.userModified?.evidence) return;
-        let evidenceText = "I booked all evidence into the Mission Row Station property room.\n";
+        
+        const propertyRoom = isLSSD ? "the booking station's property room" : "the Mission Row Station property room";
+        let evidenceText = `I booked all evidence into ${propertyRoom}.\n`;
+
         const evidenceLogs = watchedFields.evidenceLogs || [];
         evidenceLogs.forEach((log, index) => {
             if(log.logNumber || log.description || log.quantity) {
@@ -357,7 +369,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             }
         });
         setValue('narrative.evidence', evidenceText.trim());
-    }, [JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, setValue]);
+    }, [isLSSD, JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, setValue]);
 
     useEffect(() => {
         if (!watchedFields.presets?.court) return;
@@ -712,9 +724,9 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 <TableRow>
                   <TableHead className="bg-secondary">RANK</TableHead>
                   <TableHead className="bg-secondary">NAME</TableHead>
-                  <TableHead className="bg-secondary">SERIAL NO.</TableHead>
+                  <TableHead className="bg-secondary">{isLSSD ? 'BADGE NO.' : 'SERIAL NO.'}</TableHead>
                   <TableHead className="bg-secondary">CALLSIGN</TableHead>
-                  <TableHead className="bg-secondary">DIV/DETAIL</TableHead>
+                  <TableHead className="bg-secondary">{isLSSD ? 'UNIT/DETAIL' : 'DIV/DETAIL'}</TableHead>
                 </TableRow>
                 {officerFields.map((field, index) => (
                     <React.Fragment key={field.id}>
@@ -742,10 +754,10 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                             />
                         </TableCell>
                         <TableCell><Input placeholder={`OFFICER ${index + 1}`} {...register(`officers.${index}.name`)} /></TableCell>
-                        <TableCell><Input placeholder="SERIAL NO." type="number" {...register(`officers.${index}.badgeNumber`)} /></TableCell>
+                        <TableCell><Input placeholder={isLSSD ? 'BADGE NO.' : 'SERIAL NO.'} type="number" {...register(`officers.${index}.badgeNumber`)} /></TableCell>
                         <TableCell><Input placeholder="CALLSIGN" {...register(`officers.${index}.callSign`)} /></TableCell>
                         <TableCell className="flex items-center gap-1">
-                          <Input placeholder="DIVISION / DETAIL" {...register(`officers.${index}.divDetail`)} />
+                          <Input placeholder={isLSSD ? 'UNIT/DETAIL' : 'DIV/DETAIL'} {...register(`officers.${index}.divDetail`)} />
                            {index > 0 && <Button variant="ghost" size="icon" type="button" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
                         </TableCell>
                     </TableRow>
@@ -797,7 +809,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                         {watchedFields.modifiers?.markedUnit && <div className="flex items-center space-x-2"><Controller name="modifiers.slicktop" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="slicktop" />} /><Label htmlFor="slicktop">Slicktop?</Label></div>}
                         <div className="flex items-center space-x-2"><Controller name="modifiers.inUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inUniform" />} /><Label htmlFor="inUniform">In Uniform?</Label></div>
                         {!watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.undercover" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="undercover" />} /><Label htmlFor="undercover">Undercover?</Label></div>}
-                        {watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inMetroUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inMetroUniform" />} /><Label htmlFor="inMetroUniform">In Metro Uniform?</Label></div>}
+                        {watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inMetroUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inMetroUniform" />} /><Label htmlFor="inMetroUniform">{isLSSD ? 'In SEB Uniform?' : 'In Metro Uniform?'}</Label></div>}
                         {watchedFields.modifiers?.inMetroUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inG3Uniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inG3Uniform" />} /><Label htmlFor="inG3Uniform">In G3 Uniform?</Label></div>}
                         <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectInVehicle" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectInVehicle" />} /><Label htmlFor="wasSuspectInVehicle">Suspect In Vehicle?</Label></div>
                         <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectMirandized" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectMirandized" />} /><Label htmlFor="wasSuspectMirandized">Mirandized?</Label></div>
@@ -894,7 +906,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                         />
                     </>
                      ) : (
-                        <Textarea placeholder="(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Do You Have A Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))" rows={3} />
+                        <Textarea value={watchedFields.narrative?.photographs} onChange={(e) => handleTextareaChange(e, 'photographs')} placeholder="(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Do You Have A Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))" rows={3} />
                      )}
                 </NarrativeSection>
 
