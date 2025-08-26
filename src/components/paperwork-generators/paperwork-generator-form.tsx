@@ -2,7 +2,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useForm, Controller, FormProvider, useFieldArray, FieldErrors } from 'react-hook-form';
+import { useForm, Controller, FormProvider, useFieldArray, FieldErrors, useWatch } from 'react-hook-form';
 import { PageHeader } from '../dashboard/page-header';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -128,6 +128,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
     const { register, handleSubmit, control, watch, trigger, getValues } = methods;
+    const watchedForm = useWatch({ control });
 
     const officers = useOfficerStore(state => state.officers);
     const generalData = useBasicFormStore(state => state.formData.general);
@@ -297,7 +298,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         return watch(`${path}.narrative`);
                     }
 
-                    const allData = watch();
+                    const allData = watchedForm;
                     const externalData: any = {};
 
                     (field.refreshOn || []).forEach(dep => {
