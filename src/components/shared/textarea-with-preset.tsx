@@ -51,23 +51,35 @@ export function TextareaWithPreset({
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
     const isInitialMount = useRef(true);
     const previousPreset = useRef(presetValue);
+    const onTextChangeRef = useRef(onTextChange);
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
 
     useEffect(() => {
+        onTextChangeRef.current = onTextChange;
+    }, [onTextChange]);
+
+    useEffect(() => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
             previousPreset.current = presetValue;
+            setLocalValue(getValues(`${basePath}.narrative`) || '');
             return;
         }
-        if (isPresetEnabled && !isUserModified && presetValue !== previousPreset.current) {
+        if (
+            isPresetEnabled &&
+            !isUserModified &&
+            presetValue !== previousPreset.current &&
+            localValue !== presetValue
+        ) {
             setLocalValue(presetValue);
             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
-            onTextChange?.(presetValue);
+            onTextChangeRef.current?.(presetValue);
             previousPreset.current = presetValue;
         }
-    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [presetValue, isPresetEnabled, isUserModified]);
 
 
     const handleTogglePreset = (checked: boolean) => {
