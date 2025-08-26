@@ -1,6 +1,49 @@
 {
     "changelogs": [
         {
+            "version": "3.1.5",
+            "type": "Minor Update",
+            "date": "2025-08-26",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added the ability to copy a fine directly from a specific charge on the arrest calculator by clicking on the fine."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added the ability to copy charges on the shearable charge calculation, making issuing fines and citing charges a bit easier."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> Added support for the Los Santos County Sheriff's Department to the advanced arrest report, allowing the other faction to utilize the advanced arrest report."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> The Evidence, Photographs & DIVCS section on the Advanced Arrest Report now submits even if you do not have any modifiers selected."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed up the arrest reports to have a white background regardless of your MDC background setting."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Settings:</b> The Clear All Site Data button now actually clears all your site data."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Released the first basic version of the Warrant Affidavit."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Modified the trespass notice to be a bit more in-line with the legal requirements."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Modified the rendering of paperwork generators, so that bbcode and HTML is a bit more accurately displayed."
+                }
+            ]
+        },
+        {
             "version": "3.1.4",
             "type": "Minor Update",
             "date": "2025-08-25",
