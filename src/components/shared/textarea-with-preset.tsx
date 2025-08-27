@@ -194,7 +194,19 @@ export function TextareaWithPreset({
 }
 
 export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string; groupConfig: any }) => {
-    const { control, register } = useFormContext();
+    const { control, register, formState: { errors } } = useFormContext();
+    const isInvalid = (fieldName: string) => {
+        const parts = fieldName.split('.');
+        let error: any = errors;
+        for (const part of parts) {
+            if (error && part in error) {
+                error = error[part];
+            } else {
+                return false;
+            }
+        }
+        return !!error;
+    };
     const { fields, append, remove } = useFieldArray({ control, name: basePath });
 
     if (groupConfig.fields?.some((f: any) => f.type === 'textarea-with-preset')) {
@@ -207,14 +219,14 @@ export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string
                 return (
                     <div key={path} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} />
+                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn(isInvalid(path) && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
             case 'textarea':
                 return (
                     <div key={path} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} />
+                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn(isInvalid(path) && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
             default:
