@@ -137,7 +137,11 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         criteriaMode: 'all',
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
-    const { register, handleSubmit, control, watch, trigger, getValues } = methods;
+    const { register, handleSubmit, control, watch, trigger, getValues, formState: { errors: formErrors } } = methods;
+
+    const fieldHasError = (path: string): boolean => {
+        return path.split('.').reduce<any>((acc, part) => (acc ? acc[part] : undefined), formErrors) !== undefined;
+    };
 
     const officers = useOfficerStore(state => state.officers);
     const generalData = useBasicFormStore(state => state.formData.general);
@@ -217,11 +221,12 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
 
 
     const renderField = (
-        field: FormField, 
+        field: FormField,
         path: string,
         index?: number,
     ) => {
         const fieldKey = `${path}-${index}`;
+        const invalid = fieldHasError(path);
         if (field.stipulations) {
             const allMet = field.stipulations.every(stip => {
                 const watchedValue = watch(stip.field);
@@ -265,7 +270,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} defaultValue={field.defaultValue} />
+                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} defaultValue={field.defaultValue} className={cn(invalid && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
             case 'datalist':
@@ -302,7 +307,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                         placeholder={field.placeholder}
                                         searchPlaceholder='Search...'
                                         emptyPlaceholder='No results.'
-                                        isInvalid={field.required && !value}
+                                        isInvalid={invalid}
                                     />
                                 )
                             }}
@@ -314,7 +319,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
+                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn('min-h-[120px]', invalid && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
 
@@ -375,7 +380,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         basePath={path}
                         control={control}
                         modifiers={field.modifiers || []}
-                        isInvalid={!!(field.required && !watch(`${path}.narrative`))}
+                        isInvalid={fieldHasError(`${path}.narrative`)}
                         noLocalStorage={field.noLocalStorage}
                         presetValue={narrativeText}
                         externalInputGroupNames={externalGroupsForField}
@@ -406,7 +411,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             defaultValue={field.defaultValue}
                             render={({ field: { onChange, value } }) => (
                                 <Select onValueChange={onChange} value={value} defaultValue={field.defaultValue}>
-                                    <SelectTrigger id={path} className={cn(field.required && !value && 'border-red-500 focus-visible:ring-red-500')}>
+                                    <SelectTrigger id={path} className={cn(invalid && 'border-red-500 focus-visible:ring-red-500')}>
                                         <SelectValue placeholder={field.placeholder} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -433,7 +438,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                     </div>
                 );
             
-             case 'multi-select':
+            case 'multi-select':
                  return (
                      <div key={fieldKey} className="w-full">
                          <Label htmlFor={path}>{field.label}</Label>
@@ -448,7 +453,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                      onValueChange={onChange}
                                      defaultValue={value}
                                      placeholder={field.placeholder}
-                                     className={cn(field.required && (!value || value.length === 0) && 'border-red-500 focus-visible:ring-red-500')}
+                                     className={cn(invalid && 'border-red-500 focus-visible:ring-red-500')}
                                  />
                              )}
                             />
@@ -566,7 +571,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
 
     const onError = (errors: FieldErrors) => {
         const errorMessages: string[] = [];
-    
+
         const findFieldLabel = (fieldName: string, fields: FormField[]): string | undefined => {
             for (const field of fields) {
                 if (field.name === fieldName) return field.label;
@@ -577,38 +582,35 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             }
         };
 
-        const processErrors = (errorNode: any, path: string = '') => {
-            for (const key in errorNode) {
+        const stack: { node: any; path: string }[] = [{ node: errors, path: '' }];
+        const visited = new Set<any>();
+
+        while (stack.length) {
+            const { node, path } = stack.pop()!;
+            if (!node || visited.has(node)) continue;
+            visited.add(node);
+
+            Object.keys(node).forEach(key => {
+                const child = node[key];
+                if (!child) return;
                 const newPath = path ? `${path}.${key}` : key;
-                const childNode = errorNode[key];
-                if (!childNode) continue;
-    
-                if (childNode.type && childNode.message) {
+
+                if (child.type && child.message) {
                     const label = findFieldLabel(newPath, generatorConfig.form) || newPath.replace(/_/g, ' ');
-                    errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${childNode.message || 'This field is required.'}`);
-                } 
-                else if (typeof childNode === 'object' && !Array.isArray(childNode)) {
-                    processErrors(childNode, newPath);
+                    errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${child.message || 'This field is required.'}`);
+                } else if (Array.isArray(child)) {
+                    child.forEach((item, index) => stack.push({ node: item, path: `${newPath}.${index}` }));
+                } else if (typeof child === 'object') {
+                    stack.push({ node: child, path: newPath });
                 }
-                 else if (Array.isArray(childNode)) {
-                    childNode.forEach((item, index) => {
-                        if (item) { 
-                            processErrors(item, `${newPath}.${index}`);
-                        }
-                    });
-                }
-            }
-        };
-    
-        processErrors(errors);
-    
+            });
+        }
+
         if (errorMessages.length === 0 && Object.keys(errors).length > 0) {
             errorMessages.push("Please review the form and fill out all required fields.");
         }
-    
-        const uniqueMessages = [...new Set(errorMessages)];
-        
-        uniqueMessages.forEach(msg => {
+
+        [...new Set(errorMessages)].forEach(msg => {
             toast({
                 title: 'Validation Error',
                 description: msg,
