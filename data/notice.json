@@ -1,11 +1,11 @@
 
 {
-    "enabled": false,
-    "dismissible": false,
-    "variant": "default",
+    "enabled": true,
+    "dismissible": true,
+    "variant": "warning",
     "icon": "Info",
-    "title": "Send your feedback!",
-    "content": "Let me know what you think about the beta.",
+    "title": "We're about to release!",
+    "content": "We're going to release out of beta pretty soon, given that most of the bugs and issues are being tackled pretty fast and there's no more serious issues occuring, but I also heavily value your feedback if you have any. So if you notice any issues, please send in a feedback form letting me know so that I can tackle these issues prior to release.",
     "button": {
         "text": "Give Feedback",
         "type": "function",

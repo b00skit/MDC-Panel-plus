@@ -48,6 +48,14 @@
                 {
                     "type": "modification",
                     "description": "<b>Paperwork Generators:</b> Adjusted the Incident Reports to allow for multiple officers."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Added support for new textarea-with-presets to also work with dynamic paperwork generators as well as multi-input fields. (This one was a bitch)"
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Added better handling for validation errors, now no-longer causing server errors regardless of the issue, particularly seen with multi-input fields and mandatory inputs within multi-input fields."
                 }
             ]
         },
