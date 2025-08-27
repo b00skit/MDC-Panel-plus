@@ -40,6 +40,14 @@
                 {
                     "type": "backend",
                     "description": "<b>Paperwork Generators:</b> Modified the rendering of paperwork generators, so that bbcode and HTML is a bit more accurately displayed."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>General:</b> Added a new Help Center to answer some commonly asked question and to compile a bunch of information on one page."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Adjusted the Incident Reports to allow for multiple officers."
                 }
             ]
         },
