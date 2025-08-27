@@ -38,6 +38,7 @@ interface TextareaWithPresetProps {
     onUserModifiedChange?: (value: boolean) => void;
     onModifierChange?: (name: string, value: boolean) => void;
     onPresetChange?: (value: boolean) => void;
+    externalInputGroupNames?: string[];
 }
 
 export function TextareaWithPreset({
@@ -54,6 +55,7 @@ export function TextareaWithPreset({
     onUserModifiedChange,
     onModifierChange,
     onPresetChange,
+    externalInputGroupNames = [],
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues, trigger, register } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
@@ -163,7 +165,11 @@ export function TextareaWithPreset({
             </div>
             {modifiers.map(mod => {
                 const enabled = watch(`${basePath}.modifiers.${mod.name}`);
-                if (mod.inputGroup && enabled) {
+                if (
+                    mod.inputGroup &&
+                    enabled &&
+                    !externalInputGroupNames.includes(mod.name)
+                ) {
                     return (
                         <ModifierInputGroup
                             key={`${mod.name}-group`}
@@ -187,14 +193,13 @@ export function TextareaWithPreset({
     );
 }
 
-const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string; groupConfig: any }) => {
+export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string; groupConfig: any }) => {
     const { control, register } = useFormContext();
+    const { fields, append, remove } = useFieldArray({ control, name: basePath });
 
     if (groupConfig.fields?.some((f: any) => f.type === 'textarea-with-preset')) {
         return <p className="text-red-500">textarea-with-preset cannot be used inside an input group.</p>;
     }
-
-    const { fields, append, remove } = useFieldArray({ control, name: basePath });
 
     const renderField = (field: any, path: string) => {
         switch (field.type) {
