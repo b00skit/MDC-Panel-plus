@@ -61,6 +61,9 @@ export function TextareaWithPreset({
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
+    // Subscribe to all form fields so external inputs (like input groups)
+    // update preset content when they change
+    watch();
     
     useEffect(() => {
         if (isInitialMount.current) {

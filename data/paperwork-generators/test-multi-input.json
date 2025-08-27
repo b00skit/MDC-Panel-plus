@@ -8,10 +8,18 @@
   "output": "{{narrative.narrative}}",
   "form": [
     {
+      "type": "input_group",
+      "name": "extras",
+      "label": "External Items",
+      "fields": [
+        { "type": "text", "name": "item", "label": "Item", "placeholder": "Item detail" }
+      ]
+    },
+    {
       "type": "textarea-with-preset",
       "name": "narrative",
       "label": "Narrative",
-      "preset": "{{modifiers.items}}",
+      "preset": "{{modifiers.items}}\n{{#each extras}}- {{item}}\\n{{/each}}",
       "modifiers": [
         {
           "name": "items",
