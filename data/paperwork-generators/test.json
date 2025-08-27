@@ -7,6 +7,8 @@
     "is_html_output": false,
     "output": "{{narrative.narrative}}",
     "form": [
+      { "type": "section", "title": "Test Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.items", "value": true}] },
+      { "type": "modifier_itemgroup", "name": "items"},
       {
         "type": "textarea-with-preset",
         "name": "narrative",
