@@ -25,13 +25,13 @@ import { Plus, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { MultiSelect } from '../ui/multi-select';
-import { TextareaWithPreset } from '../shared/textarea-with-preset';
+import { TextareaWithPreset, ModifierInputGroup } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
 import { cn } from '@/lib/utils';
 import configData from '../../../data/config.json';
 
 type FormField = {
-    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset';
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset' | 'modifier_itemgroup';
     name: string;
     label?: string;
     placeholder?: string;
@@ -114,6 +114,8 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
                 isPreset: true,
                 userModified: false
             };
+        } else if (field.type === 'modifier_itemgroup') {
+            // no default values needed
         } else if (field.name) {
             if (field.type === 'toggle') {
                 defaults[field.name] = field.defaultValue === true;
@@ -148,6 +150,26 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     const [vehicles, setVehicles] = useState<string[]>([]);
     const [vehiclesFetched, setVehiclesFetched] = useState(false);
     const [isFetchingVehicles, setIsFetchingVehicles] = useState(false);
+
+    const modifierInputGroupLookup = useMemo(() => {
+        const map: Record<string, { textareaName: string; groupConfig: any }> = {};
+        generatorConfig.form.forEach(f => {
+            if (f.type === 'textarea-with-preset' && f.name) {
+                (f.modifiers || []).forEach(mod => {
+                    if (mod.inputGroup) {
+                        map[mod.name] = { textareaName: f.name, groupConfig: mod.inputGroup };
+                    }
+                });
+            }
+        });
+        return map;
+    }, [generatorConfig.form]);
+
+    const externalModifierGroupNames = useMemo(() => {
+        return generatorConfig.form
+            .filter(f => f.type === 'modifier_itemgroup')
+            .map(f => f.name);
+    }, [generatorConfig.form]);
 
     useEffect(() => {
         reset();
@@ -341,6 +363,10 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                     }
                 })();
 
+                const externalGroupsForField = externalModifierGroupNames.filter(name =>
+                    modifierInputGroupLookup[name]?.textareaName === field.name
+                );
+
                 return (
                     <TextareaWithPreset
                         key={fieldKey}
@@ -352,6 +378,20 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         isInvalid={!!(field.required && !watch(`${path}.narrative`))}
                         noLocalStorage={field.noLocalStorage}
                         presetValue={narrativeText}
+                        externalInputGroupNames={externalGroupsForField}
+                    />
+                );
+
+            case 'modifier_itemgroup':
+                const lookup = modifierInputGroupLookup[field.name];
+                if (!lookup) return null;
+                const enabled = watch(`${lookup.textareaName}.modifiers.${field.name}`);
+                if (!enabled) return null;
+                return (
+                    <ModifierInputGroup
+                        key={fieldKey}
+                        basePath={`${lookup.textareaName}.modifierInputs.${field.name}`}
+                        groupConfig={lookup.groupConfig}
                     />
                 );
 
@@ -479,6 +519,11 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     };
 
     const MultiInputGroup = ({ fieldConfig, renderField }: { fieldConfig: FormField, renderField: Function }) => {
+        const { fields, append, remove } = useFieldArray({
+            control,
+            name: fieldConfig.name
+        });
+
         if (fieldConfig.fields?.some(f => f.type === 'textarea-with-preset')) {
             console.error('textarea-with-preset is not supported inside input_group');
             return (
@@ -492,11 +537,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 </Card>
             );
         }
-
-        const { fields, append, remove } = useFieldArray({
-            control,
-            name: fieldConfig.name
-        });
 
         return (
             <Card>
