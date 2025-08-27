@@ -3,7 +3,7 @@
 
 interface AdvancedFormattedReportProps {
     formData: any;
-    innerRef: React.RefObject<HTMLDivElement>;
+    innerRef: React.RefObject<HTMLTableElement>;
 }
 
 export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormattedReportProps) {
@@ -25,12 +25,16 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
     const sectionHeaderStyle: React.CSSProperties = { fontWeight: 'bold', fontSize: '10px', borderTop: '2px solid black', borderBottom: 'none', backgroundColor: 'white', textAlign: 'left' };
 
     return (
-        <div ref={innerRef} style={{ padding: '2px', border: '1px solid #000', backgroundColor: 'white', width: '100%', color: 'black', fontFamily: 'Arial, sans-serif' }}>
-            <h1 style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: 'black' }}>
+        <table
+            ref={innerRef}
+            border={1}
+            cellPadding={2}
+            style={{ padding: '2px', border: '1px solid #000', backgroundColor: 'white', width: '100%', color: 'black', fontFamily: 'Arial, sans-serif', borderCollapse: 'collapse' }}
+        >
+            <caption style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: 'black', captionSide: 'top', backgroundColor: 'white' }}>
                 {isLSSD ? "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT" : "LOS SANTOS POLICE DEPARTMENT"}<br />ARREST REPORT
-            </h1>
-            <table border={1} cellPadding={2} style={{ width: '100%', borderCollapse: 'collapse', color: 'black', backgroundColor: 'white' }}>
-                <tbody>
+            </caption>
+            <tbody>
                     <tr>
                         <th colSpan={2} style={headerCellStyle}>ARRESTEE NAME (FIRST, MIDDLE, LAST)</th>
                         <th style={headerCellStyle}>SEX (M/F/O)</th>
@@ -138,8 +142,7 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.additional)}</td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     );
 };
