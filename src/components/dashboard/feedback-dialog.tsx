@@ -164,7 +164,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
         </div>
         <DialogFooter className="sm:justify-between">
             <Button asChild variant="ghost">
-                <Link href="/help">
+                <Link href="/help" onClick={handleClose}>
                     <LifeBuoy className="mr-2" /> Help
                 </Link>
             </Button>
