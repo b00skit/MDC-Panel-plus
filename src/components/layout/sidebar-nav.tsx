@@ -245,11 +245,14 @@ export function SidebarNav() {
           {showFeedbackButton && (
             <SidebarMenuItem>
                 <SidebarMenuButton
-                onClick={() => setIsFeedbackDialogOpen(true)}
-                tooltip="Send Feedback"
+                 asChild
+                 isActive={isActive('/help')}
+                 tooltip="Help & Feedback"
                 >
-                <MessageSquare />
-                <span>Send Feedback</span>
+                <Link href="/help">
+                    <LifeBuoy />
+                    <span>Help & Feedback</span>
+                </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>
           )}
