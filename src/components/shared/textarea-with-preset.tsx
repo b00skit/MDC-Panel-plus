@@ -61,9 +61,6 @@ export function TextareaWithPreset({
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
-    // Subscribe to all form fields so external inputs (like input groups)
-    // update preset content when they change
-    watch();
     
     useEffect(() => {
         if (isInitialMount.current) {
@@ -75,7 +72,7 @@ export function TextareaWithPreset({
             setValue(`${basePath}.narrative`, presetValue, { shouldDirty: true });
             onTextChange?.(presetValue);
         }
-    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange, localValue]);
+    }, [presetValue, isPresetEnabled, isUserModified, setValue, onTextChange]);
 
 
     const handleTogglePreset = (checked: boolean) => {
