@@ -194,8 +194,43 @@ export function TextareaWithPreset({
 }
 
 export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string; groupConfig: any }) => {
-    const { control, register } = useFormContext();
+    const { control, register, formState: { errors }, getValues, trigger } = useFormContext();
+    const isInvalid = (fieldName: string, required?: boolean) => {
+        const parts = fieldName.split('.');
+        let error: any = errors;
+        for (const part of parts) {
+            if (error && part in error) {
+                error = error[part];
+            } else {
+                error = null;
+                break;
+            }
+        }
+        if (error) return true;
+        if (required) {
+            const value = getValues(fieldName);
+            return value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0);
+        }
+        return false;
+    };
     const { fields, append, remove } = useFieldArray({ control, name: basePath });
+
+    useEffect(() => {
+        if (groupConfig.required) {
+            register(basePath as any, {
+                validate: (value) => (value && value.length > 0) || 'At least one entry is required'
+            });
+            trigger(basePath as any);
+        }
+    }, [basePath, groupConfig.required, register, trigger]);
+
+    useEffect(() => {
+        if (groupConfig.required) {
+            trigger(basePath as any);
+        }
+    }, [fields, basePath, groupConfig.required, trigger]);
+
+    const groupInvalid = isInvalid(basePath, groupConfig.required);
 
     if (groupConfig.fields?.some((f: any) => f.type === 'textarea-with-preset')) {
         return <p className="text-red-500">textarea-with-preset cannot be used inside an input group.</p>;
@@ -207,14 +242,14 @@ export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string
                 return (
                     <div key={path} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} />
+                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn(isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
             case 'textarea':
                 return (
                     <div key={path} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} />
+                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn(isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
             default:
@@ -223,7 +258,7 @@ export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string
     };
 
     return (
-        <Card className="mb-4">
+        <Card className={cn('mb-4', groupInvalid && 'border-red-500')}>
             <CardHeader>
                 <CardTitle>{groupConfig.label}</CardTitle>
             </CardHeader>

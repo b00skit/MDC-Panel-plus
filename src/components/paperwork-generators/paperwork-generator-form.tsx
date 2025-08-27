@@ -137,7 +137,26 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         criteriaMode: 'all',
         defaultValues: buildDefaultValues(generatorConfig.form)
     });
-    const { register, handleSubmit, control, watch, trigger, getValues } = methods;
+    const { register, handleSubmit, control, watch, trigger, getValues, formState: { errors } } = methods;
+
+    const isInvalid = useCallback((fieldName: string, required?: boolean) => {
+        const fields = fieldName.split('.');
+        let error: any = errors;
+        for (const field of fields) {
+            if (error && field in error) {
+                error = error[field];
+            } else {
+                error = null;
+                break;
+            }
+        }
+        if (error) return true;
+        if (required) {
+            const value = getValues(fieldName);
+            return value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0);
+        }
+        return false;
+    }, [errors, getValues]);
 
     const officers = useOfficerStore(state => state.officers);
     const generalData = useBasicFormStore(state => state.formData.general);
@@ -265,7 +284,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} defaultValue={field.defaultValue} />
+                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} defaultValue={field.defaultValue} className={cn(isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
             case 'datalist':
@@ -302,7 +321,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                                         placeholder={field.placeholder}
                                         searchPlaceholder='Search...'
                                         emptyPlaceholder='No results.'
-                                        isInvalid={field.required && !value}
+                                        isInvalid={isInvalid(path, field.required)}
                                     />
                                 )
                             }}
@@ -314,13 +333,15 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className="min-h-[120px]" />
+                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn('min-h-[120px]', isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')} />
                     </div>
                 );
 
             case 'textarea-with-preset':
                 const isPresetActive = watch(`${path}.isPreset`);
                 const isUserModified = watch(`${path}.userModified`);
+
+                register(`${path}.narrative`, { required: field.required });
 
                 const narrativeText = (() => {
                     if (!isPresetActive || isUserModified) {
@@ -375,7 +396,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         basePath={path}
                         control={control}
                         modifiers={field.modifiers || []}
-                        isInvalid={!!(field.required && !watch(`${path}.narrative`))}
+                        isInvalid={isInvalid(`${path}.narrative`, field.required)}
                         noLocalStorage={field.noLocalStorage}
                         presetValue={narrativeText}
                         externalInputGroupNames={externalGroupsForField}
@@ -406,7 +427,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             defaultValue={field.defaultValue}
                             render={({ field: { onChange, value } }) => (
                                 <Select onValueChange={onChange} value={value} defaultValue={field.defaultValue}>
-                                    <SelectTrigger id={path} className={cn(field.required && !value && 'border-red-500 focus-visible:ring-red-500')}>
+                                    <SelectTrigger id={path} className={cn(isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')}>
                                         <SelectValue placeholder={field.placeholder} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -435,25 +456,25 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             
              case 'multi-select':
                  return (
-                     <div key={fieldKey} className="w-full">
-                         <Label htmlFor={path}>{field.label}</Label>
-                             <Controller
-                             name={path}
-                             control={control}
-                             rules={{ required: field.required }}
-                             defaultValue={field.defaultValue || []}
-                             render={({ field: { onChange, value } }) => (
-                                 <MultiSelect
-                                     options={field.options || []}
-                                     onValueChange={onChange}
-                                     defaultValue={value}
-                                     placeholder={field.placeholder}
-                                     className={cn(field.required && (!value || value.length === 0) && 'border-red-500 focus-visible:ring-red-500')}
-                                 />
-                             )}
-                            />
-                     </div>
-                 );
+                    <div key={fieldKey} className="w-full">
+                        <Label htmlFor={path}>{field.label}</Label>
+                            <Controller
+                            name={path}
+                            control={control}
+                            rules={{ required: field.required }}
+                            defaultValue={field.defaultValue || []}
+                            render={({ field: { onChange, value } }) => (
+                                <MultiSelect
+                                    options={field.options || []}
+                                    onValueChange={onChange}
+                                    defaultValue={value}
+                                    placeholder={field.placeholder}
+                                    className={cn(isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')}
+                                />
+                            )}
+                           />
+                    </div>
+                );
 
              case 'toggle':
                 return (
@@ -524,10 +545,27 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             name: fieldConfig.name
         });
 
+        useEffect(() => {
+            if (fieldConfig.required) {
+                register(fieldConfig.name as any, {
+                    validate: (value) => (value && value.length > 0) || 'At least one entry is required'
+                });
+                trigger(fieldConfig.name as any);
+            }
+        }, [fieldConfig.name, fieldConfig.required, register, trigger]);
+
+        useEffect(() => {
+            if (fieldConfig.required) {
+                trigger(fieldConfig.name as any);
+            }
+        }, [fields, fieldConfig.name, fieldConfig.required, trigger]);
+
+        const groupInvalid = isInvalid(fieldConfig.name, fieldConfig.required);
+
         if (fieldConfig.fields?.some(f => f.type === 'textarea-with-preset')) {
             console.error('textarea-with-preset is not supported inside input_group');
             return (
-                <Card>
+                <Card className={cn(groupInvalid && 'border-red-500')}>
                     <CardHeader>
                         <CardTitle>{fieldConfig.label}</CardTitle>
                     </CardHeader>
@@ -539,7 +577,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         }
 
         return (
-            <Card>
+            <Card className={cn(groupInvalid && 'border-red-500')}>
                 <CardHeader>
                     <CardTitle>{fieldConfig.label}</CardTitle>
                 </CardHeader>
@@ -577,30 +615,31 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             }
         };
 
-        const processErrors = (errorNode: any, path: string = '') => {
+        const processErrors = (errorNode: any, path: string = '', visited: WeakSet<object> = new WeakSet()) => {
+            if (!errorNode || typeof errorNode !== 'object' || visited.has(errorNode)) return;
+            if (errorNode instanceof Element) return;
+            visited.add(errorNode);
+
             for (const key in errorNode) {
+                if (key === 'ref') continue;
                 const newPath = path ? `${path}.${key}` : key;
-                const childNode = errorNode[key];
+                const childNode = (errorNode as any)[key];
                 if (!childNode) continue;
-    
-                if (childNode.type && childNode.message) {
+
+                if ((childNode as any).type && (childNode as any).message) {
                     const label = findFieldLabel(newPath, generatorConfig.form) || newPath.replace(/_/g, ' ');
-                    errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${childNode.message || 'This field is required.'}`);
-                } 
-                else if (typeof childNode === 'object' && !Array.isArray(childNode)) {
-                    processErrors(childNode, newPath);
-                }
-                 else if (Array.isArray(childNode)) {
+                    errorMessages.push(`${label.charAt(0).toUpperCase() + label.slice(1)}: ${(childNode as any).message || 'This field is required.'}`);
+                } else if (Array.isArray(childNode)) {
                     childNode.forEach((item, index) => {
-                        if (item) { 
-                            processErrors(item, `${newPath}.${index}`);
-                        }
+                        processErrors(item, `${newPath}.${index}`, visited);
                     });
+                } else if (typeof childNode === 'object') {
+                    processErrors(childNode, newPath, visited);
                 }
             }
         };
-    
-        processErrors(errors);
+
+        processErrors(errors as any);
     
         if (errorMessages.length === 0 && Object.keys(errors).length > 0) {
             errorMessages.push("Please review the form and fill out all required fields.");
