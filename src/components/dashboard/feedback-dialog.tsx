@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
-import config from '../../../data/config.json';
 
 const positiveReasons = [
     { id: 'design', label: 'The design is clean and intuitive.' },
