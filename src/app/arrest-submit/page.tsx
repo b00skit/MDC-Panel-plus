@@ -30,7 +30,7 @@ function ArrestSubmitContent() {
     
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
-    const reportRef = useRef<HTMLDivElement>(null);
+    const reportRef = useRef<HTMLTableElement>(null);
   
     useEffect(() => {
       setIsClient(true);
@@ -57,13 +57,13 @@ function ArrestSubmitContent() {
     }, [hasReport, formData, report, reportType, archiveReport]);
     
     const handleCopy = () => {
-        if (reportRef.current?.firstChild) {
-          navigator.clipboard.writeText((reportRef.current.firstChild as HTMLElement).outerHTML);
+        if (reportRef.current) {
+          navigator.clipboard.writeText(reportRef.current.outerHTML);
           toast({
             title: "Success",
             description: "Paperwork HTML copied to clipboard.",
             variant: "default",
-          })
+          });
         }
       };
   
