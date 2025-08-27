@@ -100,8 +100,16 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
         } else if (field.type === 'input_group' && field.name) {
             defaults[field.name] = field.defaultValue ?? [];
         } else if (field.type === 'textarea-with-preset' && field.name) {
-             defaults[field.name] = {
-                modifiers: (field.modifiers || []).reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
+            const modifierInputs: Record<string, any[]> = {};
+            (field.modifiers || []).forEach((mod: any) => {
+                if (mod.inputGroup) {
+                    modifierInputs[mod.name] = [];
+                }
+            });
+
+            defaults[field.name] = {
+                modifiers: (field.modifiers || []).reduce((acc, mod) => ({ ...acc, [mod.name]: true }), {}),
+                modifierInputs,
                 narrative: '',
                 isPreset: true,
                 userModified: false
@@ -471,6 +479,20 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     };
 
     const MultiInputGroup = ({ fieldConfig, renderField }: { fieldConfig: FormField, renderField: Function }) => {
+        if (fieldConfig.fields?.some(f => f.type === 'textarea-with-preset')) {
+            console.error('textarea-with-preset is not supported inside input_group');
+            return (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{fieldConfig.label}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-red-500">textarea-with-preset cannot be used inside an input group.</p>
+                    </CardContent>
+                </Card>
+            );
+        }
+
         const { fields, append, remove } = useFieldArray({
             control,
             name: fieldConfig.name
@@ -494,7 +516,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             </Button>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append(fieldConfig.fields?.reduce((acc, f) => ({...acc, [f.name]: f.defaultValue || ''}), {}) || {})}>
+                    <Button type="button" variant="outline" onClick={() => append(fieldConfig.fields?.reduce((acc, f) => ({ ...acc, [f.name]: f.defaultValue || '' }), {}) || {})}>
                         <Plus className="mr-2 h-4 w-4" /> Add {fieldConfig.label}
                     </Button>
                 </CardContent>

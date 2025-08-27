@@ -1,19 +1,27 @@
 
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
-import { Control, Controller, useFormContext } from 'react-hook-form';
+import { Control, Controller, useFormContext, useFieldArray } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Trash2, Plus } from 'lucide-react';
 
 export type Modifier = {
     name: string;
     label: string;
     text?: string;
     requires?: string[];
+    inputGroup?: {
+        label: string;
+        fields: any[];
+    };
 };
 
 interface TextareaWithPresetProps {
@@ -47,7 +55,7 @@ export function TextareaWithPreset({
     onModifierChange,
     onPresetChange,
 }: TextareaWithPresetProps) {
-    const { watch, setValue, getValues, trigger } = useFormContext();
+    const { watch, setValue, getValues, trigger, register } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
     const isInitialMount = useRef(true);
 
@@ -153,6 +161,19 @@ export function TextareaWithPreset({
                      </div>
                 ))}
             </div>
+            {modifiers.map(mod => {
+                const enabled = watch(`${basePath}.modifiers.${mod.name}`);
+                if (mod.inputGroup && enabled) {
+                    return (
+                        <ModifierInputGroup
+                            key={`${mod.name}-group`}
+                            basePath={`${basePath}.modifierInputs.${mod.name}`}
+                            groupConfig={mod.inputGroup}
+                        />
+                    );
+                }
+                return null;
+            })}
             <Textarea
                 value={localValue}
                 id={`${basePath}.narrative`}
@@ -165,3 +186,68 @@ export function TextareaWithPreset({
         </div>
     );
 }
+
+const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string; groupConfig: any }) => {
+    const { control, register } = useFormContext();
+
+    if (groupConfig.fields?.some((f: any) => f.type === 'textarea-with-preset')) {
+        return <p className="text-red-500">textarea-with-preset cannot be used inside an input group.</p>;
+    }
+
+    const { fields, append, remove } = useFieldArray({ control, name: basePath });
+
+    const renderField = (field: any, path: string) => {
+        switch (field.type) {
+            case 'text':
+                return (
+                    <div key={path} className="w-full">
+                        <Label htmlFor={path}>{field.label}</Label>
+                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} />
+                    </div>
+                );
+            case 'textarea':
+                return (
+                    <div key={path} className="w-full">
+                        <Label htmlFor={path}>{field.label}</Label>
+                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} />
+                    </div>
+                );
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <Card className="mb-4">
+            <CardHeader>
+                <CardTitle>{groupConfig.label}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {fields.map((item, index) => (
+                    <div key={item.id} className="flex items-start gap-2 p-4 border rounded-lg">
+                        <div className="flex-1 space-y-4">
+                            {groupConfig.fields?.map((sub: any) => renderField(sub, `${basePath}.${index}.${sub.name}`))}
+                        </div>
+                        <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                    </div>
+                ))}
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                        append(
+                            groupConfig.fields?.reduce(
+                                (acc: any, f: any) => ({ ...acc, [f.name]: f.defaultValue || '' }),
+                                {}
+                            ) || {}
+                        )
+                    }
+                >
+                    <Plus className="mr-2 h-4 w-4" /> Add {groupConfig.label}
+                </Button>
+            </CardContent>
+        </Card>
+    );
+};
