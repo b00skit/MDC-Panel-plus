@@ -141,7 +141,7 @@ export function HelpPage({ initialResources, initialFaqs, initialConfig }: HelpP
 
             <Card className="text-center p-6">
                 <CardTitle>Can't find what you're looking for?</CardTitle>
-                <CardDescription className="mt-2 mb-4">Our community and support team are here to help.</CardDescription>
+                <CardDescription className="mt-2 mb-4">I'm always happy to collect feedback.</CardDescription>
                 <Button onClick={() => setIsFeedbackDialogOpen(true)}>
                     <MessageSquare className="mr-2" /> Submit Feedback
                 </Button>
