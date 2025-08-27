@@ -1,0 +1,31 @@
+{
+    "id": "test-multi-input-preset",
+    "title": "Test Multi Input Preset",
+    "description": "Generator for testing textarea presets inside multi-input groups.",
+    "icon": "FileText",
+    "output": "{{#each entries}}Title: {{title}}\nDetails: {{details.narrative}}\n---\n{{/each}}",
+    "form": [
+        {
+            "type": "input_group",
+            "name": "entries",
+            "label": "Entries",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "title",
+                    "label": "Title",
+                    "placeholder": "Entry title"
+                },
+                {
+                    "type": "textarea-with-preset",
+                    "name": "details",
+                    "label": "Details",
+                    "preset": "{{modifiers.base}}",
+                    "modifiers": [
+                        { "name": "base", "label": "Base", "text": "Default preset text." }
+                    ]
+                }
+            ]
+        }
+    ]
+}

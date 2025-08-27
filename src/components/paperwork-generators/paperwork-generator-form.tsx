@@ -485,8 +485,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                     {fields.map((item, index) => (
                         <div key={item.id} className="flex items-start gap-2 p-4 border rounded-lg">
                             <div className="flex-1 space-y-4">
-                                {fieldConfig.fields?.map((subField) => (
-                                    renderField(subField, `${fieldConfig.name}.${index}.${subField.name}`)
+                                {fieldConfig.fields?.map((subField, subIndex) => (
+                                    renderField(subField, `${fieldConfig.name}.${index}.${subField.name}`, subIndex)
                                 ))}
                             </div>
                             <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
@@ -494,7 +494,11 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             </Button>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append(fieldConfig.fields?.reduce((acc, f) => ({...acc, [f.name]: f.defaultValue || ''}), {}) || {})}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => append(buildDefaultValues(fieldConfig.fields || []))}
+                    >
                         <Plus className="mr-2 h-4 w-4" /> Add {fieldConfig.label}
                     </Button>
                 </CardContent>
