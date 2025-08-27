@@ -36,8 +36,8 @@
         { "type": "textarea", "name": "pc_conclusion", "label": "Evidence Conclusion", "placeholder": "Explain what the evidence shows and how it links the subject/location to the crime.", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.probable_cause", "value": true}] },
 
         { "type": "section", "title": "Scope of Request Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.scope_of_request", "value": true}] },
-        { "type": "modifier_itemgroup", "name": "scope_items" },
-        
+        { "type": "textarea", "name": "scope_items", "label": "Items to be Searched/Seized/Monitored", "placeholder": "List specific items, one per line. e.g.,\n- One (1) black Glock 19 handgun\n- Any and all illicit narcotics...", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.scope_of_request", "value": true}] },
+
         { "type": "section", "title": "Affidavit" },
         {
             "type": "textarea-with-preset",
@@ -65,13 +65,7 @@
                 {
                     "name": "scope_of_request",
                     "label": "Scope of Request",
-                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\n{{#each narrative.modifierInputs.scope_items}}- {{this.item}}\n{{/each}}",
-                     "inputGroup": {
-                        "label": "Item to be Seized",
-                        "fields": [
-                            { "type": "text", "name": "item", "label": "Item", "placeholder": "e.g. One (1) black Glock 19 handgun" }
-                        ]
-                    }
+                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\n{{scope_items}}"
                 },
                 {
                     "name": "conclusion",
