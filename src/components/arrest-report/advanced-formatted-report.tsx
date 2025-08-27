@@ -31,7 +31,7 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
             cellPadding={2}
             style={{ padding: '2px', border: '1px solid #000', backgroundColor: 'white', width: '100%', color: 'black', fontFamily: 'Arial, sans-serif', borderCollapse: 'collapse' }}
         >
-            <caption style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: 'black', captionSide: 'top' }}>
+            <caption style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: 'black', captionSide: 'top', backgroundColor: 'white' }}>
                 {isLSSD ? "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT" : "LOS SANTOS POLICE DEPARTMENT"}<br />ARREST REPORT
             </caption>
             <tbody>
