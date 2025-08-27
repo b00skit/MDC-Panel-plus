@@ -1,0 +1,37 @@
+{
+    "id": "test-textarea-preset",
+    "title": "Test Textarea Preset",
+    "description": "Generator used for testing textarea with preset and multi-input support.",
+    "icon": "FileText",
+    "generator_disabled": false,
+    "is_html_output": false,
+    "output": "{{narrative.narrative}}",
+    "form": [
+        { "type": "section", "title": "Test Fields" },
+        {
+            "type": "textarea-with-preset",
+            "name": "narrative",
+            "label": "Test Narrative",
+            "noLocalStorage": true,
+            "preset": "{{modifiers.items}}",
+            "modifiers": [
+                {
+                    "name": "items",
+                    "label": "Include Items",
+                    "generateText": "{{#each items}}- {{this.name}}: {{this.detail}}\n{{/each}}",
+                    "fields": [
+                        {
+                            "type": "input_group",
+                            "name": "items",
+                            "label": "Items",
+                            "fields": [
+                                { "type": "text", "name": "name", "label": "Name" },
+                                { "type": "text", "name": "detail", "label": "Detail" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

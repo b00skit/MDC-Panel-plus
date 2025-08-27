@@ -47,11 +47,11 @@ type FormField = {
     stipulation?: {
         field: string;
         value: any;
-    },
+    };
     stipulations?: {
         field: string;
         value: any;
-    }[],
+    }[];
     fields?: FormField[]; // For group and input_group types
     // Charge field specific config
     showClass?: boolean;
@@ -66,11 +66,18 @@ type FormField = {
         fine?: boolean;
         impound?: boolean;
         suspension?: boolean;
-    }
+    };
     // Location field specific config
     showDistrict?: boolean;
     // Textarea with preset
-    modifiers?: any[];
+    modifiers?: {
+        name: string;
+        label: string;
+        text?: string;
+        generateText?: string;
+        requires?: string[];
+        fields?: FormField[];
+    }[];
     preset?: string;
     noLocalStorage?: boolean;
     refreshOn?: string[];
@@ -100,12 +107,17 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
         } else if (field.type === 'input_group' && field.name) {
             defaults[field.name] = field.defaultValue ?? [];
         } else if (field.type === 'textarea-with-preset' && field.name) {
-             defaults[field.name] = {
-                modifiers: (field.modifiers || []).reduce((acc, mod) => ({...acc, [mod.name]: true }), {}),
+            defaults[field.name] = {
+                modifiers: (field.modifiers || []).reduce((acc, mod) => ({ ...acc, [mod.name]: true }), {}),
                 narrative: '',
                 isPreset: true,
-                userModified: false
+                userModified: false,
             };
+            field.modifiers?.forEach(mod => {
+                if (mod.fields) {
+                    Object.assign(defaults, buildDefaultValues(mod.fields));
+                }
+            });
         } else if (field.name) {
             if (field.type === 'toggle') {
                 defaults[field.name] = field.defaultValue === true;
@@ -344,6 +356,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         isInvalid={!!(field.required && !watch(`${path}.narrative`))}
                         noLocalStorage={field.noLocalStorage}
                         presetValue={narrativeText}
+                        renderField={renderField}
                     />
                 );
 
@@ -471,6 +484,9 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     };
 
     const MultiInputGroup = ({ fieldConfig, renderField }: { fieldConfig: FormField, renderField: Function }) => {
+        if (fieldConfig.fields?.some(f => f.type === 'textarea-with-preset')) {
+            throw new Error('textarea-with-preset is not supported inside input_group');
+        }
         const { fields, append, remove } = useFieldArray({
             control,
             name: fieldConfig.name

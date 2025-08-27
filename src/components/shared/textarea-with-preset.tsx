@@ -13,7 +13,9 @@ export type Modifier = {
     name: string;
     label: string;
     text?: string;
+    generateText?: string;
     requires?: string[];
+    fields?: any[];
 };
 
 interface TextareaWithPresetProps {
@@ -30,6 +32,7 @@ interface TextareaWithPresetProps {
     onUserModifiedChange?: (value: boolean) => void;
     onModifierChange?: (name: string, value: boolean) => void;
     onPresetChange?: (value: boolean) => void;
+    renderField?: (field: any, path: string, index?: number) => React.ReactNode;
 }
 
 export function TextareaWithPreset({
@@ -46,6 +49,7 @@ export function TextareaWithPreset({
     onUserModifiedChange,
     onModifierChange,
     onPresetChange,
+    renderField,
 }: TextareaWithPresetProps) {
     const { watch, setValue, getValues, trigger } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
@@ -131,27 +135,42 @@ export function TextareaWithPreset({
 
             <Separator />
             
-            <div className="flex flex-wrap gap-x-4 gap-y-2 py-2">
-                {modifiers.map(mod => (
-                     <div key={mod.name} className="flex items-center space-x-2">
-                        <Controller
-                            name={`${basePath}.modifiers.${mod.name}`}
-                            control={control}
-                            render={({ field }) => (
-                                <Checkbox
-                                    id={`${basePath}-${mod.name}`}
-                                    checked={field.value}
-                                    onCheckedChange={(value) => {
-                                        field.onChange(value);
-                                        onModifierChange?.(mod.name, Boolean(value));
-                                    }}
-                                    disabled={isUserModified}
+            <div className="flex flex-col gap-y-2 py-2">
+                {modifiers.map((mod) => {
+                    const isEnabled = watch(`${basePath}.modifiers.${mod.name}`);
+                    const dependenciesMet = (mod.requires || []).every((dep: string) => watch(`${basePath}.modifiers.${dep}`));
+
+                    return (
+                        <div key={mod.name} className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                                <Controller
+                                    name={`${basePath}.modifiers.${mod.name}`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            id={`${basePath}-${mod.name}`}
+                                            checked={field.value}
+                                            onCheckedChange={(value) => {
+                                                field.onChange(value);
+                                                onModifierChange?.(mod.name, Boolean(value));
+                                            }}
+                                            disabled={isUserModified}
+                                        />
+                                    )}
                                 />
+                                <Label htmlFor={`${basePath}-${mod.name}`}>{mod.label}</Label>
+                            </div>
+
+                            {isPresetEnabled && isEnabled && dependenciesMet && mod.fields && renderField && (
+                                <div className="pl-6 space-y-4">
+                                    {mod.fields.map((f: any, idx: number) => (
+                                        <div key={`${mod.name}-${idx}`}>{renderField(f, f.name, idx)}</div>
+                                    ))}
+                                </div>
                             )}
-                        />
-                         <Label htmlFor={`${basePath}-${mod.name}`}>{mod.label}</Label>
-                     </div>
-                ))}
+                        </div>
+                    );
+                })}
             </div>
             <Textarea
                 value={localValue}
