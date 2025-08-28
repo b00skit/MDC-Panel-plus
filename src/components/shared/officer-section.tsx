@@ -129,7 +129,15 @@ const SelectField = ({
 );
 
 
-export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }: { isArrestReport?: boolean, isMultiOfficer?: boolean }) {
+export function OfficerSection({ 
+    isArrestReport = false, 
+    isMultiOfficer = true,
+    showDivDetail = false
+ }: { 
+    isArrestReport?: boolean, 
+    isMultiOfficer?: boolean,
+    showDivDetail?: boolean
+}) {
   const { 
     officers, 
     updateOfficer, 
@@ -165,7 +173,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
         {officers.map((officer, index) => (
           <div key={officer.id} className="p-4 border rounded-lg space-y-4">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-12 items-end">
-                <div className="md:col-span-4">
+                <div className="md:col-span-3">
                     <InputField
                         label="Full Name"
                         id={`officer-name-${officer.id}`}
@@ -176,7 +184,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                         isInvalid={!officer.name}
                     />
                 </div>
-                <div className="md:col-span-4">
+                <div className="md:col-span-3">
                     <SelectField
                         label="Rank"
                         id={`rank-${officer.id}`}
@@ -199,7 +207,7 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                         ))}
                     </SelectField>
                 </div>
-                <div className="md:col-span-3">
+                <div className="md:col-span-2">
                     <InputField
                         label="Badge"
                         id={`badge-${officer.id}`}
@@ -210,6 +218,18 @@ export function OfficerSection({ isArrestReport = false, isMultiOfficer = true }
                          isInvalid={!officer.badgeNumber}
                     />
                 </div>
+                 {showDivDetail && (
+                     <div className="md:col-span-3">
+                        <InputField
+                            label="Div / Detail"
+                            id={`div-detail-${officer.id}`}
+                            placeholder="e.g. Mission Row"
+                            icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
+                            value={officer.divDetail || ''}
+                            onChange={(e) => updateOfficer(officer.id, { divDetail: e.target.value })}
+                        />
+                    </div>
+                 )}
               <div className="md:col-span-1">
                   {index > 0 && (
                       <Button variant="ghost" size="icon" onClick={() => removeOfficer(officer.id)} type="button">
