@@ -1,18 +1,15 @@
 
-'use client';
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 import { promises as fs } from 'fs';
 import path from 'path';
-import MaintenancePage from '@/components/layout/maintenance-page';
+import FullScreenMessage from '@/components/layout/maintenance-page';
 import { Footer } from '@/components/layout/footer';
 import { Layout } from '@/components/layout/layout';
 import Script from 'next/script';
-import React, { useState, useEffect } from 'react';
-import FullScreenMessage from '@/components/layout/maintenance-page';
+import { ClientLayout } from '@/components/layout/client-layout';
 
 type SiteConfig = {
   SITE_LIVE: boolean;
@@ -59,39 +56,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
-    const [isBlocked, setIsBlocked] = useState(false);
-
-    useEffect(() => {
-        const betaEnabled = process.env.NEXT_PUBLIC_BETA_ENABLED === 'true';
-        if (betaEnabled) return;
-
-        const hostname = window.location.hostname;
-        const isBetaHost = hostname.includes('cloudworkstations.dev') || hostname.includes('beta.panel.booskit.dev');
-        
-        if (isBetaHost) {
-            const betaCode = localStorage.getItem('beta_code');
-            const expectedCode = process.env.NEXT_PUBLIC_BETA_CODE;
-            if (betaCode !== expectedCode) {
-                setIsBlocked(true);
-            }
-        }
-    }, []);
-
-    if (isBlocked) {
-        return (
-            <FullScreenMessage
-                title="Beta Access has Ended"
-                message="This beta version is no longer active. Please use the main site."
-                linkHref="https://panel.booskit.dev/"
-                linkText="Go to Live Site"
-            />
-        );
-    }
-    
-    return <>{children}</>;
-};
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -102,8 +66,6 @@ export default async function RootLayout({
     'utf8'
   );
   const config: SiteConfig = JSON.parse(file);
-  
-  const betaEnabled = process.env.BETA_ENABLED === 'true';
 
   if (!config.SITE_LIVE) {
     return (
@@ -124,7 +86,6 @@ export default async function RootLayout({
       </html>
     );
   }
-
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -205,12 +166,12 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-            <BetaRedirect>
+            <ClientLayout>
                 <Layout footer={<Footer />}>
                     {children}
                 </Layout>
                 <Toaster />
-            </BetaRedirect>
+            </ClientLayout>
         </ThemeProvider>
       </body>
     </html>
