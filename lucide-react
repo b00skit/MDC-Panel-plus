@@ -1,2 +1,0 @@
-export * from './dist/lucide-react';
-export const Asterisk = () => null; // Mock component
