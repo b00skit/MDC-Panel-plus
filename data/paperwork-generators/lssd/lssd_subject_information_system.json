@@ -4,24 +4,24 @@
     "title": "Subject Information System",
     "description": "Generate an LSSD Subject Information System (SIS) report.",
     "icon": "FileSearch",
-    "output_title": "[SIS] {{subject.name}} - {{general.date}}",
+    "output_title": "{{subject.name}}",
     "is_html_output": false,
-    "output": "[table=Times New][tr][td][center][b][size=130]LSSD SUBJECT INFORMATION SYSTEM FORMAT[/size][/b][/center][/td][/tr][/table]\n[table=Times New]\n[tr][td][b]DATE[/b]\n{{general.date}}[/td]\n[td][b]TIME[/b]\n{{general.time}}[/td]\n[td][b]ROAD[/b]\n{{location.street}}[/td]\n[td][b]UNIT[/b]\n{{general.callSign}}[/td][/tr][/table]\n[table=Times New][tr][td][b]F.I INFORMATION[/b][/table]\n[table=Times New][tr][td][b]NAME [i](Last, First, Middle)[/i][/b]\n{{subject.name}}[/td][/tr][/table]\n[table=Times New][tr][td][b]RESIDENCE ADDRESS[/b]\n{{subject.address}}[/td][/tr][/table]\n[table=Times New][tr][td][b]PHONE:[/b]\n{{subject.phone}}[/td][td][b]MONIKER[/b]\n{{subject.moniker}}[/td][/tr][/table]\n[table=Times New][tr][td][b]SEX[/b]\n{{subject.sex}}[/td][td][b]RACE[/b]\n{{subject.race}}[/td][td][b]DOB[/b]\n{{subject.dob}}[/td][td][b]HT[/b]\n{{subject.height}}[/td][td][b]WT[/b]\n{{subject.weight}}[/td][td][b]EYES[/b]\n{{subject.eyes}}[/td][td][b]HAIR[/b]\n{{subject.hair}}[/td][/tr][/table]\n[table=Times New][tr][td][b]GANG/CLIQUE[/b] {{subject.gang_clique}} [float=right][b]Known[/b] [cb={{#if (eq subject.gang_status 'Known')}}checked{{/if}}][color=transparent]—[/color][b]Suspected[/b] [cb={{#if (eq subject.gang_status 'Suspected')}}checked{{/if}}][color=transparent]-[/color]or[color=transparent]-[/color][b]Affiliate[/b] [cb={{#if (eq subject.gang_status 'Affiliate')}}checked{{/if}}][/float][/td][/tr][/table]\n[table=Times New][tr][td][b]TATTOOS/SCARS/MARKS/ODDITIES[/b]\nL[color=transparent]—[/color]R\n[cb={{#if tattoos.left_arm.checked}}checked{{/if}}] [cb={{#if tattoos.right_arm.checked}}checked{{/if}}] Arm: {{tattoos.arm_description}}\n[cb={{#if tattoos.left_face.checked}}checked{{/if}}] [cb={{#if tattoos.right_face.checked}}checked{{/if}}] Face/Head/Neck: {{tattoos.face_description}}\n[cb={{#if tattoos.left_hand.checked}}checked{{/if}}] [cb={{#if tattoos.right_hand.checked}}checked{{/if}}] Hand: {{tattoos.hand_description}}\n[cb={{#if tattoos.left_leg.checked}}checked{{/if}}] [cb={{#if tattoos.right_leg.checked}}checked{{/if}}] Leg: {{tattoos.leg_description}}\n[cb={{#if tattoos.left_other.checked}}checked{{/if}}] [cb={{#if tattoos.right_other.checked}}checked{{/if}}] Other: {{tattoos.other_description}}[/td][/tr][/table] \n[table=Times New][tr][td][b]VEHICLE INFORMATION[/b][/td][/tr][/table]\n[table=Times New][tr][td][b]MAKE[/b]\n{{vehicle.make}}[/td][td][b]MODEL[/b]\n{{vehicle.model}}[/td][td][b]COLOR[/b]\n{{vehicle.color}}[/td][td][b]LICENSE #[/b]\n{{vehicle.plate}}[/td][/tr][/table]\n[table=Times New][tr][td][b]ODDITIES/COMMENTS/REGISTERED OWNER/or VIN#[/b]\n{{vehicle.comments}}[/td][/tr][/table]",
+    "output": "[table=Times New][tr][td][center][b][size=130]LSSD SUBJECT INFORMATION SYSTEM FORMAT[/size][/b][/center][/td][/tr][/table]\n[table=Times New]\n[tr][td][b]DATE[/b]\n{{general.date}}[/td]\n[td][b]TIME[/b]\n{{general.time}}[/td]\n[td][b]ROAD[/b]\n{{location.street}}[/td]\n[td][b]UNIT[/b]\n{{general.callSign}}[/td][/tr][/table]\n[table=Times New][tr][td][b]F.I INFORMATION[/b][/table]\n[table=Times New][tr][td][b]NAME [i](Last, First, Middle)[/i][/b]\n{{subject.name}}[/td][/tr][/table]\n[table=Times New][tr][td][b]RESIDENCE ADDRESS[/b]\n{{subject.address}}[/td][/tr][/table]\n[table=Times New][tr][td][b]PHONE:[/b]\n{{subject.phone}}[/td][td][b]MONIKER[/b]\n{{subject.moniker}}[/td][/tr][/table]\n[table=Times New][tr][td][b]SEX[/b]\n{{subject.sex}}[/td][td][b]RACE[/b]\n{{subject.race}}[/td][td][b]DOB[/b]\n{{subject.dob}}[/td][td][b]HT[/b]\n{{subject.height}}[/td][td][b]WT[/b]\n{{subject.weight}}[/td][td][b]EYES[/b]\n{{subject.eyes}}[/td][td][b]HAIR[/b]\n{{subject.hair}}[/td][/tr][/table]\n[table=Times New][tr][td][b]GANG/CLIQUE[/b] {{subject.gang_clique}} [float=right][b]Known[/b] [cb={{#if (eq subject.gang_status 'Known')}}checked{{/if}}][color=transparent]—[/color][b]Suspected[/b] [cb={{#if (eq subject.gang_status 'Suspected')}}checked{{/if}}][color=transparent]-[/color]or[color=transparent]-[/color][b]Affiliate[/b] [cb={{#if (eq subject.gang_status 'Affiliate')}}checked{{/if}}][/float][/td][/tr][/table]\n[table=Times New][tr][td][b]TATTOOS/SCARS/MARKS/ODDITIES[/b]\nL[color=transparent]—[/color]R\n[cb={{#if tattoos.left_arm.checked}}checked{{/if}}] [cb={{#if tattoos.right_arm.checked}}checked{{/if}}] Arm: {{tattoos.arm_description}}\n[cb={{#if tattoos.left_face.checked}}checked{{/if}}] [cb={{#if tattoos.right_face.checked}}checked{{/if}}] Face/Head/Neck: {{tattoos.face_description}}\n[cb={{#if tattoos.left_hand.checked}}checked{{/if}}] [cb={{#if tattoos.right_hand.checked}}checked{{/if}}] Hand: {{tattoos.hand_description}}\n[cb={{#if tattoos.left_leg.checked}}checked{{/if}}] [cb={{#if tattoos.right_leg.checked}}checked{{/if}}] Leg: {{tattoos.leg_description}}\n[cb={{#if tattoos.left_other.checked}}checked{{/if}}] [cb={{#if tattoos.right_other.checked}}checked{{/if}}] Other: {{tattoos.other_description}}[/td][/tr][/table] \n[table=Times New][tr][td][b]VEHICLE INFORMATION[/b][/td][/tr][/table]\n[table=Times New][tr][td][b]MODEL & MODEL[/b]\n{{vehicle.model}}[/td][td][b]COLOR[/b]\n{{vehicle.color}}[/td][td][b]LICENSE #[/b]\n{{vehicle.plate}}[/td][/tr][/table]\n[table=Times New][tr][td][b]ODDITIES/COMMENTS/REGISTERED OWNER/or VIN#[/b]\n{{vehicle.comments}}[/td][/tr][/table]",
     "form": [
         { "type": "section", "title": "Incident Details" },
         { "type": "general", "name": "general" },
         { "type": "location", "name": "location" },
 
         { "type": "section", "title": "Subject Information" },
-        { "type": "text", "name": "subject.name", "label": "Name (Last, First, Middle)", "required": true },
+        { "type": "text", "name": "subject.name", "label": "Full Name", "required": true },
         { "type": "text", "name": "subject.address", "label": "Residence Address" },
         { "type": "group", "fields": [
             { "type": "text", "name": "subject.phone", "label": "Phone" },
             { "type": "text", "name": "subject.moniker", "label": "Moniker" }
         ]},
         { "type": "group", "fields": [
-            { "type": "dropdown", "name": "subject.sex", "label": "Sex", "options": ["M", "F", "O"] },
-            { "type": "text", "name": "subject.race", "label": "Race" },
+            { "type": "dropdown", "name": "subject.sex", "label": "Sex", "options": ["M", "F", "O"], "required": true },
+            { "type": "text", "name": "subject.race", "label": "Race", "required": true },
             { "type": "text", "name": "subject.dob", "label": "Date of Birth", "placeholder": "DD/MM/YYYY" },
             { "type": "text", "name": "subject.height", "label": "Height" },
             { "type": "text", "name": "subject.weight", "label": "Weight" },
@@ -77,10 +77,9 @@
         {
             "type": "group",
             "fields": [
-                { "type": "text", "name": "vehicle.make", "label": "Make" },
-                { "type": "datalist", "name": "vehicle.model", "label": "Model", "optionsSource": "vehicles" },
+                { "type": "datalist", "name": "vehicle.model", "label": "Make & Model", "optionsSource": "vehicles" },
                 { "type": "text", "name": "vehicle.color", "label": "Color" },
-                { "type": "text", "name": "vehicle.plate", "label": "License #" }
+                { "type": "text", "name": "vehicle.plate", "label": "License Plate" }
             ]
         },
         { "type": "textarea", "name": "vehicle.comments", "label": "Oddities/Comments/Registered Owner/or VIN#" }

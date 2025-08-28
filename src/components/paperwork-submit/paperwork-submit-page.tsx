@@ -48,6 +48,7 @@ const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: Reac
                     return options.inverse(this);
                 }
             });
+            Handlebars.registerHelper('eq', (a, b) => a === b);
             Handlebars.registerHelper('each', function(context, options) {
                 let ret = "";
                 if (Array.isArray(context)) {
