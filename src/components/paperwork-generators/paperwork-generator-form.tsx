@@ -237,11 +237,11 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
 
 
     const renderField = (
-        field: FormField, 
+        field: FormField,
         path: string,
         index?: number,
     ) => {
-        const fieldKey = `${path}-${index}`;
+        const fieldKey = `${path || field.type}-${index}`;
         if (field.stipulations) {
             const allMet = field.stipulations.every(stip => {
                 const watchedValue = watch(stip.field);
@@ -526,7 +526,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="flex flex-col md:flex-row items-end gap-4 w-full">
                         {field.fields?.map((subField, subIndex) => {
-                            const subFieldPath = subField.name;
+                            const subFieldPath = path ? `${path}.${subField.name}` : subField.name;
                             return <div key={`${subField.name}-${subIndex}`} className="w-full">{renderField(subField, subFieldPath, subIndex)}</div>;
                         })}
                     </div>
@@ -587,7 +587,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                         <div key={item.id} className="flex items-start gap-2 p-4 border rounded-lg">
                             <div className="flex-1 space-y-4">
                                 {fieldConfig.fields?.map((subField) => (
-                                    renderField(subField, `${fieldConfig.name}.${index}.${subField.name}`)
+                                    renderField(subField, `${fieldConfig.name}.${index}${subField.name ? `.${subField.name}` : ''}`)
                                 ))}
                             </div>
                             <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
@@ -595,7 +595,24 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             </Button>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append(fieldConfig.fields?.reduce((acc, f) => ({ ...acc, [f.name]: f.defaultValue || '' }), {}) || {})}>
+                    <Button type="button" variant="outline" onClick={() => append(
+                        (function flattenDefaults(fields: any[]): Record<string, any> {
+                            return fields.reduce((acc: Record<string, any>, f: any) => {
+                                if (f.type === 'group' && f.fields) {
+                                    return { ...acc, ...flattenDefaults(f.fields) };
+                                }
+                                const getDefault = () => {
+                                    if (f.type === 'toggle') return f.defaultValue === true;
+                                    if (f.type === 'multi-select') return f.defaultValue || [];
+                                    return f.defaultValue || '';
+                                };
+                                if (f.name) {
+                                    return { ...acc, [f.name]: getDefault() };
+                                }
+                                return acc;
+                            }, {} as Record<string, any>);
+                        })(fieldConfig.fields || [])
+                    )}>
                         <Plus className="mr-2 h-4 w-4" /> Add {fieldConfig.label}
                     </Button>
                 </CardContent>
@@ -686,8 +703,9 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
                     {generatorConfig.form.map((field, index) => {
-                        const path = field.name || `${field.type}-${index}`;
-                        return <div key={path}>{renderField(field, path, index)}</div>;
+                        const key = field.name || `${field.type}-${index}`;
+                        const path = field.name || '';
+                        return <div key={key}>{renderField(field, path, index)}</div>;
                     })}
                     <div className="flex justify-end mt-6">
                         <Button type="submit">Generate Paperwork</Button>
