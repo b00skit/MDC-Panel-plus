@@ -236,8 +236,8 @@ export function ArrestCalculatorResults({
         return `${parts.join(' ')} (${totalMinutes} mins)`;
       }
 
-      const handleCopyToClipboard = (text: string) => {
-        navigator.clipboard.writeText(text);
+      const handleCopyToClipboard = (text: string | number) => {
+        navigator.clipboard.writeText(text.toString());
         toast({
             title: "Copied!",
             description: `"${text}" copied to clipboard.`,
@@ -482,13 +482,16 @@ export function ArrestCalculatorResults({
       )}
 
       {showCopyables && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <CopyableCard label="Min Minutes" value={minTimeCapped} />
             <CopyableCard label="Max Minutes" value={maxTimeCapped} />
-            <CopyableCard label="Total Fine" value={totals.fine} />
+            <CopyableCard label="Total Impound (Days)" value={totals.impound} />
+            <CopyableCard label="Total Suspension (Days)" value={totals.suspension} />
             <CopyableCard label="Bail Cost" value={totals.highestBail} />
         </div>
       )}
     </div>
   );
 }
+
+  
