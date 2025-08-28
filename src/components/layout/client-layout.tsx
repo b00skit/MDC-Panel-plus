@@ -8,7 +8,7 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
     const [isBlocked, setIsBlocked] = useState(false);
 
     useEffect(() => {
-        const betaEnabled = process.env.NEXT_PUBLIC_BETA_ENABLED === 'true';
+        const betaEnabled = true;
         if (betaEnabled) return;
 
         const hostname = window.location.hostname;
