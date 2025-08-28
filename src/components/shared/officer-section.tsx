@@ -20,7 +20,7 @@ import {
   SelectGroup,
   SelectLabel
 } from '@/components/ui/select';
-import { User, Shield, Badge as BadgeIcon, Plus, Trash2, AlertTriangle } from 'lucide-react';
+import { User, IdCard, ShieldEllipsis as ShieldIcon, BookUser, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useOfficerStore, Officer } from '@/stores/officer-store';
 import { Badge } from '@/components/ui/badge';
@@ -189,7 +189,7 @@ export function OfficerSection({
                         label="Rank"
                         id={`rank-${officer.id}`}
                         placeholder="Select Rank"
-                        icon={<Shield className="h-4 w-4 text-muted-foreground" />}
+                        icon={<IdCard className="h-4 w-4 text-muted-foreground" />}
                         value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
                         onValueChange={(value) => {
                             const [department, rank] = value.split('__');
@@ -209,10 +209,10 @@ export function OfficerSection({
                 </div>
                 <div className="md:col-span-2">
                     <InputField
-                        label="Badge"
+                        label="Badge No."
                         id={`badge-${officer.id}`}
                         placeholder="12345"
-                        icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
+                        icon={<ShieldIcon className="h-4 w-4 text-muted-foreground" />}
                         value={officer.badgeNumber}
                         onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
                          isInvalid={!officer.badgeNumber}
@@ -221,10 +221,10 @@ export function OfficerSection({
                  {showDivDetail && (
                      <div className="md:col-span-3">
                         <InputField
-                            label="Div / Detail"
+                            label="Unit / Detail"
                             id={`div-detail-${officer.id}`}
                             placeholder="e.g. Mission Row"
-                            icon={<BadgeIcon className="h-4 w-4 text-muted-foreground" />}
+                            icon={<BookUser className="h-4 w-4 text-muted-foreground" />}
                             value={officer.divDetail || ''}
                             onChange={(e) => updateOfficer(officer.id, { divDetail: e.target.value })}
                         />

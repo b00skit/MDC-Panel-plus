@@ -29,7 +29,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -298,6 +298,19 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                         />
                     </div>
                   </div>
+                   <div className="space-y-2">
+                    <Label htmlFor="div-detail">Division / Detail</Label>
+                     <div className="relative flex items-center">
+                        <BookUser className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                        <Input
+                        id="div-detail"
+                        placeholder="e.g. Mission Row"
+                        value={defaultOfficer.divDetail || ''}
+                        onChange={(e) => handleOfficerChange('divDetail', e.target.value)}
+                        className="pl-9"
+                        />
+                    </div>
+                  </div>
                 </div>
               </>
             ) : (
@@ -368,6 +381,19 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                                 placeholder="123456"
                                 value={altChar.badgeNumber}
                                 onChange={(e) => handleAltOfficerChange(altChar.id, 'badgeNumber', e.target.value)}
+                                className="pl-9"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor={`alt-div-detail-${altChar.id}`}>Division / Detail</Label>
+                        <div className="relative flex items-center">
+                            <BookUser className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                id={`alt-div-detail-${altChar.id}`}
+                                placeholder="e.g. Mission Row"
+                                value={altChar.divDetail || ''}
+                                onChange={(e) => handleAltOfficerChange(altChar.id, 'divDetail', e.target.value)}
                                 className="pl-9"
                             />
                         </div>

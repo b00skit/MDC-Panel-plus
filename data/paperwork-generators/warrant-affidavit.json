@@ -45,7 +45,7 @@
             "label": "Affidavit Narrative",
             "noLocalStorage": true,
             "refreshOn": ["officers", "general"],
-            "preset": "{{modifiers.introduction}}\\n\\n{{modifiers.submission_statement}}\\n\\n{{modifiers.probable_cause}}\\n\\n{{modifiers.scope_of_request}}\\n\\n{{modifiers.conclusion}}",
+            "preset": "{{modifiers.introduction}}\n\n{{modifiers.submission_statement}}\n\n{{modifiers.probable_cause}}\n\n{{modifiers.scope_of_request}}\n\n{{modifiers.conclusion}}",
             "modifiers": [
                 {
                     "name": "introduction",
@@ -60,12 +60,12 @@
                 {
                     "name": "probable_cause",
                     "label": "Probable Cause Statement",
-                    "generateText": "The following facts establish probable cause for this warrant:\\nOn {{pc_date}} at approximately {{pc_time}}, {{pc_initial_event}}. This was followed by {{pc_investigative_steps}}. Evidence gathered, including {{pc_key_evidence}}, indicates that {{pc_conclusion}}."
+                    "generateText": "The following facts establish probable cause for this warrant:\nOn {{pc_date}} at approximately {{pc_time}}, {{pc_initial_event}}. This was followed by {{pc_investigative_steps}}. Evidence gathered, including {{pc_key_evidence}}, indicates that {{pc_conclusion}}."
                 },
                 {
                     "name": "scope_of_request",
                     "label": "Scope of Request",
-                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\\n{{#each narrative.modifierInputs.scope_of_request}}- {{this.item}}\\n{{/each}}",
+                    "generateText": "Based on the probable cause outlined above, I request authorization to search, seize, and/or monitor the following:\n{{#each narrative.modifierInputs.scope_of_request}}- {{this.item}}\n{{/each}}",
                     "inputGroup": {
                         "label": "Items to be Searched/Seized/Monitored",
                         "fields": [
@@ -81,7 +81,7 @@
                 {
                     "name": "conclusion",
                     "label": "Conclusion",
-                    "generateText": "Based on the information contained in this affidavit, I respectfully request that this court issue the requested {{warrant_type}}.\\n\\nI declare under penalty of perjury that the foregoing is true and correct.\\n\\n{{officers.0.name}}\\n{{officers.0.rank}}\\n{{officers.0.department}}\\nDATED: {{general.date}}"
+                    "generateText": "Based on the information contained in this affidavit, I respectfully request that this court issue the requested {{warrant_type}}.\n\nI declare under penalty of perjury that the foregoing is true and correct.\n\n{{officers.0.name}}\n{{officers.0.rank}}\n{{officers.0.department}}\nDATED: {{general.date}}"
                 }
             ]
         }
