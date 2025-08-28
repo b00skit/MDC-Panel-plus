@@ -13,7 +13,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, Clipboard, Pencil, Link2 } from 'lucide-react';
+import { AlertTriangle, Clipboard, Pencil, Link2, Asterisk } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +22,7 @@ import { Label } from '@/components/ui/label';
 import config from '../../../data/config.json';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 
 const getType = (type: string | undefined) => {
@@ -74,7 +75,7 @@ const formatBailCost = (bailInfo: any) => {
     return `$${bailInfo.cost.toLocaleString()}`;
 };
 
-const CopyableCard = ({ label, value }: { label: string, value: string | number }) => {
+const CopyableCard = ({ label, value, tooltipContent }: { label: string; value: string | number; tooltipContent?: string }) => {
     const { toast } = useToast();
   
     const handleCopy = () => {
@@ -85,19 +86,36 @@ const CopyableCard = ({ label, value }: { label: string, value: string | number 
       });
     };
   
-    return (
-      <Card>
-        <CardContent className="p-4">
-          <Label htmlFor={`copy-${label.toLowerCase().replace(' ', '-')}`}>{label}</Label>
-          <div className="flex items-center gap-2 mt-2">
-            <Input id={`copy-${label.toLowerCase().replace(' ', '-')}`} value={value} readOnly disabled />
-            <Button size="icon" variant="outline" onClick={handleCopy}>
-              <Clipboard className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+    const content = (
+        <Card>
+            <CardContent className="p-4">
+                <Label htmlFor={`copy-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
+                    <div className="flex items-center gap-1">
+                        {label}
+                        {tooltipContent && <Asterisk className="h-3 w-3 text-destructive" />}
+                    </div>
+                </Label>
+                <div className="flex items-center gap-2 mt-2">
+                    <Input id={`copy-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`} value={value} readOnly disabled />
+                    <Button size="icon" variant="outline" onClick={handleCopy}>
+                    <Clipboard className="h-4 w-4" />
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
     );
+
+    if (tooltipContent) {
+        return (
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>{content}</TooltipTrigger>
+                    <TooltipContent><p>{tooltipContent}</p></TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        );
+    }
+    return content;
 };
 
 interface ArrestCalculatorResultsProps {
@@ -147,81 +165,107 @@ export function ArrestCalculatorResults({
         return null;
     }).filter(Boolean);
 
-    const totals = report.reduce(
-        (acc, row) => {
-          const chargeDetails = penalCode[row.chargeId!];
-          if (!chargeDetails || !additions) return acc;
+    const calculationResults = report.map(row => {
+        const chargeDetails = penalCode[row.chargeId!];
+        if (!chargeDetails || !additions) return null;
     
-          const additionDetails = additions.find(a => a.name === row.addition);
-          const sentenceMultiplier = additionDetails?.sentence_multiplier ?? 1;
-          const pointsMultiplier = additionDetails?.points_multiplier ?? 1;
+        const additionDetails = additions.find(a => a.name === row.addition);
+        const sentenceMultiplier = additionDetails?.sentence_multiplier ?? 1;
+        const pointsMultiplier = additionDetails?.points_multiplier ?? 1;
+    
+        const isDrugCharge = !!chargeDetails.drugs;
+    
+        const getTime = (timeObj: any) => {
+          if (!timeObj) return { days: 0, hours: 0, min: 0 };
+          if (isDrugCharge && row.category) {
+            return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
+          }
+          return timeObj;
+        }
+    
+        const getFine = (fineObj: any) => {
+          if (!fineObj) return 0;
+          if (isDrugCharge && row.category) return fineObj[row.category] || 0;
+          return fineObj[row.offense!] || 0;
+        }
+    
+        const originalMinTime = getTime(chargeDetails.time);
+        const originalMaxTime = getTime(chargeDetails.maxtime);
+        const originalPoints = chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
+    
+        const modifiedMinTime = formatTimeInMinutes(originalMinTime) * sentenceMultiplier;
+        const modifiedMaxTime = formatTimeInMinutes(originalMaxTime) * sentenceMultiplier;
+        const modifiedPoints = originalPoints * pointsMultiplier;
+    
+        const fine = getFine(chargeDetails.fine);
+        const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound] || 0;
+        const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension] || 0;
+    
+        const getBailAuto = () => (typeof chargeDetails.bail.auto === 'object' && row.category) ? chargeDetails.bail.auto[row.category] : chargeDetails.bail.auto;
+        const getBailCost = () => (typeof chargeDetails.bail.cost === 'object' && row.category) ? chargeDetails.bail.cost[row.category] : chargeDetails.bail.cost;
+        const bailAuto = chargeDetails.bail ? getBailAuto() : null;
+        const bailCost = chargeDetails.bail && bailAuto !== false ? getBailCost() : 0;
+    
+        return {
+          row,
+          chargeDetails,
+          additionDetails,
+          isModified: sentenceMultiplier !== 1 || pointsMultiplier !== 1,
+          original: {
+            minTime: formatTimeInMinutes(originalMinTime),
+            maxTime: formatTimeInMinutes(originalMaxTime),
+            points: originalPoints,
+          },
+          modified: {
+            minTime: modifiedMinTime,
+            maxTime: modifiedMaxTime,
+            points: modifiedPoints,
+          },
+          fine, impound, suspension, bailAuto, bailCost
+        };
+      }).filter(Boolean);
 
-          const isDrugCharge = !!chargeDetails.drugs;
-    
-          const getTime = (timeObj: any) => {
-            if (!timeObj) return { days: 0, hours: 0, min: 0 };
-            if (isDrugCharge && row.category) {
-              return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
-            }
-            return timeObj;
-          }
-          
-          const getFine = (fineObj: any) => {
-            if (!fineObj) return 0;
-            if(isDrugCharge && row.category) return fineObj[row.category] || 0;
-            return fineObj[row.offense!] || 0;
-          }
-    
-          const minTime = getTime(chargeDetails.time);
-          const maxTime = getTime(chargeDetails.maxtime);
-    
-          acc.minTime += formatTimeInMinutes(minTime) * sentenceMultiplier;
-          acc.maxTime += formatTimeInMinutes(maxTime) * sentenceMultiplier;
-          acc.points += (chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0) * pointsMultiplier;
-          acc.fine += getFine(chargeDetails.fine);
-          
-          const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
-          if (impound) acc.impound += impound;
-    
-          const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
-          if (suspension) acc.suspension += suspension;
-    
-          if (chargeDetails.bail) {
-            acc.bailStatus.hasBailCharge = true;
-            const getBailAuto = () => {
-                if (typeof chargeDetails.bail.auto === 'object' && row.category) {
-                    return chargeDetails.bail.auto[row.category];
-                }
-                return chargeDetails.bail.auto;
-            }
-        
-            const bailAuto = getBailAuto();
-            if(bailAuto === false) acc.bailStatus.noBail = true;
-            if(bailAuto === 2) acc.bailStatus.discretionary = true;
-            if(bailAuto === true) acc.bailStatus.eligible = true;
+    const totals = calculationResults.reduce(
+        (acc, result) => {
+            if(!result) return acc;
+
+            acc.original.minTime += result.original.minTime;
+            acc.original.maxTime += result.original.maxTime;
+            acc.original.points += result.original.points;
+
+            acc.modified.minTime += result.modified.minTime;
+            acc.modified.maxTime += result.modified.maxTime;
+            acc.modified.points += result.modified.points;
             
-            const getBailCost = () => {
-                if (typeof chargeDetails.bail.cost === 'object' && row.category) {
-                    return chargeDetails.bail.cost[row.category];
-                }
-                return chargeDetails.bail.cost;
+            acc.fine += result.fine;
+            acc.impound += result.impound;
+            acc.suspension += result.suspension;
+          
+            if (result.bailAuto !== null) {
+                acc.bailStatus.hasBailCharge = true;
+                if(result.bailAuto === false) acc.bailStatus.noBail = true;
+                if(result.bailAuto === 2) acc.bailStatus.discretionary = true;
+                if(result.bailAuto === true) acc.bailStatus.eligible = true;
             }
-            
-            if (bailAuto !== false) {
-                const currentBail = getBailCost() || 0;
-                if (currentBail > acc.highestBail) {
-                    acc.highestBail = currentBail;
-                }
+            if (result.bailAuto !== false && result.bailCost > acc.highestBail) {
+                acc.highestBail = result.bailCost;
             }
-          }
           
           return acc;
         },
-        { minTime: 0, maxTime: 0, points: 0, fine: 0, impound: 0, suspension: 0, bailStatus: { eligible: false, discretionary: false, noBail: false, hasBailCharge: false }, highestBail: 0 }
+        { 
+            original: { minTime: 0, maxTime: 0, points: 0 },
+            modified: { minTime: 0, maxTime: 0, points: 0 },
+            fine: 0, 
+            impound: 0, 
+            suspension: 0, 
+            bailStatus: { eligible: false, discretionary: false, noBail: false, hasBailCharge: false }, 
+            highestBail: 0 
+        }
       );
     
-      if (totals.minTime > totals.maxTime) {
-        totals.maxTime = totals.minTime;
+      if (totals.modified.minTime > totals.modified.maxTime) {
+        totals.modified.maxTime = totals.modified.minTime;
       }
       
       const getBailStatus = () => {
@@ -233,9 +277,9 @@ export function ArrestCalculatorResults({
       }
       
       const maxSentenceMinutes = config.MAX_SENTENCE_DAYS * 1440;
-      const minTimeCapped = Math.min(totals.minTime, maxSentenceMinutes);
-      const maxTimeCapped = Math.min(totals.maxTime, maxSentenceMinutes);
-      const isCapped = totals.minTime > maxSentenceMinutes || totals.maxTime > maxSentenceMinutes;
+      const minTimeCapped = Math.min(totals.modified.minTime, maxSentenceMinutes);
+      const maxTimeCapped = Math.min(totals.modified.maxTime, maxSentenceMinutes);
+      const isCapped = totals.modified.minTime > maxSentenceMinutes || totals.modified.maxTime > maxSentenceMinutes;
 
       const formatTotalTime = (totalMinutes: number) => {
         if (totalMinutes === 0) return '0 minutes';
@@ -302,7 +346,10 @@ export function ArrestCalculatorResults({
         }
     }
 
+    const hasAnyModifiers = calculationResults.some(r => r?.isModified);
+
   return (
+    <TooltipProvider>
     <div className="space-y-6">
       {showCharges && (
         <Card>
@@ -340,55 +387,12 @@ export function ArrestCalculatorResults({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {report.map((row) => {
-                    const chargeDetails = penalCode[row.chargeId!];
-                    if (!chargeDetails) return null;
-
-                    const isDrugCharge = !!chargeDetails.drugs;
+                {calculationResults.map((result) => {
+                    if (!result) return null;
+                    const { row, chargeDetails, additionDetails, isModified, original, modified, fine, impound, suspension, bailAuto, bailCost } = result;
 
                     const typePrefix = `${chargeDetails.type}${row.class}`;
                     const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
-                    
-                    const getTime = (timeObj: any, simple = false) => {
-                        if(!timeObj) return 'N/A';
-                        let timeValue;
-                        if (isDrugCharge && row.category) {
-                            timeValue = timeObj[row.category];
-                        } else {
-                            timeValue = timeObj;
-                        }
-                        return simple ? formatTimeSimple(timeValue) : formatTime(timeValue);
-                    }
-                    const minTime = getTime(chargeDetails.time, true);
-                    const maxTime = getTime(chargeDetails.maxtime, true);
-
-                    const getFine = (fineObj: any, isRaw?: boolean) => {
-                        if (!fineObj) return isRaw ? 0 : '$0';
-                    
-                        let value = 0;
-                        if (isDrugCharge && row.category) {
-                            value = fineObj[row.category] || 0;
-                        } else {
-                            value = fineObj[row.offense!] || 0;
-                        }
-                    
-                        return isRaw ? value : `$${value.toLocaleString()}`;
-                    };
-                    
-                    const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
-                    const suspension = chargeDetails.suspension?.[row.offense as keyof typeof chargeDetails.suspension];
-
-                    const getBailInfo = () => {
-                        if (!chargeDetails.bail) return null;
-                        let auto = chargeDetails.bail.auto;
-                        let cost = chargeDetails.bail.cost;
-                        if(isDrugCharge && row.category) {
-                        if(typeof chargeDetails.bail.auto === 'object') auto = chargeDetails.bail.auto[row.category];
-                        if(typeof chargeDetails.bail.cost === 'object') cost = chargeDetails.bail.cost[row.category];
-                        }
-                        return {auto, cost};
-                    }
-                    const bailInfo = getBailInfo();
 
                     return (
                         <TableRow key={row.uniqueId}>
@@ -398,7 +402,21 @@ export function ArrestCalculatorResults({
                              >
                                 {title}
                              </TableCell>
-                            <TableCell>{row.addition}</TableCell>
+                            <TableCell>
+                                {isModified ? (
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <span className="font-bold text-yellow-500 cursor-help">{row.addition}</span>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Sentence Multiplier: {additionDetails?.sentence_multiplier}x</p>
+                                            <p>Points Multiplier: {additionDetails?.points_multiplier}x</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                ) : (
+                                    <span>{row.addition}</span>
+                                )}
+                            </TableCell>
                             <TableCell>{row.offense}</TableCell>
                             <TableCell>
                                 <span className={cn('font-bold', {
@@ -409,17 +427,56 @@ export function ArrestCalculatorResults({
                                     {getType(chargeDetails.type)}
                                 </span>
                             </TableCell>
-                            <TableCell>{minTime}</TableCell>
-                            <TableCell>{maxTime}</TableCell>
-                            <TableCell>{chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0}</TableCell>
+                            <TableCell>
+                                <div className="flex items-center gap-1">
+                                    {formatTotalTime(modified.minTime).split('(')[0].trim()}
+                                    {isModified && (
+                                        <Tooltip>
+                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Original: {formatTotalTime(original.minTime)}</p>
+                                                <p>Modified: {formatTotalTime(modified.minTime)}</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    )}
+                                </div>
+                            </TableCell>
+                            <TableCell>
+                                 <div className="flex items-center gap-1">
+                                    {formatTotalTime(modified.maxTime).split('(')[0].trim()}
+                                    {isModified && (
+                                        <Tooltip>
+                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Original: {formatTotalTime(original.maxTime)}</p>
+                                                <p>Modified: {formatTotalTime(modified.maxTime)}</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    )}
+                                </div>
+                            </TableCell>
+                            <TableCell>
+                                <div className="flex items-center gap-1">
+                                    {Math.round(modified.points)}
+                                     {isModified && (
+                                        <Tooltip>
+                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Original: {original.points} points</p>
+                                                <p>Modified: {Math.round(modified.points)} points</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    )}
+                                </div>
+                            </TableCell>
                             <TableCell 
                                 className={cn(clickToCopy && "cursor-pointer hover:text-primary")}
-                                onClick={clickToCopy ? () => handleCopyToClipboard(getFine(chargeDetails.fine, true)) : undefined}
-                             >{getFine(chargeDetails.fine)}</TableCell>
-                            <TableCell>{impound ? `${impound} Day(s)` : 'No'}</TableCell>
-                            <TableCell>{suspension ? `${suspension} Day(s)` : 'No'}</TableCell>
-                            <TableCell><BailStatusBadge bailInfo={bailInfo} /></TableCell>
-                            <TableCell>{formatBailCost(bailInfo)}</TableCell>
+                                onClick={clickToCopy ? () => handleCopyToClipboard(fine) : undefined}
+                             >${fine.toLocaleString()}</TableCell>
+                            <TableCell>{impound > 0 ? `${impound} Day(s)` : 'No'}</TableCell>
+                            <TableCell>{suspension > 0 ? `${suspension} Day(s)` : 'No'}</TableCell>
+                            <TableCell><BailStatusBadge bailInfo={{ auto: bailAuto }} /></TableCell>
+                            <TableCell>{formatBailCost({ auto: bailAuto, cost: bailCost })}</TableCell>
                         </TableRow>
                     );
                 })}
@@ -458,8 +515,8 @@ export function ArrestCalculatorResults({
                     <AlertTitle>Sentence Capped</AlertTitle>
                     <AlertDescription>
                         The total sentence time has been capped at {config.MAX_SENTENCE_DAYS} days as per Legal Faction Management policy. The original uncapped totals are shown below for reference.
-                        <br /><b>Original Min Time:</b> {formatTotalTime(totals.minTime)}
-                        <br /><b>Original Max Time:</b> {formatTotalTime(totals.maxTime)}
+                        <br /><b>Original Min Time:</b> {formatTotalTime(totals.modified.minTime)}
+                        <br /><b>Original Max Time:</b> {formatTotalTime(totals.modified.maxTime)}
                     </AlertDescription>
                 </Alert>
             )}
@@ -475,9 +532,48 @@ export function ArrestCalculatorResults({
                     <TableHead>Highest Bail Amount</TableHead>
                 </TableRow></TableHeader>
                 <TableBody><TableRow>
-                    <TableCell>{formatTotalTime(minTimeCapped)}</TableCell>
-                    <TableCell>{formatTotalTime(maxTimeCapped)}</TableCell>
-                    <TableCell>{Math.round(totals.points)}</TableCell>
+                    <TableCell>
+                         <div className="flex items-center gap-1">
+                            {formatTotalTime(minTimeCapped)}
+                            {hasAnyModifiers && (
+                                <Tooltip>
+                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Original: {formatTotalTime(totals.original.minTime)}</p>
+                                        <p>Modified: {formatTotalTime(totals.modified.minTime)}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            )}
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        <div className="flex items-center gap-1">
+                            {formatTotalTime(maxTimeCapped)}
+                             {hasAnyModifiers && (
+                                <Tooltip>
+                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Original: {formatTotalTime(totals.original.maxTime)}</p>
+                                        <p>Modified: {formatTotalTime(totals.modified.maxTime)}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            )}
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                         <div className="flex items-center gap-1">
+                           {Math.round(totals.modified.points)}
+                            {hasAnyModifiers && (
+                                <Tooltip>
+                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Original: {totals.original.points} points</p>
+                                        <p>Modified: {Math.round(totals.modified.points)} points</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            )}
+                        </div>
+                    </TableCell>
                     <TableCell>${totals.fine.toLocaleString()}</TableCell>
                     <TableCell>{totals.impound > 0 ? `${totals.impound} Day(s)` : 'No'}</TableCell>
                     <TableCell>{totals.suspension > 0 ? `${totals.suspension} Day(s)` : 'No'}</TableCell>
@@ -499,15 +595,14 @@ export function ArrestCalculatorResults({
 
       {showCopyables && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <CopyableCard label="Min Minutes" value={Math.round(minTimeCapped)} />
-            <CopyableCard label="Max Minutes" value={Math.round(maxTimeCapped)} />
+            <CopyableCard label="Min Minutes" value={Math.round(minTimeCapped)} tooltipContent={hasAnyModifiers ? `Original: ${Math.round(totals.original.minTime)}` : undefined} />
+            <CopyableCard label="Max Minutes" value={Math.round(maxTimeCapped)} tooltipContent={hasAnyModifiers ? `Original: ${Math.round(totals.original.maxTime)}` : undefined} />
             <CopyableCard label="Total Impound (Days)" value={totals.impound} />
             <CopyableCard label="Total Suspension (Days)" value={totals.suspension} />
             <CopyableCard label="Bail Cost" value={totals.highestBail} />
         </div>
       )}
     </div>
+    </TooltipProvider>
   );
 }
-
-  
