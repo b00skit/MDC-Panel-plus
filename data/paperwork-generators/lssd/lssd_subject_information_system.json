@@ -36,40 +36,40 @@
         {
             "type": "group",
             "fields": [
-                { "type": "toggle", "name": "tattoos.left_arm.checked", "label": "L Arm" },
-                { "type": "toggle", "name": "tattoos.right_arm.checked", "label": "R Arm" },
+                { "type": "toggle", "name": "tattoos.left_arm.checked", "label": "L Arm", "dataOn": "Left Arm", "dataOff": "Left Arm" },
+                { "type": "toggle", "name": "tattoos.right_arm.checked", "label": "R Arm", "dataOn": "Right Arm", "dataOff": "Right Arm" },
                 { "type": "text", "name": "tattoos.arm_description", "label": "Arm Description", "placeholder": "Description of tattoos on arm(s)" }
             ]
         },
         {
             "type": "group",
             "fields": [
-                { "type": "toggle", "name": "tattoos.left_face.checked", "label": "L Face/Head" },
-                { "type": "toggle", "name": "tattoos.right_face.checked", "label": "R Face/Head" },
+                { "type": "toggle", "name": "tattoos.left_face.checked", "label": "L Face/Head", "dataOn": "Left Face/Head", "dataOff": "Left Face/Head" },
+                { "type": "toggle", "name": "tattoos.right_face.checked", "label": "R Face/Head", "dataOn": "Right Face/Head", "dataOff": "Right Face/Head" },
                 { "type": "text", "name": "tattoos.face_description", "label": "Face/Head/Neck Description", "placeholder": "Description of tattoos on face/head/neck" }
             ]
         },
         {
             "type": "group",
             "fields": [
-                { "type": "toggle", "name": "tattoos.left_hand.checked", "label": "L Hand" },
-                { "type": "toggle", "name": "tattoos.right_hand.checked", "label": "R Hand" },
+                { "type": "toggle", "name": "tattoos.left_hand.checked", "label": "L Hand", "dataOn": "Left Hand", "dataOff": "Left Hand" },
+                { "type": "toggle", "name": "tattoos.right_hand.checked", "label": "R Hand", "dataOn": "Right Hand", "dataOff": "Right Hand" },
                 { "type": "text", "name": "tattoos.hand_description", "label": "Hand Description", "placeholder": "Description of tattoos on hand(s)" }
             ]
         },
         {
             "type": "group",
             "fields": [
-                { "type": "toggle", "name": "tattoos.left_leg.checked", "label": "L Leg" },
-                { "type": "toggle", "name": "tattoos.right_leg.checked", "label": "R Leg" },
+                { "type": "toggle", "name": "tattoos.left_leg.checked", "label": "L Leg", "dataOn": "Left Leg", "dataOff": "Left Leg" },
+                { "type": "toggle", "name": "tattoos.right_leg.checked", "label": "R Leg", "dataOn": "Right Leg", "dataOff": "Right Leg" },
                 { "type": "text", "name": "tattoos.leg_description", "label": "Leg Description", "placeholder": "Description of tattoos on leg(s)" }
             ]
         },
         {
             "type": "group",
             "fields": [
-                { "type": "toggle", "name": "tattoos.left_other.checked", "label": "L Other" },
-                { "type": "toggle", "name": "tattoos.right_other.checked", "label": "R Other" },
+                { "type": "toggle", "name": "tattoos.left_other.checked", "label": "L Other", "dataOn": "Left Other", "dataOff": "Left Other" },
+                { "type": "toggle", "name": "tattoos.right_other.checked", "label": "R Other", "dataOn": "Right Other", "dataOff": "Right Other" },
                 { "type": "text", "name": "tattoos.other_description", "label": "Other Description", "placeholder": "Description of other tattoos" }
             ]
         },
