@@ -1,6 +1,69 @@
 {
     "changelogs": [
         {
+            "version": "3.1.6",
+            "type": "Minor Update",
+            "date": "2025-08-28",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Added a missing Unit / Detail field to the Warrant Affidavit generator."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> Made it so the officer section adapts depending on how many fields are present based on the backend configuration for the officer section."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Calculator:</b> Removed the total fine as a copyable field and replaced it with total suspension and total impound times, as fines can now individually be copied which is what will be used more."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added support for charging additions such as accessory, attempt, conspiracy and soliciation. The arrest calculator will also highlight any sort of addition modifications."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Settings:</b> Added the ability to modify each character's unit / detail within the application settings."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Added support for grouping inputs within input multi-input-groups, this makes forms a bit more visually enhanced and better looking."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Adjusted the paperwork generators validation system, making it so mandatory fields will now highlight as red but also dynamically adapt so that if you type something into a mandatory field, the red outline will go away."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added a Los Santos County Sheriff's Department form for \"Subject Information System\"."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added a Los Santos County Sheriff's Department form for \"Traffic Collision Report\"."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added a San Andreas Department of Corrections form for \"Parole Tracking Program\"."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> Made a reusable icon component, allowing icons to be dynamically allocated to other components without importing each of the icons one by one."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Modified all the icons on the existing paperwork generators and added support for <b><span style=\"color:#FF0000\">c</span><span style=\"color:#FFFF00\">o</span><span style=\"color:#00FF00\">l</span><span style=\"color:#00FFFF\">o</span><span style=\"color:#0000FF\">r</span><span style=\"color:#FF00FF\">s</span></b>."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> Added a beta-redirection system which will, upon release of the actual MDC Panel, redirect people to the live version of the MDC Panel, so people don't keep using the beta version."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> Added support for automatically saving drafts whenever you click out of a textfield, meaning if you close the website or something similar by mistake, the draft should still save."
+                }
+            ]
+        },
+        {
             "version": "3.1.5",
             "type": "Minor Update",
             "date": "2025-08-26",
