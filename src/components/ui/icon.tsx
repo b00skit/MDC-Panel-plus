@@ -22,7 +22,12 @@ const ALIASES: Record<string, AllIconNames> = {
 function normalize(name: string): AllIconNames | null {
   if (!name) return null;
 
-  // strip non-letters/digits, then camelize -> "file-search" -> "FileSearch"
+  // If the exact name exists, return it directly
+  if (name in Icons) {
+    return name as AllIconNames;
+  }
+
+  // Clean and camel-case as fallback
   const cleaned = name.toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   const camel = cleaned
     .replace(/(^|\s)([a-z0-9])/g, (_, __, c) => c.toUpperCase())
@@ -31,6 +36,7 @@ function normalize(name: string): AllIconNames | null {
 
   return aliased in Icons ? (aliased as AllIconNames) : null;
 }
+
 
 export const Icon: React.FC<IconProps> = ({
   name,

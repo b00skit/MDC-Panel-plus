@@ -3,7 +3,7 @@
     "id": "lssd_traffic_collision_report",
     "title": "Traffic Collision Report",
     "description": "Generate a Traffic Collision Report for the LSSD.",
-    "icon": "CarCrash",
+    "icon": "Construction",
     "icon_color": "#b91c1c",
     "output_title": "[{{report_type}}-{{general.date}}] {{location.district}} / {{location.street}}",
     "is_html_output": false,

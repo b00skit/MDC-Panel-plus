@@ -3,7 +3,7 @@
     "id": "warrant-affidavit",
     "title": "Warrant Affidavit",
     "description": "Generate an affidavit for various types of warrants.",
-    "icon": "Gavel",
+    "icon": "Landmark",
     "icon_color": "#84cc16",
     "generator_disabled": false,
     "is_html_output": false,

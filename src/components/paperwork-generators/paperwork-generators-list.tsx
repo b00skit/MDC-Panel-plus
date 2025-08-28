@@ -32,7 +32,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                                 key={generator.id}
                                 title={generator.title}
                                 description={generator.description}
-                                icon={<Icon name={generator.icon} color={generator.icon_color} className="w-8 h-8" />}
+                                icon={<Icon name={generator.icon} color={generator.icon_color} className="w-10 h-10" />}
                                 href={`/paperwork-generators/form?type=static&id=${generator.id}`}
                                 disabled={generator.generator_disabled}
                             />
@@ -51,7 +51,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                             key={generator.id}
                             title={generator.title}
                             description={generator.description}
-                            icon={<Icon name={generator.icon} color={generator.icon_color} className="w-8 h-8" />}
+                            icon={<Icon name={generator.icon} color={generator.icon_color} className="w-10 h-10" />}
                             href={`/paperwork-generators/form?type=static&id=${generator.id}&group_id=${group.group_id}`}
                             disabled={generator.generator_disabled}
                         />
