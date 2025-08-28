@@ -4,6 +4,7 @@
     "title": "Use of Force Report",
     "description": "Generate an LSSD Use of Force report.",
     "icon": "ShieldAlert",
+    "icon_color": "#a16207",
     "output_title": "[UOF] {{location.street}}, {{general.date}}",
     "is_html_output": false,
     "output": "[font=Arial][color=black]\n\n[center][img]https://i.imgur.com/LEWTXbL.png[/img]\n\n[size=125][b]SHERIFF'S DEPARTMENT\nCOUNTY OF LOS SANTOS[/b]\n[i]\"A Tradition of Service Since 1850\"[/i][/size]\n\n[size=110][u]USE OF FORCE REPORT[/u][/size][/center][hr][/hr]\n\n[font=arial][color=black][indent][size=105][b]Filing Information[/b][/size]\n\n[indent]\n[b]Time & Date:[/b] {{general.time}}, {{general.date}}\n[b]Location:[/b] {{location.street}}, {{location.district}}\n\n[b]Filed By:[/b] {{#each officers}}{{this.rank}} {{this.name}}{{#unless @last}}, {{/unless}}{{/each}}\n[b]Unit Number:[/b] {{general.callSign}}\n[/indent]\n\n[size=105][b]Suspects[/b][/size]\n[indent]{{#each suspects}}\n[u]Person #{{@index_1}} - {{this.name}}[/u]\n[b]Status:[/b] {{this.status}}\n{{/each}}[/indent]\n\n[size=105][b]Employees Involved (Only include employees who used lethal force)[/b][/size]\n[list]{{#each employees}}\n[*] {{this.rank}} {{this.name}}{{/each}}[/list]\n\n[size=105][b]Witnesses[/b][/size]\n[list]{{#each witnesses}}\n[*] {{this.rank}} {{this.name}}{{/each}}[/list]\n\n[size=105][b]Narrative[/b][/size]\n[indent]{{narrative}}[/indent]\n\n[size=105][b]Evidence[/b][/size]\n[list=1]{{#each evidence}}\n[*] {{this.logNumber}}: {{this.description}}{{/each}}[/list][/color][/font]",
