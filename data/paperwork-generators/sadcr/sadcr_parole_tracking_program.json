@@ -1,0 +1,54 @@
+
+{
+    "id": "sadcr_parole_tracking_program",
+    "title": "Parole Tracking Program",
+    "description": "Generate a Parole Tracking Program report for a parolee.",
+    "icon": "Users",
+    "icon_color": "#4a5568",
+    "is_html_output": false,
+    "output": "[center][size=175]DEPARTMENT OF CORRECTIONS AND REHABILITATION[/size]\n[size=165]DIVISION OF ADULT PAROLE OPERATIONS[/size]\n[size=160]Parole Tracking Program[/size]\n\n[img]https://mdc.gta.world/img/persons/{{general_info.firstname}}_{{general_info.lastname}}.png[/img]\n\n[/center]\n\n[table2=1,black,transparent,Roboto]\n[tr][tdwidth=2,black,transparent,top,center,500,5]\n[center][b][size=120]GENERAL INFORMATION[/size][/b][/center]\n[/tdwidth][/tr][/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,5][b]NAME[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][b]PHONE NUMBER[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][b]ADDRESS[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,5]{{general_info.firstname}} {{general_info.lastname}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5]{{general_info.phone_number}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5]{{general_info.address}}[/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,25,5][b]DATE OF BIRTH[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,25,5][b]GENDER[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,25,5][b]PLACE OF WORK[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,25,5][b]KNOWN ALIASES[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,25,5]{{general_info.date_of_birth}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,25,5]{{general_info.gender}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,25,5]{{general_info.place_of_work}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,25,5]{{general_info.known_aliases}}[/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,100,5][b]RELATIVES[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,100,5][list]{{#each general_info.relatives}}\n[*] {{this.relative}}{{/each}}[/list][/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,60,5][b]CLASSIFICATION[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,40,5][b]ADDITIONAL CLASSIFICATION NOTES[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,60,5][cbc][/cbc]{{general_info.classification}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,40,5]{{general_info.classification_notes}}[/tdwidth]\n[/tr]\n[/table2]\n\n[table2=1,black,transparent,Roboto]\n[tr][tdwidth=2,black,transparent,top,center,500,5]\n[center][b][size=120]GANG AFFILIATION[/size][/b][/center]\n[/tdwidth][/tr][/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,5][b]MONIKER[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][b]GANG[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][b]SANGANG PROFILE[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,5]{{gang_affiliation.moniker}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5]{{gang_affiliation.gang}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][url={{gang_affiliation.sangang_link}}]ACCESS[/url][/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,25,5][b]ADDITIONAL AFFILIATION NOTES[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,25,5]{{gang_affiliation.affiliation_notes}}\n[/tdwidth]\n[/tr]\n[/table2]\n\n[table2=1,black,transparent,Roboto]\n[tr][tdwidth=2,black,transparent,top,center,500,5]\n[center][b][size=120]IMPORTANT INFORMATION[/size][/b][/center]\n[/tdwidth][/tr][/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,5][b]MDC PROFILE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][b]INMATE PROFILE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][b]PAROLE APPLICATION[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,5][url=https://mdc.gta.world/record/{{general_info.firstname}}_{{general_info.lastname}}]ACCESS[/url][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][url=https://mdc.gta.world/sadcr/inmate/{{general_info.firstname}}_{{general_info.lastname}}]ACCESS[/url][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,5][url={{important_info.parole_application_link}}]ACCESS[/url][/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,50,5][b]CASE HANDLER(S)[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,50,5][b]CASE SUPERVISOR[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,50,5]{{#each officers}}{{this.rank}} {{this.name}}{{#unless @last}}, {{/unless}}{{/each}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,50,5]{{important_info.case_supervisor}}[/tdwidth]\n[/tr]\n[/table2]\n\n[table2=1,black,transparent,Roboto]\n[tr][tdwidth=2,black,transparent,top,center,500,5]\n[center][b][size=120]ADDITIONAL INFORMATION[/size][/b][/center]\n[/tdwidth][/tr][/table2]\n[table2=1,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,100,5][b]ADDITIONAL NOTES[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,5]{{additional_notes}}\n[/tdwidth]\n[/tr]\n[/table2]",
+    "form": [
+        { "type": "section", "title": "General Information" },
+        { "type": "group", "name": "group_general_info_1", "fields": [
+            { "type": "text", "name": "general_info.firstname", "label": "First Name", "placeholder": "First Name", "required": true },
+            { "type": "text", "name": "general_info.lastname", "label": "Last Name", "placeholder": "Last Name", "required": true }
+        ]},
+        { "type": "group", "name": "group_general_info_2", "fields": [
+            { "type": "text", "name": "general_info.phone_number", "label": "Phone Number", "placeholder": "123-4567" },
+            { "type": "text", "name": "general_info.address", "label": "Address", "placeholder": "1234 Imagination Street" }
+        ]},
+        { "type": "group", "name": "group_general_info_3", "fields": [
+            { "type": "text", "name": "general_info.date_of_birth", "label": "Date of Birth", "placeholder": "DD/MM/YYYY" },
+            { "type": "dropdown", "name": "general_info.gender", "label": "Gender", "options": ["Male", "Female", "Non-Binary"] }
+        ]},
+        { "type": "group", "name": "group_general_info_4", "fields": [
+            { "type": "text", "name": "general_info.place_of_work", "label": "Place of Work", "placeholder": "e.g., Burger Shot" },
+            { "type": "text", "name": "general_info.known_aliases", "label": "Known Aliases", "placeholder": "e.g., Johnny" }
+        ]},
+        {
+            "type": "input_group",
+            "name": "general_info.relatives",
+            "label": "Relative",
+            "fields": [
+                { "type": "text", "name": "relative", "label": "Relative Name", "placeholder": "Firstname Lastname" }
+            ]
+        },
+        { "type": "group", "name": "group_general_info_5", "fields": [
+            { "type": "dropdown", "name": "general_info.classification", "label": "Classification", "options": ["Serious (S)", "Non-Serious (NS)", "Unsupervised (US)", "Special Case (SC)"] },
+            { "type": "text", "name": "general_info.classification_notes", "label": "Classification Notes", "placeholder": "Notes..." }
+        ]},
+        { "type": "section", "title": "Gang Affiliation" },
+        { "type": "group", "name": "group_gang_info_1", "fields": [
+            { "type": "text", "name": "gang_affiliation.moniker", "label": "Moniker", "placeholder": "Moniker" },
+            { "type": "text", "name": "gang_affiliation.gang", "label": "Gang", "placeholder": "Gang Name" },
+            { "type": "text", "name": "gang_affiliation.sangang_link", "label": "SanGANG Profile Link", "placeholder": "https://forum.gta.world/..." }
+        ]},
+        { "type": "textarea", "name": "gang_affiliation.affiliation_notes", "label": "Additional Affiliation Notes", "placeholder": "Notes..." },
+        { "type": "section", "title": "Important Information" },
+        { "type": "text", "name": "important_info.parole_application_link", "label": "Parole Application Link", "placeholder": "https://forum.gta.world/..." },
+        { "type": "text", "name": "important_info.case_supervisor", "label": "Case Supervisor", "placeholder": "Firstname Lastname" },
+        { "type": "officer", "name": "officers", "label": "Case Handlers", "multi": true },
+        { "type": "section", "title": "Additional Information" },
+        { "type": "textarea", "name": "additional_notes", "label": "Additional Notes", "placeholder": "Notes..." }
+    ]
+}
