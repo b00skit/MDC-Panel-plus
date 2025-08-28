@@ -15,7 +15,7 @@
         { "type": "section", "title": "General Section" },
         { "type": "general", "name": "general" },
         { "type": "section", "title": "Officer Section" },
-        { "type": "officer", "name": "officers", "multi": false },
+        { "type": "officer", "name": "officers", "multi": false, "showDivDetail": true },
         { "type": "section", "title": "Involved People" },
         {
             "type": "input_group",
