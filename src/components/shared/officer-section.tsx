@@ -167,12 +167,30 @@ export function OfficerSection({
     return !officer.name || !officer.rank || !officer.badgeNumber;
   };
 
+  const fieldSpans: Record<string, number> = { name: 3, rank: 3, badge: 2, divDetail: 3, remove: 1 };
+  const enabledFields = ['name', 'rank', 'badge', ...(showDivDetail ? ['divDetail'] : []), 'remove'];
+  const totalColumns = enabledFields.reduce((sum, field) => sum + fieldSpans[field], 0);
+  const gridColsClass: Record<number, string> = {
+    1: 'md:grid-cols-1',
+    2: 'md:grid-cols-2',
+    3: 'md:grid-cols-3',
+    4: 'md:grid-cols-4',
+    5: 'md:grid-cols-5',
+    6: 'md:grid-cols-6',
+    7: 'md:grid-cols-7',
+    8: 'md:grid-cols-8',
+    9: 'md:grid-cols-9',
+    10: 'md:grid-cols-10',
+    11: 'md:grid-cols-11',
+    12: 'md:grid-cols-12',
+  };
+
   return (
     <FormSection title="Officer Section" icon={<User className="h-6 w-6" />} onAdd={addOfficer} showAddButton={isMultiOfficer}>
       <div className="space-y-6">
         {officers.map((officer, index) => (
           <div key={officer.id} className="p-4 border rounded-lg space-y-4">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-12 items-end">
+            <div className={cn('grid grid-cols-1 gap-6 items-end', gridColsClass[totalColumns])}>
                 <div className="md:col-span-3">
                     <InputField
                         label="Full Name"
