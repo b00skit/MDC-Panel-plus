@@ -92,7 +92,7 @@ const CopyableCard = ({ label, value, tooltipContent }: { label: string; value: 
                 <Label htmlFor={`copy-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
                     <div className="flex items-center gap-1">
                         {label}
-                        {tooltipContent && <Asterisk className="h-3 w-3 text-destructive" />}
+                        {tooltipContent && <Asterisk className="h-3 w-3 text-yellow-500" />}
                     </div>
                 </Label>
                 <div className="flex items-center gap-2 mt-2">
@@ -432,7 +432,7 @@ export function ArrestCalculatorResults({
                                     {formatTotalTime(modified.minTime).split('(')[0].trim()}
                                     {isModified && (
                                         <Tooltip>
-                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500" /></TooltipTrigger>
                                             <TooltipContent>
                                                 <p>Original: {formatTotalTime(original.minTime)}</p>
                                                 <p>Modified: {formatTotalTime(modified.minTime)}</p>
@@ -446,7 +446,7 @@ export function ArrestCalculatorResults({
                                     {formatTotalTime(modified.maxTime).split('(')[0].trim()}
                                     {isModified && (
                                         <Tooltip>
-                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500" /></TooltipTrigger>
                                             <TooltipContent>
                                                 <p>Original: {formatTotalTime(original.maxTime)}</p>
                                                 <p>Modified: {formatTotalTime(modified.maxTime)}</p>
@@ -460,7 +460,7 @@ export function ArrestCalculatorResults({
                                     {Math.round(modified.points)}
                                      {isModified && (
                                         <Tooltip>
-                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                            <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500" /></TooltipTrigger>
                                             <TooltipContent>
                                                 <p>Original: {original.points} points</p>
                                                 <p>Modified: {Math.round(modified.points)} points</p>
@@ -537,7 +537,7 @@ export function ArrestCalculatorResults({
                             {formatTotalTime(minTimeCapped)}
                             {hasAnyModifiers && (
                                 <Tooltip>
-                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500" /></TooltipTrigger>
                                     <TooltipContent>
                                         <p>Original: {formatTotalTime(totals.original.minTime)}</p>
                                         <p>Modified: {formatTotalTime(totals.modified.minTime)}</p>
@@ -551,7 +551,7 @@ export function ArrestCalculatorResults({
                             {formatTotalTime(maxTimeCapped)}
                              {hasAnyModifiers && (
                                 <Tooltip>
-                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500" /></TooltipTrigger>
                                     <TooltipContent>
                                         <p>Original: {formatTotalTime(totals.original.maxTime)}</p>
                                         <p>Modified: {formatTotalTime(totals.modified.maxTime)}</p>
@@ -565,7 +565,7 @@ export function ArrestCalculatorResults({
                            {Math.round(totals.modified.points)}
                             {hasAnyModifiers && (
                                 <Tooltip>
-                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-destructive" /></TooltipTrigger>
+                                    <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500" /></TooltipTrigger>
                                     <TooltipContent>
                                         <p>Original: {totals.original.points} points</p>
                                         <p>Modified: {Math.round(totals.modified.points)} points</p>
