@@ -586,9 +586,15 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                     {fields.map((item, index) => (
                         <div key={item.id} className="flex items-start gap-2 p-4 border rounded-lg">
                             <div className="flex-1 space-y-4">
-                                {fieldConfig.fields?.map((subField) => (
-                                    renderField(subField, `${fieldConfig.name}.${index}${subField.name ? `.${subField.name}` : ''}`)
-                                ))}
+                                {fieldConfig.fields?.map((subField) => {
+                                    const basePath = `${fieldConfig.name}.${index}`;
+                                    return renderField(
+                                        subField,
+                                        subField.type === 'group'
+                                            ? basePath
+                                            : `${basePath}${subField.name ? `.${subField.name}` : ''}`
+                                    );
+                                })}
                             </div>
                             <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
                                 <Trash2 className="h-4 w-4 text-destructive" />

@@ -1,0 +1,92 @@
+{
+    "id": "lssd_traffic_collision_report",
+    "title": "Traffic Collision Report",
+    "description": "Generate a Traffic Collision Report for the LSSD.",
+    "icon": "FileSearch",
+    "output_title": "[{{report_type}}-{{general.date}}] {{location.district}} / {{location.street}}",
+    "is_html_output": false,
+    "output": "[divbox=white][center][lssdheader][/lssdheader][/center]\n\n[b][center]Traffic Collision Report Form[/center][/b]\n\n[center][size=150]({{report_type}})-({{general.date}}) \n[/size][/center]\n[hr][/hr]\n[table=Arial][tr]\n[td][size=85][b]LOCATION OF COLLISION[/b][/size][/td]\n[td][size=85][b]DATE[/b][/size][/td]\n[td][size=85][b]TIME[/b][/size][/td]\n[/tr]\n[tr]\n[td][size=85]{{location.district}} - {{location.street}}\n[/size][/td]\n[td][size=85]{{general.date}}\n[/size][/td]\n[td][size=85]{{general.time}}\n[/size][/td]\n[/tr][/table]\n[b][center]INVOLVED PEOPLE[/center][/b]\n[center][size=87]CODES: D - Driver (1, 2, 3)[color=transparent]—[/color] W - WITNESS (1, 2, 3)[color=transparent]—[/color] PED - PEDESTRIAN (1, 2, 3)[/size][/center]\n\n[table=Arial][tr]\n[td][size=85][b]CODE[/b][/size][/td]\n[td][size=85][b]L. NAME[/b][/size][/td]\n[td][size=85][b]F. NAME[/b][/size][/td]\n[td][size=85][b]SEX[/b][/size][/td]\n[td][size=85][b]AGE[/b][/size][/td]\n[td][size=85][b]BELTED[/b][/size][/td]\n[td][size=85][b]STATUS[/b][/size][/td][/tr]\n{{#each persons}}\n[tr][td][size=85]{{this.code}}{{@index_1}}\n[/size][/td]\n[td][size=85]{{this.last_name}}\n[/size][/td]\n[td][size=85]{{this.first_name}}\n[/size][/td]\n[td][size=85]{{this.sex}}\n[/size][/td]\n[td][size=85]{{this.age}}\n[/size][/td]\n[td][size=85]{{this.belted}}\n[/size][/td]\n[td][size=85]{{this.status}}\n[/size][/td][/tr]\n{{/each}}\n[/table]\n[b][center]INVOLVED VEHICLES[/center][/b]\n[center][size=87] CODES:  V - Vehicle (1, 2, 3)[/size][/center]\n\n[table=Arial][tr]\n[td][size=85][b]CODE[/b][/size][/td]\n[td][size=85][b]DRIVER[/b][/size][/td]\n[td][size=85][b]PASSENGERS[/b][/size][/td]\n[td][size=85][b]TAG[/b][/size][/td]\n[td][size=85][b]COLOR[/b][/size][/td]\n[td][size=85][b]MODEL[/b][/size][/td]\n[td][size=85][b]DAMAGE[/b][/size][/td]\n[td][size=85][b]TOWED[/b][/size][/td][/tr]\n{{#each vehicles}}\n[tr][td][size=85]V{{@index_1}}\n[/size][/td]\n[td][size=85]{{this.driver}}\n[/size][/td]\n[td][size=85]{{this.passengers}}\n[/size][/td]\n[td][size=85]{{this.tag}}\n[/size][/td]\n[td][size=85]{{this.color}}\n[/size][/td]\n[td][size=85]{{this.model}}\n[/size][/td]\n[td][size=85]{{this.damage}}\n[/size][/td]\n[td][size=85]{{this.towed}}\n[/size][/td][/tr]\n{{/each}}\n[/table]\n\n[olddivbox=white][center][size=85][b]NARRATIVE[/b][/size][/center]\n\n[size=85]\n{{narrative}}\n[/size][/olddivbox]\n\n[olddivbox=white][center][size=85][b]ATTACHED EVIDENCE[/b][/size][/center]\n\n[size=85]\n{{#each evidence}}{{this.description}}\\n{{/each}}\n[/size][/olddivbox]\n\n[table=Arial][tr]\n[td][size=85][b]PREPARED BY[/b][/size][/td]\n[td][size=85][b]EMPLOYEE #[/b][/size][/td]\n[td][size=85][b]STATION/UNIT[/b][/size][/td]\n[td][size=85][b]CALLSIGN[/b][/size][/td] \n[/tr]\n[tr]\n[td][size=85]{{officers.0.rank}} {{officers.0.name}}\n[/size][/td]\n[td][size=85]{{officers.0.badgeNumber}}\n[/size][/td]\n[td][size=85]{{officers.0.divDetail}}\n[/size][/td]\n[td][size=85]{{general.callSign}}\n[/size][/td][/tr][/table]\n[hr][/hr]",
+    "form": [
+        { "type": "hidden", "name": "generatorType", "value": "TrafficCollisionReport" },
+        { "type": "section", "title": "Report Details" },
+        { "type": "dropdown", "name": "report_type", "label": "Report Type", "options": ["TC", "DITC"], "required": true },
+        { "type": "section", "title": "Location Section" },
+        { "type": "location", "name": "location" },
+        { "type": "section", "title": "General Section" },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Officer Section" },
+        { "type": "officer", "name": "officers", "multi": false },
+        { "type": "section", "title": "Involved People" },
+        {
+            "type": "input_group",
+            "name": "persons",
+            "label": "Person",
+            "fields": [
+                {
+                    "type": "group",
+                    "name": "group_persons_1",
+                    "fields": [
+                        { "type": "dropdown", "name": "code", "label": "Code", "options": ["D", "W", "PED"], "required": true },
+                        { "type": "text", "name": "last_name", "label": "Last Name", "placeholder": "L. Name", "required": true },
+                        { "type": "text", "name": "first_name", "label": "First Name", "placeholder": "F. Name", "required": true }
+                    ]
+                },
+                {
+                    "type": "group",
+                    "name": "group_persons_2",
+                    "fields": [
+                        { "type": "dropdown", "name": "sex", "label": "Sex", "options": ["M", "F", "NB", "UNK"], "required": true },
+                        { "type": "text", "name": "age", "label": "Age", "placeholder": "Age" },
+                        { "type": "dropdown", "name": "belted", "label": "Belted", "options": ["Y", "N", "UNK", "N/A"], "required": true },
+                        { "type": "dropdown", "name": "status", "label": "Status", "options": ["UNHARMED", "INJURED", "SEVERELY INJURED", "DECEASED"], "required": true }
+                    ]
+                }
+            ]
+        },
+        { "type": "section", "title": "Involved Vehicles" },
+        {
+            "type": "input_group",
+            "name": "vehicles",
+            "label": "Vehicle",
+            "fields": [
+                {
+                    "type": "group",
+                    "name": "group_vehicles_1",
+                    "fields": [
+                        { "type": "text", "name": "driver", "label": "Driver", "placeholder": "D1", "required": true },
+                        { "type": "text", "name": "passengers", "label": "Passengers", "placeholder": "P1, P2" }
+                    ]
+                },
+                {
+                    "type": "group",
+                    "name": "group_vehicles_2",
+                    "fields": [
+                        { "type": "text", "name": "tag", "label": "Tag", "placeholder": "Tag" },
+                        { "type": "text", "name": "color", "label": "Color", "placeholder": "Color" },
+                        { "type": "text", "name": "model", "label": "Model", "placeholder": "Model" }
+                    ]
+                },
+                {
+                    "type": "group",
+                    "name": "group_vehicles_3",
+                    "fields": [
+                        { "type": "dropdown", "name": "damage", "label": "Damage", "options": ["FUNCTIONAL", "DISABLED"], "required": true },
+                        { "type": "dropdown", "name": "towed", "label": "Towed", "options": ["Y", "N"], "required": true }
+                    ]
+                }
+            ]
+        },
+        { "type": "section", "title": "Narrative" },
+        { "type": "textarea", "name": "narrative", "label": "Narrative", "placeholder": "EXPLANATION OF EVENTS LEADING UP TO AND RESULTING FROM CRASH.", "required": true },
+        { "type": "section", "title": "Attached Evidence" },
+        {
+            "type": "input_group",
+            "name": "evidence",
+            "label": "Evidence Exhibit",
+            "fields": [
+                { "type": "text", "name": "description", "label": "Description or Link", "placeholder": "Evidence description or link" }
+            ]
+        }
+    ]
+}
+
