@@ -279,7 +279,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
   return (
     <FormProvider {...methods}>
-      <form ref={formRef} onSubmit={handleSubmitForm} className="space-y-6">
+      <form ref={formRef} onSubmit={handleSubmitForm} onBlur={saveDraft} className="space-y-6">
         <GeneralSection />
         <OfficerSection isArrestReport={true} />
 
