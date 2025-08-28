@@ -3,15 +3,8 @@
 
 import { useSettingsStore } from '@/stores/settings-store';
 import { ModuleCard } from '../dashboard/module-card';
-import { FileSearch, Puzzle, Car } from 'lucide-react';
 import { Separator } from '../ui/separator';
-
-const ICONS: { [key: string]: React.ReactNode } = {
-  FileSearch: <FileSearch className="w-8 h-8 text-primary" />,
-  Puzzle: <Puzzle className="w-8 h-8 text-primary" />,
-  Car: <Car className="w-8 h-8 text-primary" />,
-  default: <Puzzle className="w-8 h-8 text-primary" />,
-};
+import { Icon } from '../ui/icon';
 
 interface PaperworkGeneratorsListProps {
     globalGenerators: any[];
@@ -39,7 +32,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                                 key={generator.id}
                                 title={generator.title}
                                 description={generator.description}
-                                icon={ICONS[generator.icon] || ICONS.default}
+                                icon={<Icon name={generator.icon} className="w-8 h-8 text-primary" />}
                                 href={`/paperwork-generators/form?type=static&id=${generator.id}`}
                                 disabled={generator.generator_disabled}
                             />
@@ -58,7 +51,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                             key={generator.id}
                             title={generator.title}
                             description={generator.description}
-                            icon={ICONS[generator.icon] || ICONS.default}
+                            icon={<Icon name={generator.icon} className="w-8 h-8 text-primary" />}
                             href={`/paperwork-generators/form?type=static&id=${generator.id}&group_id=${group.group_id}`}
                             disabled={generator.generator_disabled}
                         />

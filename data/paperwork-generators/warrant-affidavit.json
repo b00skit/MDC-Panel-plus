@@ -3,7 +3,7 @@
     "id": "warrant-affidavit",
     "title": "Warrant Affidavit",
     "description": "Generate an affidavit for various types of warrants.",
-    "icon": "FileSearch",
+    "icon": "Gavel",
     "generator_disabled": false,
     "is_html_output": false,
     "output": "{{narrative.narrative}}",
