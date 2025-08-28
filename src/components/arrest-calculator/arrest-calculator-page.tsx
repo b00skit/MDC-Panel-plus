@@ -31,7 +31,7 @@ import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useChargeStore, type SelectedCharge, type Charge, type PenalCode } from '@/stores/charge-store';
+import { useChargeStore, type SelectedCharge, type Charge, type PenalCode, type Addition } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useToast } from '@/hooks/use-toast';
@@ -71,8 +71,10 @@ export function ArrestCalculatorPage() {
   const { toast } = useToast();
   const { 
     charges, 
-    penalCode, 
-    setPenalCode, 
+    penalCode,
+    additions,
+    setPenalCode,
+    setAdditions,
     addCharge, 
     removeCharge, 
     updateCharge, 
@@ -104,22 +106,21 @@ export function ArrestCalculatorPage() {
       resetCharges();
     }
     
-    fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
-      .then((res) => res.json())
-      .then((data: PenalCode) => {
-        setPenalCode(data);
+    Promise.all([
+        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json').then(res => res.json()),
+        fetch('/data/additions.json').then(res => res.json()),
+        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_depa_categories.json').then(res => res.json())
+    ]).then(([penalCodeData, additionsData, depaData]) => {
+        setPenalCode(penalCodeData);
+        setAdditions(additionsData.additions);
+        setDepaData(depaData);
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch penal code:', error);
+    }).catch(error => {
+        console.error("Failed to fetch initial data:", error);
         setLoading(false);
-      });
-    
-    fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_depa_categories.json')
-        .then(res => res.json())
-        .then(data => setDepaData(data));
+    });
 
-  }, [setPenalCode, resetCharges, isModifyMode, report, setCharges]);
+  }, [setPenalCode, resetCharges, isModifyMode, report, setCharges, setAdditions]);
   
   const handleCalculate = () => {
      if (charges.length === 0) {
@@ -424,15 +425,9 @@ export function ArrestCalculatorPage() {
                       <SelectValue placeholder="Select addition" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Offender">Offender</SelectItem>
-                      <SelectItem value="Accomplice">Accomplice</SelectItem>
-                      <SelectItem value="Accessory">Accessory</SelectItem>
-                      <SelectItem value="Conspiracy">Conspiracy</SelectItem>
-                      <SelectItem value="Attempt">Attempt</SelectItem>
-                      <SelectItem value="Solicitation">Solicitation</SelectItem>
-                      <SelectItem value="Parole Violation">
-                        Parole Violation
-                      </SelectItem>
+                      {additions.map((addition) => (
+                        <SelectItem key={addition.name} value={addition.name}>{addition.name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

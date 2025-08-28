@@ -34,11 +34,19 @@ export interface SelectedCharge {
   category: string | null;
 }
 
+export interface Addition {
+    name: string;
+    sentence_multiplier: number;
+    points_multiplier: number;
+}
+
 interface ChargeState {
   penalCode: PenalCode | null;
+  additions: Addition[];
   charges: SelectedCharge[];
   report: SelectedCharge[];
   setPenalCode: (penalCode: PenalCode) => void;
+  setAdditions: (additions: Addition[]) => void;
   addCharge: () => void;
   removeCharge: (uniqueId: number) => void;
   updateCharge: (uniqueId: number, updatedFields: Partial<Omit<SelectedCharge, 'uniqueId'>>) => void;
@@ -56,8 +64,10 @@ export const useChargeStore = create<ChargeState>()(
   persist(
     (set) => ({
       penalCode: null,
+      additions: [],
       ...initialState,
       setPenalCode: (penalCode) => set({ penalCode }),
+      setAdditions: (additions) => set({ additions }),
       addCharge: () =>
         set((state) => ({
           charges: [

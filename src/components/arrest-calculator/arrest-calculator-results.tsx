@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useChargeStore, type PenalCode, type SelectedCharge } from '@/stores/charge-store';
+import { useChargeStore, type PenalCode, type SelectedCharge, type Addition } from '@/stores/charge-store';
 import {
   Table,
   TableHeader,
@@ -21,6 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import config from '../../../data/config.json';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 
 const getType = (type: string | undefined) => {
@@ -124,7 +125,17 @@ export function ArrestCalculatorResults({
 }: ArrestCalculatorResultsProps) {
     const { toast } = useToast();
     const router = useRouter();
+    const { additions, setAdditions } = useChargeStore();
     const setChargesForModification = useChargeStore(state => state.setCharges);
+
+    useEffect(() => {
+        if (additions.length === 0) {
+            fetch('/data/additions.json')
+                .then(res => res.json())
+                .then(data => setAdditions(data.additions))
+                .catch(err => console.error("Failed to load additions:", err));
+        }
+    }, [additions, setAdditions]);
   
     const extras = report.map(row => {
         const chargeDetails = penalCode[row.chargeId!];
@@ -139,7 +150,11 @@ export function ArrestCalculatorResults({
     const totals = report.reduce(
         (acc, row) => {
           const chargeDetails = penalCode[row.chargeId!];
-          if (!chargeDetails) return acc;
+          if (!chargeDetails || !additions) return acc;
+    
+          const additionDetails = additions.find(a => a.name === row.addition);
+          const sentenceMultiplier = additionDetails?.sentence_multiplier ?? 1;
+          const pointsMultiplier = additionDetails?.points_multiplier ?? 1;
 
           const isDrugCharge = !!chargeDetails.drugs;
     
@@ -160,9 +175,9 @@ export function ArrestCalculatorResults({
           const minTime = getTime(chargeDetails.time);
           const maxTime = getTime(chargeDetails.maxtime);
     
-          acc.minTime += formatTimeInMinutes(minTime);
-          acc.maxTime += formatTimeInMinutes(maxTime);
-          acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
+          acc.minTime += formatTimeInMinutes(minTime) * sentenceMultiplier;
+          acc.maxTime += formatTimeInMinutes(maxTime) * sentenceMultiplier;
+          acc.points += (chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0) * pointsMultiplier;
           acc.fine += getFine(chargeDetails.fine);
           
           const impound = chargeDetails.impound?.[row.offense as keyof typeof chargeDetails.impound];
@@ -224,6 +239,7 @@ export function ArrestCalculatorResults({
 
       const formatTotalTime = (totalMinutes: number) => {
         if (totalMinutes === 0) return '0 minutes';
+        totalMinutes = Math.round(totalMinutes);
         const days = Math.floor(totalMinutes / 1440);
         const hours = Math.floor((totalMinutes % 1440) / 60);
         const minutes = totalMinutes % 60;
@@ -461,7 +477,7 @@ export function ArrestCalculatorResults({
                 <TableBody><TableRow>
                     <TableCell>{formatTotalTime(minTimeCapped)}</TableCell>
                     <TableCell>{formatTotalTime(maxTimeCapped)}</TableCell>
-                    <TableCell>{totals.points}</TableCell>
+                    <TableCell>{Math.round(totals.points)}</TableCell>
                     <TableCell>${totals.fine.toLocaleString()}</TableCell>
                     <TableCell>{totals.impound > 0 ? `${totals.impound} Day(s)` : 'No'}</TableCell>
                     <TableCell>{totals.suspension > 0 ? `${totals.suspension} Day(s)` : 'No'}</TableCell>
@@ -483,8 +499,8 @@ export function ArrestCalculatorResults({
 
       {showCopyables && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <CopyableCard label="Min Minutes" value={minTimeCapped} />
-            <CopyableCard label="Max Minutes" value={maxTimeCapped} />
+            <CopyableCard label="Min Minutes" value={Math.round(minTimeCapped)} />
+            <CopyableCard label="Max Minutes" value={Math.round(maxTimeCapped)} />
             <CopyableCard label="Total Impound (Days)" value={totals.impound} />
             <CopyableCard label="Total Suspension (Days)" value={totals.suspension} />
             <CopyableCard label="Bail Cost" value={totals.highestBail} />

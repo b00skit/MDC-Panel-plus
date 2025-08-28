@@ -1,0 +1,41 @@
+
+{
+    "additions": [
+      {
+        "name": "Offender",
+        "sentence_multiplier": 1,
+        "points_multiplier": 1
+      },
+      {
+        "name": "Accomplice",
+        "sentence_multiplier": 1,
+        "points_multiplier": 1
+      },
+      {
+        "name": "Accessory",
+        "sentence_multiplier": 1,
+        "points_multiplier": 1
+      },
+      {
+        "name": "Attempt",
+        "sentence_multiplier": 0.5,
+        "points_multiplier": 0.5
+      },
+      {
+        "name": "Conspiracy",
+        "sentence_multiplier": 0.25,
+        "points_multiplier": 0.25
+      },
+      {
+        "name": "Solicitation",
+        "sentence_multiplier": 0.25,
+        "points_multiplier": 0.25
+      },
+      {
+        "name": "Parole Violation",
+        "sentence_multiplier": 1,
+        "points_multiplier": 2
+      }
+    ]
+  }
+  
