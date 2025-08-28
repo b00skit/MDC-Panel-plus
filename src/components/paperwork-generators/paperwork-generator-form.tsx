@@ -285,7 +285,19 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Input id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} defaultValue={field.defaultValue} className={cn(isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')} />
+                        <Input
+                            id={path}
+                            {...register(path, {
+                                required: field.required,
+                                onBlur: () => field.required && trigger(path)
+                            })}
+                            placeholder={field.placeholder}
+                            defaultValue={field.defaultValue}
+                            className={cn(
+                                isInvalid(path, field.required) &&
+                                'border-red-500 focus-visible:ring-red-500'
+                            )}
+                        />
                     </div>
                 );
             case 'datalist':
@@ -334,7 +346,19 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return (
                     <div key={fieldKey} className="w-full">
                         <Label htmlFor={path}>{field.label}</Label>
-                        <Textarea id={path} {...register(path, { required: field.required })} placeholder={field.placeholder} className={cn('min-h-[120px]', isInvalid(path, field.required) && 'border-red-500 focus-visible:ring-red-500')} />
+                        <Textarea
+                            id={path}
+                            {...register(path, {
+                                required: field.required,
+                                onBlur: () => field.required && trigger(path)
+                            })}
+                            placeholder={field.placeholder}
+                            className={cn(
+                                'min-h-[120px]',
+                                isInvalid(path, field.required) &&
+                                    'border-red-500 focus-visible:ring-red-500'
+                            )}
+                        />
                     </div>
                 );
 
@@ -342,7 +366,10 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 const isPresetActive = watch(`${path}.isPreset`);
                 const isUserModified = watch(`${path}.userModified`);
 
-                register(`${path}.narrative`, { required: field.required });
+                register(`${path}.narrative`, {
+                    required: field.required,
+                    onBlur: () => field.required && trigger(`${path}.narrative`)
+                });
 
                 const narrativeText = (() => {
                     if (!isPresetActive || isUserModified) {
