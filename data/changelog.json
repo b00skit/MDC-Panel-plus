@@ -1,6 +1,37 @@
 {
     "changelogs": [
         {
+            "version": "3.1.6a",
+            "type": "Hotfix",
+            "date": "2025-08-29",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> Implemented a cache-buster and localstorage-buster, making it overall \"guaranteed\" that cached data will be busted for future updates. Also making it possible to reset userdata to prevent corruption. This should fix issues where some people still have bugs present that have been fixed a few versions ago."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Help Center:</b> The feedback discord webhook now also has a quick github issue create link, that will automatically create an issue making it easier to track bugs."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> The beta configuration was adjusted so that it no-longer pulls from the environment making it a bit easier to control."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Settings:</b> Added a data import/export to the Settings page, making it possible to export or import your data for this site."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>General:</b> Replaced the TOS and Privacy Policy pages with an About & Contributions page, as legal text probably won't be needed for this website."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added a Rules Violation Report form to the San Andreas Department of Corrections section."
+                }
+            ]
+        },
+        {
             "version": "3.1.6",
             "type": "Minor Update",
             "date": "2025-08-28",

@@ -116,7 +116,7 @@ export default async function AboutPage() {
             </CardHeader>
             <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                    While I truly appreciate any thought of a donation, I'd first encourage you to support the platforms and people who made this project possible. Please consider donating to <a href="https://gtaw.gg/donate" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GTA:World</a> for keeping our community running, or to the original creator of the MDC Panel, <strong>CXDezign</strong>, whose foundation I built upon.
+                    While I truly appreciate any thought of a donation, I'd first encourage you to support the platforms and people who made this project possible. Please consider donating to <a href="https://gta.world/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GTA:World</a> for keeping our community running, or to the original creator of the MDC Panel, <strong>CXDezign</strong>, whose foundation I built upon.
                 </p>
                 <div className="flex flex-wrap gap-4">
                      <Button asChild variant="outline">

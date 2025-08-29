@@ -1,9 +1,9 @@
 {
     "SITE_LIVE": true,
     "SITE_NAME": "MDC Panel+",
-    "SITE_VERSION": "3.1.6",
-    "CACHE_VERSION": "1",
-    "LOCAL_STORAGE_VERSION": "1",
+    "SITE_VERSION": "3.1.6a",
+    "CACHE_VERSION": "cookie-apxn-1",
+    "LOCAL_STORAGE_VERSION": "cookie-apxn-1",
     "SITE_LOGO": "/img/logos/MDC-Panel.svg",
     "SITE_FAVICON": "/img/favicon/favicon.ico",
     "SITE_IMAGE": "/img/logos/MDC-Panel-OG.png",
