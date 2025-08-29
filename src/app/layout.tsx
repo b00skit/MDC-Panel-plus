@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -22,7 +21,7 @@ type SiteConfig = {
   LOCAL_STORAGE_VERSION?: string;
 };
 
-// This function is marked as async because it fetches data.
+// ---- Next.js Metadata (the "Next.js way") ----
 export async function generateMetadata(): Promise<Metadata> {
   const file = await fs.readFile(
     path.join(process.cwd(), 'data/config.json'),
@@ -33,29 +32,109 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: config.SITE_NAME,
     description: config.SITE_DESCRIPTION,
+    keywords: [
+      'booskit','booskit.dev','MDC','MDC Panel','Mobile','Data','Computer','Panel',
+      'GTA5','GTAV','GTAO','GTA RP','Roleplay','RP','GTA World','GTAW','GTA:World','GTA:W',
+      'LSPD','LSSD','LSFD','Government','Penal Code','Los Santos Police Department',
+      "Los Santos Fires Department","Los Santos Sheriff's Department",
+      'Los Santos','Department','Agencies','Agency','Factions'
+    ],
+    robots: {
+      index: true,
+      follow: true,
+      // Emits <meta name="googlebot" content="all">
+      googleBot: 'all',
+    },
+    manifest: '/img/favicon/site.webmanifest',
+    themeColor: '#131313',
     icons: {
-        icon: config.SITE_FAVICON || '/favicon.ico',
+      icon: config.SITE_FAVICON || '/img/favicon/favicon.ico',
+      shortcut: '/img/favicon/favicon.ico',
     },
     openGraph: {
-        title: config.SITE_NAME,
-        description: config.SITE_DESCRIPTION,
-        type: 'website',
-        images: config.SITE_IMAGE ? [
-          {
-            url: config.SITE_IMAGE,
-            width: 1200,
-            height: 630,
-            alt: `${config.SITE_NAME} Logo`,
-          },
-        ] : [],
+      title: config.SITE_NAME,
+      description: config.SITE_DESCRIPTION,
+      type: 'website',
+      images: config.SITE_IMAGE
+        ? [
+            {
+              url: config.SITE_IMAGE,
+              width: 1200,
+              height: 630,
+              alt: `${config.SITE_NAME}`,
+            },
+          ]
+        : [],
     },
     twitter: {
-        card: 'summary_large_image',
-        title: config.SITE_NAME,
-        description: config.SITE_DESCRIPTION,
-        images: config.SITE_IMAGE ? [config.SITE_IMAGE] : [],
+      card: 'summary_large_image',
+      title: config.SITE_NAME,
+      description: config.SITE_DESCRIPTION,
+      images: config.SITE_IMAGE ? [config.SITE_IMAGE] : [],
     },
   };
+}
+
+// Reusable <head> bits that Metadata API doesn't cover
+function ExtraHead() {
+  return (
+    <head>
+      {/* Not available via Metadata API */}
+      <meta name="googlebot-news" content="all" />
+
+      {/* msapplication meta */}
+      <meta name="msapplication-TileColor" content="#131313" />
+      <meta name="msapplication-TileImage" content="/img/favicon/mstile-144x144.png" />
+      <meta name="msapplication-config" content="/img/favicon/browserconfig.xml" />
+
+      {/* Fonts & CSS (keep here for convenience) */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap"
+        rel="stylesheet"
+      />
+      <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossOrigin=""
+      />
+      <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet-search@4.0.0/dist/leaflet-search.min.css"
+      />
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"
+      />
+
+      {/* Not handled by Metadata API */}
+      <link
+        rel="mask-icon"
+        href="/img/favicon/safari-pinned-tab.svg"
+        color="#e2b055"
+      />
+
+      {/* Matomo tracking (prod only) */}
+      {process.env.NODE_ENV === 'production' && (
+        <Script id="matomo-tracking" strategy="afterInteractive">
+          {`
+            var _paq = window._paq = window._paq || [];
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+              var u="//sys.booskit.dev/analytics/";
+              _paq.push(['setTrackerUrl', u+'matomo.php']);
+              _paq.push(['setSiteId', '1']);
+              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+              g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+            })();
+          `}
+        </Script>
+      )}
+    </head>
+  );
 }
 
 export default async function RootLayout({
@@ -71,7 +150,8 @@ export default async function RootLayout({
 
   if (!config.SITE_LIVE) {
     return (
-        <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning>
+        <ExtraHead />
         <body className="font-body antialiased">
           <ThemeProvider
             attribute="class"
@@ -79,9 +159,9 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-             <FullScreenMessage
-                title="Under Maintenance"
-                message="We are currently performing scheduled maintenance. We should be back online shortly."
+            <FullScreenMessage
+              title="Under Maintenance"
+              message="We are currently performing scheduled maintenance. We should be back online shortly."
             />
           </ThemeProvider>
         </body>
@@ -91,76 +171,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-      <meta property="og:title" content={config.SITE_NAME} />
-        <meta
-          property="og:description"
-          content={config.SITE_DESCRIPTION}
-        />
-        <meta
-          property="og:image"
-          content={config.SITE_IMAGE || '/img/logos/MDC-Panel.svg'}
-        />
-        <meta
-          property="og:image:alt"
-          content={`${config.SITE_NAME} logo`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={config.SITE_NAME} />
-        <meta
-          name="twitter:description"
-          content={config.SITE_DESCRIPTION}
-        />
-        <meta
-          name="twitter:image"
-          content={config.SITE_IMAGE || '/img/logos/MDC-Panel.svg'}
-        />
-        <meta
-          name="twitter:image:alt"
-          content={`${config.SITE_NAME} logo`}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-         <link
-          rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossOrigin=""
-        />
-        <link 
-            rel="stylesheet" 
-            href="https://unpkg.com/leaflet-search@4.0.0/dist/leaflet-search.min.css" 
-        />
-        <link 
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"
-        />
-        {process.env.NODE_ENV === 'production' && (
-          <Script id="matomo-tracking" strategy="afterInteractive">
-            {`
-              var _paq = window._paq = window._paq || [];
-              /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-              _paq.push(['trackPageView']);
-              _paq.push(['enableLinkTracking']);
-              (function() {
-                var u="//sys.booskit.dev/analytics/";
-                _paq.push(['setTrackerUrl', u+'matomo.php']);
-                _paq.push(['setSiteId', '1']);
-                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-                g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-              })();
-            `}
-          </Script>
-        )}
-      </head>
+      <ExtraHead />
       <body className="font-body antialiased">
         <ThemeProvider
           attribute="class"
@@ -168,12 +179,13 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-            <ClientLayout cacheVersion={config.CACHE_VERSION} localStorageVersion={config.LOCAL_STORAGE_VERSION}>
-                <Layout footer={<Footer />}>
-                    {children}
-                </Layout>
-                <Toaster />
-            </ClientLayout>
+          <ClientLayout
+            cacheVersion={config.CACHE_VERSION}
+            localStorageVersion={config.LOCAL_STORAGE_VERSION}
+          >
+            <Layout footer={<Footer />}>{children}</Layout>
+            <Toaster />
+          </ClientLayout>
         </ThemeProvider>
       </body>
     </html>
