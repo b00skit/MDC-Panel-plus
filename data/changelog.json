@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.1.6d",
+            "type": "Hotfix",
+            "date": "2025-08-30",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> The suspect's name, supporting evidence and dashcam providing a blank output on submit on the basic arrest report has been fixed."
+                }
+            ]
+        },
+        {
             "version": "3.1.6c",
             "type": "Hotfix",
             "date": "2025-08-29",
