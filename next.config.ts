@@ -1,5 +1,4 @@
 import type {NextConfig} from 'next';
-import config from './data/config.json';
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -10,8 +9,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   env: {
-    NEXT_PUBLIC_BETA_ENABLED: config.BETA_ENABLED,
-    NEXT_PUBLIC_BETA_CODE: config.BETA_CODE,
   }
 };
 
