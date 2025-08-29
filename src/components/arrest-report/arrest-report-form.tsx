@@ -55,7 +55,8 @@ const InputField = ({
   icon,
   type = 'text',
   className = '',
-  defaultValue,
+  value,
+  onChange,
   onBlur,
   isInvalid,
 }: {
@@ -65,7 +66,8 @@ const InputField = ({
   icon: React.ReactNode;
   type?: string;
   className?: string;
-  defaultValue?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   isInvalid?: boolean;
 }) => (
@@ -79,7 +81,8 @@ const InputField = ({
         type={type}
         placeholder={placeholder}
         className={cn('pl-9', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
-        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
         onBlur={onBlur}
       />
     </div>
@@ -93,7 +96,8 @@ const TextareaField = ({
   icon,
   description,
   className = '',
-  defaultValue,
+  value,
+  onChange,
   onBlur,
   isInvalid,
 }: {
@@ -103,7 +107,8 @@ const TextareaField = ({
   icon: React.ReactNode;
   description?: React.ReactNode;
   className?: string;
-  defaultValue?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
   isInvalid?: boolean;
 }) => (
@@ -116,7 +121,8 @@ const TextareaField = ({
           name={id}
           placeholder={placeholder}
           className={cn('pl-9 pt-3', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
-          defaultValue={defaultValue}
+          value={value}
+          onChange={onChange}
           onBlur={onBlur}
         />
     </div>
@@ -293,14 +299,24 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
         <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
           <div className="space-y-6">
-            <InputField
-              label="Suspect's Full Name"
-              id="suspect-name"
-              placeholder="Firstname Lastname"
-              icon={<User className="h-4 w-4 text-muted-foreground" />}
-              defaultValue={formData.arrest?.suspectName ?? ''}
-              onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
-              isInvalid={isInvalid('arrest.suspectName')}
+            <Controller
+              name="arrest.suspectName"
+              control={control}
+              render={({ field }) => (
+                <InputField
+                  label="Suspect's Full Name"
+                  id="suspect-name"
+                  placeholder="Firstname Lastname"
+                  icon={<User className="h-4 w-4 text-muted-foreground" />}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={(e) => {
+                    field.onBlur();
+                    setFormField('arrest', 'suspectName', e.target.value);
+                  }}
+                  isInvalid={isInvalid('arrest.suspectName')}
+                />
+              )}
             />
             <Controller
                 name="narrative"
@@ -334,32 +350,52 @@ export const ArrestReportForm = forwardRef((props, ref) => {
 
         <FormSection title="Evidence Section" icon={<Paperclip className="h-6 w-6" />}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <TextareaField
-              label="Supporting Evidence"
-              id="supporting-evidence"
-              placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
-              icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
-              description="Provide supporting evidence to aid the arrest report."
-              className="min-h-[150px]"
-              defaultValue={formData.evidence?.supporting ?? ''}
-              onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
+            <Controller
+              name="evidence.supporting"
+              control={control}
+              render={({ field }) => (
+                <TextareaField
+                  label="Supporting Evidence"
+                  id="supporting-evidence"
+                  placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
+                  icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
+                  description="Provide supporting evidence to aid the arrest report."
+                  className="min-h-[150px]"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={(e) => {
+                    field.onBlur();
+                    setFormField('evidence', 'supporting', e.target.value);
+                  }}
+                />
+              )}
             />
-            <TextareaField
-              label="Dashboard Camera"
-              id="dashcam"
-              placeholder="The dashboard camera captures audio and video footage showcasing..."
-              icon={<Video className="h-4 w-4 text-muted-foreground" />}
-              description={
-                <span>
-                  Roleplay what the dashboard camera captures OR provide Streamable/YouTube links.
-                  <br />
-                  <span className="text-red-500">(( Lying in this section will lead to OOC punishment ))</span>
-                </span>
-              }
-              className="min-h-[150px]"
-              defaultValue={formData.evidence?.dashcam ?? ''}
-              onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
-              isInvalid={isInvalid('evidence.dashcam')}
+            <Controller
+              name="evidence.dashcam"
+              control={control}
+              render={({ field }) => (
+                <TextareaField
+                  label="Dashboard Camera"
+                  id="dashcam"
+                  placeholder="The dashboard camera captures audio and video footage showcasing..."
+                  icon={<Video className="h-4 w-4 text-muted-foreground" />}
+                  description={
+                    <span>
+                      Roleplay what the dashboard camera captures OR provide Streamable/YouTube links.
+                      <br />
+                      <span className="text-red-500">(( Lying in this section will lead to OOC punishment ))</span>
+                    </span>
+                  }
+                  className="min-h-[150px]"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={(e) => {
+                    field.onBlur();
+                    setFormField('evidence', 'dashcam', e.target.value);
+                  }}
+                  isInvalid={isInvalid('evidence.dashcam')}
+                />
+              )}
             />
           </div>
         </FormSection>
