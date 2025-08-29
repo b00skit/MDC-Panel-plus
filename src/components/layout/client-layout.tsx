@@ -4,12 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import FullScreenMessage from '@/components/layout/maintenance-page';
 
-async function clearAllSiteData() {
-  try {
-    localStorage.clear();
-  } catch (error) {
-    console.error('Error clearing localStorage:', error);
-  }
+async function clearCaches() {
   try {
     sessionStorage.clear();
   } catch (error) {
@@ -43,17 +38,54 @@ async function clearAllSiteData() {
   }
 }
 
-const CacheBuster = ({ cacheVersion }: { cacheVersion?: string }) => {
+function clearLocalStorage() {
+  try {
+    localStorage.clear();
+  } catch (error) {
+    console.error('Error clearing localStorage:', error);
+  }
+}
+
+const CacheBuster = ({
+  cacheVersion,
+  localStorageVersion,
+}: {
+  cacheVersion?: string;
+  localStorageVersion?: string;
+}) => {
   useEffect(() => {
-    if (!cacheVersion) return;
-    const currentVersion = localStorage.getItem('cache_version');
-    if (currentVersion !== cacheVersion) {
-      clearAllSiteData().finally(() => {
-        localStorage.setItem('cache_version', cacheVersion);
+    const handleBust = async () => {
+      if (!cacheVersion && !localStorageVersion) return;
+
+      const storedCacheVersion = localStorage.getItem('cache_version');
+      const storedLocalVersion = localStorage.getItem('local_storage_version');
+
+      const cacheMismatch = cacheVersion && storedCacheVersion !== cacheVersion;
+      const localMismatch =
+        localStorageVersion && storedLocalVersion !== localStorageVersion;
+
+      if (cacheMismatch || localMismatch) {
+        if (cacheMismatch) {
+          await clearCaches();
+        }
+        if (localMismatch) {
+          clearLocalStorage();
+        }
+        if (cacheVersion) {
+          localStorage.setItem('cache_version', cacheVersion);
+        }
+        if (localStorageVersion) {
+          localStorage.setItem(
+            'local_storage_version',
+            localStorageVersion
+          );
+        }
         window.location.reload();
-      });
-    }
-  }, [cacheVersion]);
+      }
+    };
+
+    handleBust();
+  }, [cacheVersion, localStorageVersion]);
 
   return null;
 };
@@ -96,13 +128,18 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
 export function ClientLayout({
   children,
   cacheVersion,
+  localStorageVersion,
 }: Readonly<{
   children: React.ReactNode;
   cacheVersion?: string;
+  localStorageVersion?: string;
 }>) {
   return (
     <>
-      <CacheBuster cacheVersion={cacheVersion} />
+      <CacheBuster
+        cacheVersion={cacheVersion}
+        localStorageVersion={localStorageVersion}
+      />
       <BetaRedirect>{children}</BetaRedirect>
     </>
   );
