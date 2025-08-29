@@ -46,7 +46,6 @@ export async function generateMetadata(): Promise<Metadata> {
       googleBot: 'all',
     },
     manifest: '/img/favicon/site.webmanifest',
-    themeColor: '#131313',
     icons: {
       icon: config.SITE_FAVICON || '/img/favicon/favicon.ico',
       shortcut: '/img/favicon/favicon.ico',
