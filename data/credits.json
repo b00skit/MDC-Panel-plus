@@ -5,6 +5,16 @@
             "name": "CXDezign",
             "role": "Original Founder & Designer",
             "contribution": "Created the original Legacy MDC Panel, which served as the foundational inspiration for this project. Designed the iconic logos and the initial user interface that many in the community came to know and love."
+        },
+        {
+            "name": "monster",
+            "role": "LSPD Arrest Report Creator",
+            "contribution": "Created the original LSPD Arrest Report on the website https://report.monstyy.top/, which was used as a heavy inspiration for the advanced report on this website."
+        },
+        {
+            "name": "paz?",
+            "role": "SADCR Reports Creator",
+            "contribution": "Created the original Parole Tracking Program & Rules Violation reports on their website https://pazgtaw.github.io/paperwork-generator/ which was used as inspiration to create the paperwork generators on this website.."
         }
     ]
 }

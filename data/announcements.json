@@ -1,30 +1,10 @@
 {
     "announcements": [
         {
-            "id": 3,
-            "date": "2025-08-22",
-            "title": "Penal Code: Addition of 1518 and removal of 1508",
-            "content": "The Penal Code has been updated to clarify the regulations regarding intersections, permanently getting rid of the traffic lights. The right-of-way has now officially been codified as yielding to the vehicle on the right. Review the specifics of the penal code for more information.",
-            "button": {
-                "text": "Review Penal Code",
-                "href": "https://forum.gta.world/en/topic/78852-san-andreas-penal-code/?do=findComment&comment=848956"
-            }
-        },
-        {
-            "id": 2,
-            "date": "2025-08-18",
-            "title": "New Release: 3.1.0",
-            "content": "New update is out enabling the ability to archive your reports, modify your charges while writing the arrest report and more, check it out!",
-            "button": {
-                "text": "View Changelog",
-                "href": "/changelog"
-            }
-        },
-        {
             "id": 1,
-            "date": "2025-08-12",
-            "title": "Welcome to the new MDC Panel!",
-            "content": "I've completely revamped the MDC Panel to a new look, a new feel, a more smoother experience. I hope you enjoy!",
+            "date": "2025-08-29",
+            "title": "Release: MDC Panel+",
+            "content": "The new MDC Panel+ is here, there's been a lot of changes made between the legacy panel and the new variant of the MDC Panel, all the changes are carefully documented in the changelog, give it a read! Additionally, share any feedback you may have regarding the panel.",
             "button": {
                 "text": "View Changelog",
                 "href": "/changelog"
