@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.1.6b",
+            "type": "Hotfix",
+            "date": "2025-08-29",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> Made a modification to the way nextjs exposes the data folder to the public, making it easy to access on the clientside."
+                }
+            ]
+        },
+        {
             "version": "3.1.6a",
             "type": "Hotfix",
             "date": "2025-08-29",
