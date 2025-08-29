@@ -1,0 +1,58 @@
+
+      
+{
+    "id": "sadcr_rules_violation_report",
+    "title": "Rules Violation Report",
+    "description": "Generate a Rules Violation Report for an inmate.",
+    "icon": "Gavel",
+    "icon_color": "#7f1d1d",
+    "is_html_output": false,
+    "output": "[altdivbox=white,0,white,5,5,5]STATE OF SAN ANDREAS[float=right]DEPARTMENT OF CORRECTIONS[/float]\n[altdivbox=transparent,0,black,1,0,0][aligntable2=right,75,1,0,0,transparent,transparent]\n[/aligntable2][/altdivbox]\n[b]RULES VIOLATION REPORT - [/b][float=right][size=80]Page 1 of 1[/size][/float]\n[altdivbox=transparent,1,black,1,0,0][/altdivbox]\n[table2=0,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,17,4][b]SADC NUMBER[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4][b]INMATE'S NAME[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,16,4][b]RELEASE DATE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,10,4][b]INST[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,15,4][b]HOUSING NO[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,30,4][b]LOG NO[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,17,4]{{inmate_info.sadc_number}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4]{{inmate_info.inmate_name}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,16,4]{{inmate_info.release_date}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,10,4]{{inmate_info.institution}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,15,4]{{inmate_info.housing_no}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,30,4]{{inmate_info.log_no}}[/tdwidth]\n[/tr]\n[/table2]\n[table2=0,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,25,4][b]VIOLATED RULE NO(S)[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,40,4][b]SPECIFIC ACTS[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,15,4][b]LOCATION[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,10,4][b]DATE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,10,4][b]TIME[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,25,4]{{#each violation_info.violated_rules}}{{this.rule}}\n{{/each}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,40,4]{{violation_info.specific_acts}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,15,4]{{violation_info.location}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,10,4]{{general.date}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,10,4]{{general.time}}[/tdwidth]\n[/tr]\n[/table2]\n[altdivbox=white,0,white,1,1,1][font=Roboto][size=85]CIRCUMSTANCES[/size][/font]\n[altdivbox=transparent,0,black,1,0,0][aligntable2=left,75,1,0,0,transparent,transparent]\n[/aligntable2][/altdivbox]\n[font=Roboto][size=90]{{narrative}}[/size][/font]\n\n[table2=0,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,40,4][b]REPORTING EMPLOYEE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4][b]DATE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4][b]ASSIGNMENT[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4][b]RANK[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,40,4]{{officers.0.name}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4]{{general.date}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4]{{officers.0.divDetail}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,20,4]{{officers.0.rank}}[/tdwidth]\n[/tr]\n[/table2]\n[table2=0,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,4][b]REVIEWING SUPERVISOR[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,4][b]DATE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,4][b]INMATE SEGREGATED[/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,33,4]{{supervisor_info.reviewing_supervisor}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,4]{{general.date}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,33,4]{{supervisor_info.inmate_segregated}}[/tdwidth]\n[/tr]\n[/table2]\n[table2=0,black,transparent,Roboto]\n[tr]\n[tdwidth=1,black,transparent,top,left,20,4][b]ADMINISTRATIVE/SERIOUS[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,13,4][b]DATE[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,15,4][b]CLASSIFIED BY[/b][/tdwidth]\n[tdwidth=1,black,transparent,top,left,30,4][b]STG ACTIVITY IN RULES VIOLATION [/b][/tdwidth]\n[/tr]\n[tr]\n[tdwidth=1,black,transparent,top,left,20,4]{{classification_info.type}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,13,4]{{general.date}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,15,4]{{officers.0.name}}[/tdwidth]\n[tdwidth=1,black,transparent,top,left,30,4]{{classification_info.stg_activity}}[/tdwidth]\n[/tr]\n[/table2]",
+    "form": [
+      { "type": "section", "title": "Inmate Information" },
+      { "type": "group", "fields": [
+          { "type": "text", "name": "inmate_info.sadc_number", "label": "SADC Number", "required": true },
+          { "type": "text", "name": "inmate_info.inmate_name", "label": "Inmate's Name", "required": true },
+          { "type": "text", "name": "inmate_info.release_date", "label": "Release Date", "placeholder": "DD/MM/YYYY" }
+        ]
+      },
+      { "type": "group", "fields": [
+          { "type": "text", "name": "inmate_info.institution", "label": "Institution", "defaultValue": "TTCF", "required": true },
+          { "type": "text", "name": "inmate_info.housing_no", "label": "Housing No.", "required": true },
+          { "type": "text", "name": "inmate_info.log_no", "label": "Log No.", "required": true }
+        ]
+      },
+      { "type": "section", "title": "Violation Information" },
+      { "type": "general", "name": "general" },
+      { "type": "group", "fields": [
+        { "type": "text", "name": "violation_info.specific_acts", "label": "Specific Acts", "required": true },
+        { "type": "text", "name": "violation_info.location", "label": "Location", "required": true }
+      ]},
+      { 
+        "type": "input_group",
+        "name": "violation_info.violated_rules",
+        "label": "Violated Rules",
+        "required": true,
+        "fields": [
+            { "type": "text", "name": "rule", "label": "Rule Number & Name", "placeholder": "e.g., 2.1.2 Undue Familiarity" }
+        ]
+      },
+      { "type": "section", "title": "Circumstances" },
+      { "type": "textarea", "name": "narrative", "label": "Narrative", "placeholder": "Describe the circumstances of the violation...", "required": true },
+      { "type": "section", "title": "Reporting Employee" },
+      { "type": "officer", "name": "officers", "multi": false, "showDivDetail": true },
+      { "type": "section", "title": "Supervisor & Classification" },
+      { "type": "group", "fields": [
+          { "type": "text", "name": "supervisor_info.reviewing_supervisor", "label": "Reviewing Supervisor", "required": true },
+          { "type": "dropdown", "name": "supervisor_info.inmate_segregated", "label": "Inmate Segregated", "options": ["YES", "NO"], "required": true }
+        ]
+      },
+      { "type": "group", "fields": [
+          { "type": "dropdown", "name": "classification_info.type", "label": "Administrative/Serious", "options": ["ADMINISTRATIVE", "SERIOUS"], "required": true },
+          { "type": "dropdown", "name": "classification_info.stg_activity", "label": "STG Activity", "options": ["YES", "NO"], "required": true }
+        ]
+      }
+    ]
+}
+
+    
