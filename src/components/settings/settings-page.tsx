@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -29,7 +29,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -155,6 +155,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
   const resetCharges = useChargeStore(state => state.resetCharges);
   const resetBasicForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setInitialOfficers(); 
@@ -204,6 +205,64 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     });
 
     setTimeout(() => window.location.reload(), 1000);
+  };
+
+  const handleExportData = () => {
+    const data: Record<string, string> = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key !== 'local_storage_version' && key !== 'cache_version') {
+        const value = localStorage.getItem(key);
+        if (value !== null) {
+          data[key] = value;
+        }
+      }
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mdc-data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({
+      title: 'Data Exported',
+      description: 'A file with your data has been downloaded.',
+    });
+  };
+
+  const handleImportDataClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImportData = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string) as Record<string, string>;
+        Object.entries(data).forEach(([key, value]) => {
+          if (key !== 'local_storage_version' && key !== 'cache_version') {
+            localStorage.setItem(key, value);
+          }
+        });
+        toast({
+          title: 'Data Imported',
+          description: 'Local storage data has been imported.',
+        });
+        setTimeout(() => window.location.reload(), 1000);
+      } catch (error) {
+        console.error('Error importing data:', error);
+        toast({
+          title: 'Import Failed',
+          description: 'Could not import data. Please ensure the file is valid.',
+          variant: 'destructive',
+        });
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   const visibleGroups = initialFactionGroups.filter(g => !g.hidden);
@@ -459,7 +518,23 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                     Permanently delete all your stored data, including saved reports, charges, and default settings. This action cannot be undone.
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                    <Button onClick={handleExportData}>
+                        <Download className="mr-2 h-4 w-4" /> Export Data
+                    </Button>
+                    <Button variant="outline" onClick={handleImportDataClick}>
+                        <Upload className="mr-2 h-4 w-4" /> Import Data
+                    </Button>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="application/json"
+                        onChange={handleImportData}
+                        className="hidden"
+                    />
+                </div>
+
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button variant="destructive">
