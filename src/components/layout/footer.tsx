@@ -22,9 +22,9 @@ export async function Footer() {
             &copy; 2025-{new Date().getFullYear() + 1} {config.SITE_NAME}. All rights reserved. Version: <Link href="/changelog" className="hover:text-primary transition-colors">{config.SITE_VERSION}</Link>
           </p>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <Link href="/about" className="hover:text-primary transition-colors">About</Link>
+              <Link href="/about" className="hover:text-primary transition-colors">About Page</Link>
               <Separator orientation="vertical" className="h-4" />
-              <Link href="/credits" className="hover:text-primary transition-colors">Credits</Link>
+              <Link href="/credits" className="hover:text-primary transition-colors">Credits and Contributions</Link>
           </div>
         </div>
       </footer>

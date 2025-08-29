@@ -2,16 +2,33 @@
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { HandHeart, Heart, Code, Bot } from 'lucide-react';
+import { HandHeart, Heart, Code, Bot, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 async function getConfig() {
     const configPath = path.join(process.cwd(), 'data/config.json');
     const file = await fs.readFile(configPath, 'utf8');
     return JSON.parse(file);
 }
+
+const techInfo = [
+    { key: 'SITE_VERSION', label: 'Site Version', tooltip: 'The current public version of the application.' },
+    { key: 'CACHE_VERSION', label: 'Cache Version', tooltip: 'Controls browser cache; changes on major updates to force-fetch new assets.' },
+    { key: 'LOCAL_STORAGE_VERSION', label: 'Local Storage Version', tooltip: 'Controls local data; changes on major updates to clear outdated settings.' },
+    { key: 'CONTENT_DELIVERY_NETWORK', label: 'CDN', tooltip: 'The base URL from which static assets like penal codes are served.' },
+    { key: 'URL_GITHUB', label: 'GitHub Repository', tooltip: 'The public source code for this project.' },
+    { key: 'URL_DISCORD', label: 'Discord Community', tooltip: 'The official community and support server.' },
+];
 
 export default async function AboutPage() {
     const config = await getConfig();
@@ -42,20 +59,52 @@ export default async function AboutPage() {
                 <CardTitle>Technical Tidbits</CardTitle>
                  <CardDescription>A brief look under the hood.</CardDescription>
             </CardHeader>
-            <CardContent className="grid md:grid-cols-2 gap-6">
-                 <div className="flex items-start gap-4">
-                    <Code className="h-8 w-8 text-primary mt-1 flex-shrink-0"/>
-                    <div>
-                        <h3 className="font-semibold">Open Source</h3>
-                        <p className="text-muted-foreground">This entire project is open-source. You can view the code, suggest changes, or even contribute yourself over at the <a href={config.URL_GITHUB} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub repository</a>.</p>
+            <CardContent className="space-y-4">
+                 <div className="grid md:grid-cols-2 gap-6">
+                     <div className="flex items-start gap-4">
+                        <Code className="h-8 w-8 text-primary mt-1 flex-shrink-0"/>
+                        <div>
+                            <h3 className="font-semibold">Open Source</h3>
+                            <p className="text-muted-foreground">This entire project is open-source. You can view the code, suggest changes, or even contribute yourself over at the <a href={config.URL_GITHUB} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub repository</a>.</p>
+                        </div>
+                    </div>
+                     <div className="flex items-start gap-4">
+                        <Bot className="h-8 w-8 text-primary mt-1 flex-shrink-0"/>
+                        <div>
+                            <h3 className="font-semibold">AI-Assisted Development</h3>
+                            <p className="text-muted-foreground">To accelerate development and explore modern coding practices, this application was built with the assistance of AI, specifically Google's Firebase Studio.</p>
+                        </div>
                     </div>
                 </div>
-                 <div className="flex items-start gap-4">
-                    <Bot className="h-8 w-8 text-primary mt-1 flex-shrink-0"/>
-                    <div>
-                        <h3 className="font-semibold">AI-Assisted Development</h3>
-                        <p className="text-muted-foreground">To accelerate development and explore modern coding practices, this application was built with the assistance of AI, specifically Google's Firebase Studio.</p>
-                    </div>
+                 <div className="border rounded-lg p-4">
+                    <TooltipProvider>
+                        <Table>
+                            <TableBody>
+                                {techInfo.map(({ key, label, tooltip }) => (
+                                    <TableRow key={key}>
+                                        <TableCell className="font-medium">
+                                            <div className="flex items-center gap-2">
+                                                <span>{label}</span>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>{tooltip}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Badge variant="secondary" className="text-green-600 border-green-600/50 bg-green-500/10">
+                                                {config[key] || 'Not Set'}
+                                            </Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TooltipProvider>
                 </div>
             </CardContent>
         </Card>
