@@ -7,8 +7,8 @@ import path from 'path';
 import FullScreenMessage from '@/components/layout/maintenance-page';
 import { Footer } from '@/components/layout/footer';
 import { Layout } from '@/components/layout/layout';
-import Script from 'next/script';
 import { ClientLayout } from '@/components/layout/client-layout';
+import { Matomo } from '@/components/matomo';
 
 type SiteConfig = {
   SITE_LIVE: boolean;
@@ -116,23 +116,6 @@ function ExtraHead() {
         color="#e2b055"
       />
 
-      {/* Matomo tracking (prod only) */}
-      {process.env.NODE_ENV === 'production' && (
-        <Script id="matomo-tracking" strategy="afterInteractive">
-          {`
-            var _paq = window._paq = window._paq || [];
-            _paq.push(['trackPageView']);
-            _paq.push(['enableLinkTracking']);
-            (function() {
-              var u="//sys.booskit.dev/analytics/";
-              _paq.push(['setTrackerUrl', u+'matomo.php']);
-              _paq.push(['setSiteId', '1']);
-              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-              g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-            })();
-          `}
-        </Script>
-      )}
     </head>
   );
 }
@@ -179,6 +162,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Matomo />
           <ClientLayout
             cacheVersion={config.CACHE_VERSION}
             localStorageVersion={config.LOCAL_STORAGE_VERSION}
