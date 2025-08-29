@@ -1,18 +1,20 @@
+
 'use client';
 
 import { useEffect } from 'react';
 import { init } from '@socialgouv/matomo-next';
+import analyticsConfig from '../../data/analytics.json';
 
 export function Matomo() {
   useEffect(() => {
     if (
       process.env.NODE_ENV === 'production' &&
-      process.env.NEXT_PUBLIC_MATOMO_URL &&
-      process.env.NEXT_PUBLIC_MATOMO_SITE_ID
+      analyticsConfig.ANALYTICS_URL &&
+      analyticsConfig.ANALYTICS_TRACKER_ID
     ) {
       init({
-        url: process.env.NEXT_PUBLIC_MATOMO_URL,
-        siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID,
+        url: analyticsConfig.ANALYTICS_URL,
+        siteId: analyticsConfig.ANALYTICS_TRACKER_ID,
       });
     }
   }, []);
