@@ -188,7 +188,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       date: allWatchedFields.general?.date || '',
       time: allWatchedFields.general?.time || '',
       street: allWatchedFields.location?.street || '',
-      suspect: allWatchedFields.arrest?.suspectName || '',
+      suspect: allWatchedFields.arrest?.suspectName || formData.arrest?.suspectName || '',
       rank: primaryOfficer?.rank || '',
       name: primaryOfficer?.name || '',
       department: primaryOfficer?.department || '',
@@ -213,17 +213,17 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     }
 
     return baseText;
-  }, [
-    allWatchedFields.general,
-    allWatchedFields.location,
-    allWatchedFields.arrest?.suspectName,
-    allWatchedFields.narrative?.isPreset,
-    JSON.stringify(allWatchedFields.narrative?.modifiers),
-    officers,
-    arrestReportModifiers,
-    getValues,
-    userModified.narrative
-  ]);
+    }, [
+      allWatchedFields.general,
+      allWatchedFields.location,
+      formData.arrest?.suspectName,
+      allWatchedFields.narrative?.isPreset,
+      JSON.stringify(allWatchedFields.narrative?.modifiers),
+      officers,
+      arrestReportModifiers,
+      getValues,
+      userModified.narrative
+    ]);
   
   const isInvalid = (fieldName: string) => {
     const fields = fieldName.split('.');
@@ -241,12 +241,13 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const saveDraft = useCallback(() => {
     const latestFormData = getValues();
     const currentOfficerState = useOfficerStore.getState().officers;
+    const currentFormData = useFormStore.getState().formData;
 
     setAll({
         general: latestFormData.general,
-        arrest: { ...latestFormData.arrest, narrative: latestFormData.narrative.narrative },
+        arrest: { ...currentFormData.arrest, narrative: latestFormData.narrative.narrative },
         location: latestFormData.location,
-        evidence: latestFormData.evidence,
+        evidence: currentFormData.evidence,
         officers: currentOfficerState,
     });
 
