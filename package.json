@@ -3,10 +3,10 @@
   "version": "3.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p 9002",
+    "dev": "node scripts/copy-data.js && next dev --turbopack -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
-    "build": "next build",
+    "build": "node scripts/copy-data.js && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
@@ -73,7 +73,6 @@
     "@types/node": "^20",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "copy-webpack-plugin": "^13.0.1",
     "eslint": "9.34.0",
     "eslint-config-next": "15.5.0",
     "genkit-cli": "^1.14.1",
