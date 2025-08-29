@@ -18,6 +18,8 @@ type SiteConfig = {
   SITE_VERSION: string;
   SITE_FAVICON?: string;
   SITE_IMAGE?: string;
+  CACHE_VERSION?: string;
+  LOCAL_STORAGE_VERSION?: string;
 };
 
 // This function is marked as async because it fetches data.
@@ -166,7 +168,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-            <ClientLayout>
+            <ClientLayout cacheVersion={config.CACHE_VERSION} localStorageVersion={config.LOCAL_STORAGE_VERSION}>
                 <Layout footer={<Footer />}>
                     {children}
                 </Layout>
