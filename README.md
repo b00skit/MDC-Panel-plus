@@ -44,10 +44,14 @@ To get a local copy up and running, follow these simple steps.
     ```sh
     npm install
     ```
-4.  Create a `.env` file in the root of the project and add your Discord Webhook URL:
+4.  Create a `.env` file in the root of the project and add your Discord Webhook URL and Matomo settings:
     ```
     DISCORD_WEBHOOK_URL=your_webhook_url_here
+    NEXT_PUBLIC_MATOMO_URL=https://your-matomo-domain.example/
+    NEXT_PUBLIC_MATOMO_SITE_ID=1
     ```
+    * `NEXT_PUBLIC_MATOMO_URL` should point to your Matomo server and end with a trailing slash.
+    * `NEXT_PUBLIC_MATOMO_SITE_ID` must match the site ID configured in that Matomo instance.
 
 ---
 

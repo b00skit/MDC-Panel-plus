@@ -52,6 +52,7 @@
     "leaflet-freedraw": "^2.14.0",
     "leaflet-search": "^4.0.0",
     "lucide-react": "^0.475.0",
+    "@socialgouv/matomo-next": "^2.0.0",
     "next": "15.3.3",
     "next-themes": "^0.4.6",
     "patch-package": "^8.0.0",
