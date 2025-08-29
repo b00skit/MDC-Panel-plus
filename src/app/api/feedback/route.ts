@@ -24,13 +24,26 @@ export async function POST(request: Request) {
             name: "Page",
             value: `\`${pathname}\``,
             inline: true,
-        })
+        });
     }
 
+    const dateString = new Date().toISOString().split('T')[0];
+    const randomString = Array.from({ length: 5 }, () =>
+        String.fromCharCode(65 + Math.floor(Math.random() * 26))
+    ).join('');
+    const feedbackText = feedback || 'No detailed feedback provided.';
+    const githubUrl = `https://github.com/b00skit/mdc-panel-plus/issues/new?title=${encodeURIComponent(
+        `Feedback ${dateString} [${randomString}]`
+    )}&body=${encodeURIComponent(feedbackText)}`;
+
+    fields.push({
+        name: 'GitHub',
+        value: `[Send to GitHub](${githubUrl})`,
+    });
 
     const embed = {
-        title: `New Feedback Received: ${isPositive ? "Positive" : "Negative"}`,
-        description: feedback || "No detailed feedback provided.",
+        title: `New Feedback Received: ${isPositive ? 'Positive' : 'Negative'}`,
+        description: feedbackText,
         color: isPositive ? 3066993 : 15158332, // Green for positive, Red for negative
         fields: fields,
         timestamp: new Date().toISOString(),
