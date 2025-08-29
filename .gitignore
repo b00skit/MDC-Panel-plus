@@ -42,3 +42,4 @@ firebase-debug.log
 
 # Forms
 /data/forms/*
+public/data/

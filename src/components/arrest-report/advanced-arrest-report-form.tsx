@@ -494,7 +494,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     }
 
     useEffect(() => {
-        fetch('/data/dept_ranks.json')
+        fetch('/data/faction_ranks.json')
             .then((res) => res.json())
             .then((data) => setDeptRanks(data));
 

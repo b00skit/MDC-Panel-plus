@@ -154,7 +154,7 @@ export function OfficerSection({
 
   useEffect(() => {
     setInitialOfficers(); 
-    fetch('/data/dept_ranks.json')
+    fetch('/data/faction_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
   }, [setInitialOfficers]);

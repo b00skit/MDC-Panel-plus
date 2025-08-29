@@ -1,6 +1,6 @@
 {
-  "name": "nextn",
-  "version": "0.1.0",
+  "name": "mdc-panel-plus",
+  "version": "3.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
@@ -57,9 +57,9 @@
     "patch-package": "^8.0.0",
     "react": "^19.0.0",
     "react-day-picker": "^9.8.1",
-    "react-dom": "rc",
+    "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
-    "react-leaflet": "next",
+    "react-leaflet": "^5.0.0",
     "recharts": "^2.15.1",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
@@ -73,6 +73,7 @@
     "@types/node": "^20",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "copy-webpack-plugin": "^13.0.1",
     "eslint": "9.34.0",
     "eslint-config-next": "15.5.0",
     "genkit-cli": "^1.14.1",
