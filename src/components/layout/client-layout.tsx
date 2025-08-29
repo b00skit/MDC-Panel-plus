@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import FullScreenMessage from '@/components/layout/maintenance-page';
+import configData from '../../../data/config.json';
 
 async function clearCaches() {
   try {
@@ -94,7 +95,7 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
   const [isBlocked, setIsBlocked] = useState(false);
 
   useEffect(() => {
-    const betaEnabled = true;
+    const betaEnabled = configData.BETA_ENABLED;
     if (betaEnabled) return;
 
     const hostname = window.location.hostname;
@@ -104,7 +105,7 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
 
     if (isBetaHost) {
       const betaCode = localStorage.getItem('beta_code');
-      const expectedCode = process.env.NEXT_PUBLIC_BETA_CODE;
+      const expectedCode = configData.BETA_CODE;
       if (betaCode !== expectedCode) {
         setIsBlocked(true);
       }

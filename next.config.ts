@@ -9,8 +9,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   env: {
-    NEXT_PUBLIC_BETA_ENABLED: process.env.BETA_ENABLED,
-    NEXT_PUBLIC_BETA_CODE: process.env.BETA_CODE,
   }
 };
 
