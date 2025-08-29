@@ -9,6 +9,7 @@ import { Footer } from '@/components/layout/footer';
 import { Layout } from '@/components/layout/layout';
 import { ClientLayout } from '@/components/layout/client-layout';
 import { Matomo } from '@/components/matomo';
+import { Suspense } from 'react';
 
 type SiteConfig = {
   SITE_LIVE: boolean;
@@ -161,7 +162,9 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Matomo />
+          <Suspense fallback={null}>
+            <Matomo />
+          </Suspense>
           <ClientLayout
             cacheVersion={config.CACHE_VERSION}
             localStorageVersion={config.LOCAL_STORAGE_VERSION}
