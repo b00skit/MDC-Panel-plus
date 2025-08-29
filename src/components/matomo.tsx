@@ -53,7 +53,7 @@ export function Matomo() {
       if (document.visibilityState === 'hidden') {
         const _paq = (window as any)._paq || [];
         // record a lightweight interaction so the session doesn’t get cut short
-        _paq.push(['trackEvent', 'session', 'tab-hidden']);
+        // _paq.push(['trackEvent', 'session', 'tab-hidden']);
       }
     };
 
