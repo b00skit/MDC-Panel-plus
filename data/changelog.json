@@ -1,6 +1,21 @@
 {
     "changelogs": [
         {
+            "version": "3.1.6e",
+            "type": "Hotfix",
+            "date": "2025-08-30",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Calculator:</b> Added a missing \"Accessory\" addition onto the arrest calculator."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Calculator:</b> Fixed an issue with the minimum time replacing the maximum time in the total, causing false calculations."
+                }
+            ]
+        },
+        {
             "version": "3.1.6d",
             "type": "Hotfix",
             "date": "2025-08-30",

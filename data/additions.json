@@ -6,12 +6,17 @@
             "points_multiplier": 1.0
         },
         {
+            "name": "Attempt",
+            "sentence_multiplier": 0.5,
+            "points_multiplier": 0.5
+        },
+        {
             "name": "Accomplice",
             "sentence_multiplier": 1.0,
             "points_multiplier": 1.0
         },
         {
-            "name": "Attempt",
+            "name": "Accessory",
             "sentence_multiplier": 0.5,
             "points_multiplier": 0.5
         },
