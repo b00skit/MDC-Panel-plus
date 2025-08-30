@@ -74,8 +74,15 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
               return fineObj[row.offense!] || 0;
             }
       
-            acc.minTime += formatTimeInMinutes(getTime(chargeDetails.time));
-            acc.maxTime += formatTimeInMinutes(getTime(chargeDetails.maxtime));
+            const minTime = getTime(chargeDetails.time);
+            const maxTime = getTime(chargeDetails.maxtime);
+            const minTimeMinutes = formatTimeInMinutes(minTime);
+            let maxTimeMinutes = formatTimeInMinutes(maxTime);
+            if (maxTimeMinutes < minTimeMinutes) {
+              maxTimeMinutes = minTimeMinutes;
+            }
+            acc.minTime += minTimeMinutes;
+            acc.maxTime += maxTimeMinutes;
             acc.fine += getFine(chargeDetails.fine);
             acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
             
