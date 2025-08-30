@@ -190,9 +190,14 @@ export function ArrestReportPage() {
     
           const minTime = getTime(chargeDetails.time);
           const maxTime = getTime(chargeDetails.maxtime);
-    
-          acc.minTime += formatTimeInMinutes(minTime);
-          acc.maxTime += formatTimeInMinutes(maxTime);
+          const minTimeMinutes = formatTimeInMinutes(minTime);
+          let maxTimeMinutes = formatTimeInMinutes(maxTime);
+          if (maxTimeMinutes < minTimeMinutes) {
+            maxTimeMinutes = minTimeMinutes;
+          }
+
+          acc.minTime += minTimeMinutes;
+          acc.maxTime += maxTimeMinutes;
           acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
           acc.fine += getFine(chargeDetails.fine);
           
@@ -285,18 +290,21 @@ export function ArrestReportPage() {
                             const typePrefix = `${chargeDetails.type}${row.class}`;
                             const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
                             
-                            const getTime = (timeObj: any, simple = false) => {
-                                if(!timeObj) return 'N/A';
-                                let timeValue;
+                            const getTimeValue = (timeObj: any) => {
+                                if(!timeObj) return { days: 0, hours: 0, min: 0 };
                                 if (isDrugCharge && row.category) {
-                                    timeValue = timeObj[row.category];
-                                } else {
-                                    timeValue = timeObj;
+                                    return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
                                 }
-                                return simple ? formatTimeSimple(timeValue) : formatTime(timeValue);
+                                return timeObj;
                             }
-                            const minTime = getTime(chargeDetails.time, true);
-                            const maxTime = getTime(chargeDetails.maxtime, true);
+                            const minTimeObj = getTimeValue(chargeDetails.time);
+                            const maxTimeObj = getTimeValue(chargeDetails.maxtime);
+                            let adjustedMaxTimeObj = maxTimeObj;
+                            if (formatTimeInMinutes(maxTimeObj) < formatTimeInMinutes(minTimeObj)) {
+                                adjustedMaxTimeObj = minTimeObj;
+                            }
+                            const minTime = formatTimeSimple(minTimeObj);
+                            const maxTime = formatTimeSimple(adjustedMaxTimeObj);
 
                             const getFine = (fineObj: any) => {
                                 if (!fineObj) return '$0';

@@ -189,12 +189,15 @@ export function ArrestCalculatorResults({
           return fineObj[row.offense!] || 0;
         }
     
-        const originalMinTime = getTime(chargeDetails.time);
-        const originalMaxTime = getTime(chargeDetails.maxtime);
+        const originalMinTime = formatTimeInMinutes(getTime(chargeDetails.time));
+        let originalMaxTime = formatTimeInMinutes(getTime(chargeDetails.maxtime));
+        if (originalMaxTime < originalMinTime) {
+          originalMaxTime = originalMinTime;
+        }
         const originalPoints = chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
-    
-        const modifiedMinTime = formatTimeInMinutes(originalMinTime) * sentenceMultiplier;
-        const modifiedMaxTime = formatTimeInMinutes(originalMaxTime) * sentenceMultiplier;
+
+        const modifiedMinTime = originalMinTime * sentenceMultiplier;
+        const modifiedMaxTime = originalMaxTime * sentenceMultiplier;
         const modifiedPoints = originalPoints * pointsMultiplier;
     
         const fine = getFine(chargeDetails.fine);
@@ -212,8 +215,8 @@ export function ArrestCalculatorResults({
           additionDetails,
           isModified: sentenceMultiplier !== 1 || pointsMultiplier !== 1,
           original: {
-            minTime: formatTimeInMinutes(originalMinTime),
-            maxTime: formatTimeInMinutes(originalMaxTime),
+            minTime: originalMinTime,
+            maxTime: originalMaxTime,
             points: originalPoints,
           },
           modified: {
@@ -264,10 +267,6 @@ export function ArrestCalculatorResults({
         }
       );
     
-      if (totals.modified.minTime > totals.modified.maxTime) {
-        totals.modified.maxTime = totals.modified.minTime;
-      }
-      
       const getBailStatus = () => {
         if (!totals.bailStatus.hasBailCharge) return 'N/A';
         if (totals.bailStatus.noBail) return 'NOT ELIGIBLE';
