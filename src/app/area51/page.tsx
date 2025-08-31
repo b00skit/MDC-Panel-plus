@@ -23,6 +23,8 @@ type ChangelogEntry = {
     version: string;
     type: 'Release' | 'Major Update' | 'Minor Update' | 'Hotfix';
     date: string;
+    cacheVersion?: string;
+    localStorageVersion?: string;
     items: ChangelogItem[];
 };
 
