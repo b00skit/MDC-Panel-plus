@@ -87,7 +87,7 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                     <div>
                                         <CardTitle className="text-2xl font-bold">Version {changelog.version}</CardTitle>
                                         <CardDescription>
-                                            Released on {format(new Date(changelog.date), 'PPP')}
+                                            {changelog.type === 'Hotfix' ? 'Last Updated on' : 'Released on'} {format(new Date(changelog.date), 'PPP')}
                                         </CardDescription>
                                     </div>
                                     <Badge variant="outline" className={cn("text-sm", changelogTypeColors[changelog.type])}>

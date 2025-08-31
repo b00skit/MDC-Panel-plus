@@ -1,81 +1,53 @@
 {
     "changelogs": [
         {
-            "version": "3.1.6e",
+            "version": "3.1.6_05",
             "type": "Hotfix",
             "date": "2025-08-30",
             "items": [
                 {
-                    "type": "fix",
-                    "description": "<b>Arrest Calculator:</b> Added a missing \"Accessory\" addition onto the arrest calculator."
+                "type": "backend",
+                "description": "<b>General:</b> Implemented a cache-buster and localstorage-buster, making it overall \"guaranteed\" that cached data will be busted for future updates. Also making it possible to reset userdata to prevent corruption. This should fix issues where some people still have bugs present that have been fixed a few versions ago."
                 },
                 {
-                    "type": "fix",
-                    "description": "<b>Arrest Calculator:</b> Fixed an issue with the minimum time replacing the maximum time in the total, causing false calculations."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6d",
-            "type": "Hotfix",
-            "date": "2025-08-30",
-            "items": [
-                {
-                    "type": "fix",
-                    "description": "<b>Arrest Report:</b> The suspect's name, supporting evidence and dashcam providing a blank output on submit on the basic arrest report has been fixed."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6c",
-            "type": "Hotfix",
-            "date": "2025-08-29",
-            "items": [
-                {
-                    "type": "backend",
-                    "description": "<b>General:</b> Added better analytics tracking in the backend code."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6b",
-            "type": "Hotfix",
-            "date": "2025-08-29",
-            "items": [
-                {
-                    "type": "backend",
-                    "description": "<b>General:</b> Made a modification to the way nextjs exposes the data folder to the public, making it easy to access on the clientside."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6a",
-            "type": "Hotfix",
-            "date": "2025-08-29",
-            "items": [
-                {
-                    "type": "backend",
-                    "description": "<b>General:</b> Implemented a cache-buster and localstorage-buster, making it overall \"guaranteed\" that cached data will be busted for future updates. Also making it possible to reset userdata to prevent corruption. This should fix issues where some people still have bugs present that have been fixed a few versions ago."
+                "type": "backend",
+                "description": "<b>Help Center:</b> The feedback discord webhook now also has a quick github issue create link, that will automatically create an issue making it easier to track bugs."
                 },
                 {
-                    "type": "backend",
-                    "description": "<b>Help Center:</b> The feedback discord webhook now also has a quick github issue create link, that will automatically create an issue making it easier to track bugs."
+                "type": "backend",
+                "description": "<b>General:</b> The beta configuration was adjusted so that it no-longer pulls from the environment making it a bit easier to control."
                 },
                 {
-                    "type": "backend",
-                    "description": "<b>General:</b> The beta configuration was adjusted so that it no-longer pulls from the environment making it a bit easier to control."
+                "type": "feature",
+                "description": "<b>Settings:</b> Added a data import/export to the Settings page, making it possible to export or import your data for this site."
                 },
                 {
-                    "type": "feature",
-                    "description": "<b>Settings:</b> Added a data import/export to the Settings page, making it possible to export or import your data for this site."
+                "type": "modification",
+                "description": "<b>General:</b> Replaced the TOS and Privacy Policy pages with an About & Contributions page, as legal text probably won't be needed for this website."
                 },
                 {
-                    "type": "modification",
-                    "description": "<b>General:</b> Replaced the TOS and Privacy Policy pages with an About & Contributions page, as legal text probably won't be needed for this website."
+                "type": "feature",
+                "description": "<b>Paperwork Generators:</b> Added a Rules Violation Report form to the San Andreas Department of Corrections section."
                 },
                 {
-                    "type": "feature",
-                    "description": "<b>Paperwork Generators:</b> Added a Rules Violation Report form to the San Andreas Department of Corrections section."
+                "type": "backend",
+                "description": "<b>General:</b> Made a modification to the way nextjs exposes the data folder to the public, making it easy to access on the clientside."
+                },
+                {
+                "type": "backend",
+                "description": "<b>General:</b> Added better analytics tracking in the backend code."
+                },
+                {
+                "type": "fix",
+                "description": "<b>Arrest Report:</b> The suspect's name, supporting evidence and dashcam providing a blank output on submit on the basic arrest report has been fixed."
+                },
+                {
+                "type": "fix",
+                "description": "<b>Arrest Calculator:</b> Added a missing \"Accessory\" addition onto the arrest calculator."
+                },
+                {
+                "type": "fix",
+                "description": "<b>Arrest Calculator:</b> Fixed an issue with the minimum time replacing the maximum time in the total, causing false calculations."
                 }
             ]
         },
@@ -233,32 +205,25 @@
             ]
         },
         {
-            "version": "3.1.3b",
+            "version": "3.1.3_02",
             "type": "Hotfix",
             "date": "2025-08-23",
             "items": [
                 {
-                    "type": "fix",
-                    "description": "<b>Arrest Report:</b> Fixed the arrest report narrative resetting your progress if you click out of it."
-                }
-            ]
-        },
-        {
-            "version": "3.1.3a",
-            "type": "Hotfix",
-            "date": "2025-08-22",
-            "items": [
-                {
-                    "type": "fix",
-                    "description": "<b>Arrest Report:</b> Fixed the arrest reports not parsing the officer information."
+                "type": "fix",
+                "description": "<b>Arrest Report:</b> Fixed the arrest reports not parsing the officer information."
                 },
                 {
-                    "type": "fix",
-                    "description": "<b>Arrest Report:</b> Fixed the basic/advanced arrest reports not generating a white background for it's paperwork."
+                "type": "fix",
+                "description": "<b>Arrest Report:</b> Fixed the basic/advanced arrest reports not generating a white background for it's paperwork."
                 },
                 {
-                    "type": "fix",
-                    "description": "<b>Paperwork Generators:</b> Fixed the paperwork generator output always appending a <div></div> between the report."
+                "type": "fix",
+                "description": "<b>Paperwork Generators:</b> Fixed the paperwork generator output always appending a <div></div> between the report."
+                },
+                {
+                "type": "fix",
+                "description": "<b>Arrest Report:</b> Fixed the arrest report narrative resetting your progress if you click out of it."
                 }
             ]
         },
