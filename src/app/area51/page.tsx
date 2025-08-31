@@ -86,24 +86,27 @@ export default function Area51Page() {
         if (!showCacheVersion) delete currentData.cacheVersion;
         if (!showLocalStorageVersion) delete currentData.localStorageVersion;
 
+        // clone to prevent mutations from affecting state
+        const newEntry = JSON.parse(JSON.stringify(currentData));
+
         let updatedChangelogs;
         if (selectedChangelogIndex === 'new') {
-            updatedChangelogs = [currentData, ...allChangelogs];
-            setAllChangelogs(updatedChangelogs); // Update state to include new entry
+            updatedChangelogs = [newEntry, ...allChangelogs];
             setSelectedChangelogIndex(0); // Select the newly added entry
-            reset(currentData); // Reset form with the new data
         } else {
             updatedChangelogs = [...allChangelogs];
-            updatedChangelogs[selectedChangelogIndex as number] = currentData;
-            setAllChangelogs(updatedChangelogs);
+            updatedChangelogs[selectedChangelogIndex as number] = newEntry;
         }
 
+        setAllChangelogs(updatedChangelogs);
+        reset(newEntry); // Reset form with the new data
+
         setJsonOutput(JSON.stringify({ changelogs: updatedChangelogs }, null, 4));
-         toast({
+        toast({
             title: "JSON Generated",
             description: "The JSON output has been updated with the current form data.",
         });
-    }
+    };
 
     const copyJson = () => {
         if (!jsonOutput) {
