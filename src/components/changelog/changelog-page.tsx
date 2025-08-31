@@ -78,6 +78,13 @@ const markerColors = {
     'Hotfix': 'bg-red-500 text-red-50',
 };
 
+const cardAccentColors = {
+    'Release': 'border-l-4 border-green-500',
+    'Major Update': 'border-l-4 border-blue-500',
+    'Minor Update': 'border-l-4 border-yellow-500',
+    'Hotfix': 'border-l-4 border-red-500',
+};
+
 const releaseTypeInfo = [
     {
         type: 'Release',
@@ -172,18 +179,18 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                 </Select>
             </div>
 
-            <div className="relative pl-6 before:absolute before:inset-y-0 before:left-6 before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
+            <div className="relative pl-6 before:absolute before:inset-y-0 before:left-6 before:w-1 before:rounded-full before:bg-gradient-to-b before:from-primary/20 before:via-primary/60 before:to-primary/20">
                 {filteredChangelogs.map((changelog) => (
                     <div key={changelog.version} className="relative mb-8 pl-8">
                         <div
                             className={cn(
-                                'absolute -left-1 top-1.5 flex h-8 w-8 items-center justify-center rounded-full',
+                                'absolute -left-1 top-1 flex h-8 w-8 items-center justify-center rounded-full ring-4 ring-background shadow',
                                 markerColors[changelog.type]
                             )}
                         >
                             <GitCommit className="h-5 w-5" />
                         </div>
-                        <Card>
+                        <Card className={cn('shadow-sm hover:shadow-md transition-shadow', cardAccentColors[changelog.type])}>
                             <CardHeader>
                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                     <div>
@@ -230,10 +237,20 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                 {(changelog.cacheVersion || changelog.localStorageVersion) && (
                                     <div className="mt-6 space-y-1 text-sm text-muted-foreground">
                                         {changelog.cacheVersion && (
-                                            <p>Cache Version: {changelog.cacheVersion}</p>
+                                            <p>
+                                                Cache Version:{' '}
+                                                <Badge className="ml-1 bg-green-500/10 text-green-700 border-green-500/20">
+                                                    {changelog.cacheVersion}
+                                                </Badge>
+                                            </p>
                                         )}
                                         {changelog.localStorageVersion && (
-                                            <p>Local Storage Version: {changelog.localStorageVersion}</p>
+                                            <p>
+                                                Local Storage Version:{' '}
+                                                <Badge className="ml-1 bg-green-500/10 text-green-700 border-green-500/20">
+                                                    {changelog.localStorageVersion}
+                                                </Badge>
+                                            </p>
                                         )}
                                     </div>
                                 )}
