@@ -58,7 +58,7 @@ export default function Area51Page() {
 
     useEffect(() => {
         const selectedData = selectedChangelogIndex === 'new' 
-            ? emptyChangelog 
+            ? null 
             : allChangelogs[selectedChangelogIndex as number];
 
         if (selectedData) {
@@ -86,11 +86,16 @@ export default function Area51Page() {
         if (!showCacheVersion) delete currentData.cacheVersion;
         if (!showLocalStorageVersion) delete currentData.localStorageVersion;
 
-        let updatedChangelogs = [...allChangelogs];
+        let updatedChangelogs;
         if (selectedChangelogIndex === 'new') {
-            updatedChangelogs.unshift(currentData);
+            updatedChangelogs = [currentData, ...allChangelogs];
+            setAllChangelogs(updatedChangelogs); // Update state to include new entry
+            setSelectedChangelogIndex(0); // Select the newly added entry
+            reset(currentData); // Reset form with the new data
         } else {
+            updatedChangelogs = [...allChangelogs];
             updatedChangelogs[selectedChangelogIndex as number] = currentData;
+            setAllChangelogs(updatedChangelogs);
         }
 
         setJsonOutput(JSON.stringify({ changelogs: updatedChangelogs }, null, 4));
