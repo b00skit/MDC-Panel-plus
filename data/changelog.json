@@ -4,8 +4,8 @@
             "version": "3.1.6_05",
             "type": "Hotfix",
             "date": "2025-08-30",
-            "cacheVersion": "2",
-            "localStorageVersion": "5",
+            "cacheVersion": "apron-vofd-1",
+            "localStorageVersion": "cookie-apxn-1",
             "items": [
                 {
                 "type": "backend",
