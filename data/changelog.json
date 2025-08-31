@@ -1,3 +1,4 @@
+
 {
     "changelogs": [
         {
@@ -12,47 +13,19 @@
                 {
                     "type": "fix",
                     "description": "<b>Arrest Calculator:</b> Fixed an issue with the minimum time replacing the maximum time in the total, causing false calculations."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6d",
-            "type": "Hotfix",
-            "date": "2025-08-30",
-            "items": [
+                },
                 {
                     "type": "fix",
                     "description": "<b>Arrest Report:</b> The suspect's name, supporting evidence and dashcam providing a blank output on submit on the basic arrest report has been fixed."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6c",
-            "type": "Hotfix",
-            "date": "2025-08-29",
-            "items": [
+                },
                 {
                     "type": "backend",
                     "description": "<b>General:</b> Added better analytics tracking in the backend code."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6b",
-            "type": "Hotfix",
-            "date": "2025-08-29",
-            "items": [
+                },
                 {
                     "type": "backend",
                     "description": "<b>General:</b> Made a modification to the way nextjs exposes the data folder to the public, making it easy to access on the clientside."
-                }
-            ]
-        },
-        {
-            "version": "3.1.6a",
-            "type": "Hotfix",
-            "date": "2025-08-29",
-            "items": [
+                },
                 {
                     "type": "backend",
                     "description": "<b>General:</b> Implemented a cache-buster and localstorage-buster, making it overall \"guaranteed\" that cached data will be busted for future updates. Also making it possible to reset userdata to prevent corruption. This should fix issues where some people still have bugs present that have been fixed a few versions ago."
@@ -240,14 +213,7 @@
                 {
                     "type": "fix",
                     "description": "<b>Arrest Report:</b> Fixed the arrest report narrative resetting your progress if you click out of it."
-                }
-            ]
-        },
-        {
-            "version": "3.1.3a",
-            "type": "Hotfix",
-            "date": "2025-08-22",
-            "items": [
+                },
                 {
                     "type": "fix",
                     "description": "<b>Arrest Report:</b> Fixed the arrest reports not parsing the officer information."
@@ -619,3 +585,5 @@
         }
     ]
 }
+
+    

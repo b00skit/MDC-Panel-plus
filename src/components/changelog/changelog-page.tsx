@@ -121,3 +121,5 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
         </div>
     );
 }
+
+    
