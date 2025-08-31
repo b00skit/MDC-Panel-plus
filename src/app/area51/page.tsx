@@ -57,10 +57,10 @@ export default function Area51Page() {
     const [jsonOutput, setJsonOutput] = useState('');
 
     useEffect(() => {
-        const currentData = getValues();
-        setShowCacheVersion(!!currentData.cacheVersion);
-        setShowLocalStorageVersion(!!currentData.localStorageVersion);
-    }, [selectedChangelogIndex, getValues]);
+        const selectedData = selectedChangelogIndex === 'new' ? emptyChangelog : allChangelogs[selectedChangelogIndex];
+        setShowCacheVersion(!!selectedData.cacheVersion);
+        setShowLocalStorageVersion(!!selectedData.localStorageVersion);
+    }, [selectedChangelogIndex, allChangelogs]);
     
     const handleSelectChangelog = (indexStr: string) => {
         if (indexStr === 'new') {
