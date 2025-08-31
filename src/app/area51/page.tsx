@@ -59,7 +59,7 @@ export default function Area51Page() {
     useEffect(() => {
         const selectedData = selectedChangelogIndex === 'new' 
             ? emptyChangelog 
-            : allChangelogs[selectedChangelogIndex];
+            : allChangelogs[selectedChangelogIndex as number];
 
         if (selectedData) {
             setShowCacheVersion(!!selectedData.cacheVersion);
@@ -90,7 +90,7 @@ export default function Area51Page() {
         if (selectedChangelogIndex === 'new') {
             updatedChangelogs.unshift(currentData);
         } else {
-            updatedChangelogs[selectedChangelogIndex] = currentData;
+            updatedChangelogs[selectedChangelogIndex as number] = currentData;
         }
 
         setJsonOutput(JSON.stringify({ changelogs: updatedChangelogs }, null, 4));
