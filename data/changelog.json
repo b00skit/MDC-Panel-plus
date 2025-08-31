@@ -54,6 +54,10 @@
                 {
                     "type": "modification",
                     "description": "<b>General:</b> Updated the changelog to be a bit more user friendly and have a better UI."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> Added a missing \"Required Case\" dropdown-value to the advanced arrest report."
                 }
             ]
         },

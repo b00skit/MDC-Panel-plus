@@ -983,6 +983,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                                     <SelectItem value="Guilty">Guilty</SelectItem>
                                     <SelectItem value="Not Guilty">Not Guilty</SelectItem>
                                     <SelectItem value="No Contest">No Contest</SelectItem>
+                                    <SelectItem value="No Contest">Required Case</SelectItem>
                                 </SelectContent>
                             </Select>
                         )}
