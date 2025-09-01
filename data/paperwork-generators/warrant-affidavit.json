@@ -11,7 +11,7 @@
     "form": [
         { "type": "section", "title": "General Information" },
         { "type": "general", "name": "general" },
-        { "type": "officer", "name": "officers", "multi": false, "showDivDetail": true },
+        { "type": "officer", "name": "officers", "multi": false, "showDivDetail": true, "showBadgeNumber": true },
         {
             "type": "dropdown",
             "name": "warrant_type",

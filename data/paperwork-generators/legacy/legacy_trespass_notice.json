@@ -12,7 +12,7 @@
         { "type": "section", "title": "General Section" },
         { "type": "general", "name": "general" },
         { "type": "section", "title": "Officer Section" },
-        { "type": "officer", "name": "officers" },
+        { "type": "officer", "name": "officers", "showBadgeNumber": true },
         { "type": "section", "title": "Location Details" },
         { "type": "location", "name": "location", "showDistrict": true },
         { "type": "section", "title": "Suspect Details" },

@@ -132,11 +132,13 @@ const SelectField = ({
 export function OfficerSection({ 
     isArrestReport = false, 
     isMultiOfficer = true,
-    showDivDetail = false
+    showDivDetail = false,
+    showBadgeNumber = false,
  }: { 
     isArrestReport?: boolean, 
     isMultiOfficer?: boolean,
-    showDivDetail?: boolean
+    showDivDetail?: boolean,
+    showBadgeNumber?: boolean
 }) {
   const { 
     officers, 
@@ -168,7 +170,7 @@ export function OfficerSection({
   };
 
   const fieldSpans: Record<string, number> = { name: 3, rank: 3, badge: 2, divDetail: 3, remove: 1 };
-  const enabledFields = ['name', 'rank', 'badge', ...(showDivDetail ? ['divDetail'] : []), 'remove'];
+  const enabledFields = ['name', 'rank', ...(showBadgeNumber ? ['badge'] : []), ...(showDivDetail ? ['divDetail'] : []), 'remove'];
   const totalColumns = enabledFields.reduce((sum, field) => sum + fieldSpans[field], 0);
   const gridColsClass: Record<number, string> = {
     1: 'md:grid-cols-1',
@@ -225,17 +227,19 @@ export function OfficerSection({
                         ))}
                     </SelectField>
                 </div>
-                <div className="md:col-span-2">
-                    <InputField
-                        label="Badge No."
-                        id={`badge-${officer.id}`}
-                        placeholder="12345"
-                        icon={<ShieldIcon className="h-4 w-4 text-muted-foreground" />}
-                        value={officer.badgeNumber}
-                        onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
-                         isInvalid={!officer.badgeNumber}
-                    />
-                </div>
+                {showBadgeNumber && (
+                  <div className="md:col-span-2">
+                      <InputField
+                          label="Badge No."
+                          id={`badge-${officer.id}`}
+                          placeholder="12345"
+                          icon={<ShieldIcon className="h-4 w-4 text-muted-foreground" />}
+                          value={officer.badgeNumber}
+                          onChange={(e) => updateOfficer(officer.id, { badgeNumber: e.target.value })}
+                          isInvalid={!officer.badgeNumber}
+                      />
+                  </div>
+                )}
                  {showDivDetail && (
                      <div className="md:col-span-3">
                         <InputField

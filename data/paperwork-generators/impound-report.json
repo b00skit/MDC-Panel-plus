@@ -13,7 +13,7 @@
         { "type": "section", "title": "General Section" },
         { "type": "general", "name": "general" },
         { "type": "section", "title": "Officer Section" },
-        { "type": "officer", "name": "officers" },
+        { "type": "officer", "name": "officers", "showBadgeNumber": true },
         { "type": "section", "title": "Vehicle Details" },
         { "type": "group", "fields": [
             { "type": "toggle", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Registered", "dataOff": "Unregistered", "defaultValue": true },

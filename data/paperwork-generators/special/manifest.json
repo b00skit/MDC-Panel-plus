@@ -2,5 +2,5 @@
 {
     "group_name": "Special Formats",
     "group_id": "special",
-    "link_only": true
+    "url": true
 }

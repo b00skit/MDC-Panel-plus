@@ -45,6 +45,7 @@ type FormField = {
     required?: boolean;
     multi?: boolean;
     showDivDetail?: boolean;
+    showBadgeNumber?: boolean;
     stipulation?: {
         field: string;
         value: any;
@@ -272,7 +273,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                 return <GeneralSection key={fieldKey} />;
             
             case 'officer':
-                return <OfficerSection key={fieldKey} isArrestReport={false} isMultiOfficer={field.multi} showDivDetail={field.showDivDetail} />;
+                return <OfficerSection key={fieldKey} isArrestReport={false} isMultiOfficer={field.multi} showDivDetail={field.showDivDetail} showBadgeNumber={field.showBadgeNumber} />;
 
             case 'location':
                 return <LocationDetails
