@@ -3,7 +3,7 @@
 
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Clipboard, Info } from 'lucide-react';
+import { Clipboard, Info, ExternalLink } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -66,6 +66,9 @@ function ArrestSubmitContent() {
           });
         }
       };
+
+    const suspectName = isBasicReport ? formData?.arrest?.suspectName : formData?.arrestee?.name;
+    const mdcRecordUrl = suspectName ? `https://mdc.gta.world/record/${suspectName.replace(/ /g, '_')}` : null;
   
     if (!isClient) {
       return (
@@ -118,7 +121,15 @@ function ArrestSubmitContent() {
         </div>
   
          <div className="space-y-4 mt-6">
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
+               {mdcRecordUrl && (
+                  <Button variant="outline" asChild>
+                      <a href={mdcRecordUrl} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          Open MDC Record
+                      </a>
+                  </Button>
+                )}
               <Button onClick={handleCopy} disabled={isClient && !formData}>
                   <Clipboard className="mr-2 h-4 w-4" />
                   Copy Paperwork
