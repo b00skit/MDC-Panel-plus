@@ -39,7 +39,7 @@ async function getPaperworkData() {
                 const manifestContents = await fs.readFile(manifestPath, 'utf8');
                 const manifest = JSON.parse(manifestContents);
 
-                if (manifest.link_only) {
+                if (manifest.url) {
                     continue;
                 }
 

@@ -15,7 +15,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
     const { hiddenFactions, showHiddenGroups } = useSettingsStore();
 
     const visibleFactionGroups = factionGroups.filter(group => {
-        if (group.link_only) {
+        if (group.url) {
             return false;
         }
         if (group.hidden) {
