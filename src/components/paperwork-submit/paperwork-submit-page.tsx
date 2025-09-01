@@ -2,7 +2,7 @@
 'use client';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Clipboard, Info } from 'lucide-react';
+import { Clipboard, Info, ExternalLink } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '../ui/skeleton';
@@ -14,10 +14,27 @@ import { ConditionalVariable } from '@/stores/paperwork-builder-store';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
-const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: React.RefObject<HTMLDivElement>, setReportTitle: (title: string) => void }) => {
+const GeneratedFormattedReport = ({ 
+    innerRef, 
+    setReportTitle,
+    setCustomButton,
+}: { 
+    innerRef: React.RefObject<HTMLDivElement>, 
+    setReportTitle: (title: string) => void,
+    setCustomButton: (button: { text: string; link: string } | null) => void 
+}) => {
     const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
-    const [generatorConfig, setGeneratorConfig] = useState<{ output: string; output_title?: string; conditionals?: ConditionalVariable[], countyCityStipulation?: boolean, is_html_output?: boolean } | null>(null);
+    const [generatorConfig, setGeneratorConfig] = useState<{ 
+        output: string; 
+        output_title?: string; 
+        conditionals?: ConditionalVariable[], 
+        countyCityStipulation?: boolean, 
+        is_html_output?: boolean,
+        custom_button_text?: string;
+        custom_button_link?: string;
+        custom_button_replace_spaces?: boolean;
+    } | null>(null);
   
     useEffect(() => {
         if (generatorId && generatorType) {
@@ -101,6 +118,35 @@ const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: Reac
                 setReportTitle(compiledTitleTemplate(processedData));
             }
 
+            // Compile custom button if it exists
+            if (generatorConfig.custom_button_text && generatorConfig.custom_button_link) {
+                let buttonData = { ...processedData };
+                if (generatorConfig.custom_button_replace_spaces) {
+                    const deepReplace = (obj: any): any => {
+                        if (typeof obj === 'string') {
+                            return obj.replace(/ /g, '_');
+                        }
+                        if (Array.isArray(obj)) {
+                            return obj.map(deepReplace);
+                        }
+                        if (obj !== null && typeof obj === 'object') {
+                            return Object.fromEntries(
+                                Object.entries(obj).map(([key, value]) => [key, deepReplace(value)])
+                            );
+                        }
+                        return obj;
+                    };
+                    buttonData = deepReplace(buttonData);
+                }
+
+                const compiledButtonTextTemplate = Handlebars.compile(generatorConfig.custom_button_text, { noEscape: true });
+                const compiledButtonLinkTemplate = Handlebars.compile(generatorConfig.custom_button_link, { noEscape: true });
+                setCustomButton({
+                    text: compiledButtonTextTemplate(processedData),
+                    link: compiledButtonLinkTemplate(buttonData)
+                });
+            }
+
 
             if (generatorConfig.countyCityStipulation && formData.officers?.[0]?.department) {
                 const cityFactions = ["Los Santos Police Department", "Los Santos Parking Enforcement"];
@@ -111,7 +157,7 @@ const GeneratedFormattedReport = ({ innerRef, setReportTitle }: { innerRef: Reac
 
             setTemplate(parsedOutput);
         }
-    }, [generatorConfig, formData, setReportTitle]);
+    }, [generatorConfig, formData, setReportTitle, setCustomButton]);
   
     return (
         <div ref={innerRef} className="p-4 border rounded-lg bg-card text-card-foreground">
@@ -132,6 +178,7 @@ function PaperworkSubmitContent() {
     const { toast } = useToast();
     const reportRef = useRef<HTMLDivElement>(null);
     const [reportTitle, setReportTitle] = useState('');
+    const [customButton, setCustomButton] = useState<{ text: string, link: string } | null>(null);
   
     useEffect(() => {
       setIsClient(true);
@@ -212,9 +259,21 @@ function PaperworkSubmitContent() {
                 </div>
             </div>
         )}
-        <GeneratedFormattedReport innerRef={reportRef} setReportTitle={setReportTitle} />
+        <GeneratedFormattedReport 
+            innerRef={reportRef} 
+            setReportTitle={setReportTitle} 
+            setCustomButton={setCustomButton} 
+        />
 
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end mt-6 gap-2">
+            {customButton && (
+                <Button asChild variant="secondary">
+                    <a href={customButton.link} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        {customButton.text}
+                    </a>
+                </Button>
+            )}
             <Button onClick={handleCopy} disabled={!isClient}>
                 <Clipboard className="mr-2 h-4 w-4" />
                 Copy Paperwork
