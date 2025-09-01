@@ -265,7 +265,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     e.target.value = '';
   };
 
-  const visibleGroups = initialFactionGroups.filter(g => !g.hidden);
+  const visibleGroups = initialFactionGroups.filter(g => (!g.hidden && !g.url));
   const hiddenGroups = initialFactionGroups.filter(g => g.hidden);
 
   return (
@@ -487,8 +487,6 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                         />
                     </div>
                 ))}
-                
-                {hiddenGroups.length > 0 && <Separator />}
 
                 {visibleGroups.length > 0 ? (
                     visibleGroups.map(group => (

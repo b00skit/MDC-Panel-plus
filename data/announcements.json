@@ -2,7 +2,7 @@
     "announcements": [
         {
             "id": 1,
-            "date": "2025-08-29",
+            "date": "2025-09-01",
             "title": "Release: MDC Panel+",
             "content": "The new MDC Panel+ is here, there's been a lot of changes made between the legacy panel and the new variant of the MDC Panel, all the changes are carefully documented in the changelog, give it a read! Additionally, share any feedback you may have regarding the panel.",
             "button": {

@@ -1,7 +1,51 @@
 {
     "changelogs": [
         {
-            "version": "3.1.6_06",
+            "version": "3.2.0",
+            "type": "Major Update",
+            "date": "2025-09-01",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Report:</b> Added a \"Open MDC Record\" button that will take you to the suspect's page once you've finished filing your paperwork."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Created a new SEB deployment report form, ported from the Legacy MDC."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Updated all global & legacy paperwork generators to include a \"Open MDC Record\" button, which will take you to a suspect's MDC record."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Added support for custom buttons on paperwork generators, easily adding and modifying them."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Disabled public beta access, updated the beta code and changed the beta to be private."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Added support for private link-only forms, that can be shared to specific divisions/units."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Removed the badge numbers from being present on certain forms by default, as it's not necessarily a mandatory field."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Modified the server for release, removing any experimental flags and junk code."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Report:</b> Added a bunch of text to the current modifiers on the basic arrest report narrative."
+                }
+            ],
+            "cacheVersion": "biscuits-tiff-1"
+        },
+        {
+            "version": "3.1.6.06",
             "type": "Hotfix",
             "date": "2025-08-30",
             "cacheVersion": "apron-vofd-1",
@@ -215,7 +259,7 @@
             ]
         },
         {
-            "version": "3.1.3_02",
+            "version": "3.1.3.02",
             "type": "Hotfix",
             "date": "2025-08-23",
             "items": [

@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import FullScreenMessage from '@/components/layout/maintenance-page';
 import configData from '../../../data/config.json';
+import { useToast } from '@/hooks/use-toast';
 
 async function clearCaches() {
   try {
@@ -93,6 +94,7 @@ const CacheBuster = ({
 
 const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
   const [isBlocked, setIsBlocked] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const betaEnabled = configData.BETA_ENABLED;
@@ -112,6 +114,30 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+  const handleExportData = () => {
+    const data: Record<string, string> = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key !== 'local_storage_version' && key !== 'cache_version') {
+        const value = localStorage.getItem(key);
+        if (value !== null) {
+          data[key] = value;
+        }
+      }
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mdc-data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({
+      title: 'Data Exported',
+      description: 'A file with your data has been downloaded.',
+    });
+  };
+
   if (isBlocked) {
     return (
       <FullScreenMessage
@@ -119,6 +145,8 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
         message="This beta version is no longer active. Please use the main site."
         linkHref="https://panel.booskit.dev/"
         linkText="Go to Live Site"
+        onActionClick={handleExportData}
+        actionText="Export Data"
       />
     );
   }

@@ -191,10 +191,11 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       suspect: allWatchedFields.arrest?.suspectName || formData.arrest?.suspectName || '',
       rank: primaryOfficer?.rank || '',
       name: primaryOfficer?.name || '',
+      badge: primaryOfficer?.badgeNumber || '',
       department: primaryOfficer?.department || '',
     };
     
-    let baseText = `On the ${data.date}, I ${data.rank} ${data.name} of the ${data.department} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
+    let baseText = `On the ${data.date}, I ${data.rank} ${data.name} (#${data.badge}) of the ${data.department} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
 
     const activeModifiers = arrestReportModifiers.filter(mod => allWatchedFields.narrative?.modifiers?.[mod.name]);
     
@@ -282,7 +283,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     <FormProvider {...methods}>
       <form ref={formRef} onSubmit={handleSubmitForm} onBlur={saveDraft} className="space-y-6">
         <GeneralSection />
-        <OfficerSection isArrestReport={true} />
+        <OfficerSection isArrestReport={true} showBadgeNumber={true} />
 
         <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
           <LocationDetails

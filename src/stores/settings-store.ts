@@ -7,6 +7,7 @@ export interface FactionGroup {
     group_name: string;
     group_id: string;
     hidden?: boolean;
+    url?: boolean;
 }
 
 interface SettingsState {
