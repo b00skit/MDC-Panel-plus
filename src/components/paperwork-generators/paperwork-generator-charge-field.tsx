@@ -61,7 +61,7 @@ interface PaperworkChargeFieldProps {
   };
 }
 
-const CopyablePreviewField = ({ label, value }: { label: string, value: string | number }) => {
+const CopyablePreviewField = ({ label, value, highlight = false }: { label: string, value: string | number, highlight?: boolean }) => {
     const { toast } = useToast();
 
     const handleCopy = () => {
@@ -78,7 +78,7 @@ const CopyablePreviewField = ({ label, value }: { label: string, value: string |
                 <Input
                     readOnly
                     value={value}
-                    className="h-8 text-xs bg-card"
+                    className={cn('h-8 text-xs bg-card', highlight && 'font-semibold text-primary')}
                     disabled
                 />
                 <Button type="button" variant="outline" size="icon" className="h-8 w-8" onClick={handleCopy}>
@@ -90,7 +90,7 @@ const CopyablePreviewField = ({ label, value }: { label: string, value: string |
 };
 
 
-const ChargePreview = ({ charge, config }: { charge: Charge, config: PaperworkChargeFieldProps['config'] }) => {
+const ChargePreview = ({ charge, config, offense }: { charge: Charge, config: PaperworkChargeFieldProps['config'], offense: string }) => {
     const isDrugCharge = !!charge.drugs;
 
     const formatTime = (time: any) => {
@@ -108,8 +108,6 @@ const ChargePreview = ({ charge, config }: { charge: Charge, config: PaperworkCh
         return fineObj[offense as keyof typeof fineObj] || '0';
     }
 
-    const offense = '1'; // Defaulting to offense 1 for preview, this could be improved
-
     const sentenceValue = isDrugCharge ? 'Varies' : `${formatTime(charge.time)} - ${formatTime(charge.maxtime)}`;
     const fineValue = getFine(charge.fine, offense);
     const impoundValue = charge.impound[offense as keyof typeof charge.impound] || 0;
@@ -118,9 +116,9 @@ const ChargePreview = ({ charge, config }: { charge: Charge, config: PaperworkCh
     return (
         <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} />}
-            {config.previewFields?.fine && <CopyablePreviewField label="Fine" value={fineValue} />}
-            {config.previewFields?.impound && impoundValue > 0 && <CopyablePreviewField label="Impound (Days)" value={impoundValue} />}
-            {config.previewFields?.suspension && suspensionValue > 0 && <CopyablePreviewField label="Suspension (Days)" value={suspensionValue} />}
+            {config.previewFields?.fine && <CopyablePreviewField label="Fine" value={fineValue} highlight />}
+            {config.previewFields?.impound && impoundValue > 0 && <CopyablePreviewField label="Impound (Days)" value={impoundValue} highlight />}
+            {config.previewFields?.suspension && suspensionValue > 0 && <CopyablePreviewField label="Suspension (Days)" value={suspensionValue} highlight />}
         </div>
     );
 };
@@ -202,6 +200,8 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
         if (chargeDetails.offence?.['1']) defaultOffense = '1';
         else if (chargeDetails.offence?.['2']) defaultOffense = '2';
         else if (chargeDetails.offence?.['3']) defaultOffense = '3';
+        else if (chargeDetails.offence?.['4']) defaultOffense = '4';
+        else if (chargeDetails.offence?.['5']) defaultOffense = '5';
         newValues.offense = defaultOffense;
     }
     if (config.showAddition) {
@@ -221,6 +221,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
       {fields.map((field, index) => {
         const chargeDetails = getChargeDetails(watch(`${config.name}.${index}.chargeId`));
         const isDrugCharge = !!chargeDetails?.drugs;
+        const offenseValue = watch(`${config.name}.${index}.offense`) || '1';
 
         return (
             <div key={field.id} className="p-4 border rounded-lg">
@@ -295,6 +296,28 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                                 />
                             </div>
                         )}
+
+                        {config.showOffense && (
+                            <div className="space-y-1.5">
+                                <Label>Offense</Label>
+                                <Controller
+                                    name={`${config.name}.${index}.offense`}
+                                    control={control}
+                                    render={({ field: { onChange, value } }) => (
+                                        <Select value={value || ''} onValueChange={onChange} disabled={!chargeDetails}>
+                                            <SelectTrigger className="h-9"><SelectValue placeholder="Select offense" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="1" disabled={!chargeDetails?.offence?.['1']}>Offense #1</SelectItem>
+                                                <SelectItem value="2" disabled={!chargeDetails?.offence?.['2']}>Offense #2</SelectItem>
+                                                <SelectItem value="3" disabled={!chargeDetails?.offence?.['3']}>Offense #3</SelectItem>
+                                                <SelectItem value="4" disabled={!chargeDetails?.offence?.['4']}>Offense #4</SelectItem>
+                                                <SelectItem value="5" disabled={!chargeDetails?.offence?.['5']}>Offense #5</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+                            </div>
+                        )}
                         
                         {config.customFields?.map(customField => (
                             <div key={customField.name} className="space-y-1.5">
@@ -308,7 +331,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                         <Trash2 className="h-5 w-5" />
                     </Button>
                 </div>
-                 {chargeDetails && config.previewFields && <ChargePreview charge={chargeDetails} config={config} />}
+                {chargeDetails && config.previewFields && <ChargePreview charge={chargeDetails} config={config} offense={offenseValue} />}
             </div>
         );
       })}

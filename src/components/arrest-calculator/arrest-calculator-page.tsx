@@ -197,6 +197,8 @@ export function ArrestCalculatorPage() {
     if (chargeDetails.offence?.['1']) defaultOffense = '1';
     else if (chargeDetails.offence?.['2']) defaultOffense = '2';
     else if (chargeDetails.offence?.['3']) defaultOffense = '3';
+    else if (chargeDetails.offence?.['4']) defaultOffense = '4';
+    else if (chargeDetails.offence?.['5']) defaultOffense = '5';
   
     updateCharge(chargeRow.uniqueId, {
       chargeId: chargeId,
@@ -400,6 +402,18 @@ export function ArrestCalculatorPage() {
                         disabled={!chargeDetails?.offence['3']}
                       >
                         Offense #3
+                      </SelectItem>
+                      <SelectItem
+                        value="4"
+                        disabled={!chargeDetails?.offence['4']}
+                      >
+                        Offense #4
+                      </SelectItem>
+                      <SelectItem
+                        value="5"
+                        disabled={!chargeDetails?.offence['5']}
+                      >
+                        Offense #5
                       </SelectItem>
                     </SelectContent>
                   </Select>
