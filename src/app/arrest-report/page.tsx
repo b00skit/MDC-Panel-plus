@@ -59,10 +59,9 @@ export default function ArrestReportPage() {
         description={hasReport ? "A summary of the calculated charges and report form." : "Create a new arrest report."}
       />
         {!isClient && renderSkeleton()}
-        {hasReport && penalCode && (
-            <ArrestCalculatorResults 
-                report={report} 
-                penalCode={penalCode}
+        {hasReport && (
+            <ArrestCalculatorResults
+                report={report}
                 showCharges={true}
                 showStipulations={true}
                 showSummary={true}
