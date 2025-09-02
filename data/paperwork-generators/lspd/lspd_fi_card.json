@@ -1,0 +1,117 @@
+
+{
+    "id": "lspd_fi_card",
+    "title": "Field Interview Card",
+    "description": "Generate an LSPD Field Interview (FI) Card.",
+    "icon": "User",
+    "icon_color": "#2563eb",
+    "is_html_output": false,
+    "output": "[font=Arial][center]LOS SANTOS POLICE DEPARTMENT\n[size=120][color=black][b]FIELD INTERVIEW CARD (FRONT)[/b][/font][/color][/size][/center]\n\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87]NAME (FIRST, MIDDLE, LAST)[/size]\n{{subject.name}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,13,5]\n[size=87]PHONE[/size]\n{{subject.phone}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]SEX (M/F/O)[/size]\n{{subject.sex}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]HAIR[/size]\n{{subject.hair}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]EYES[/size]\n{{subject.eyes}}\n[/tdwidth][/tr]\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,35,5]\n[size=87]RESIDENCE[/size]\n{{subject.residence}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]BIRTHDATE[/size]\n{{subject.birthdate}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]DESCENT[/size]\n{{subject.descent}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]HEIGHT[/size]\n{{subject.height}}\n[/tdwidth][/tr]\n\n\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87]CLOTHING[/size]\n{{subject.clothing}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87]PERSONAL ODDITIES[/size]\n{{subject.oddities}}\n[/tdwidth]\n[/tr]\n\n\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87]MONIKER / ALIAS[/size]\n{{subject.moniker}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87]GANG / CLUB[/size]\n{{subject.gang}}\n[/tdwidth]\n[/tr]\n\n\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=0,black,transparent,top,left,2,5]\n[size=87][b]SUBJ\nINFO[/b][/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,5,5]\n[size=87] {{#if subj_info.loiterer}}[cbc]{{else}}[cb]{{/if}}LOITERER\n {{#if subj_info.prowler}}[cbc]{{else}}[cb]{{/if}}PROWLER[/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,6,5]\n[size=87] {{#if subj_info.homeless}}[cbc]{{else}}[cb]{{/if}}HOMELESS\n {{#if subj_info.witness}}[cbc]{{else}}[cb]{{/if}}WITNESS[/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,7,5]\n[size=87] {{#if subj_info.gang_activity}}[cbc]{{else}}[cb]{{/if}}GANG ACTIVITY\n {{#if subj_info.has_record}}[cbc]{{else}}[cb]{{/if}}HAS RECORD[/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,8,5]\n[size=87] {{#if subj_info.on_parole}}[cbc]{{else}}[cb]{{/if}}ON PAROLE\n {{#if subj_info.on_probation}}[cbc]{{else}}[cb]{{/if}}ON PROBATION[/size]\n\n[/tdwidth]\n[tdwidth=0,black,transparent,top,left,8,5]\n[size=87] {{#if subj_info.driver}}[cbc]{{else}}[cb]{{/if}}DRIVER\n {{#if subj_info.passenger}}[cbc]{{else}}[cb]{{/if}}PASSENGER\n[/size]\n[/tr]\n\n\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]VEH. MAKE[/size]\n{{vehicle.make}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]VEH. MODEL[/size]\n{{vehicle.model}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]TYPE[/size]\n{{vehicle.type}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]COLOR[/size]\n{{vehicle.color}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]VEH. LIC. NO.[/size]\n{{vehicle.plate}}\n[/tdwidth]\n[/tr]\n\n\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=0,black,transparent,top,left,2,5]\n[size=87][b]VEH\nINFO[/b][/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,8,5]\n[size=87] {{#if veh_info.bucket_seat}}[cbc]{{else}}[cb]{{/if}}BUCKET SEAT\n {{#if veh_info.damaged_inside}}[cbc]{{else}}[cb]{{/if}}DAMAGED INSIDE[/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,8,5]\n[size=87] {{#if veh_info.custom_wheels}}[cbc]{{else}}[cb]{{/if}}CUSTOM WHEELS\n {{#if veh_info.painted_mural}}[cbc]{{else}}[cb]{{/if}}PAINTED MURAL[/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,8,5]\n[size=87] {{#if veh_info.level_alter}}[cbc]{{else}}[cb]{{/if}}LEVEL ALTER\n {{#if veh_info.rust_primer}}[cbc]{{else}}[cb]{{/if}}RUST / PRIMER[/size]\n\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87] {{#if veh_info.custom_paint}}[cbc]{{else}}[cb]{{/if}}CUSTOM PAINT\n {{#if veh_info.vinyl_top}}[cbc]{{else}}[cb]{{/if}}VINYL TOP[/size]\n\n[/tdwidth]\n[/tr]\n\n\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=0,black,transparent,top,left,2,5]\n[size=87][b]BODY[/b][/size]\n\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,4,5]\n[size=87] {{#if body_info.damage}}[cbc]{{else}}[cb]{{/if}}DAMAGE\n {{#if body_info.modified}}[cbc]{{else}}[cb]{{/if}}MODIFIED[/size]\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,3,5]\n[size=87] {{#if body_info.sticker}}[cbc]{{else}}[cb]{{/if}}STICKER\n[/size]\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,3,5]\n[size=87] {{#if body_info.left}}[cbc]{{else}}[cb]{{/if}}LEFT\n {{#if body_info.right}}[cbc]{{else}}[cb]{{/if}}RIGHT[/size]\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,3,5]\n[size=87] {{#if body_info.front}}[cbc]{{else}}[cb]{{/if}}FRONT\n {{#if body_info.rear}}[cbc]{{else}}[cb]{{/if}}REAR[/size]\n[/tdwidth]\n[tdwidth=0,black,transparent,top,left,2,5]\n[size=87][b]WINDOW[/b][/size]\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,4,5]\n[size=87] {{#if window_info.damage}}[cbc]{{else}}[cb]{{/if}}DAMAGE\n {{#if window_info.tint}}[cbc]{{else}}[cb]{{/if}}TINT[/size]\n[/tdwidth]\n[tdwidth=1,transparent,transparent,top,left,3,5]\n[size=87] {{#if window_info.left}}[cbc]{{else}}[cb]{{/if}}LEFT\n {{#if window_info.right}}[cbc]{{else}}[cb]{{/if}}RIGHT[/size]\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,3,5]\n[size=87] {{#if window_info.front}}[cbc]{{else}}[cb]{{/if}}FRONT\n {{#if window_info.rear}}[cbc]{{else}}[cb]{{/if}}REAR[/size]\n[/tdwidth]\n[/tr]\n[/table2]\n\n\n[font=Arial][center]LOS SANTOS POLICE DEPARTMENT\n[size=120][color=black][b]FIELD INTERVIEW CARD (BACK)[/b][/font][/color][/size][/center]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87][b]PERSONS WITH SUBJECT[/b][/size]\n[/tdwidth]\n[/tr]\n[/table2]\n{{#each persons_with_subject}}\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87]NAME (FIRST, MIDDLE, LAST)[/size]\n{{this.name}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,13,5]\n[size=87]D.O.B[/size]\n{{this.dob}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]SEX (M/F/O)[/size]\n{{this.sex}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,15,5]\n[size=87]GANG / MONIKER[/size]\n{{this.moniker}}\n[/tdwidth]\n[/tr]\n[/table2]\n{{/each}}\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,30,5]\n[size=87]ADDITIONAL INFO / NARRATIVE / INFORMATION[/size]\n{{narrative}}\n[/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]DATE[/size]\n{{general.date}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]TIME[/size]\n{{general.time}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,16,5]\n[size=87]LOCATION[/size]\n{{location.street}}\n[/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,16,5]\n[size=87]OFFICER[/size]\n{{officers.0.name}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]SERIAL NO.[/size]\n{{officers.0.badgeNumber}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,16,5]\n[size=87]OFFICER[/size]\n{{officers.1.name}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]SERIAL NO.[/size]\n{{officers.1.badgeNumber}}\n[/tdwidth]\n[/tr]\n[/table2]\n[table2=1,black,transparent,Arial]\n[tr]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87][b]CALLSIGN[/b][/size]\n{{general.callSign}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,16,5]\n[size=87][b]INCIDENT NO.[/b][/size]\n{{incident_no}}\n[/tdwidth]\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]DIVISION[/size]\n{{officers.0.divDetail}}\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]DETAIL[/size]\n\n[/tdwidth]\n\n[tdwidth=1,black,transparent,top,left,8,5]\n[size=87]SUPV. INIT..[/size]\n{{supervisor_initials}}\n[/tdwidth]\n[/tr]\n[/table2]",
+    "form": [
+        { "type": "section", "title": "Subject Details" },
+        { "type": "group", "fields": [
+            { "type": "text", "name": "subject.name", "label": "Name (First, Middle, Last)" },
+            { "type": "text", "name": "subject.phone", "label": "Phone" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "dropdown", "name": "subject.sex", "label": "Sex", "options": ["M", "F", "O"] },
+            { "type": "text", "name": "subject.hair", "label": "Hair" },
+            { "type": "text", "name": "subject.eyes", "label": "Eyes" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "text", "name": "subject.residence", "label": "Residence" },
+            { "type": "text", "name": "subject.birthdate", "label": "Birthdate", "placeholder": "DD/MM/YYYY" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "text", "name": "subject.descent", "label": "Descent" },
+            { "type": "text", "name": "subject.height", "label": "Height" }
+        ]},
+        { "type": "text", "name": "subject.clothing", "label": "Clothing" },
+        { "type": "text", "name": "subject.oddities", "label": "Personal Oddities" },
+        { "type": "group", "fields": [
+            { "type": "text", "name": "subject.moniker", "label": "Moniker/Alias" },
+            { "type": "text", "name": "subject.gang", "label": "Gang/Club" }
+        ]},
+
+        { "type": "section", "title": "Subject Information" },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "subj_info.loiterer", "label": "Loiterer" },
+            { "type": "toggle", "name": "subj_info.prowler", "label": "Prowler" },
+            { "type": "toggle", "name": "subj_info.homeless", "label": "Homeless" },
+            { "type": "toggle", "name": "subj_info.witness", "label": "Witness" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "subj_info.gang_activity", "label": "Gang Activity" },
+            { "type": "toggle", "name": "subj_info.has_record", "label": "Has Record" },
+            { "type": "toggle", "name": "subj_info.on_parole", "label": "On Parole" },
+            { "type": "toggle", "name": "subj_info.on_probation", "label": "On Probation" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "subj_info.driver", "label": "Driver" },
+            { "type": "toggle", "name": "subj_info.passenger", "label": "Passenger" }
+        ]},
+
+        { "type": "section", "title": "Vehicle Details" },
+        { "type": "group", "fields": [
+            { "type": "datalist", "name": "vehicle.make_model", "label": "Make & Model", "optionsSource": "vehicles" },
+            { "type": "text", "name": "vehicle.type", "label": "Type" },
+            { "type": "text", "name": "vehicle.color", "label": "Color" },
+            { "type": "text", "name": "vehicle.plate", "label": "License No." }
+        ]},
+
+        { "type": "section", "title": "Vehicle Information" },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "veh_info.bucket_seat", "label": "Bucket Seat" },
+            { "type": "toggle", "name": "veh_info.damaged_inside", "label": "Damaged Inside" },
+            { "type": "toggle", "name": "veh_info.custom_wheels", "label": "Custom Wheels" },
+            { "type": "toggle", "name": "veh_info.painted_mural", "label": "Painted Mural" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "veh_info.level_alter", "label": "Level Alter" },
+            { "type": "toggle", "name": "veh_info.rust_primer", "label": "Rust/Primer" },
+            { "type": "toggle", "name": "veh_info.custom_paint", "label": "Custom Paint" },
+            { "type": "toggle", "name": "veh_info.vinyl_top", "label": "Vinyl Top" }
+        ]},
+
+        { "type": "section", "title": "Body & Window Information" },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "body_info.damage", "label": "Body Damage" },
+            { "type": "toggle", "name": "body_info.modified", "label": "Body Modified" },
+            { "type": "toggle", "name": "body_info.sticker", "label": "Body Sticker" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "body_info.left", "label": "Body Left" },
+            { "type": "toggle", "name": "body_info.right", "label": "Body Right" },
+            { "type": "toggle", "name": "body_info.front", "label": "Body Front" },
+            { "type": "toggle", "name": "body_info.rear", "label": "Body Rear" }
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "window_info.damage", "label": "Window Damage" },
+            { "type": "toggle", "name": "window_info.tint", "label": "Window Tint" }
+        ]},
+         { "type": "group", "fields": [
+            { "type": "toggle", "name": "window_info.left", "label": "Window Left" },
+            { "type": "toggle", "name": "window_info.right", "label": "Window Right" },
+            { "type": "toggle", "name": "window_info.front", "label": "Window Front" },
+            { "type": "toggle", "name": "window_info.rear", "label": "Window Rear" }
+        ]},
+
+        { "type": "section", "title": "Persons with Subject" },
+        { "type": "input_group", "name": "persons_with_subject", "label": "Person", "fields": [
+            { "type": "text", "name": "name", "label": "Name" },
+            { "type": "text", "name": "dob", "label": "D.O.B" },
+            { "type": "dropdown", "name": "sex", "label": "Sex", "options": ["M", "F", "O"] },
+            { "type": "text", "name": "moniker", "label": "Gang/Moniker" }
+        ]},
+
+        { "type": "section", "title": "Narrative & Incident Details" },
+        { "type": "textarea", "name": "narrative", "label": "Additional Info / Narrative" },
+        { "type": "general", "name": "general" },
+        { "type": "location", "name": "location" },
+        { "type": "officer", "name": "officers", "multi": true, "showDivDetail": true, "showBadgeNumber": true },
+        { "type": "group", "fields": [
+            { "type": "text", "name": "incident_no", "label": "Incident No." },
+            { "type": "text", "name": "supervisor_initials", "label": "Supervisor Initials" }
+        ]}
+    ]
+}
