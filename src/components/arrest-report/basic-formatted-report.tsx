@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { calculateArrest, type ArrestCalculation } from '@/lib/arrest-calculator';
+import type { ArrestCalculation } from '@/lib/arrest-calculator';
 
 const getType = (type: string | undefined) => {
     switch (type) {
@@ -46,7 +46,14 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
     }, [officers]);
 
     useEffect(() => {
-        calculateArrest(report).then(setCalculation);
+        fetch('/api/arrest-calculator', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ report }),
+        })
+            .then(res => res.json())
+            .then(setCalculation)
+            .catch(err => console.error('Failed to load arrest calculation:', err));
     }, [report]);
 
     return (
