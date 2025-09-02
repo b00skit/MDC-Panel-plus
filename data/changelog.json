@@ -1,6 +1,41 @@
 {
     "changelogs": [
         {
+            "version": "3.2.1",
+            "type": "Minor Update",
+            "date": "2025-09-02",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>Arrest Calculator:</b> Added a more centralized API backend system to calculate arrests, this will be useful in the future as well when it comes to making an API system."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>General:</b> Added support for setting up default callsigns in \"settings\" which will reflect globally on paperwork generators."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed a bug with the basic arrest report not parsing the correct time and points cause it didn't count for the additions in the calculator."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Modified the Traffic Report to include an additional evidence section."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added an \"LSPD Field Interview Card\" generator, allowing LSPD to create forum-based paperwork via the MDC Panel."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Modified the charge section in the traffic report / parking ticket to account for offence #."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed the issue with mandatory fields not correctly outlining in the basic arrest report."
+                }
+            ]
+        },
+        {
             "version": "3.2.0",
             "type": "Major Update",
             "date": "2025-09-01",
@@ -40,17 +75,7 @@
                 {
                     "type": "feature",
                     "description": "<b>Arrest Report:</b> Added a bunch of text to the current modifiers on the basic arrest report narrative."
-                }
-            ],
-            "cacheVersion": "biscuits-tiff-1"
-        },
-        {
-            "version": "3.1.6.06",
-            "type": "Hotfix",
-            "date": "2025-08-30",
-            "cacheVersion": "apron-vofd-1",
-            "localStorageVersion": "cookie-apxn-1",
-            "items": [
+                },
                 {
                     "type": "backend",
                     "description": "<b>General:</b> Implemented a cache-buster and localstorage-buster, making it overall \"guaranteed\" that cached data will be busted for future updates. Also making it possible to reset userdata to prevent corruption. This should fix issues where some people still have bugs present that have been fixed a few versions ago."
@@ -103,7 +128,9 @@
                     "type": "modification",
                     "description": "<b>Arrest Report:</b> Added a missing \"Required Case\" dropdown-value to the advanced arrest report."
                 }
-            ]
+            ],
+            "cacheVersion": "biscuits-tiff-1",
+            "localStorageVersion": "cookie-apxn-1"
         },
         {
             "version": "3.1.6",
