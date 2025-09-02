@@ -98,10 +98,9 @@ function ArrestSubmitContent() {
             </AlertDescription>
         </Alert>
           
-        {hasReport && penalCode && (
+        {hasReport && (
              <ArrestCalculatorResults
                 report={report}
-                penalCode={penalCode}
                 showCharges={true}
                 showSummary={true}
                 clickToCopy={true}

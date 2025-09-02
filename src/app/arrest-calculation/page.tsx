@@ -142,7 +142,6 @@ function ArrestCalculationContent() {
         {penalCode && parsedCharges.length > 0 ? (
             <ArrestCalculatorResults
                 report={parsedCharges}
-                penalCode={penalCode}
                 showCharges={true}
                 showStipulations={true}
                 showSummary={true}
