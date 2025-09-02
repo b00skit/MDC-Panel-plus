@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useChargeStore, type SelectedCharge } from '@/stores/charge-store';
@@ -23,7 +24,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import type { ArrestCalculation, ChargeResult } from '@/lib/arrest-calculator';
-import { Skeleton } from '@/components/ui/skeleton'; // 👈 new
+import { Skeleton } from '@/components/ui/skeleton';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -93,76 +94,78 @@ const CopyableCard = ({ label, value, tooltipContent }: { label: string; value: 
 
 /** ---------- Loading UI ---------- */
 function LoadingTableSkeleton() {
-  return (
-    <Card aria-busy="true" aria-live="polite">
-      <CardHeader className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-6 w-28" />
-          <Skeleton className="h-6 w-20" />
-        </div>
-        <div className="flex gap-2">
-          <Skeleton className="h-9 w-44 rounded-xl" />
-          <Skeleton className="h-9 w-32 rounded-xl" />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="w-full overflow-hidden rounded-xl border">
-          {/* header skeleton */}
-          <div className="grid grid-cols-12 gap-3 bg-muted/50 p-3">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <Skeleton key={i} className="h-4 w-full" />
-            ))}
+    return (
+      <Card aria-busy="true" aria-live="polite">
+        <CardHeader className="flex flex-row items-center justify-between">
+            <Skeleton className="h-8 w-32" />
+            <div className="flex gap-2">
+                <Skeleton className="h-9 w-44 rounded-md" />
+                <Skeleton className="h-9 w-36 rounded-md" />
+            </div>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full overflow-hidden rounded-lg border">
+            <div className="grid grid-cols-12 gap-4 bg-muted/50 p-3">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <Skeleton key={i} className="h-4 w-full" />
+              ))}
+            </div>
+            <div className="divide-y divide-border">
+              {Array.from({ length: 3 }).map((_, r) => (
+                <div key={r} className="grid grid-cols-12 gap-4 p-3">
+                  {Array.from({ length: 12 }).map((__, c) => (
+                    <Skeleton key={c} className="h-5 w-full" />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
-          {/* rows skeleton */}
-          <div className="divide-y">
-            {Array.from({ length: 5 }).map((_, r) => (
-              <div key={r} className="grid grid-cols-12 gap-3 p-3">
-                {Array.from({ length: 12 }).map((__, c) => (
-                  <Skeleton key={c} className="h-4 w-full" />
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  function LoadingSummarySkeleton() {
+    return (
+      <Card aria-busy="true">
+        <CardHeader>
+          <Skeleton className="h-8 w-32" />
+        </CardHeader>
+        <CardContent>
+           <div className="w-full overflow-hidden rounded-lg border">
+              <div className="grid grid-cols-8 gap-4 bg-muted/50 p-3">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <Skeleton key={i} className="h-4 w-full" />
                 ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function LoadingSummarySkeleton() {
-  return (
-    <Card aria-busy="true">
-      <CardHeader>
-        <Skeleton className="h-6 w-28" />
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-8 gap-3">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="space-y-2">
-              <Skeleton className="h-3 w-24" />
-              <Skeleton className="h-5 w-full" />
+              <div className="grid grid-cols-8 gap-4 p-3">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                      <Skeleton key={i} className="h-5 w-full" />
+                  ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function LoadingCopyablesSkeleton() {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Card key={i} className="animate-pulse">
-          <CardContent className="p-4 space-y-3">
-            <Skeleton className="h-3 w-24" />
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  function LoadingCopyablesSkeleton() {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Card key={i}>
+            <CardContent className="p-4 space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <div className="flex gap-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-10" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 /** -------------------------------- */
 
 interface ArrestCalculatorResultsProps {
@@ -204,7 +207,6 @@ export function ArrestCalculatorResults({
   }, [report]);
 
   if (!data) {
-    // ✨ Nicer loading state (skeleton cards)
     return (
       <div className="space-y-6">
         <LoadingTableSkeleton />
