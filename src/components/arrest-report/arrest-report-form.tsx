@@ -1,8 +1,7 @@
-
 'use client';
 import { useRouter } from 'next/navigation';
 import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { useForm, FormProvider, Controller, useFormContext } from 'react-hook-form';
 import {
   Card,
   CardContent,
@@ -29,6 +28,9 @@ import { LocationDetails } from '../shared/location-details';
 import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-modifiers-store';
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
+import React from 'react';
+
+/* --------------------------------- Layout -------------------------------- */
 
 const FormSection = ({
   title,
@@ -48,83 +50,117 @@ const FormSection = ({
   </Card>
 );
 
+/* ----------------------------- RHF-driven fields ---------------------------- */
+
 const InputField = ({
   label,
   id,
+  name,
   placeholder,
   icon,
   type = 'text',
   className = '',
-  defaultValue,
   onBlur,
   isInvalid,
+  mandatory = false, // NEW: only show red when true
 }: {
   label: string;
   id: string;
+  name: string; // react-hook-form path
   placeholder: string;
   icon: React.ReactNode;
   type?: string;
   className?: string;
-  defaultValue?: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   isInvalid?: boolean;
-}) => (
-  <div className="grid gap-2">
-    <Label htmlFor={id}>{label}</Label>
-    <div className="relative flex items-center">
-      <div className="absolute left-2.5 z-10">{icon}</div>
-      <Input
-        id={id}
-        name={id}
-        type={type}
-        placeholder={placeholder}
-        className={cn('pl-9', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
-        defaultValue={defaultValue}
-        onBlur={onBlur}
-      />
+  mandatory?: boolean;
+}) => {
+  const { register, watch } = useFormContext();
+  const value = watch(name);
+  const empty = !value || String(value).trim() === '';
+  const showRed = mandatory && (isInvalid || empty);
+
+  const reg = register(name);
+
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <div className="relative flex items-center">
+        <div className="absolute left-2.5 z-10">{icon}</div>
+        <Input
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          className={cn('pl-9', className, showRed && 'border-red-500 focus-visible:ring-red-500')}
+          {...reg}
+          onBlur={(e) => {
+            reg.onBlur(e);
+            onBlur?.(e);
+          }}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const TextareaField = ({
   label,
   id,
+  name,
   placeholder,
   icon,
   description,
   className = '',
-  defaultValue,
   onBlur,
   isInvalid,
+  mandatory = false, // NEW: only show red when true
 }: {
   label: string;
   id: string;
+  name: string; // react-hook-form path
   placeholder: string;
   icon: React.ReactNode;
   description?: React.ReactNode;
   className?: string;
-  defaultValue?: string;
   onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
   isInvalid?: boolean;
-}) => (
-  <div className="grid gap-2">
-    <Label htmlFor={id}>{label}</Label>
-    <div className="relative">
-      <div className="absolute left-3 top-3.5">{icon}</div>
+  mandatory?: boolean;
+}) => {
+  const { register, watch } = useFormContext();
+  const value = watch(name);
+  const empty = !value || String(value).trim() === '';
+  const showRed = mandatory && (isInvalid || empty);
+
+  const reg = register(name);
+
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <div className="relative">
+        <div className="absolute left-3 top-3.5">{icon}</div>
         <Textarea
           id={id}
-          name={id}
           placeholder={placeholder}
-          className={cn('pl-9 pt-3', className, isInvalid && 'border-red-500 focus-visible:ring-red-500')}
-          defaultValue={defaultValue}
-          onBlur={onBlur}
+          className={cn('pl-9 pt-3', className, showRed && 'border-red-500 focus-visible:ring-red-500')}
+          {...reg}
+          onBlur={(e) => {
+            reg.onBlur(e);
+            onBlur?.(e);
+          }}
         />
+      </div>
+      {description && <p className="text-xs text-muted-foreground">{description}</p>}
     </div>
-    {description && <p className="text-xs text-muted-foreground">{description}</p>}
-  </div>
-);
+  );
+};
 
-export const ArrestReportForm = forwardRef((props, ref) => {
+/* ------------------------------ Main component ----------------------------- */
+
+type ArrestReportFormHandle = {
+  saveDraft: () => void;
+};
+
+export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function ArrestReportForm(_, ref) {
   const router = useRouter();
 
   const { formData, setFormField, setAll } = useFormStore();
@@ -137,9 +173,32 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     setPreset,
     setUserModified,
   } = useBasicReportModifiersStore();
-  
+
   const methods = useForm({
-    defaultValues: useMemo(() => ({
+    defaultValues: useMemo(
+      () => ({
+        ...formData,
+        narrative: {
+          modifiers: modifiers,
+          isPreset: presets.narrative,
+          userModified: userModified.narrative,
+          narrative: formData.arrest.narrative,
+        },
+      }),
+      [formData, modifiers, presets, userModified]
+    ),
+  });
+
+  const {
+    control,
+    getValues,
+    reset,
+    watch,
+    formState: { errors },
+  } = methods;
+
+  useEffect(() => {
+    reset({
       ...formData,
       narrative: {
         modifiers: modifiers,
@@ -147,20 +206,6 @@ export const ArrestReportForm = forwardRef((props, ref) => {
         userModified: userModified.narrative,
         narrative: formData.arrest.narrative,
       },
-    }), [formData, modifiers, presets, userModified]),
-  });
-
-  const { control, getValues, reset, watch, trigger, formState: { errors } } = methods;
-
-  useEffect(() => {
-    reset({
-        ...formData,
-        narrative: {
-            modifiers: modifiers,
-            isPreset: presets.narrative,
-            userModified: userModified.narrative,
-            narrative: formData.arrest.narrative,
-        },
     });
   }, [formData, modifiers, presets, userModified, reset]);
 
@@ -170,7 +215,12 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const arrestReportModifiers: Modifier[] = useMemo(
     () => [
       { name: 'callOfService', label: 'Call of Service', text: 'received a call of service #' },
-      { name: 'booking', label: 'Booking', text: 'I transported {{suspect}} to the nearest department\'s station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training' },
+      {
+        name: 'booking',
+        label: 'Booking',
+        text:
+          "I transported {{suspect}} to the nearest department's station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training",
+      },
     ],
     []
   );
@@ -178,7 +228,7 @@ export const ArrestReportForm = forwardRef((props, ref) => {
   const narrativeText = useMemo(() => {
     const isPresetActive = allWatchedFields.narrative?.isPreset;
     const isUserModified = userModified.narrative;
-    
+
     if (!isPresetActive || isUserModified) {
       return getValues('arrest.narrative') || '';
     }
@@ -194,44 +244,46 @@ export const ArrestReportForm = forwardRef((props, ref) => {
       badge: primaryOfficer?.badgeNumber || '',
       department: primaryOfficer?.department || '',
     };
-    
+
     let baseText = `On the ${data.date}, I ${data.rank} ${data.name} (#${data.badge}) of the ${data.department} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
 
-    const activeModifiers = arrestReportModifiers.filter(mod => allWatchedFields.narrative?.modifiers?.[mod.name]);
-    
-    activeModifiers.forEach(mod => {
-      if (mod.name === 'booking') return; // Handled separately
+    const activeModifiers = arrestReportModifiers.filter(
+      (mod) => allWatchedFields.narrative?.modifiers?.[mod.name]
+    );
+
+    activeModifiers.forEach((mod) => {
+      if (mod.name === 'booking') return; // handled separately
       if (mod.text) {
         const template = Handlebars.compile(mod.text, { noEscape: true });
         baseText += template(data);
       }
     });
 
-    const bookingModifier = arrestReportModifiers.find(m => m.name === 'booking');
+    const bookingModifier = arrestReportModifiers.find((m) => m.name === 'booking');
     if (allWatchedFields.narrative?.modifiers?.[bookingModifier!.name] && bookingModifier?.text) {
       const template = Handlebars.compile(bookingModifier.text, { noEscape: true });
       baseText += `\n\n${template(data)}`;
     }
 
     return baseText;
-    }, [
-      allWatchedFields.general,
-      allWatchedFields.location,
-      formData.arrest?.suspectName,
-      allWatchedFields.narrative?.isPreset,
-      JSON.stringify(allWatchedFields.narrative?.modifiers),
-      officers,
-      arrestReportModifiers,
-      getValues,
-      userModified.narrative
-    ]);
-  
+  }, [
+    allWatchedFields.general,
+    allWatchedFields.location,
+    formData.arrest?.suspectName,
+    allWatchedFields.narrative?.isPreset,
+    JSON.stringify(allWatchedFields.narrative?.modifiers),
+    officers,
+    arrestReportModifiers,
+    getValues,
+    userModified.narrative,
+  ]);
+
   const isInvalid = (fieldName: string) => {
     const fields = fieldName.split('.');
-    let error = errors;
+    let error: any = errors;
     for (const field of fields) {
       if (error && field in error) {
-        error = error[field];
+        error = (error as any)[field];
       } else {
         return false;
       }
@@ -245,39 +297,38 @@ export const ArrestReportForm = forwardRef((props, ref) => {
     const currentFormData = useFormStore.getState().formData;
 
     setAll({
-        general: latestFormData.general,
-        arrest: { ...currentFormData.arrest, narrative: latestFormData.narrative.narrative },
-        location: latestFormData.location,
-        evidence: currentFormData.evidence,
-        officers: currentOfficerState,
+      general: latestFormData.general,
+      arrest: { ...currentFormData.arrest, narrative: latestFormData.narrative.narrative },
+      location: latestFormData.location,
+      evidence: currentFormData.evidence,
+      officers: currentOfficerState,
     });
 
     if (latestFormData.narrative?.modifiers) {
-        Object.keys(latestFormData.narrative.modifiers).forEach((key) => {
-            setModifier(key as keyof typeof modifiers, latestFormData.narrative.modifiers[key]);
-        });
+      Object.keys(latestFormData.narrative.modifiers).forEach((key) => {
+        setModifier(key as keyof typeof modifiers, latestFormData.narrative.modifiers[key]);
+      });
     }
     if (latestFormData.narrative?.isPreset !== undefined) {
-        setPreset('narrative', latestFormData.narrative.isPreset);
+      setPreset('narrative', latestFormData.narrative.isPreset);
     }
     if (latestFormData.narrative?.userModified !== undefined) {
-        setUserModified('narrative', latestFormData.narrative.userModified);
+      setUserModified('narrative', latestFormData.narrative.userModified);
     }
   }, [getValues, setAll, setModifier, setPreset, setUserModified, modifiers]);
 
   useImperativeHandle(ref, () => ({
     saveDraft,
   }));
-  
+
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
     const currentOfficerState = useOfficerStore.getState().officers;
-    if (currentOfficerState.every(o => o.name && o.rank && o.badgeNumber)) {
-        saveDraft();
-        router.push('/arrest-submit?type=basic');
+    if (currentOfficerState.every((o) => o.name && o.rank && o.badgeNumber)) {
+      saveDraft();
+      router.push('/arrest-submit?type=basic');
     }
   };
-
 
   return (
     <FormProvider {...methods}>
@@ -298,38 +349,39 @@ export const ArrestReportForm = forwardRef((props, ref) => {
             <InputField
               label="Suspect's Full Name"
               id="suspect-name"
+              name="arrest.suspectName"
               placeholder="Firstname Lastname"
               icon={<User className="h-4 w-4 text-muted-foreground" />}
-              defaultValue={formData.arrest?.suspectName ?? ''}
               onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
               isInvalid={isInvalid('arrest.suspectName')}
+              mandatory
             />
             <Controller
-                name="narrative"
-                control={control}
-                render={({ field }) => (
-                     <TextareaWithPreset
-                        label="Arrest Narrative"
-                        placeholder="Arrest Narrative"
-                        description={
-                            <span className="text-red-500">
-                            Describe the events leading up to the arrest in first person and in chronological order, ensure you
-                            explain your probable cause of each of the charges and the arrest.
-                            </span>
-                        }
-                        basePath="narrative"
-                        control={control}
-                        modifiers={arrestReportModifiers}
-                        isInvalid={isInvalid('arrest.narrative')}
-                        presetValue={narrativeText}
-                        onTextChange={(newValue) => {
-                            setFormField('arrest', 'narrative', newValue)
-                        }}
-                        onUserModifiedChange={(value) => setUserModified('narrative', value)}
-                        onModifierChange={(name, value) => setModifier(name, value)}
-                        onPresetChange={(value) => setPreset('narrative', value)}
-                        />
-                )}
+              name="narrative"
+              control={control}
+              render={() => (
+                <TextareaWithPreset
+                  label="Arrest Narrative"
+                  placeholder="Arrest Narrative"
+                  description={
+                    <span className="text-red-500">
+                      Describe the events leading up to the arrest in first person and in chronological order, ensure you
+                      explain your probable cause of each of the charges and the arrest.
+                    </span>
+                  }
+                  basePath="narrative"
+                  control={control}
+                  modifiers={arrestReportModifiers}
+                  isInvalid={isInvalid('arrest.narrative')}
+                  presetValue={narrativeText}
+                  onTextChange={(newValue) => {
+                    setFormField('arrest', 'narrative', newValue);
+                  }}
+                  onUserModifiedChange={(value) => setUserModified('narrative', value)}
+                  onModifierChange={(name, value) => setModifier(name, value)}
+                  onPresetChange={(value) => setPreset('narrative', value)}
+                />
+              )}
             />
           </div>
         </FormSection>
@@ -339,16 +391,18 @@ export const ArrestReportForm = forwardRef((props, ref) => {
             <TextareaField
               label="Supporting Evidence"
               id="supporting-evidence"
+              name="evidence.supporting"
               placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
               icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
               description="Provide supporting evidence to aid the arrest report."
               className="min-h-[150px]"
-              defaultValue={formData.evidence?.supporting ?? ''}
               onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
+              /* NOT mandatory */
             />
             <TextareaField
               label="Dashboard Camera"
               id="dashcam"
+              name="evidence.dashcam"
               placeholder="The dashboard camera captures audio and video footage showcasing..."
               icon={<Video className="h-4 w-4 text-muted-foreground" />}
               description={
@@ -359,9 +413,9 @@ export const ArrestReportForm = forwardRef((props, ref) => {
                 </span>
               }
               className="min-h-[150px]"
-              defaultValue={formData.evidence?.dashcam ?? ''}
               onBlur={(e) => setFormField('evidence', 'dashcam', e.target.value)}
               isInvalid={isInvalid('evidence.dashcam')}
+              mandatory
             />
           </div>
         </FormSection>
