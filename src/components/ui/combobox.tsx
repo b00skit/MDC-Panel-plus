@@ -47,6 +47,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     const [open, setOpen] = React.useState(false);
     const [inputValue, setInputValue] = React.useState(value || '');
     const [activeIndex, setActiveIndex] = React.useState(-1);
+    const [searchValue, setSearchValue] = React.useState('');
 
     const inputRef = React.useRef<HTMLInputElement>(null);
     const listRef = React.useRef<HTMLDivElement>(null);
@@ -73,6 +74,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
           onChange(inputValue);
         }
         setActiveIndex(-1);
+        setSearchValue('');
       } else if (isOpen && onOpen) {
         onOpen();
       }
@@ -86,6 +88,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
+      setSearchValue(e.target.value);
       if (!open) {
         setOpen(true);
       }
@@ -93,11 +96,11 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     };
 
     const filteredOptions = React.useMemo(() => {
-      if (!inputValue) return options;
+      if (!searchValue) return options;
       return options.filter(option =>
-        String(option).toLowerCase().includes(String(inputValue).toLowerCase())
+        String(option).toLowerCase().includes(String(searchValue).toLowerCase())
       );
-    }, [inputValue, options]);
+    }, [searchValue, options]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (isLoading) return;
