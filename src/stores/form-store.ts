@@ -3,6 +3,7 @@
 import create from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Officer } from './officer-store';
+import { useSettingsStore } from './settings-store';
 
 interface GeneralState {
     date: string;
@@ -44,18 +45,23 @@ interface FormStore {
   reset: () => void;
 }
 
-const initialState: FormState = {
-    general: { date: '', time: '', callSign: '' },
-    officers: [],
-    arrest: { suspectName: '', narrative: '' },
-    location: { district: '', street: '' },
-    evidence: { supporting: '', dashcam: '' },
+const getInitialState = (): FormState => {
+    const { predefinedCallsigns, defaultCallsignId } = useSettingsStore.getState();
+    const defaultCallsign = predefinedCallsigns.find(c => c.id === defaultCallsignId)?.value || '';
+
+    return {
+        general: { date: '', time: '', callSign: defaultCallsign },
+        officers: [],
+        arrest: { suspectName: '', narrative: '' },
+        location: { district: '', street: '' },
+        evidence: { supporting: '', dashcam: '' },
+    };
 };
 
 export const useFormStore = create<FormStore>()(
   persist(
     (set) => ({
-      formData: initialState,
+      formData: getInitialState(),
       
       setFormField: (section, field, value) =>
         set((state) => ({
@@ -75,7 +81,7 @@ export const useFormStore = create<FormStore>()(
         }
       })),
 
-      reset: () => set({ formData: initialState }),
+      reset: () => set({ formData: getInitialState() }),
     }),
     {
       name: 'basic-arrest-report-form-storage',

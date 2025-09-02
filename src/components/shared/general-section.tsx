@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { CalendarDays, Clock, Radio } from 'lucide-react';
 import { useFormStore } from '@/stores/form-store';
 import { cn } from '@/lib/utils';
+import { useSettingsStore } from '@/stores/settings-store';
+import { Combobox } from '../ui/combobox';
 
 const FormSection = ({
   title,
@@ -75,7 +77,8 @@ export function GeneralSection() {
         general: state.formData.general,
         setFormField: state.setFormField,
     }));
-  
+    const { predefinedCallsigns, defaultCallsignId } = useSettingsStore();
+
     useEffect(() => {
         const now = new Date();
         const existingDate = useFormStore.getState().formData.general.date;
@@ -113,15 +116,31 @@ export function GeneralSection() {
             onChange={(e) => setFormField('general', 'time', e.target.value)}
             onBlur={(e) => setFormField('general', 'time', e.target.value)}
           />
-          <InputField
-            label="Call Sign"
-            id="call-sign"
-            placeholder="CALL SIGN"
-            icon={<Radio className="h-4 w-4 text-muted-foreground" />}
-            value={general?.callSign || ''}
-            onChange={(e) => setFormField('general', 'callSign', e.target.value)}
-            onBlur={(e) => setFormField('general', 'callSign', e.target.value)}
-          />
+          <div className="grid gap-2">
+            <Label htmlFor="call-sign">Call Sign</Label>
+             <div className="relative flex items-center">
+                <Radio className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                {predefinedCallsigns.length > 0 ? (
+                    <Combobox
+                        options={predefinedCallsigns.map(c => c.value)}
+                        value={general?.callSign || ''}
+                        onChange={(value) => setFormField('general', 'callSign', value)}
+                        placeholder="Select or type callsign..."
+                        className="pl-9"
+                    />
+                ) : (
+                    <Input
+                        id="call-sign"
+                        placeholder="CALL SIGN"
+                        value={general?.callSign || ''}
+                        onChange={(e) => setFormField('general', 'callSign', e.target.value)}
+                        onBlur={(e) => setFormField('general', 'callSign', e.target.value)}
+                        className="pl-9"
+                        required
+                    />
+                )}
+            </div>
+          </div>
         </div>
       </FormSection>
     );

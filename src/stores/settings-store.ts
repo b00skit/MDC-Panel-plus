@@ -10,13 +10,24 @@ export interface FactionGroup {
     url?: boolean;
 }
 
+export interface PredefinedCallsign {
+  id: number;
+  value: string;
+}
+
 interface SettingsState {
   hiddenFactions: string[];
   showHiddenGroups: Record<string, boolean>;
   factionGroups: FactionGroup[];
+  predefinedCallsigns: PredefinedCallsign[];
+  defaultCallsignId: number | null;
   toggleFactionVisibility: (groupId: string) => void;
   setFactionGroups: (groups: FactionGroup[]) => void;
   toggleHiddenGroupVisibility: (groupId: string) => void;
+  addCallsign: () => void;
+  removeCallsign: (id: number) => void;
+  updateCallsign: (id: number, value: string) => void;
+  setDefaultCallsignId: (id: number | null) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -25,6 +36,8 @@ export const useSettingsStore = create<SettingsState>()(
       hiddenFactions: [],
       showHiddenGroups: {},
       factionGroups: [],
+      predefinedCallsigns: [],
+      defaultCallsignId: null,
       toggleFactionVisibility: (groupId: string) => {
         const { hiddenFactions } = get();
         const newHiddenFactions = hiddenFactions.includes(groupId)
@@ -41,13 +54,39 @@ export const useSettingsStore = create<SettingsState>()(
             }
         }));
       },
+      addCallsign: () => {
+        set(state => ({
+            predefinedCallsigns: [
+                ...state.predefinedCallsigns,
+                { id: Date.now(), value: '' }
+            ]
+        }));
+      },
+      removeCallsign: (id: number) => {
+        set(state => ({
+            predefinedCallsigns: state.predefinedCallsigns.filter(c => c.id !== id),
+            defaultCallsignId: state.defaultCallsignId === id ? null : state.defaultCallsignId,
+        }));
+      },
+      updateCallsign: (id: number, value: string) => {
+        set(state => ({
+            predefinedCallsigns: state.predefinedCallsigns.map(c => 
+                c.id === id ? { ...c, value } : c
+            ),
+        }));
+      },
+      setDefaultCallsignId: (id: number | null) => {
+        set({ defaultCallsignId: id });
+      },
     }),
     {
       name: 'site-settings-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ 
         hiddenFactions: state.hiddenFactions,
-        showHiddenGroups: state.showHiddenGroups 
+        showHiddenGroups: state.showHiddenGroups,
+        predefinedCallsigns: state.predefinedCallsigns,
+        defaultCallsignId: state.defaultCallsignId,
       }),
     }
   )

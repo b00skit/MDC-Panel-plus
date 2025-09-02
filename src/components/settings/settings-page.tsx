@@ -29,7 +29,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -38,6 +38,7 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '../ui/switch';
 import { useTheme } from 'next-themes';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
@@ -147,7 +148,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     removeAlternativeCharacter,
     reset: resetOfficers
   } = useOfficerStore();
-  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility } = useSettingsStore();
+  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
@@ -375,6 +376,37 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
             ) : (
               <p>Loading officer information...</p>
             )}
+          </CardContent>
+        </Card>
+
+         <Card>
+          <CardHeader>
+            <CardTitle>Predefined Callsigns</CardTitle>
+            <CardDescription>
+              Manage a list of callsigns to quickly select from in forms.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <RadioGroup value={String(defaultCallsignId)} onValueChange={(value) => setDefaultCallsignId(Number(value))}>
+                {predefinedCallsigns.map((callsign, index) => (
+                    <div key={callsign.id} className="flex items-center gap-2 p-2 border rounded-md">
+                        <RadioGroupItem value={String(callsign.id)} id={`callsign-default-${callsign.id}`} />
+                        <Label htmlFor={`callsign-default-${callsign.id}`} className="sr-only">Set as default</Label>
+                        <Input
+                            className="flex-1"
+                            value={callsign.value}
+                            onChange={(e) => updateCallsign(callsign.id, e.target.value)}
+                            placeholder={`Callsign #${index + 1}`}
+                        />
+                        <Button variant="ghost" size="icon" onClick={() => removeCallsign(callsign.id)}>
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                    </div>
+                ))}
+            </RadioGroup>
+            <Button variant="outline" onClick={addCallsign}>
+                <Plus className="mr-2 h-4 w-4" /> Add Callsign
+            </Button>
           </CardContent>
         </Card>
 
