@@ -126,7 +126,7 @@ export function GeneralSection() {
                         value={general?.callSign || ''}
                         onChange={(value) => setFormField('general', 'callSign', value)}
                         placeholder="Select or type callsign..."
-                        className="pl-9"
+                        className="pl-9 w-full"
                     />
                 ) : (
                     <Input
@@ -135,7 +135,7 @@ export function GeneralSection() {
                         value={general?.callSign || ''}
                         onChange={(e) => setFormField('general', 'callSign', e.target.value)}
                         onBlur={(e) => setFormField('general', 'callSign', e.target.value)}
-                        className="pl-9"
+                        className="pl-9 w-full"
                         required
                     />
                 )}
