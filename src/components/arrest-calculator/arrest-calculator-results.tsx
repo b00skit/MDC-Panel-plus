@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import type { ArrestCalculation, ChargeResult } from '@/lib/arrest-calculator';
+import { Skeleton } from '@/components/ui/skeleton'; // 👈 new
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -67,7 +68,7 @@ const CopyableCard = ({ label, value, tooltipContent }: { label: string; value: 
         </Label>
         <div className="flex items-center gap-2 mt-2">
           <Input id={`copy-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`} value={value} readOnly disabled />
-          <Button size="icon" variant="outline" onClick={handleCopy}>
+          <Button size="icon" variant="outline" onClick={handleCopy} aria-label={`Copy ${label}`}>
             <Clipboard className="h-4 w-4" />
           </Button>
         </div>
@@ -89,6 +90,80 @@ const CopyableCard = ({ label, value, tooltipContent }: { label: string; value: 
   }
   return content;
 };
+
+/** ---------- Loading UI ---------- */
+function LoadingTableSkeleton() {
+  return (
+    <Card aria-busy="true" aria-live="polite">
+      <CardHeader className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-6 w-28" />
+          <Skeleton className="h-6 w-20" />
+        </div>
+        <div className="flex gap-2">
+          <Skeleton className="h-9 w-44 rounded-xl" />
+          <Skeleton className="h-9 w-32 rounded-xl" />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="w-full overflow-hidden rounded-xl border">
+          {/* header skeleton */}
+          <div className="grid grid-cols-12 gap-3 bg-muted/50 p-3">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <Skeleton key={i} className="h-4 w-full" />
+            ))}
+          </div>
+          {/* rows skeleton */}
+          <div className="divide-y">
+            {Array.from({ length: 5 }).map((_, r) => (
+              <div key={r} className="grid grid-cols-12 gap-3 p-3">
+                {Array.from({ length: 12 }).map((__, c) => (
+                  <Skeleton key={c} className="h-4 w-full" />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LoadingSummarySkeleton() {
+  return (
+    <Card aria-busy="true">
+      <CardHeader>
+        <Skeleton className="h-6 w-28" />
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-8 gap-3">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-5 w-full" />
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LoadingCopyablesSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Card key={i} className="animate-pulse">
+          <CardContent className="p-4 space-y-3">
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+/** -------------------------------- */
 
 interface ArrestCalculatorResultsProps {
   report: SelectedCharge[];
@@ -129,11 +204,12 @@ export function ArrestCalculatorResults({
   }, [report]);
 
   if (!data) {
+    // ✨ Nicer loading state (skeleton cards)
     return (
       <div className="space-y-6">
-        <Card>
-          <CardContent>Calculating...</CardContent>
-        </Card>
+        <LoadingTableSkeleton />
+        <LoadingSummarySkeleton />
+        <LoadingCopyablesSkeleton />
       </div>
     );
   }
@@ -147,7 +223,7 @@ export function ArrestCalculatorResults({
     const hours = Math.floor((totalMinutes % 1440) / 60);
     const minutes = totalMinutes % 60;
 
-    const parts = [];
+    const parts: string[] = [];
     if (days > 0) parts.push(`${days} Day(s)`);
     if (hours > 0) parts.push(`${hours} Hour(s)`);
     if (minutes > 0) parts.push(`${minutes} Minute(s)`);
@@ -155,11 +231,11 @@ export function ArrestCalculatorResults({
     return `${parts.join(' ')} (${totalMinutes} mins)`;
   };
 
-  const handleCopyToClipboard = (text: string | number) => {
+  const handleCopyToClipboard = (text: string | number, label?: string) => {
     navigator.clipboard.writeText(text.toString());
     toast({
       title: 'Copied!',
-      description: `"${text}" copied to clipboard.`,
+      description: label ? `${label}: ${text}` : `"${text}" copied to clipboard.`,
     });
   };
 
@@ -256,7 +332,8 @@ export function ArrestCalculatorResults({
                       <TableRow key={row.uniqueId}>
                         <TableCell
                           className={cn('font-medium', clickToCopy && 'cursor-pointer hover:text-primary')}
-                          onClick={clickToCopy ? () => handleCopyToClipboard(title) : undefined}
+                          onClick={clickToCopy ? () => handleCopyToClipboard(title, 'Title') : undefined}
+                          title={clickToCopy ? 'Click to copy title' : undefined}
                         >
                           {title}
                         </TableCell>
@@ -335,7 +412,17 @@ export function ArrestCalculatorResults({
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>${fine.toLocaleString()}</TableCell>
+
+                        {/* 👇 Fine cell: click to copy RAW number */}
+                        <TableCell
+                          className={cn(clickToCopy && 'cursor-pointer hover:text-primary')}
+                          onClick={clickToCopy ? () => handleCopyToClipboard(fine, 'Raw fine') : undefined}
+                          title={clickToCopy ? 'Click to copy raw fine' : undefined}
+                          aria-label={clickToCopy ? 'Copy raw fine' : undefined}
+                        >
+                          ${fine.toLocaleString()}
+                        </TableCell>
+
                         <TableCell>{impound ? `Yes | ${impound} Day(s)` : 'No'}</TableCell>
                         <TableCell>{suspension ? `Yes | ${suspension} Day(s)` : 'No'}</TableCell>
                         <TableCell><BailStatusBadge bailInfo={{ auto: bailAuto }} /></TableCell>
@@ -489,4 +576,3 @@ export function ArrestCalculatorResults({
     </TooltipProvider>
   );
 }
-
