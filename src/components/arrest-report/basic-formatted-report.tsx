@@ -1,7 +1,7 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
+import { calculateArrest, type ArrestCalculation } from '@/lib/arrest-calculator';
 
 const getType = (type: string | undefined) => {
     switch (type) {
@@ -14,28 +14,17 @@ const getType = (type: string | undefined) => {
 
 const formatTotalTime = (totalMinutes: number) => {
     if (totalMinutes === 0) return '0 minutes';
+    totalMinutes = Math.round(totalMinutes);
     const days = Math.floor(totalMinutes / 1440);
     const hours = Math.floor((totalMinutes % 1440) / 60);
     const minutes = totalMinutes % 60;
-    
-    const parts = [];
+
+    const parts = [] as string[];
     if(days > 0) parts.push(`${days} Day(s)`);
     if(hours > 0) parts.push(`${hours} Hour(s)`);
     if(minutes > 0) parts.push(`${minutes} Minute(s)`);
 
     return `${parts.join(' ')} (${totalMinutes} mins)`;
-};
-
-const formatTimeInMinutes = (time: { days: number; hours: number; min: number }) => {
-    if (!time) return 0;
-    return time.days * 1440 + time.hours * 60 + time.min;
-}
-
-const getBailStatus = (totals: any) => {
-    if(totals.bailStatus.noBail) return 'NOT ELIGIBLE';
-    if(totals.bailStatus.discretionary) return 'DISCRETIONARY';
-    if(totals.bailStatus.eligible) return 'ELIGIBLE';
-    return 'N/A';
 };
 
 interface BasicFormattedReportProps {
@@ -48,6 +37,7 @@ interface BasicFormattedReportProps {
 export function BasicFormattedReport({ formData, report, penalCode, innerRef }: BasicFormattedReportProps) {
     const { general, arrest, location, evidence, officers } = formData;
     const [header, setHeader] = useState('COUNTY OF LOS SANTOS');
+    const [calculation, setCalculation] = useState<ArrestCalculation | null>(null);
 
     useEffect(() => {
         if (officers && officers.length > 0 && officers[0].department) {
@@ -55,56 +45,9 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         }
     }, [officers]);
 
-    const totals = report.reduce(
-        (acc, row) => {
-            const chargeDetails = penalCode[row.chargeId!];
-            if (!chargeDetails) return acc;
-            
-            const isDrugCharge = !!chargeDetails.drugs;
-      
-            const getTime = (timeObj: any) => {
-              if (!timeObj) return { days: 0, hours: 0, min: 0 };
-              if (isDrugCharge && row.category) return timeObj[row.category] || { days: 0, hours: 0, min: 0 };
-              return timeObj;
-            }
-            
-            const getFine = (fineObj: any) => {
-              if (!fineObj) return 0;
-              if(isDrugCharge && row.category) return fineObj[row.category] || 0;
-              return fineObj[row.offense!] || 0;
-            }
-      
-            const minTime = getTime(chargeDetails.time);
-            const maxTime = getTime(chargeDetails.maxtime);
-            const minTimeMinutes = formatTimeInMinutes(minTime);
-            let maxTimeMinutes = formatTimeInMinutes(maxTime);
-            if (maxTimeMinutes < minTimeMinutes) {
-              maxTimeMinutes = minTimeMinutes;
-            }
-            acc.minTime += minTimeMinutes;
-            acc.maxTime += maxTimeMinutes;
-            acc.fine += getFine(chargeDetails.fine);
-            acc.points += chargeDetails.points?.[row.class as keyof typeof chargeDetails.points] ?? 0;
-            
-            const getBailAuto = () => (typeof chargeDetails.bail.auto === 'object' && row.category) ? chargeDetails.bail.auto[row.category] : chargeDetails.bail.auto;
-            const bailAuto = getBailAuto();
-            if(bailAuto === false) acc.bailStatus.noBail = true;
-            if(bailAuto === 2) acc.bailStatus.discretionary = true;
-            if(bailAuto === true) acc.bailStatus.eligible = true;
-            
-            if (bailAuto !== false) {
-              const getBailCost = () => (typeof chargeDetails.bail.cost === 'object' && row.category) ? chargeDetails.bail.cost[row.category] : chargeDetails.bail.cost;
-              const currentBail = getBailCost() || 0;
-              if (currentBail > acc.highestBail) {
-                  acc.highestBail = currentBail;
-              }
-            }
-            
-            return acc;
-        },
-        { minTime: 0, maxTime: 0, points: 0, fine: 0, bailStatus: { eligible: false, discretionary: false, noBail: false }, highestBail: 0 }
-    );
-      
+    useEffect(() => {
+        calculateArrest(report).then(setCalculation);
+    }, [report]);
 
     return (
         <table ref={innerRef} style={{ width: '100%', fontFamily: "'Times New Roman', serif", borderCollapse: 'collapse', border: '4px solid black', backgroundColor: 'white', color: 'black' }}>
@@ -228,12 +171,12 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                             <tbody>
                                 <tr>
                                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>
-                                        <p style={{ margin: 0 }}><strong>MINIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.minTime) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>MAXIMUM SENTENCE:</strong> {totals ? formatTotalTime(totals.maxTime) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>TOTAL FINE:</strong> ${totals ? totals.fine.toLocaleString() : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>POINTS:</strong> {totals ? totals.points : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>BAIL STATUS:</strong> {totals ? getBailStatus(totals) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>BAIL AMOUNT:</strong> ${totals ? totals.highestBail.toLocaleString() : 'N/A'}</p>
+                                        <p style={{ margin: 0 }}><strong>MINIMUM SENTENCE:</strong> {calculation ? formatTotalTime(calculation.minTimeCapped) : 'N/A'}</p>
+                                        <p style={{ margin: 0 }}><strong>MAXIMUM SENTENCE:</strong> {calculation ? formatTotalTime(calculation.maxTimeCapped) : 'N/A'}</p>
+                                        <p style={{ margin: 0 }}><strong>TOTAL FINE:</strong> ${calculation ? calculation.totals.fine.toLocaleString() : 'N/A'}</p>
+                                        <p style={{ margin: 0 }}><strong>POINTS:</strong> {calculation ? Math.round(calculation.totals.modified.points) : 'N/A'}</p>
+                                        <p style={{ margin: 0 }}><strong>BAIL STATUS:</strong> {calculation ? calculation.bailStatus : 'N/A'}</p>
+                                        <p style={{ margin: 0 }}><strong>BAIL AMOUNT:</strong> ${calculation ? calculation.totals.highestBail.toLocaleString() : 'N/A'}</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -244,3 +187,4 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         </table>
     );
 }
+
