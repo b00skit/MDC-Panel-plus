@@ -51,9 +51,10 @@
         },
         { "type": "section", "title": "Charges" },
         { 
-            "type": "charge", 
+            "type": "charge",
             "name": "charges",
             "showClass": false,
+            "showOffense": true,
             "allowedTypes": { "I": true },
             "customFields": [
                 {
