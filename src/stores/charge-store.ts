@@ -9,7 +9,7 @@ export interface Charge {
   charge: string;
   type: 'F' | 'M' | 'I' | '?';
   class: { A: boolean; B: boolean; C: boolean };
-  offence: { '1': boolean; '2': boolean; '3': boolean };
+  offence: { '1': boolean; '2': boolean; '3': boolean; '4': boolean; '5': boolean };
   time: any;
   maxtime: any;
   points: any;

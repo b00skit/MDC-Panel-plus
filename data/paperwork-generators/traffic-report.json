@@ -62,9 +62,10 @@
         ]},
         { "type": "section", "title": "Charges" },
         { 
-            "type": "charge", 
+            "type": "charge",
             "name": "charges",
             "showClass": true,
+            "showOffense": true,
             "allowedTypes": { "M": true, "I": true },
             "allowedIds": "401-433",
             "customFields": [
