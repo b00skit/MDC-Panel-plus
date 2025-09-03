@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { PaperworkGeneratorsList } from '@/components/paperwork-generators/paperwork-generators-list';
 import { Separator } from '@/components/ui/separator';
+import type { Metadata } from 'next';
 
 async function getPaperworkData() {
     const baseDir = path.join(process.cwd(), 'data/paperwork-generators');
@@ -177,3 +178,7 @@ export default async function PaperworkGeneratorsPage() {
       </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: 'Paperwork Generators',
+};

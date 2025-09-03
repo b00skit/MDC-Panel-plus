@@ -1,6 +1,7 @@
 import { PaperworkGeneratorBuilder } from '@/components/paperwork-generators/paperwork-generator-builder';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
 
 async function getConfig() {
     const configPath = path.join(process.cwd(), 'data/config.json');
@@ -28,3 +29,7 @@ export default async function PaperworkGeneratorBuilderPage() {
       <PaperworkGeneratorBuilder />
   );
 }
+
+export const metadata: Metadata = {
+  title: 'Form Builder',
+};

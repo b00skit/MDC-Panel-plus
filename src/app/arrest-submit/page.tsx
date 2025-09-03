@@ -34,6 +34,7 @@ function ArrestSubmitContent() {
   
     useEffect(() => {
       setIsClient(true);
+      document.title = 'MDC Panel – Arrest Submission';
     }, []);
 
     const isBasicReport = reportType === 'basic';

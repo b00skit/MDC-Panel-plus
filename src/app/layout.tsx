@@ -31,7 +31,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const config: SiteConfig = JSON.parse(file);
 
   return {
-    title: config.SITE_NAME,
+    title: {
+      default: 'MDC Panel',
+      template: `MDC Panel – %s`,
+    },
     description: config.SITE_DESCRIPTION,
     keywords: [
       'booskit','booskit.dev','MDC','MDC Panel','Mobile','Data','Computer','Panel',
@@ -54,6 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: config.SITE_NAME,
       description: config.SITE_DESCRIPTION,
+      siteName: config.SITE_NAME,
       type: 'website',
       images: config.SITE_IMAGE
         ? [

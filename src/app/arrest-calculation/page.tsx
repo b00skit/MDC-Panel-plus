@@ -33,6 +33,10 @@ function ArrestCalculationContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    document.title = 'MDC Panel – Arrest Calculation';
+  }, []);
+
   const parsedCharges = useMemo<SelectedCharge[]>(() => {
     if (!penalCode) return [];
     

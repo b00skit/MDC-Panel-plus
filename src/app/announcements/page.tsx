@@ -2,6 +2,11 @@
 import { AnnouncementsPage } from '@/components/announcements/announcements-page';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Announcements',
+};
 
 async function getAnnouncementsData() {
     const filePath = path.join(process.cwd(), 'data/announcements.json');
