@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: {
-      default: 'MDC Panel',
+      default: 'MDC Panel+',
       template: `MDC Panel – %s`,
     },
     description: config.SITE_DESCRIPTION,

@@ -17,6 +17,7 @@ export interface Officer {
 interface OfficerState {
   officers: Officer[];
   alternativeCharacters: Officer[];
+  predefinedOfficers: Officer[];
   addOfficer: () => void;
   removeOfficer: (id: number) => void;
   updateOfficer: (id: number, updatedFields: Partial<Omit<Officer, 'id'>>) => void;
@@ -25,6 +26,10 @@ interface OfficerState {
   removeAlternativeCharacter: (id: number) => void;
   updateAlternativeCharacter: (id: number, updatedFields: Partial<Omit<Officer, 'id'>>) => void;
   swapOfficer: (officerId: number, altCharToUse: Officer) => void;
+  setPredefinedOfficers: () => void;
+  addPredefinedOfficer: () => void;
+  removePredefinedOfficer: (id: number) => void;
+  updatePredefinedOfficer: (id: number, updatedFields: Partial<Omit<Officer, 'id'>>) => void;
   reset: () => void;
 }
 
@@ -48,12 +53,12 @@ const createEmptyAltCharacter = (): Officer => ({
   divDetail: '',
 });
 
-
 export const useOfficerStore = create<OfficerState>()(
     persist(
       (set, get) => ({
         officers: [],
         alternativeCharacters: [],
+        predefinedOfficers: [],
   
         addOfficer: () => {
             set((state) => ({
@@ -98,29 +103,46 @@ export const useOfficerStore = create<OfficerState>()(
             if (typeof window !== 'undefined') {
                 const storedOfficer = localStorage.getItem('initial-officer-storage');
                 const storedAltChars = localStorage.getItem('alt-characters-storage');
+                const storedPredefined = localStorage.getItem('predefined-officers-storage');
 
                 let defaultOfficer = getInitialOfficer();
                 if (storedOfficer) {
-                    try {
-                        defaultOfficer = JSON.parse(storedOfficer);
-                    } catch (e) {
-                         console.error("Failed to parse stored officer data");
-                    }
+                    try { defaultOfficer = JSON.parse(storedOfficer); } 
+                    catch (e) { console.error("Failed to parse stored officer data"); }
                 }
 
                 let altChars: Officer[] = [];
                 if(storedAltChars) {
-                    try {
-                        altChars = JSON.parse(storedAltChars);
-                    } catch (e) {
-                        console.error("Failed to parse alt characters");
-                    }
+                    try { altChars = JSON.parse(storedAltChars); } 
+                    catch (e) { console.error("Failed to parse alt characters"); }
+                }
+
+                let predefined: Officer[] = [];
+                if(storedPredefined) {
+                    try { predefined = JSON.parse(storedPredefined); }
+                    catch (e) { console.error("Failed to parse predefined officers"); }
                 }
                 
+                const initialOfficers = predefined.length > 0 ? [...predefined] : [defaultOfficer];
+                
                 set({ 
-                    officers: [defaultOfficer],
-                    alternativeCharacters: altChars
+                    officers: initialOfficers,
+                    alternativeCharacters: altChars,
+                    predefinedOfficers: predefined,
                 });
+            }
+        },
+
+        setPredefinedOfficers: () => {
+            if(typeof window !== 'undefined') {
+                const storedPredefined = localStorage.getItem('predefined-officers-storage');
+                if (storedPredefined) {
+                    try {
+                        set({ predefinedOfficers: JSON.parse(storedPredefined) });
+                    } catch (e) {
+                        console.error("Failed to parse predefined officers");
+                    }
+                }
             }
         },
 
@@ -166,28 +188,23 @@ export const useOfficerStore = create<OfficerState>()(
       
               const officerToSwap = state.officers[officerToSwapIndex];
       
-              // The character that was in the form, to be moved to alternatives
               const newAltCharData: Officer = {
-                ...officerToSwap, // Keep all fields from the old officer
-                id: altCharToUse.id, // Use the alt char's original ID
+                ...officerToSwap,
+                id: altCharToUse.id,
               };
       
-              // The character that will replace the officer in the form
               const newOfficerData: Officer = {
-                ...altCharToUse, // Keep all fields from the alt char
-                id: officerToSwap.id, // Use the form officer's original ID
+                ...altCharToUse,
+                id: officerToSwap.id,
               };
       
-              // Update officers list
               const newOfficers = [...state.officers];
               newOfficers[officerToSwapIndex] = newOfficerData;
       
-              // Update alternative characters list
               const newAlternativeCharacters = state.alternativeCharacters.map(ac =>
                 ac.id === altCharToUse.id ? newAltCharData : ac
               );
       
-              // Persist changes to localStorage if they are defaults
               if (officerToSwapIndex === 0) {
                   localStorage.setItem('initial-officer-storage', JSON.stringify(newOfficerData));
               }
@@ -200,12 +217,41 @@ export const useOfficerStore = create<OfficerState>()(
               };
             });
           },
-          reset: () => set({ officers: [], alternativeCharacters: [] }),
+
+          addPredefinedOfficer: () => {
+            set((state) => {
+                const newOfficer = { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
+                const updatedList = [...state.predefinedOfficers, newOfficer];
+                localStorage.setItem('predefined-officers-storage', JSON.stringify(updatedList));
+                return { predefinedOfficers: updatedList };
+            });
+          },
+
+          removePredefinedOfficer: (id: number) => {
+            set((state) => {
+                const updatedList = state.predefinedOfficers.filter(o => o.id !== id);
+                localStorage.setItem('predefined-officers-storage', JSON.stringify(updatedList));
+                return { predefinedOfficers: updatedList };
+            });
+          },
+          
+          updatePredefinedOfficer: (id: number, updatedFields: Partial<Omit<Officer, 'id'>>) => {
+            set((state) => {
+                const updatedList = state.predefinedOfficers.map(o =>
+                    o.id === id ? { ...o, ...updatedFields } : o
+                );
+                localStorage.setItem('predefined-officers-storage', JSON.stringify(updatedList));
+                return { predefinedOfficers: updatedList };
+            });
+          },
+          
+          reset: () => set({ officers: [], alternativeCharacters: [], predefinedOfficers: [] }),
       }),
       {
         name: 'officer-storage',
-        storage: createJSONStorage(() => sessionStorage), // Use session storage for non-primary officers
-        partialize: (state) => ({ officers: state.officers.slice(1) }), // Only persist non-default officers
+        storage: createJSONStorage(() => sessionStorage), 
+        partialize: (state) => ({ officers: state.officers }),
       }
     )
   );
+
