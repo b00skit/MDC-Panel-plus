@@ -21,6 +21,7 @@ interface SettingsState {
   factionGroups: FactionGroup[];
   predefinedCallsigns: PredefinedCallsign[];
   defaultCallsignId: number | null;
+  analyticsOptOut: boolean;
   toggleFactionVisibility: (groupId: string) => void;
   setFactionGroups: (groups: FactionGroup[]) => void;
   toggleHiddenGroupVisibility: (groupId: string) => void;
@@ -28,6 +29,7 @@ interface SettingsState {
   removeCallsign: (id: number) => void;
   updateCallsign: (id: number, value: string) => void;
   setDefaultCallsignId: (id: number | null) => void;
+  toggleAnalytics: () => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -38,6 +40,7 @@ export const useSettingsStore = create<SettingsState>()(
       factionGroups: [],
       predefinedCallsigns: [],
       defaultCallsignId: null,
+      analyticsOptOut: false,
       toggleFactionVisibility: (groupId: string) => {
         const { hiddenFactions } = get();
         const newHiddenFactions = hiddenFactions.includes(groupId)
@@ -78,6 +81,9 @@ export const useSettingsStore = create<SettingsState>()(
       setDefaultCallsignId: (id: number | null) => {
         set({ defaultCallsignId: id });
       },
+      toggleAnalytics: () => {
+        set(state => ({ analyticsOptOut: !state.analyticsOptOut }));
+      }
     }),
     {
       name: 'site-settings-storage',
@@ -87,6 +93,7 @@ export const useSettingsStore = create<SettingsState>()(
         showHiddenGroups: state.showHiddenGroups,
         predefinedCallsigns: state.predefinedCallsigns,
         defaultCallsignId: state.defaultCallsignId,
+        analyticsOptOut: state.analyticsOptOut,
       }),
     }
   )

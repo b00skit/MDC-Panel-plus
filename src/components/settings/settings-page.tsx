@@ -29,7 +29,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -148,7 +148,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     removeAlternativeCharacter,
     reset: resetOfficers
   } = useOfficerStore();
-  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId } = useSettingsStore();
+  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId, analyticsOptOut, toggleAnalytics } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
@@ -537,6 +537,31 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
             </CardContent>
         </Card>
         
+         <Card>
+            <CardHeader>
+                <CardTitle>Privacy Settings</CardTitle>
+                <CardDescription>
+                    Manage how your data is used.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                        <BarChart className="h-5 w-5 text-muted-foreground" />
+                        <Label htmlFor="analytics-opt-out" className="text-base flex flex-col">
+                            Anonymous Analytics
+                           <span className="text-xs text-muted-foreground">Help improve the application by sharing anonymous usage data.</span>
+                        </Label>
+                    </div>
+                    <Switch
+                        id="analytics-opt-out"
+                        checked={!analyticsOptOut}
+                        onCheckedChange={toggleAnalytics}
+                    />
+                </div>
+            </CardContent>
+        </Card>
+
         <div className="flex justify-end">
             <Button onClick={handleSave}>Save All Changes</Button>
         </div>
