@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
+import Link from 'next/link';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -29,16 +30,16 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart, Settings2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
-import { Separator } from '../ui/separator';
+import { Separator } from '@/components/ui/separator';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
-import { Switch } from '../ui/switch';
+import { Switch } from '@/components/ui/switch';
 import { useTheme } from 'next-themes';
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
@@ -146,7 +147,6 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     addAlternativeCharacter,
     updateAlternativeCharacter,
     removeAlternativeCharacter,
-    reset: resetOfficers
   } = useOfficerStore();
   const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId, analyticsOptOut, toggleAnalytics } = useSettingsStore();
 
@@ -295,6 +295,22 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                         <Monitor className="mr-2" /> System
                     </Button>
                 </div>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Advanced Form Parameters</CardTitle>
+                <CardDescription>
+                    Configure advanced form options, such as setting a default officer lineup.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button asChild>
+                    <Link href="/settings/advanced-form-parameters">
+                        <Settings2 className="mr-2" /> Go to Advanced Parameters
+                    </Link>
+                </Button>
             </CardContent>
         </Card>
 
