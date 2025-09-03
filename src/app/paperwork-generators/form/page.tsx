@@ -35,15 +35,21 @@ function GeneratorPageContent() {
                 }
                 return response.json();
             })
-            .then(data => {
-                setGeneratorConfig(data);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError(true);
-                setLoading(false);
-            });
-    }, [type, id, groupId]);
+              .then(data => {
+                  setGeneratorConfig(data);
+                  setLoading(false);
+              })
+              .catch(() => {
+                  setError(true);
+                  setLoading(false);
+              });
+      }, [type, id, groupId]);
+
+      useEffect(() => {
+          if (generatorConfig?.title) {
+              document.title = `MDC Panel+ - ${generatorConfig.title}`;
+          }
+      }, [generatorConfig]);
 
     if (loading) {
         return (

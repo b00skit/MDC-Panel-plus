@@ -1,6 +1,7 @@
 import { SettingsPage } from '@/components/settings/settings-page';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
 
 async function getFactionGroups() {
     const baseDir = path.join(process.cwd(), 'data/paperwork-generators');
@@ -34,3 +35,7 @@ export default async function Settings() {
       <SettingsPage initialFactionGroups={factionGroups} />
   );
 }
+
+export const metadata: Metadata = {
+  title: 'Settings',
+};
