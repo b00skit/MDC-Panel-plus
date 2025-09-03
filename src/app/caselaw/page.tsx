@@ -1,6 +1,11 @@
 import { CaselawPage } from '@/components/caselaw/caselaw-page';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Caselaw & Legal Resources',
+};
 
 async function getCaselawData() {
     const caselawsPath = path.join(process.cwd(), 'data/caselaws.json');

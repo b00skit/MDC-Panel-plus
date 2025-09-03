@@ -2,6 +2,11 @@
 import { DashboardPage } from '@/components/dashboard/dashboard-page';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
 
 async function getNoticeData() {
     try {

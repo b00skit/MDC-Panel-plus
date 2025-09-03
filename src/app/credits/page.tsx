@@ -3,6 +3,11 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Credits & Contributions',
+};
 
 async function getCredits() {
     const filePath = path.join(process.cwd(), 'data/credits.json');

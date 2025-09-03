@@ -57,6 +57,10 @@ export default function Area51Page() {
   const { toast } = useToast();
   const [jsonOutput, setJsonOutput] = useState('');
 
+  useEffect(() => {
+    document.title = 'MDC Panel+ - Changelog Generator';
+  }, []);
+
   // Keep toggles in sync with selected entry (or reset for new)
   useEffect(() => {
     const selectedData = selectedChangelogIndex === 'new' ? null : allChangelogs[selectedChangelogIndex as number];

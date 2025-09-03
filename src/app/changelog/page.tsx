@@ -1,6 +1,11 @@
 import { ChangelogPage } from '@/components/changelog/changelog-page';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Changelog',
+};
 
 async function getChangelogData() {
     const filePath = path.join(process.cwd(), 'data/changelog.json');

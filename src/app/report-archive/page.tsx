@@ -36,6 +36,7 @@ export default function ReportArchivePage() {
 
     useEffect(() => {
         setIsClient(true);
+        document.title = 'MDC Panel+ - Report Archive';
     }, []);
 
     const handleRestore = (report: ArchivedReport) => {

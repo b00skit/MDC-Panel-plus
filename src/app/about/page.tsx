@@ -14,6 +14,11 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About',
+};
 
 async function getConfig() {
     const configPath = path.join(process.cwd(), 'data/config.json');

@@ -2,6 +2,11 @@
 import { HelpPage } from '@/components/help/help-page';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Help & Feedback',
+};
 
 async function getHelpData() {
     const helpPath = path.join(process.cwd(), 'data/help.json');
