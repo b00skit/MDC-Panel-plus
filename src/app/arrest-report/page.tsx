@@ -28,7 +28,7 @@ export default function ArrestReportPage() {
 
   useEffect(() => {
     setIsClient(true);
-    document.title = 'MDC Panel+ - Arrest Report';
+    document.title = 'MDC Panel – Arrest Report';
   }, []);
   
   const hasReport = isClient && report.length > 0 && !!penalCode;

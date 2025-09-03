@@ -34,7 +34,7 @@ function ArrestCalculationContent() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = 'MDC Panel+ - Arrest Calculation';
+    document.title = 'MDC Panel – Arrest Calculation';
   }, []);
 
   const parsedCharges = useMemo<SelectedCharge[]>(() => {

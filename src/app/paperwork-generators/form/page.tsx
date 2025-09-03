@@ -47,7 +47,7 @@ function GeneratorPageContent() {
 
       useEffect(() => {
           if (generatorConfig?.title) {
-              document.title = `MDC Panel+ - ${generatorConfig.title}`;
+              document.title = `MDC Panel – ${generatorConfig.title}`;
           }
       }, [generatorConfig]);
 
