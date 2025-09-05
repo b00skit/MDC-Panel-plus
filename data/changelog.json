@@ -35,6 +35,10 @@
                 },
                 {
                     "type": "feature",
+                    "description": "<b>General:</b> Added the ability to pick a default callsign which will automatically fill out your callsign on paperwork."
+                },
+                {
+                    "type": "feature",
                     "description": "<b>Simplified Penal Code:</b> Added an AI Assistant for the Simplified Penal Code, making it possible to quickly ask questions regarding the penal code."
                 }
             ],

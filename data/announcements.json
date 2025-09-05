@@ -1,6 +1,16 @@
 {
     "announcements": [
         {
+            "id": 2,
+            "date": "2025-09-05",
+            "title": "Major Update: Penal Code AI Assistant & Privacy Settings",
+            "content": "The simplified penal code has undergone a major update, adding narratives to the simplified penal code and added a new AI assistant to help people search the penal code for charges. Alongside that, we've also added the ability to pick a default callsign within the settings. As a major addition, you also have the ability to fully opt-out of the analytics.",
+            "button": {
+                "text": "Simplified Penal Code",
+                "href": "/simplified-penal-code"
+            }
+        },
+        {
             "id": 1,
             "date": "2025-09-01",
             "title": "Release: MDC Panel+",
