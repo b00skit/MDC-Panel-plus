@@ -54,7 +54,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     const { modifiers, presets, userModified, narrative: persistentNarrative, setModifiersState, setNarrativeField, setPreset, setUserModified } = useAdvancedReportModifiersStore();
 
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: officersFromStore, updateOfficer: updateOfficerInStore, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
+    const { officers: officersFromStore, predefinedOfficers, updateOfficer: updateOfficerInStore, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
     const { predefinedCallsigns, defaultCallsignId } = useSettingsStore();
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
@@ -455,11 +455,15 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             };
     
             if (!mergedFormData.officers || mergedFormData.officers.length === 0) {
-                const defaultOfficer = officersFromStore.length > 0 ? { ...officersFromStore[0] } : { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
-                if (defaultOfficer) {
-                    defaultOfficer.callSign = defaultCallsign;
+                 if (predefinedOfficers.length > 0) {
+                    mergedFormData.officers = predefinedOfficers.map(o => ({...o, callSign: defaultCallsign}));
+                } else {
+                    const defaultOfficer = officersFromStore.length > 0 ? { ...officersFromStore[0] } : { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
+                    if (defaultOfficer) {
+                        defaultOfficer.callSign = defaultCallsign;
+                    }
+                    mergedFormData.officers = [defaultOfficer as FormOfficer];
                 }
-                mergedFormData.officers = [defaultOfficer as FormOfficer];
             } else {
                  const defaultOfficerFromStore = officersFromStore.find(o => o.id === mergedFormData.officers[0].id);
                  if(defaultOfficerFromStore) {
@@ -482,7 +486,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             
             isInitialLoad.current = false;
         }
-    }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officersFromStore, predefinedCallsigns, defaultCallsignId]);
+    }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officersFromStore, predefinedOfficers, predefinedCallsigns, defaultCallsignId]);
 
 
     const handlePillClick = (officerIndex: number, altChar: Officer) => {
