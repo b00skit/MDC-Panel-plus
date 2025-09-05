@@ -147,7 +147,22 @@ export default function SettingsPage() {
     predefinedOfficers,
     clearPredefinedOfficers,
   } = useOfficerStore();
-  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId, analyticsOptOut, toggleAnalytics } = useSettingsStore();
+  const {
+    hiddenFactions,
+    toggleFactionVisibility,
+    setFactionGroups,
+    showHiddenGroups,
+    toggleHiddenGroupVisibility,
+    predefinedCallsigns,
+    defaultCallsignId,
+    addCallsign,
+    removeCallsign,
+    updateCallsign,
+    setDefaultCallsignId,
+    analyticsOptOut,
+    toggleAnalytics,
+    factionGroups,
+  } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
@@ -158,11 +173,14 @@ export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setInitialOfficers(); 
+    setInitialOfficers();
     fetch('/data/faction_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
-  }, [setInitialOfficers]);
+    fetch('/api/paperwork-generators/groups')
+      .then((res) => res.json())
+      .then((data) => setFactionGroups(data));
+  }, [setInitialOfficers, setFactionGroups]);
 
   const handleOfficerChange = (field: string, value: string) => {
     if (defaultOfficer) {
@@ -265,6 +283,9 @@ export default function SettingsPage() {
   };
   
   const hasPredefinedOfficers = predefinedOfficers.length > 0;
+
+  const visibleGroups = factionGroups.filter(g => !g.hidden && !g.url);
+  const hiddenGroups = factionGroups.filter(g => g.hidden);
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -552,7 +573,31 @@ export default function SettingsPage() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {/* This will be populated by the parent page component now */}
+                {hiddenGroups.map(group => (
+                    <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <Label htmlFor={`toggle-hidden-${group.group_id}`} className="text-base">{group.group_name}</Label>
+                        <Switch
+                            id={`toggle-hidden-${group.group_id}`}
+                            checked={showHiddenGroups[group.group_id] === true}
+                            onCheckedChange={() => toggleHiddenGroupVisibility(group.group_id)}
+                        />
+                    </div>
+                ))}
+
+                {visibleGroups.length > 0 ? (
+                    visibleGroups.map(group => (
+                        <div key={group.group_id} className="flex items-center justify-between p-3 border rounded-lg">
+                            <Label htmlFor={`toggle-${group.group_id}`} className="text-base">{group.group_name}</Label>
+                            <Switch
+                                id={`toggle-${group.group_id}`}
+                                checked={!hiddenFactions.includes(group.group_id)}
+                                onCheckedChange={() => toggleFactionVisibility(group.group_id)}
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-muted-foreground text-sm">No toggleable faction form groups found.</p>
+                )}
             </CardContent>
         </Card>
         
