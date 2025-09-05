@@ -7,13 +7,14 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search } from 'lucide-react';
+import { AlertCircle, Search, Sparkles } from 'lucide-react';
 import { type PenalCode, type Charge } from '@/stores/charge-store';
 import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
 import configData from '../../../data/config.json';
 import { Alert, AlertTitle } from '../ui/alert';
+import { PenalCodeAIDialog } from './penal-code-ai-dialog';
 
 const getTypeClasses = (type: Charge['type']) => {
     switch (type) {
@@ -152,6 +153,7 @@ export function SimplifiedPenalCodePage() {
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [typeFilter, setTypeFilter] = useState<'all' | 'F' | 'M' | 'I'>('all');
+    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
 
     useEffect(() => {
         fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
@@ -192,6 +194,7 @@ export function SimplifiedPenalCodePage() {
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
+            <PenalCodeAIDialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen} />
             <PageHeader
                 title="Simplified Penal Code"
                 description="Browse and search through the list of charges."
@@ -208,11 +211,17 @@ export function SimplifiedPenalCodePage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex gap-2">
-                    <Button variant={typeFilter === 'all' ? 'default' : 'outline'} onClick={() => setTypeFilter('all')}>All</Button>
-                    <Button variant={typeFilter === 'F' ? 'default' : 'outline'} onClick={() => setTypeFilter('F')}>Felonies</Button>
-                    <Button variant={typeFilter === 'M' ? 'default' : 'outline'} onClick={() => setTypeFilter('M')}>Misdemeanors</Button>
-                    <Button variant={typeFilter === 'I' ? 'default' : 'outline'} onClick={() => setTypeFilter('I')}>Infractions</Button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex gap-2">
+                        <Button variant={typeFilter === 'all' ? 'default' : 'outline'} onClick={() => setTypeFilter('all')}>All</Button>
+                        <Button variant={typeFilter === 'F' ? 'default' : 'outline'} onClick={() => setTypeFilter('F')}>Felonies</Button>
+                        <Button variant={typeFilter === 'M' ? 'default' : 'outline'} onClick={() => setTypeFilter('M')}>Misdemeanors</Button>
+                        <Button variant={typeFilter === 'I' ? 'default' : 'outline'} onClick={() => setTypeFilter('I')}>Infractions</Button>
+                    </div>
+                    <Button variant="outline" className="sm:ml-auto" onClick={() => setIsAIDialogOpen(true)}>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        AI Assistant
+                    </Button>
                  </div>
             </div>
 
