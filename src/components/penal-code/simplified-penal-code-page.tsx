@@ -193,14 +193,27 @@ export function SimplifiedPenalCodePage() {
     }, [penalCode, searchTerm, typeFilter]);
 
     return (
-        <div className="container mx-auto p-4 md:p-6 lg:p-8">
+        <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
             <PenalCodeAIDialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen} />
             <PageHeader
                 title="Simplified Penal Code"
                 description="Browse and search through the list of charges."
             />
 
-            <div className="space-y-4 mb-6">
+            <div className="flex flex-col items-center justify-center text-center gap-4 p-6 border-2 border-dashed rounded-lg bg-card">
+                 <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                 </div>
+                 <h3 className="text-xl font-semibold">Need a quick answer?</h3>
+                 <p className="text-center text-muted-foreground max-w-md">
+                    Use the experimental AI assistant to find relevant charges by describing a situation in plain English.
+                 </p>
+                 <Button onClick={() => setIsAIDialogOpen(true)}>
+                    <Sparkles className="mr-2 h-4 w-4" /> AI Penal Code Assistant
+                 </Button>
+            </div>
+
+            <div className="space-y-4">
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
@@ -218,10 +231,6 @@ export function SimplifiedPenalCodePage() {
                         <Button variant={typeFilter === 'M' ? 'default' : 'outline'} onClick={() => setTypeFilter('M')}>Misdemeanors</Button>
                         <Button variant={typeFilter === 'I' ? 'default' : 'outline'} onClick={() => setTypeFilter('I')}>Infractions</Button>
                     </div>
-                    <Button variant="outline" className="sm:ml-auto" onClick={() => setIsAIDialogOpen(true)}>
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        AI Assistant
-                    </Button>
                  </div>
             </div>
 
