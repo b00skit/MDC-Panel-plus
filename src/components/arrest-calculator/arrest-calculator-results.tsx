@@ -335,7 +335,7 @@ export function ArrestCalculatorResults({
                     }
 
                     if (chargeDetails.drugs && row.category) {
-                        title += ` (${row.category})`;
+                        title += ` (Category ${row.category})`;
                     }
 
                     return (

@@ -45,15 +45,23 @@ export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestC
   const penalCode: PenalCode = await fetch(`${config.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`).then(res => res.json());
   const additions: Addition[] = additionsData.additions;
 
-  const extras = report.map(row => {
-    const chargeDetails = penalCode[row.chargeId!];
-    if (chargeDetails && chargeDetails.extra && chargeDetails.extra !== 'N/A') {
-      const typePrefix = `${chargeDetails.type}${row.class}`;
-      const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
-      return { title, extra: chargeDetails.extra };
-    }
-    return null;
-  }).filter(Boolean) as { title: string; extra: string }[];
+  const extras = report
+    .map(row => {
+      const chargeDetails = penalCode[row.chargeId!];
+      if (chargeDetails && chargeDetails.extra && chargeDetails.extra !== 'N/A') {
+        const typePrefix = `${chargeDetails.type}${row.class}`;
+        let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;
+        if (row.offense !== '1') {
+          title += ` (Offence #${row.offense})`;
+        }
+        if (chargeDetails.drugs && row.category) {
+          title += ` (Category ${row.category})`;
+        }
+        return { title, extra: chargeDetails.extra };
+      }
+      return null;
+    })
+    .filter(Boolean) as { title: string; extra: string }[];
 
   const calculationResults = report.map(row => {
     const chargeDetails = penalCode[row.chargeId!];

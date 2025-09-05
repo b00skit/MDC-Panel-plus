@@ -163,7 +163,13 @@ export function ArrestReportPage() {
         const chargeDetails = penalCode[row.chargeId!];
         if (chargeDetails && chargeDetails.extra && chargeDetails.extra !== 'N/A') {
             const typePrefix = `${chargeDetails.type}${row.class}`;
-            const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
+            let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;
+            if (row.offense !== '1') {
+                title += ` (Offence #${row.offense})`;
+            }
+            if (chargeDetails.drugs && row.category) {
+                title += ` (Category ${row.category})`;
+            }
             return { title, extra: chargeDetails.extra };
         }
         return null;
@@ -288,7 +294,13 @@ export function ArrestReportPage() {
                             const isDrugCharge = !!chargeDetails.drugs;
 
                             const typePrefix = `${chargeDetails.type}${row.class}`;
-                            const title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
+                            let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;
+                            if (row.offense !== '1') {
+                                title += ` (Offence #${row.offense})`;
+                            }
+                            if (isDrugCharge && row.category) {
+                                title += ` (Category ${row.category})`;
+                            }
                             
                             const getTimeValue = (timeObj: any) => {
                                 if(!timeObj) return { days: 0, hours: 0, min: 0 };

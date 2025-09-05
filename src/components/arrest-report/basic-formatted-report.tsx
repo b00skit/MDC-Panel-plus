@@ -144,7 +144,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                                         title += ` (Offence #${row.offense})`;
                                     }
                                     if (chargeDetails.drugs && row.category) {
-                                        title += ` (${row.category})`;
+                                        title += ` (Category ${row.category})`;
                                     }
                                     
                                     return (
