@@ -30,6 +30,7 @@ interface OfficerState {
   addPredefinedOfficer: () => void;
   removePredefinedOfficer: (id: number) => void;
   updatePredefinedOfficer: (id: number, updatedFields: Partial<Omit<Officer, 'id'>>) => void;
+  clearPredefinedOfficers: () => void;
   reset: () => void;
 }
 
@@ -91,7 +92,7 @@ export const useOfficerStore = create<OfficerState>()(
             const officerIndex = state.officers.findIndex(o => o.id === id);
 
             // If updating the first officer, save to local storage for default
-            if (officerIndex === 0) {
+            if (officerIndex === 0 && state.predefinedOfficers.length === 0) {
                 const updatedOfficer = state.officers[0];
                 if (updatedOfficer) {
                     localStorage.setItem('initial-officer-storage', JSON.stringify(updatedOfficer));
@@ -244,6 +245,13 @@ export const useOfficerStore = create<OfficerState>()(
                 return { predefinedOfficers: updatedList };
             });
           },
+
+          clearPredefinedOfficers: () => {
+            localStorage.removeItem('predefined-officers-storage');
+            set({ predefinedOfficers: [] });
+            // Re-run initial setup to fall back to default single officer
+            get().setInitialOfficers();
+          },
           
           reset: () => set({ officers: [], alternativeCharacters: [], predefinedOfficers: [] }),
       }),
@@ -254,4 +262,3 @@ export const useOfficerStore = create<OfficerState>()(
       }
     )
   );
-

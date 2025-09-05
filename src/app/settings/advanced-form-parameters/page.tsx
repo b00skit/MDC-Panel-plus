@@ -17,8 +17,9 @@ import {
   SelectLabel
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { useOfficerStore } from '@/stores/officer-store';
+import { useOfficerStore, Officer } from '@/stores/officer-store';
 import { User, IdCard, ShieldEllipsis as ShieldIcon, Plus, Trash2, BookUser } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -31,7 +32,9 @@ export default function AdvancedFormParametersPage() {
         updatePredefinedOfficer,
         addPredefinedOfficer,
         removePredefinedOfficer,
-        setPredefinedOfficers
+        setPredefinedOfficers,
+        alternativeCharacters,
+        swapOfficer,
     } = useOfficerStore();
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
 
@@ -48,6 +51,10 @@ export default function AdvancedFormParametersPage() {
           description: 'Your predefined officer setup has been updated.',
         });
     };
+    
+    const handlePillClick = (officerToSwap: Officer, altChar: Officer) => {
+        swapOfficer(officerToSwap.id, altChar);
+    }
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -137,6 +144,23 @@ export default function AdvancedFormParametersPage() {
                                         </div>
                                     </div>
                                 </div>
+                                 <div className="flex flex-wrap gap-2">
+                                    {alternativeCharacters.filter(alt => alt.name).map((altChar) => {
+                                        const isSelected = officer.name === altChar.name && officer.badgeNumber === altChar.badgeNumber;
+                                        return (
+                                            !isSelected && (
+                                                <Badge
+                                                    key={altChar.id}
+                                                    variant="outline"
+                                                    className="cursor-pointer hover:bg-accent"
+                                                    onClick={() => handlePillClick(officer, altChar)}
+                                                >
+                                                    {altChar.name}
+                                                </Badge>
+                                            )
+                                        );
+                                    })}
+                                </div>
                             </div>
                         ))}
                         <Button variant="outline" onClick={addPredefinedOfficer}>
@@ -152,4 +176,3 @@ export default function AdvancedFormParametersPage() {
         </div>
     );
 }
-

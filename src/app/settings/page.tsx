@@ -30,7 +30,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart, Settings2 } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart, Settings2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -40,14 +40,11 @@ import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from 'next-themes';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Alert } from '@/components/ui/alert';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
   [department: string]: string[];
-}
-
-interface SettingsPageProps {
-    initialFactionGroups: FactionGroup[];
 }
 
 /**
@@ -147,6 +144,8 @@ export default function SettingsPage() {
     addAlternativeCharacter,
     updateAlternativeCharacter,
     removeAlternativeCharacter,
+    predefinedOfficers,
+    clearPredefinedOfficers,
   } = useOfficerStore();
   const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId, analyticsOptOut, toggleAnalytics } = useSettingsStore();
 
@@ -163,7 +162,6 @@ export default function SettingsPage() {
     fetch('/data/faction_ranks.json')
       .then((res) => res.json())
       .then((data) => setDeptRanks(data));
-    // The groups are now loaded in the main settings page component, not here.
   }, [setInitialOfficers]);
 
   const handleOfficerChange = (field: string, value: string) => {
@@ -266,9 +264,7 @@ export default function SettingsPage() {
     e.target.value = '';
   };
   
-  // This state and logic will now be managed by the parent page.
-  // const visibleGroups = initialFactionGroups.filter(g => (!g.hidden && !g.url));
-  // const hiddenGroups = initialFactionGroups.filter(g => g.hidden);
+  const hasPredefinedOfficers = predefinedOfficers.length > 0;
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -299,6 +295,117 @@ export default function SettingsPage() {
             </CardContent>
         </Card>
 
+        {hasPredefinedOfficers ? (
+             <Card>
+                <CardHeader>
+                    <CardTitle>Default Officer Information</CardTitle>
+                    <CardDescription>
+                        Your officer information is currently managed by a predefined lineup.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Alert variant="warning">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Predefined Lineup Active</AlertTitle>
+                        <AlertDescription>
+                            To manage your officer list, please go to the Advanced Form Parameters page. You can reset to a single default officer setup below.
+                        </AlertDescription>
+                    </Alert>
+                    <div className="flex gap-2">
+                         <Button asChild>
+                            <Link href="/settings/advanced-form-parameters">
+                                <Settings2 className="mr-2" /> Go to Advanced Parameters
+                            </Link>
+                        </Button>
+                        <Button variant="destructive" onClick={clearPredefinedOfficers}>
+                            <Trash2 className="mr-2" /> Reset to Default
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        ) : (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Default Officer Information</CardTitle>
+                    <CardDescription>
+                    Set the default officer details that will be pre-filled in new arrest reports.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    {defaultOfficer ? (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="officer-name">Full Name</Label>
+                            <div className="relative flex items-center">
+                                <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                id="officer-name"
+                                placeholder="John Doe"
+                                value={defaultOfficer.name}
+                                onChange={(e) => handleOfficerChange('name', e.target.value)}
+                                className="pl-9"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="rank">Rank & Department</Label>
+                            <div className="relative flex items-center">
+                                <Shield className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                                <Select 
+                                value={defaultOfficer.department && defaultOfficer.rank ? `${defaultOfficer.department}__${defaultOfficer.rank}` : ''}
+                                onValueChange={handleRankChange}>
+                                <SelectTrigger id="rank" className="pl-9">
+                                    <SelectValue placeholder="Select Rank" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.entries(deptRanks).map(([dept, ranks]) => (
+                                        <SelectGroup key={dept}>
+                                            <SelectLabel>{dept}</SelectLabel>
+                                            {ranks.map((rank) => (
+                                                <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="badge-number">Badge Number</Label>
+                            <div className="relative flex items-center">
+                                <BadgeIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                id="badge-number"
+                                placeholder="12345"
+                                value={defaultOfficer.badgeNumber}
+                                onChange={(e) => handleOfficerChange('badgeNumber', e.target.value)}
+                                className="pl-9"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="div-detail">Division / Detail</Label>
+                            <div className="relative flex items-center">
+                                <BookUser className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                id="div-detail"
+                                placeholder="e.g. Mission Row"
+                                value={defaultOfficer.divDetail || ''}
+                                onChange={(e) => handleOfficerChange('divDetail', e.target.value)}
+                                className="pl-9"
+                                />
+                            </div>
+                        </div>
+                        </div>
+                    </>
+                    ) : (
+                    <p>Loading officer information...</p>
+                    )}
+                </CardContent>
+            </Card>
+        )}
+
         <Card>
             <CardHeader>
                 <CardTitle>Advanced Form Parameters</CardTitle>
@@ -313,87 +420,6 @@ export default function SettingsPage() {
                     </Link>
                 </Button>
             </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Default Officer Information</CardTitle>
-            <CardDescription>
-              Set the default officer details that will be pre-filled in new arrest reports.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {defaultOfficer ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="officer-name">Full Name</Label>
-                    <div className="relative flex items-center">
-                        <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
-                        <Input
-                        id="officer-name"
-                        placeholder="John Doe"
-                        value={defaultOfficer.name}
-                        onChange={(e) => handleOfficerChange('name', e.target.value)}
-                        className="pl-9"
-                        />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="rank">Rank & Department</Label>
-                    <div className="relative flex items-center">
-                        <Shield className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
-                         <Select 
-                           value={defaultOfficer.department && defaultOfficer.rank ? `${defaultOfficer.department}__${defaultOfficer.rank}` : ''}
-                           onValueChange={handleRankChange}>
-                           <SelectTrigger id="rank" className="pl-9">
-                               <SelectValue placeholder="Select Rank" />
-                           </SelectTrigger>
-                           <SelectContent>
-                               {Object.entries(deptRanks).map(([dept, ranks]) => (
-                                   <SelectGroup key={dept}>
-                                       <SelectLabel>{dept}</SelectLabel>
-                                       {ranks.map((rank) => (
-                                           <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>
-                                       ))}
-                                   </SelectGroup>
-                               ))}
-                           </SelectContent>
-                       </Select>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="badge-number">Badge Number</Label>
-                     <div className="relative flex items-center">
-                        <BadgeIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
-                        <Input
-                        id="badge-number"
-                        placeholder="12345"
-                        value={defaultOfficer.badgeNumber}
-                        onChange={(e) => handleOfficerChange('badgeNumber', e.target.value)}
-                        className="pl-9"
-                        />
-                    </div>
-                  </div>
-                   <div className="space-y-2">
-                    <Label htmlFor="div-detail">Division / Detail</Label>
-                     <div className="relative flex items-center">
-                        <BookUser className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
-                        <Input
-                        id="div-detail"
-                        placeholder="e.g. Mission Row"
-                        value={defaultOfficer.divDetail || ''}
-                        onChange={(e) => handleOfficerChange('divDetail', e.target.value)}
-                        className="pl-9"
-                        />
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <p>Loading officer information...</p>
-            )}
-          </CardContent>
         </Card>
 
          <Card>
