@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -137,7 +138,15 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                                 {report.map((row: any) => {
                                     const chargeDetails = penalCode[row.chargeId!];
                                     if (!chargeDetails) return null;
-                                    const title = `${chargeDetails.id}. ${chargeDetails.charge}${row.offense !== '1' ? ` (Offence #${row.offense})` : ''}`;
+                                    
+                                    let title = `${chargeDetails.id}. ${chargeDetails.charge}`;
+                                    if (row.offense !== '1') {
+                                        title += ` (Offence #${row.offense})`;
+                                    }
+                                    if (chargeDetails.drugs && row.category) {
+                                        title += ` (${row.category})`;
+                                    }
+                                    
                                     return (
                                         <tr key={row.uniqueId}>
                                             <td style={{ border: '1px solid black', padding: '0.5rem' }}>{title}</td>
@@ -194,4 +203,3 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         </table>
     );
 }
-
