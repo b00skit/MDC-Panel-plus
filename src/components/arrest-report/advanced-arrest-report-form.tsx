@@ -773,13 +773,12 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                                 control={control}
                                 render={({ field: { onChange, value } }) => (
                                     <div className="relative flex items-center">
-                                        <Radio className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                         <Combobox
                                             options={predefinedCallsigns.map(c => c.value)}
                                             value={value || ''}
                                             onChange={onChange}
                                             placeholder="Select or type..."
-                                            className="pl-9 w-full"
+                                            className="w-full"
                                         />
                                     </div>
                                 )}
