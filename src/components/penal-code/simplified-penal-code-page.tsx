@@ -71,7 +71,7 @@ const ChargeCard = ({ charge }: { charge: Charge }) => {
                 <div className="flex justify-between items-start gap-4">
                     <div className="flex-1">
                         <CardTitle className="text-xl font-bold">{charge.id}. {charge.charge}</CardTitle>
-                         {charge.definition && <CardDescription className="mt-1">{charge.definition}</CardDescription>}
+                         {charge.definition && <CardDescription className="mt-1 whitespace-pre-wrap">{charge.definition}</CardDescription>}
                         <div className="text-sm text-muted-foreground flex items-center gap-2 mt-2">
                             <Badge className={cn(getTypeClasses(charge.type))}>{getTypeFullName(charge.type)}</Badge>
                             {isDrugCharge && <Badge variant="secondary">Drug Related</Badge>}
@@ -98,7 +98,7 @@ const ChargeCard = ({ charge }: { charge: Charge }) => {
                             <h4 className="text-md font-semibold text-muted-foreground">Stipulations</h4>
                             <Alert className="text-sm border-yellow-500/50 text-yellow-600 dark:border-yellow-500 [&>svg]:text-yellow-600 dark:[&>svg]:text-yellow-500">
                                 <AlertTitle className="font-semibold">Note</AlertTitle>
-                                <CardDescription>{charge.extra}</CardDescription>
+                                <CardDescription className="whitespace-pre-wrap">{charge.extra}</CardDescription>
                             </Alert>
                          </div>
                     </>

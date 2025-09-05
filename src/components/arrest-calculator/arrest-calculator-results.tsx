@@ -330,12 +330,10 @@ export function ArrestCalculatorResults({
                     const typePrefix = `${chargeDetails.type}${row.class}`;
                     let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;
 
-                    if (row.offense !== '1') {
-                        title += ` (Offence #${row.offense})`;
-                    }
-
                     if (chargeDetails.drugs && row.category) {
                         title += ` (Category ${row.category})`;
+                    } else if (row.offense !== '1') {
+                        title += ` (Offence #${row.offense})`;
                     }
 
                     return (
@@ -463,7 +461,7 @@ export function ArrestCalculatorResults({
                   {extras.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">{item.title}</TableCell>
-                      <TableCell>{item.extra}</TableCell>
+                      <TableCell className="whitespace-pre-wrap">{item.extra}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
