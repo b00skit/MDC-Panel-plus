@@ -188,16 +188,8 @@ export const useOfficerStore = create<OfficerState>()(
               if (officerToSwapIndex === -1) return state;
       
               const officerToSwap = state.officers[officerToSwapIndex];
-      
-              const newAltCharData: Officer = {
-                ...officerToSwap,
-                id: altCharToUse.id,
-              };
-      
-              const newOfficerData: Officer = {
-                ...altCharToUse,
-                id: officerToSwap.id,
-              };
+              const newAltCharData: Officer = { ...officerToSwap, id: altCharToUse.id };
+              const newOfficerData: Officer = { ...altCharToUse, id: officerToSwap.id };
       
               const newOfficers = [...state.officers];
               newOfficers[officerToSwapIndex] = newOfficerData;
@@ -205,8 +197,17 @@ export const useOfficerStore = create<OfficerState>()(
               const newAlternativeCharacters = state.alternativeCharacters.map(ac =>
                 ac.id === altCharToUse.id ? newAltCharData : ac
               );
+
+              // If predefined officers are active, update them as well
+              const newPredefinedOfficers = state.predefinedOfficers.map(po =>
+                po.id === officerId ? newOfficerData : po
+              );
+              if(state.predefinedOfficers.length > 0) {
+                  localStorage.setItem('predefined-officers-storage', JSON.stringify(newPredefinedOfficers));
+              }
       
-              if (officerToSwapIndex === 0) {
+              // Update local storage for single officer setup if it's the primary officer
+              if (officerToSwapIndex === 0 && state.predefinedOfficers.length === 0) {
                   localStorage.setItem('initial-officer-storage', JSON.stringify(newOfficerData));
               }
               localStorage.setItem('alt-characters-storage', JSON.stringify(newAlternativeCharacters));
@@ -214,6 +215,7 @@ export const useOfficerStore = create<OfficerState>()(
               return {
                 ...state,
                 officers: newOfficers,
+                predefinedOfficers: newPredefinedOfficers,
                 alternativeCharacters: newAlternativeCharacters,
               };
             });
@@ -262,3 +264,4 @@ export const useOfficerStore = create<OfficerState>()(
       }
     )
   );
+

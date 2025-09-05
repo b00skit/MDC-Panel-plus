@@ -144,23 +144,25 @@ export default function AdvancedFormParametersPage() {
                                         </div>
                                     </div>
                                 </div>
-                                 <div className="flex flex-wrap gap-2">
-                                    {alternativeCharacters.filter(alt => alt.name).map((altChar) => {
-                                        const isSelected = officer.name === altChar.name && officer.badgeNumber === altChar.badgeNumber;
-                                        return (
-                                            !isSelected && (
-                                                <Badge
-                                                    key={altChar.id}
-                                                    variant="outline"
-                                                    className="cursor-pointer hover:bg-accent"
-                                                    onClick={() => handlePillClick(officer, altChar)}
-                                                >
-                                                    {altChar.name}
-                                                </Badge>
-                                            )
-                                        );
-                                    })}
-                                </div>
+                                {index === 0 && (
+                                     <div className="flex flex-wrap gap-2">
+                                        {alternativeCharacters.filter(alt => alt.name).map((altChar) => {
+                                            const isSelected = officer.name === altChar.name && officer.badgeNumber === altChar.badgeNumber;
+                                            return (
+                                                !isSelected && (
+                                                    <Badge
+                                                        key={altChar.id}
+                                                        variant="outline"
+                                                        className="cursor-pointer hover:bg-accent"
+                                                        onClick={() => handlePillClick(officer, altChar)}
+                                                    >
+                                                        {altChar.name}
+                                                    </Badge>
+                                                )
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         ))}
                         <Button variant="outline" onClick={addPredefinedOfficer}>
