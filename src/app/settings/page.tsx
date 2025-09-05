@@ -40,7 +40,7 @@ import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from 'next-themes';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Alert } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
