@@ -1,6 +1,46 @@
 {
     "changelogs": [
         {
+            "version": "3.3.0",
+            "type": "Major Update",
+            "date": "2025-09-05",
+            "items": [
+                {
+                    "type": "addition",
+                    "description": "<b>Settings:</b> The settings now has the ability to opt-out of analytics fully, allowing users to make the decision on if they wish to participate in the analytics or not, allowing an additional measure of privacy."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Settings:</b> Added a new \"Advanced Form Parameters\" to the settings, which feature a new setting to predefine your officer fields, in case you patrol with the same multiple people at the same time."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Settings:</b> Fixed the ability to manage form visibility."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Calculator:</b> The drug arrest charges will now have categories listed aside of each charge."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> The bug on advanced arrest report not allowing people to swap between alternative characters sometimes was fixed."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>General:</b> The page titles are now dynamic based on which page you're currently on, making it easier to navigate if you have multiple tabs open."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Simplified Penal Code:</b> Added narratives to the simplified penal code."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Simplified Penal Code:</b> Added an AI Assistant for the Simplified Penal Code, making it possible to quickly ask questions regarding the penal code."
+                }
+            ],
+            "cacheVersion": "riff-pofv-1"
+        },
+        {
             "version": "3.2.1",
             "type": "Minor Update",
             "date": "2025-09-02",
