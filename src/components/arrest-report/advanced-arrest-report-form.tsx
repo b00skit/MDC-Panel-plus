@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { CirclePlus, Trash2, Calendar, Clock } from 'lucide-react';
+import { CirclePlus, Trash2, Calendar, Clock, Radio } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
@@ -35,6 +35,7 @@ import { useAdvancedReportStore, FormState, type FormOfficer } from '@/stores/ad
 import { useAdvancedReportModifiersStore } from '@/stores/advanced-report-modifiers-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { useOfficerStore, Officer } from '@/stores/officer-store';
+import { useSettingsStore } from '@/stores/settings-store';
 import { formatInTimeZone } from 'date-fns-tz';
 import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
@@ -54,6 +55,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
 
     const { report: charges, penalCode } = useChargeStore();
     const { officers: officersFromStore, updateOfficer: updateOfficerInStore, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
+    const { predefinedCallsigns, defaultCallsignId } = useSettingsStore();
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         // Default values will be populated by the useEffect hook
@@ -441,6 +443,8 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
 
     const isInitialLoad = useRef(true);
     useEffect(() => {
+        const defaultCallsign = predefinedCallsigns.find(c => c.id === defaultCallsignId)?.value || '';
+
         if (isInitialLoad.current) {
             const mergedFormData: FormState = {
                 ...sessionFormData,
@@ -452,11 +456,14 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     
             if (!mergedFormData.officers || mergedFormData.officers.length === 0) {
                 const defaultOfficer = officersFromStore.length > 0 ? { ...officersFromStore[0] } : { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
+                if (defaultOfficer) {
+                    defaultOfficer.callSign = defaultCallsign;
+                }
                 mergedFormData.officers = [defaultOfficer as FormOfficer];
             } else {
                  const defaultOfficerFromStore = officersFromStore.find(o => o.id === mergedFormData.officers[0].id);
                  if(defaultOfficerFromStore) {
-                     mergedFormData.officers[0] = { ...defaultOfficerFromStore, ...mergedFormData.officers[0] };
+                     mergedFormData.officers[0] = { ...defaultOfficerFromStore, ...mergedFormData.officers[0], callSign: defaultCallsign };
                  }
             }
 
@@ -475,7 +482,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             
             isInitialLoad.current = false;
         }
-    }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officersFromStore]);
+    }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officersFromStore, predefinedCallsigns, defaultCallsignId]);
 
 
     const handlePillClick = (officerIndex: number, altChar: Officer) => {
@@ -490,7 +497,8 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     }
     
     const onAddOfficerClick = () => {
-        appendOfficer({ name: '', rank: '', department: '', badgeNumber: '' });
+        const defaultCallsign = predefinedCallsigns.find(c => c.id === defaultCallsignId)?.value || '';
+        appendOfficer({ name: '', rank: '', department: '', badgeNumber: '', callSign: defaultCallsign });
     }
 
     useEffect(() => {
@@ -755,7 +763,24 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                         </TableCell>
                         <TableCell><Input placeholder={`OFFICER ${index + 1}`} {...register(`officers.${index}.name`)} /></TableCell>
                         <TableCell><Input placeholder={isLSSD ? 'BADGE NO.' : 'SERIAL NO.'} type="number" {...register(`officers.${index}.badgeNumber`)} /></TableCell>
-                        <TableCell><Input placeholder="CALLSIGN" {...register(`officers.${index}.callSign`)} /></TableCell>
+                        <TableCell>
+                            <Controller
+                                name={`officers.${index}.callSign`}
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <div className="relative flex items-center">
+                                        <Radio className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
+                                        <Combobox
+                                            options={predefinedCallsigns.map(c => c.value)}
+                                            value={value || ''}
+                                            onChange={onChange}
+                                            placeholder="Select or type..."
+                                            className="pl-9 w-full"
+                                        />
+                                    </div>
+                                )}
+                            />
+                        </TableCell>
                         <TableCell className="flex items-center gap-1">
                           <Input placeholder={isLSSD ? 'UNIT/DETAIL' : 'DIV/DETAIL'} {...register(`officers.${index}.divDetail`)} />
                            {index > 0 && <Button variant="ghost" size="icon" type="button" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
