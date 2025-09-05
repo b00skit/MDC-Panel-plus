@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { init, pushInstruction } from '@socialgouv/matomo-next';
+import { init, push } from '@socialgouv/matomo-next';
 import { usePathname, useSearchParams } from 'next/navigation';
 import analyticsConfig from '../../data/analytics.json';
 
@@ -26,8 +26,8 @@ export function Matomo() {
         url: analyticsConfig.ANALYTICS_URL,
         siteId: analyticsConfig.ANALYTICS_TRACKER_ID,
       });
-      pushInstruction('enableHeartBeatTimer', 15);
-      pushInstruction('enableLinkTracking');
+      push(['enableHeartBeatTimer', 15]);
+      push(['enableLinkTracking']);
     }
   }, []);
 
@@ -44,8 +44,8 @@ export function Matomo() {
       pathname
     ) {
       const url = `${pathname}${searchParams ? `?${searchParams.toString()}` : ''}`;
-      pushInstruction('setCustomUrl', url);
-      pushInstruction('trackPageView');
+      push(['setCustomUrl', url]);
+      push(['trackPageView']);
     }
   }, [pathname, searchParams]);
 
