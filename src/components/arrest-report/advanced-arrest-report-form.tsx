@@ -54,7 +54,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     const { modifiers, presets, userModified, narrative: persistentNarrative, setModifiersState, setNarrativeField, setPreset, setUserModified } = useAdvancedReportModifiersStore();
 
     const { report: charges, penalCode } = useChargeStore();
-    const { officers: officersFromStore, predefinedOfficers, updateOfficer: updateOfficerInStore, alternativeCharacters, swapOfficer: swapOfficerInStore } = useOfficerStore();
+    const { officers: officersFromStore, predefinedOfficers, updateOfficer: updateOfficerInStore, alternativeCharacters, swapOfficer: swapOfficerInStore, setInitialOfficers } = useOfficerStore();
     const { predefinedCallsigns, defaultCallsignId } = useSettingsStore();
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
@@ -442,10 +442,15 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     };
 
     const isInitialLoad = useRef(true);
+
+    useEffect(() => {
+        setInitialOfficers();
+    }, [setInitialOfficers]);
+
     useEffect(() => {
         const defaultCallsign = predefinedCallsigns.find(c => c.id === defaultCallsignId)?.value || '';
 
-        if (isInitialLoad.current) {
+        if (isInitialLoad.current && (officersFromStore.length > 0 || predefinedOfficers.length > 0)) {
             const mergedFormData: FormState = {
                 ...sessionFormData,
                 modifiers: { ...modifiers, ...sessionFormData.modifiers },
@@ -453,37 +458,46 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 userModified: { ...userModified, ...sessionFormData.userModified },
                 narrative: { ...persistentNarrative, ...sessionFormData.narrative },
             };
-    
+
             if (!mergedFormData.officers || mergedFormData.officers.length === 0) {
-                 if (predefinedOfficers.length > 0) {
-                    mergedFormData.officers = predefinedOfficers.map(o => ({...o, callSign: defaultCallsign}));
+                if (officersFromStore.length > 0) {
+                    mergedFormData.officers = officersFromStore.map(o => ({ ...o, callSign: o.callSign || defaultCallsign }));
+                } else if (predefinedOfficers.length > 0) {
+                    mergedFormData.officers = predefinedOfficers.map(o => ({ ...o, callSign: defaultCallsign }));
                 } else {
-                    const defaultOfficer = officersFromStore.length > 0 ? { ...officersFromStore[0] } : { id: Date.now(), name: '', rank: '', department: '', badgeNumber: '' };
-                    if (defaultOfficer) {
-                        defaultOfficer.callSign = defaultCallsign;
-                    }
-                    mergedFormData.officers = [defaultOfficer as FormOfficer];
+                    mergedFormData.officers = [{
+                        id: Date.now(),
+                        name: '',
+                        rank: '',
+                        department: '',
+                        badgeNumber: '',
+                        callSign: defaultCallsign,
+                    }];
                 }
             } else {
-                 const defaultOfficerFromStore = officersFromStore.find(o => o.id === mergedFormData.officers[0].id);
-                 if(defaultOfficerFromStore) {
-                     mergedFormData.officers[0] = { ...defaultOfficerFromStore, ...mergedFormData.officers[0], callSign: defaultCallsign };
-                 }
+                const defaultOfficerFromStore = officersFromStore.find(o => o.id === mergedFormData.officers[0].id);
+                if (defaultOfficerFromStore) {
+                    mergedFormData.officers[0] = {
+                        ...defaultOfficerFromStore,
+                        ...mergedFormData.officers[0],
+                        callSign: defaultCallsign,
+                    };
+                }
             }
 
             if (!mergedFormData.persons || mergedFormData.persons.length === 0) {
                 mergedFormData.persons = [{ name: '', sex: '', gang: '' }];
             }
 
-            if(!mergedFormData.incident.date) mergedFormData.incident.date = formatInTimeZone(new Date(), 'UTC', 'dd/MMM/yyyy').toUpperCase();
-            if(!mergedFormData.incident.time) mergedFormData.incident.time = formatInTimeZone(new Date(), 'UTC', 'HH:mm');
-            
+            if (!mergedFormData.incident.date) mergedFormData.incident.date = formatInTimeZone(new Date(), 'UTC', 'dd/MMM/yyyy').toUpperCase();
+            if (!mergedFormData.incident.time) mergedFormData.incident.time = formatInTimeZone(new Date(), 'UTC', 'HH:mm');
+
             if (!mergedFormData.evidenceLogs || mergedFormData.evidenceLogs.length === 0) {
-                mergedFormData.evidenceLogs = [{logNumber: '', description: '', quantity: '1'}];
+                mergedFormData.evidenceLogs = [{ logNumber: '', description: '', quantity: '1' }];
             }
-    
+
             reset(mergedFormData);
-            
+
             isInitialLoad.current = false;
         }
     }, [reset, sessionFormData, modifiers, presets, userModified, persistentNarrative, officersFromStore, predefinedOfficers, predefinedCallsigns, defaultCallsignId]);
@@ -773,13 +787,21 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                                 control={control}
                                 render={({ field: { onChange, value } }) => (
                                     <div className="relative flex items-center">
-                                        <Combobox
-                                            options={predefinedCallsigns.map(c => c.value)}
-                                            value={value || ''}
-                                            onChange={onChange}
-                                            placeholder="Select or type..."
-                                            className="w-full"
-                                        />
+                                        {predefinedCallsigns.length > 0 ? (
+                                            <Combobox
+                                                options={predefinedCallsigns.map(c => c.value)}
+                                                value={value || ''}
+                                                onChange={onChange}
+                                                placeholder="Select or type..."
+                                                className="w-full"
+                                            />
+                                        ) : (
+                                            <Input
+                                                placeholder="CALL SIGN"
+                                                value={value || ''}
+                                                onChange={(e) => onChange(e.target.value)}
+                                            />
+                                        )}
                                     </div>
                                 )}
                             />

@@ -260,7 +260,11 @@ export const useOfficerStore = create<OfficerState>()(
       {
         name: 'officer-storage',
         storage: createJSONStorage(() => sessionStorage), 
-        partialize: (state) => ({ officers: state.officers }),
+        partialize: (state) => ({
+          officers: state.officers,
+          alternativeCharacters: state.alternativeCharacters,
+          predefinedOfficers: state.predefinedOfficers,
+        }),
       }
     )
   );
