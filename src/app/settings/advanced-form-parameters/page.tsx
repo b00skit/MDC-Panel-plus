@@ -19,15 +19,10 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
 import { User, IdCard, ShieldEllipsis as ShieldIcon, Plus, Trash2, BookUser } from 'lucide-react';
-import type { Metadata } from 'next';
 
 interface DeptRanks {
   [department: string]: string[];
 }
-
-export const metadata: Metadata = {
-    title: 'Advanced Form Parameters',
-};
 
 export default function AdvancedFormParametersPage() {
     const { toast } = useToast();
