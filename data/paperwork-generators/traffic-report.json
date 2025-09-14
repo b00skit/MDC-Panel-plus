@@ -67,7 +67,7 @@
             "showClass": true,
             "showOffense": true,
             "allowedTypes": { "M": false, "I": true },
-            "allowedIds": "401-433",
+            "allowedIds": "401-429,436-442",
             "customFields": [
                 {
                     "type": "text",
