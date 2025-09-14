@@ -62,7 +62,7 @@ interface PaperworkChargeFieldProps {
   };
 }
 
-const CopyablePreviewField = ({ label, value, highlight = false }: { label: string, value: string | number, highlight?: boolean }) => {
+const CopyablePreviewField = ({ label, value, highlight = false, formatAsCurrency = true }: { label: string, value: string | number, highlight?: boolean, formatAsCurrency?: boolean }) => {
     const { toast } = useToast();
 
     const handleCopy = () => {
@@ -78,7 +78,7 @@ const CopyablePreviewField = ({ label, value, highlight = false }: { label: stri
             <div className="flex items-center gap-2">
                 <Input
                     readOnly
-                    value={typeof value === 'number' ? `$${value.toLocaleString()}` : value}
+                    value={formatAsCurrency && typeof value === 'number' ? `$${value.toLocaleString()}` : value}
                     className={cn('h-8 text-xs bg-card', highlight && 'font-semibold text-primary')}
                     disabled
                 />
@@ -120,15 +120,15 @@ const ChargePreview = ({ charge, config, offense }: { charge: Charge, config: Pa
 
     return (
         <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-            {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} />}
+            {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} formatAsCurrency={false} />}
             {config.previewFields?.fine && (
                 <>
                     <CopyablePreviewField label="Min Fine" value={isDrugCharge ? 'Varies' : fineRange.min} highlight />
                     <CopyablePreviewField label="Max Fine" value={isDrugCharge ? 'Varies' : fineRange.max} highlight />
                 </>
             )}
-            {config.previewFields?.impound && impoundValue > 0 && <CopyablePreviewField label="Impound (Days)" value={impoundValue} highlight />}
-            {config.previewFields?.suspension && suspensionValue > 0 && <CopyablePreviewField label="Suspension (Days)" value={suspensionValue} highlight />}
+            {config.previewFields?.impound && impoundValue > 0 && <CopyablePreviewField label="Impound (Days)" value={impoundValue} highlight formatAsCurrency={false} />}
+            {config.previewFields?.suspension && suspensionValue > 0 && <CopyablePreviewField label="Suspension (Days)" value={suspensionValue} highlight formatAsCurrency={false} />}
         </div>
     );
 };
