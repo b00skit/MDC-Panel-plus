@@ -58,7 +58,7 @@ interface PaperworkChargeFieldProps {
         impound?: boolean;
         suspension?: boolean;
     };
-    copyCharge?: boolean;
+    copyable_charge?: boolean;
   };
 }
 
@@ -78,7 +78,7 @@ const CopyablePreviewField = ({ label, value, highlight = false }: { label: stri
             <div className="flex items-center gap-2">
                 <Input
                     readOnly
-                    value={value}
+                    value={typeof value === 'number' ? `$${value.toLocaleString()}` : value}
                     className={cn('h-8 text-xs bg-card', highlight && 'font-semibold text-primary')}
                     disabled
                 />
@@ -103,21 +103,30 @@ const ChargePreview = ({ charge, config, offense }: { charge: Charge, config: Pa
         return parts.join(' ');
     };
     
-    const getFine = (fineObj: any, offense: string) => {
-        if (!fineObj) return '0';
-        if(isDrugCharge) return 'Varies';
-        return fineObj[offense as keyof typeof fineObj] || '0';
+    const getFineRange = (fineObj: any) => {
+        if (!fineObj || typeof fineObj !== 'object') return { min: 0, max: 0 };
+        const fines = Object.values(fineObj).filter(v => typeof v === 'number') as number[];
+        if (fines.length === 0) return { min: 0, max: 0 };
+        return {
+            min: Math.min(...fines),
+            max: Math.max(...fines),
+        };
     }
 
     const sentenceValue = isDrugCharge ? 'Varies' : `${formatTime(charge.time)} - ${formatTime(charge.maxtime)}`;
-    const fineValue = getFine(charge.fine, offense);
+    const fineRange = getFineRange(charge.fine);
     const impoundValue = charge.impound[offense as keyof typeof charge.impound] || 0;
     const suspensionValue = charge.suspension[offense as keyof typeof charge.suspension] || 0;
 
     return (
-        <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
             {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} />}
-            {config.previewFields?.fine && <CopyablePreviewField label="Fine" value={fineValue} highlight />}
+            {config.previewFields?.fine && (
+                <>
+                    <CopyablePreviewField label="Min Fine" value={isDrugCharge ? 'Varies' : fineRange.min} highlight />
+                    <CopyablePreviewField label="Max Fine" value={isDrugCharge ? 'Varies' : fineRange.max} highlight />
+                </>
+            )}
             {config.previewFields?.impound && impoundValue > 0 && <CopyablePreviewField label="Impound (Days)" value={impoundValue} highlight />}
             {config.previewFields?.suspension && suspensionValue > 0 && <CopyablePreviewField label="Suspension (Days)" value={suspensionValue} highlight />}
         </div>
@@ -222,20 +231,11 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     <div className="space-y-4">
       {fields.map((field, index) => {
         const chargeDetails = getChargeDetails(watch(`${config.name}.${index}.chargeId`));
-        const isDrugCharge = !!chargeDetails?.drugs;
         const offenseValue = watch(`${config.name}.${index}.offense`) || '1';
 
         const handleCopyCharge = () => {
             if (!chargeDetails) return;
             let text = `${chargeDetails.id}. ${chargeDetails.charge}`;
-            if (config.previewFields?.fine && chargeDetails.fine) {
-                const fines = Object.values(chargeDetails.fine).filter((v: any) => typeof v === 'number');
-                if (fines.length > 0) {
-                    const minFine = Math.min(...fines);
-                    const maxFine = Math.max(...fines);
-                    // text += ` - $${minFine.toLocaleString()} / $${maxFine.toLocaleString()}`;
-                }
-            }
             navigator.clipboard.writeText(text);
             toast({ title: 'Copied!', description: 'Charge copied to clipboard.' });
         };
@@ -344,7 +344,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                         ))}
 
                     </div>
-                    {config.copyCharge && chargeDetails && (
+                    {config.copyable_charge && chargeDetails && (
                         <Button type="button" variant="outline" size="icon" onClick={handleCopyCharge} className="h-9 w-9">
                             <Copy className="h-5 w-5" />
                         </Button>
