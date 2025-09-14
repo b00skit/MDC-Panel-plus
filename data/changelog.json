@@ -1,6 +1,25 @@
 {
     "changelogs": [
         {
+            "version": "3.3.1",
+            "type": "Minor Update",
+            "date": "2025-09-14",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added the ability to copy the charge directly in a traffic report as you're making it, making it easier to issue traffic citations."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Bumped Next version to 15.5.2."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed an issue with the advanced arrest reports displaying \"Officers\" for the LSSD and \"Deputies\" for the LSPD."
+                }
+            ]
+        },
+        {
             "version": "3.3.0",
             "type": "Major Update",
             "date": "2025-09-05",
