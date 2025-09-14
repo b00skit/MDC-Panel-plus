@@ -57,7 +57,8 @@ interface PaperworkChargeFieldProps {
         fine?: boolean;
         impound?: boolean;
         suspension?: boolean;
-    }
+    };
+    copyCharge?: boolean;
   };
 }
 
@@ -129,9 +130,10 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
     control,
     name: config.name,
   });
-  
+
   const [openChargeSelector, setOpenChargeSelector] = React.useState<number | null>(null);
   const [filteredPenalCode, setFilteredPenalCode] = React.useState<Charge[]>([]);
+  const { toast } = useToast();
 
   React.useEffect(() => {
     if (!penalCode) {
@@ -222,6 +224,21 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
         const chargeDetails = getChargeDetails(watch(`${config.name}.${index}.chargeId`));
         const isDrugCharge = !!chargeDetails?.drugs;
         const offenseValue = watch(`${config.name}.${index}.offense`) || '1';
+
+        const handleCopyCharge = () => {
+            if (!chargeDetails) return;
+            let text = `${chargeDetails.id}. ${chargeDetails.charge}`;
+            if (config.previewFields?.fine && chargeDetails.fine) {
+                const fines = Object.values(chargeDetails.fine).filter((v: any) => typeof v === 'number');
+                if (fines.length > 0) {
+                    const minFine = Math.min(...fines);
+                    const maxFine = Math.max(...fines);
+                    // text += ` - $${minFine.toLocaleString()} / $${maxFine.toLocaleString()}`;
+                }
+            }
+            navigator.clipboard.writeText(text);
+            toast({ title: 'Copied!', description: 'Charge copied to clipboard.' });
+        };
 
         return (
             <div key={field.id} className="p-4 border rounded-lg">
@@ -327,6 +344,11 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                         ))}
 
                     </div>
+                    {config.copyCharge && chargeDetails && (
+                        <Button type="button" variant="outline" size="icon" onClick={handleCopyCharge} className="h-9 w-9">
+                            <Copy className="h-5 w-5" />
+                        </Button>
+                    )}
                     <Button variant="ghost" size="icon" onClick={() => remove(index)} className="text-red-500 hover:text-red-700 h-9 w-9">
                         <Trash2 className="h-5 w-5" />
                     </Button>

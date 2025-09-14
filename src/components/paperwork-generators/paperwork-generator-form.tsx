@@ -68,7 +68,8 @@ type FormField = {
         fine?: boolean;
         impound?: boolean;
         suspension?: boolean;
-    }
+    };
+    copyable_charge?: boolean;
     // Location field specific config
     showDistrict?: boolean;
     // Textarea with preset
@@ -547,6 +548,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
                             allowedIds: field.allowedIds,
                             customFields: field.customFields,
                             previewFields: field.previewFields,
+                            copyCharge: field.copyable_charge,
                         }}
                     />
                 )

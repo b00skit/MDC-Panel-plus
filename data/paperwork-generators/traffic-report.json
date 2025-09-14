@@ -76,12 +76,13 @@
                     "placeholder": "Fine Amount"
                 }
             ],
-            "previewFields": {
-                "fine": true,
-                "impound": true,
-                "suspension": true
-            }
-        },
+              "previewFields": {
+                  "fine": true,
+                  "impound": true,
+                  "suspension": true
+              },
+              "copyable_charge": true
+          },
         { "type": "section", "title": "Evidence" },
         {
             "type": "group",

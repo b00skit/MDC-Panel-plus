@@ -37,7 +37,8 @@ export type Field = {
         fine?: boolean;
         impound?: boolean;
         suspension?: boolean;
-    }
+    };
+    copyableCharge?: boolean;
 };
 
 export type ConditionalVariable = {
