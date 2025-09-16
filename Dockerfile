@@ -1,32 +1,13 @@
-# Stage 1: Install dependencies
-FROM node:20-alpine AS deps
+# Install dependencies and prepare runtime
+FROM node:20-alpine
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
-
-# Stage 2: Build the application
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
-
-# Stage 3: Production image
-FROM node:20-alpine AS runner
-WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Make sure /public/data exists before copying
-RUN mkdir -p /app/public/data
-
-# Copy built assets from the builder stage
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/data ./data
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
 EXPOSE 3003
 
-CMD ["npm", "start", "--", "-p", "3003"]
+# Build, migrate, and start the application at container startup
+CMD ["sh", "-c", "npm run build && npm start -- -p 3003"]

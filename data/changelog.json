@@ -16,6 +16,10 @@
                 {
                     "type": "fix",
                     "description": "<b>Paperwork Generators:</b> Fixed an issue with the advanced arrest report incorrectly displaying deputies and officers, not to be confused with the report."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Simplified the Dockerfile, ensuring the build phase works within the actual docker container."
                 }
             ]
         },
