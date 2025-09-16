@@ -744,7 +744,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 <TableRow className="h-3" />
                 <TableRow>
                   <TableHead className="bg-secondary h-12" colSpan={5}>
-                    HANDLING {isLSSD ? 'OFFICER(S)' : 'DEPUTIES'}
+                    HANDLING {isLSSD ? 'DEPUTIES' : 'OFFICER(S)'}
                   </TableHead>
                 </TableRow>
                 <TableRow>
@@ -842,7 +842,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
                     <Button className="w-full" type="button" onClick={onAddOfficerClick}>
-                      <CirclePlus className="mr-2 h-4 w-4" /> ADD OFFICER
+                      <CirclePlus className="mr-2 h-4 w-4" /> ADD {isLSSD ? 'DEPUTY' : 'OFFICER'}
                     </Button>
                   </TableCell>
                 </TableRow>
