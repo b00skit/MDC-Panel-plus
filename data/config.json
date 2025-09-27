@@ -1,7 +1,7 @@
 {
     "SITE_LIVE": true,
     "SITE_NAME": "MDC Panel+",
-    "SITE_VERSION": "3.3.2",
+    "SITE_VERSION": "3.3.2.01",
     "CACHE_VERSION": "elevator-stuf-1",
     "LOCAL_STORAGE_VERSION": "cookie-apxn-1",
     "SITE_LOGO": "/img/logos/MDC-Panel.svg",

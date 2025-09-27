@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.3.2.01",
+            "type": "Hotfix",
+            "date": "2025-09-28",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Fixed a variable name that caused a button to not appear for copying the charges on the traffic report & parking tickets."
+                }
+            ]
+        },
+        {
             "version": "3.3.2",
             "type": "Minor Update",
             "date": "2025-09-27",
