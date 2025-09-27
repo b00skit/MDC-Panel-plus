@@ -61,7 +61,7 @@ interface PaperworkChargeFieldProps {
         impound?: boolean;
         suspension?: boolean;
     };
-    copyable_charge?: boolean;
+    copyCharge?: boolean;
   };
 }
 
@@ -409,7 +409,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                         ))}
 
                     </div>
-                    {config.copyable_charge && chargeDetails && (
+                    {config.copyCharge && chargeDetails && (
                         <Button type="button" variant="outline" size="icon" onClick={handleCopyCharge} className="h-9 w-9">
                             <Copy className="h-5 w-5" />
                         </Button>
