@@ -66,7 +66,7 @@
             "name": "charges",
             "showClass": true,
             "allowedTypes": { "M": true, "I": true },
-            "allowedIds": "401-429,436-442",
+            "allowedIds": "401-429,435-442",
             "customFields": [
                 {
                     "type": "text",
