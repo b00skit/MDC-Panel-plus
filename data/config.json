@@ -13,6 +13,8 @@
     "BETA_ENABLED": false,
     "BETA_CODE": "cookies-beta",
     "MAX_SENTENCE_DAYS": 25,
+    "MAX_IMPOUND_DAYS": 35,
+    "MAX_SUSPENSION_DAYS": 35,
     "CONTENT_DELIVERY_NETWORK": "https://sys.booskit.dev/cdn/serve.php",
     "URL_GITHUB": "https://github.com/b00skit/MDC-Panel-plus",
     "URL_DISCORD": "https://discord.gg/rxfYd23TNz",

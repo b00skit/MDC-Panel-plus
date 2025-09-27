@@ -22,11 +22,9 @@ export interface ChargeResult {
 }
 
 export interface CalculationTotals {
-  original: { minTime: number; maxTime: number; points: number };
-  modified: { minTime: number; maxTime: number; points: number };
+  original: { minTime: number; maxTime: number; points: number, impound: number, suspension: number };
+  modified: { minTime: number; maxTime: number; points: number, impound: number, suspension: number };
   fine: number;
-  impound: number;
-  suspension: number;
   bailStatus: { eligible: boolean; discretionary: boolean; noBail: boolean; hasBailCharge: boolean };
   highestBail: number;
 }
@@ -39,6 +37,10 @@ export interface ArrestCalculation {
   minTimeCapped: number;
   maxTimeCapped: number;
   isCapped: boolean;
+  impoundCapped: number;
+  isImpoundCapped: boolean;
+  suspensionCapped: number;
+  isSuspensionCapped: boolean;
 }
 
 export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestCalculation> {
@@ -133,8 +135,15 @@ export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestC
       acc.modified.points += result.modified.points;
 
       acc.fine += result.fine;
-      acc.impound += result.impound;
-      acc.suspension += result.suspension;
+      
+      const impound = result.impound * (result.additionDetails?.sentence_multiplier ?? 1);
+      const suspension = result.suspension * (result.additionDetails?.sentence_multiplier ?? 1);
+      
+      acc.original.impound += result.impound;
+      acc.original.suspension += result.suspension;
+      acc.modified.impound += impound;
+      acc.modified.suspension += suspension;
+
 
       if (result.bailAuto !== null) {
         acc.bailStatus.hasBailCharge = true;
@@ -149,11 +158,9 @@ export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestC
       return acc;
     },
     {
-      original: { minTime: 0, maxTime: 0, points: 0 },
-      modified: { minTime: 0, maxTime: 0, points: 0 },
+      original: { minTime: 0, maxTime: 0, points: 0, impound: 0, suspension: 0 },
+      modified: { minTime: 0, maxTime: 0, points: 0, impound: 0, suspension: 0 },
       fine: 0,
-      impound: 0,
-      suspension: 0,
       bailStatus: { eligible: false, discretionary: false, noBail: false, hasBailCharge: false },
       highestBail: 0,
     } as CalculationTotals
@@ -172,6 +179,11 @@ export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestC
   const maxTimeCapped = Math.min(totals.modified.maxTime, maxSentenceMinutes);
   const isCapped = totals.modified.minTime > maxSentenceMinutes || totals.modified.maxTime > maxSentenceMinutes;
 
+  const impoundCapped = Math.min(totals.modified.impound, config.MAX_IMPOUND_DAYS);
+  const isImpoundCapped = totals.modified.impound > config.MAX_IMPOUND_DAYS;
+  const suspensionCapped = Math.min(totals.modified.suspension, config.MAX_SUSPENSION_DAYS);
+  const isSuspensionCapped = totals.modified.suspension > config.MAX_SUSPENSION_DAYS;
+
   return {
     calculationResults,
     extras,
@@ -180,6 +192,9 @@ export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestC
     minTimeCapped,
     maxTimeCapped,
     isCapped,
+    impoundCapped,
+    isImpoundCapped,
+    suspensionCapped,
+    isSuspensionCapped,
   };
 }
-

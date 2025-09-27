@@ -216,7 +216,7 @@ export function ArrestCalculatorResults({
     );
   }
 
-  const { calculationResults, extras, totals, bailStatus, minTimeCapped, maxTimeCapped, isCapped } = data;
+  const { calculationResults, extras, totals, bailStatus, minTimeCapped, maxTimeCapped, isCapped, impoundCapped, isImpoundCapped, suspensionCapped, isSuspensionCapped } = data;
 
   const formatTotalTime = (totalMinutes: number) => {
     if (totalMinutes === 0) return '0 minutes';
@@ -476,7 +476,7 @@ export function ArrestCalculatorResults({
               <CardTitle>Summary</CardTitle>
             </CardHeader>
             <CardContent>
-              {isCapped && (
+               {isCapped && (
                 <Alert variant="warning" className="mb-4">
                   <AlertTriangle className="h-4 w-4" />
                   <AlertTitle>Sentence Capped</AlertTitle>
@@ -486,6 +486,24 @@ export function ArrestCalculatorResults({
                     <b>Original Min Time:</b> {formatTotalTime(totals.modified.minTime)}
                     <br />
                     <b>Original Max Time:</b> {formatTotalTime(totals.modified.maxTime)}
+                  </AlertDescription>
+                </Alert>
+              )}
+               {isImpoundCapped && (
+                 <Alert variant="warning" className="mb-4">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTitle>Impound Capped</AlertTitle>
+                  <AlertDescription>
+                    The total impound time has been capped at {config.MAX_IMPOUND_DAYS} days. The original uncapped total was {Math.round(totals.modified.impound)} days.
+                  </AlertDescription>
+                </Alert>
+              )}
+               {isSuspensionCapped && (
+                 <Alert variant="warning" className="mb-4">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTitle>Suspension Capped</AlertTitle>
+                  <AlertDescription>
+                     The total suspension time has been capped at {config.MAX_SUSPENSION_DAYS} days. The original uncapped total was {Math.round(totals.modified.suspension)} days.
                   </AlertDescription>
                 </Alert>
               )}
@@ -553,8 +571,8 @@ export function ArrestCalculatorResults({
                       </div>
                     </TableCell>
                     <TableCell>${totals.fine.toLocaleString()}</TableCell>
-                    <TableCell>{totals.impound > 0 ? `${totals.impound} Day(s)` : 'No'}</TableCell>
-                    <TableCell>{totals.suspension > 0 ? `${totals.suspension} Day(s)` : 'No'}</TableCell>
+                    <TableCell>{impoundCapped > 0 ? `${Math.round(impoundCapped)} Day(s)` : 'No'}</TableCell>
+                    <TableCell>{suspensionCapped > 0 ? `${Math.round(suspensionCapped)} Day(s)` : 'No'}</TableCell>
                     <TableCell>
                       {(() => {
                         if (bailStatus === 'NOT ELIGIBLE') return <Badge variant="destructive">NOT ELIGIBLE</Badge>;
@@ -575,8 +593,8 @@ export function ArrestCalculatorResults({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <CopyableCard label="Min Minutes" value={Math.round(minTimeCapped)} tooltipContent={hasAnyModifiers ? `Original: ${Math.round(totals.original.minTime)}` : undefined} />
             <CopyableCard label="Max Minutes" value={Math.round(maxTimeCapped)} tooltipContent={hasAnyModifiers ? `Original: ${Math.round(totals.original.maxTime)}` : undefined} />
-            <CopyableCard label="Total Impound (Days)" value={totals.impound} />
-            <CopyableCard label="Total Suspension (Days)" value={totals.suspension} />
+            <CopyableCard label="Total Impound (Days)" value={Math.round(impoundCapped)} />
+            <CopyableCard label="Total Suspension (Days)" value={Math.round(suspensionCapped)} />
             <CopyableCard label="Bail Cost" value={totals.highestBail} />
           </div>
         )}
