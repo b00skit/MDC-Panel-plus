@@ -22,6 +22,7 @@ interface SettingsState {
   predefinedCallsigns: PredefinedCallsign[];
   defaultCallsignId: number | null;
   analyticsOptOut: boolean;
+  experimentalFeatures: string[];
   toggleFactionVisibility: (groupId: string) => void;
   setFactionGroups: (groups: FactionGroup[]) => void;
   toggleHiddenGroupVisibility: (groupId: string) => void;
@@ -30,6 +31,7 @@ interface SettingsState {
   updateCallsign: (id: number, value: string) => void;
   setDefaultCallsignId: (id: number | null) => void;
   toggleAnalytics: () => void;
+  toggleExperimentalFeature: (feature: string) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -41,6 +43,7 @@ export const useSettingsStore = create<SettingsState>()(
       predefinedCallsigns: [],
       defaultCallsignId: null,
       analyticsOptOut: false,
+      experimentalFeatures: [],
       toggleFactionVisibility: (groupId: string) => {
         const { hiddenFactions } = get();
         const newHiddenFactions = hiddenFactions.includes(groupId)
@@ -83,6 +86,15 @@ export const useSettingsStore = create<SettingsState>()(
       },
       toggleAnalytics: () => {
         set(state => ({ analyticsOptOut: !state.analyticsOptOut }));
+      },
+      toggleExperimentalFeature: (feature: string) => {
+        set(state => {
+            const currentFeatures = state.experimentalFeatures;
+            const newFeatures = currentFeatures.includes(feature)
+                ? currentFeatures.filter(f => f !== feature)
+                : [...currentFeatures, feature];
+            return { experimentalFeatures: newFeatures };
+        });
       }
     }),
     {
@@ -94,6 +106,7 @@ export const useSettingsStore = create<SettingsState>()(
         predefinedCallsigns: state.predefinedCallsigns,
         defaultCallsignId: state.defaultCallsignId,
         analyticsOptOut: state.analyticsOptOut,
+        experimentalFeatures: state.experimentalFeatures,
       }),
     }
   )

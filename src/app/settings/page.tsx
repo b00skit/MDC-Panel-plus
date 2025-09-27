@@ -30,7 +30,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart, Settings2, AlertTriangle } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart, Settings2, AlertTriangle, FlaskConical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -162,6 +162,8 @@ export default function SettingsPage() {
     analyticsOptOut,
     toggleAnalytics,
     factionGroups,
+    experimentalFeatures,
+    toggleExperimentalFeature
   } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
@@ -621,6 +623,31 @@ export default function SettingsPage() {
                         id="analytics-opt-out"
                         checked={!analyticsOptOut}
                         onCheckedChange={toggleAnalytics}
+                    />
+                </div>
+            </CardContent>
+        </Card>
+        
+         <Card>
+            <CardHeader>
+                <CardTitle>Experimental Features</CardTitle>
+                <CardDescription>
+                    Opt-in to try new features that are still in development. These may be unstable.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                        <FlaskConical className="h-5 w-5 text-muted-foreground" />
+                        <Label htmlFor="experimental-ai-reports" className="text-base flex flex-col">
+                            AI Arrest Reports
+                           <span className="text-xs text-muted-foreground">Shows AI features on the Basic Arrest Report, which can help with writing arrest reports for anyone who pled guilty.</span>
+                        </Label>
+                    </div>
+                    <Switch
+                        id="experimental-ai-reports"
+                        checked={experimentalFeatures.includes('ai_arrest_reports')}
+                        onCheckedChange={() => toggleExperimentalFeature('ai_arrest_reports')}
                     />
                 </div>
             </CardContent>
