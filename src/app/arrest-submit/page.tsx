@@ -3,7 +3,7 @@
 
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Clipboard, Info, ExternalLink } from 'lucide-react';
+import { Clipboard, Info, ExternalLink, Car } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -160,8 +160,9 @@ function ArrestSubmitContent() {
                   </Button>
                 )}
               {showQuickCreateImpound && (
-                  <Button asChild>
+                  <Button variant="secondary" asChild>
                       <a href="/paperwork-generators/form?type=static&id=impound-report&prefill=basic-arrest-report">
+                          <Car className="mr-2 h-4 w-4" />
                           Quick-Create Impound Report
                       </a>
                   </Button>
