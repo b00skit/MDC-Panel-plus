@@ -65,36 +65,66 @@ interface PaperworkChargeFieldProps {
   };
 }
 
-const CopyablePreviewField = ({ label, value, highlight = false, formatAsCurrency = false }: { label: string, value: string | number, highlight?: boolean, formatAsCurrency?: boolean }) => {
+const CopyablePreviewField = ({
+    label,
+    value,
+    highlight = false,
+    formatAsCurrency = false,
+  }: {
+    label: string;
+    value: string | number;
+    highlight?: boolean;
+    formatAsCurrency?: boolean;
+  }) => {
     const { toast } = useToast();
-
+  
     const handleCopy = () => {
-        navigator.clipboard.writeText(value.toString());
-        toast({
-            title: "Copied!",
-            description: `${label} copied to clipboard.`
-        })
-    }
-
-    const displayValue = (typeof value === 'number' && formatAsCurrency) ? `$${value.toLocaleString()}` : value;
-    
+      navigator.clipboard.writeText(value.toString());
+      toast({
+        title: 'Copied!',
+        description: `${label} copied to clipboard.`,
+      });
+    };
+  
+    // Never format as currency for impound/suspension
+    const isDurationOrDays =
+      /impound|suspension/i.test(label);
+  
+    const shouldFormatAsCurrency =
+      !isDurationOrDays &&
+      typeof value === 'number' &&
+      formatAsCurrency;
+  
+    const displayValue = shouldFormatAsCurrency
+      ? `$${value.toLocaleString()}`
+      : value;
+  
     return (
-        <div className="space-y-1">
-            <Label className="text-xs">{label}</Label>
-            <div className="flex items-center gap-2">
-                <Input
-                    readOnly
-                    value={displayValue}
-                    className={cn('h-8 text-xs bg-card', highlight && 'font-semibold text-primary')}
-                    disabled
-                />
-                <Button type="button" variant="outline" size="icon" className="h-8 w-8" onClick={handleCopy}>
-                    <Copy className="h-4 w-4" />
-                </Button>
-            </div>
+      <div className="space-y-1">
+        <Label className="text-xs">{label}</Label>
+        <div className="flex items-center gap-2">
+          <Input
+            readOnly
+            value={displayValue}
+            className={cn(
+              'h-8 text-xs bg-card',
+              highlight && 'font-semibold text-primary'
+            )}
+            disabled
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={handleCopy}
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
         </div>
+      </div>
     );
-};
+  };
 
 
 const ChargePreview = ({ charge, config, offense }: { charge: Charge, config: PaperworkChargeFieldProps['config'], offense: string }) => {
