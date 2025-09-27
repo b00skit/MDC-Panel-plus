@@ -14,12 +14,15 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, ChevronsUpDown, Check, Copy } from 'lucide-react';
+import { Plus, Trash2, ChevronsUpDown, Check, Copy, Asterisk } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { type Charge, type PenalCode } from '@/stores/charge-store';
 import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
+import configData from '../../../data/config.json';
+
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -58,11 +61,11 @@ interface PaperworkChargeFieldProps {
         impound?: boolean;
         suspension?: boolean;
     };
-    copyCharge?: boolean;
+    copyable_charge?: boolean;
   };
 }
 
-const CopyablePreviewField = ({ label, value, highlight = false }: { label: string, value: string | number, highlight?: boolean }) => {
+const CopyablePreviewField = ({ label, value, highlight = false, formatAsCurrency = false }: { label: string, value: string | number, highlight?: boolean, formatAsCurrency?: boolean }) => {
     const { toast } = useToast();
 
     const handleCopy = () => {
@@ -72,13 +75,16 @@ const CopyablePreviewField = ({ label, value, highlight = false }: { label: stri
             description: `${label} copied to clipboard.`
         })
     }
+
+    const displayValue = (typeof value === 'number' && formatAsCurrency) ? `$${value.toLocaleString()}` : value;
+    
     return (
         <div className="space-y-1">
             <Label className="text-xs">{label}</Label>
             <div className="flex items-center gap-2">
                 <Input
                     readOnly
-                    value={typeof value === 'number' ? `$${value.toLocaleString()}` : value}
+                    value={displayValue}
                     className={cn('h-8 text-xs bg-card', highlight && 'font-semibold text-primary')}
                     disabled
                 />
@@ -115,21 +121,50 @@ const ChargePreview = ({ charge, config, offense }: { charge: Charge, config: Pa
 
     const sentenceValue = isDrugCharge ? 'Varies' : `${formatTime(charge.time)} - ${formatTime(charge.maxtime)}`;
     const fineRange = getFineRange(charge.fine);
-    const impoundValue = charge.impound[offense as keyof typeof charge.impound] || 0;
-    const suspensionValue = charge.suspension[offense as keyof typeof charge.suspension] || 0;
+    
+    const originalImpoundValue = charge.impound?.[offense as keyof typeof charge.impound] || 0;
+    const impoundCapped = Math.min(originalImpoundValue, configData.MAX_IMPOUND_DAYS);
+    const isImpoundCapped = originalImpoundValue > configData.MAX_IMPOUND_DAYS;
+
+    const originalSuspensionValue = charge.suspension?.[offense as keyof typeof charge.suspension] || 0;
+    const suspensionCapped = Math.min(originalSuspensionValue, configData.MAX_SUSPENSION_DAYS);
+    const isSuspensionCapped = originalSuspensionValue > configData.MAX_SUSPENSION_DAYS;
+
 
     return (
-        <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-            {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} />}
-            {config.previewFields?.fine && (
-                <>
-                    <CopyablePreviewField label="Min Fine" value={isDrugCharge ? 'Varies' : fineRange.min} highlight />
-                    <CopyablePreviewField label="Max Fine" value={isDrugCharge ? 'Varies' : fineRange.max} highlight />
-                </>
-            )}
-            {config.previewFields?.impound && impoundValue > 0 && <CopyablePreviewField label="Impound (Days)" value={impoundValue} highlight />}
-            {config.previewFields?.suspension && suspensionValue > 0 && <CopyablePreviewField label="Suspension (Days)" value={suspensionValue} highlight />}
-        </div>
+        <TooltipProvider>
+            <div className="mt-2 p-2 border rounded-md bg-muted/50 text-xs text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                {config.previewFields?.sentence && <CopyablePreviewField label="Sentence" value={sentenceValue} />}
+                {config.previewFields?.fine && (
+                    <>
+                        <CopyablePreviewField label="Min Fine" value={isDrugCharge ? 'Varies' : fineRange.min} highlight formatAsCurrency />
+                        <CopyablePreviewField label="Max Fine" value={isDrugCharge ? 'Varies' : fineRange.max} highlight formatAsCurrency />
+                    </>
+                )}
+                {config.previewFields?.impound && originalImpoundValue > 0 && 
+                    <div className="flex items-end gap-1">
+                        <CopyablePreviewField label="Impound (Days)" value={impoundCapped} highlight />
+                        {isImpoundCapped && (
+                            <Tooltip>
+                                <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500 mb-4" /></TooltipTrigger>
+                                <TooltipContent><p>Original: {originalImpoundValue} days</p></TooltipContent>
+                            </Tooltip>
+                        )}
+                    </div>
+                }
+                {config.previewFields?.suspension && originalSuspensionValue > 0 && 
+                    <div className="flex items-end gap-1">
+                        <CopyablePreviewField label="Suspension (Days)" value={suspensionCapped} highlight />
+                         {isSuspensionCapped && (
+                            <Tooltip>
+                                <TooltipTrigger><Asterisk className="h-3 w-3 text-yellow-500 mb-4" /></TooltipTrigger>
+                                <TooltipContent><p>Original: {originalSuspensionValue} days</p></TooltipContent>
+                            </Tooltip>
+                        )}
+                    </div>
+                }
+            </div>
+        </TooltipProvider>
     );
 };
 
@@ -344,7 +379,7 @@ export function PaperworkChargeField({ control, register, watch, penalCode, conf
                         ))}
 
                     </div>
-                    {config.copyCharge && chargeDetails && (
+                    {config.copyable_charge && chargeDetails && (
                         <Button type="button" variant="outline" size="icon" onClick={handleCopyCharge} className="h-9 w-9">
                             <Copy className="h-5 w-5" />
                         </Button>
