@@ -15,6 +15,7 @@ import { Separator } from '../ui/separator';
 import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore as useBasicFormStore } from '@/stores/form-store';
+import { useChargeStore } from '@/stores/charge-store';
 import { Switch } from '../ui/switch';
 import { type PenalCode } from '@/stores/charge-store';
 import { useEffect, useState, useCallback, Suspense, useMemo } from 'react';
@@ -77,6 +78,7 @@ type FormField = {
     preset?: string;
     noLocalStorage?: boolean;
     refreshOn?: string[];
+    prefillKey?: string;
 };
 
 type GeneratorConfig = {
@@ -132,13 +134,68 @@ const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
     return defaults;
 };
 
+const mergeDeep = (target: Record<string, any>, source: Record<string, any>): Record<string, any> => {
+    Object.entries(source).forEach(([key, value]) => {
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+            if (!target[key] || typeof target[key] !== 'object' || Array.isArray(target[key])) {
+                target[key] = {};
+            }
+            mergeDeep(target[key] as Record<string, any>, value as Record<string, any>);
+        } else {
+            target[key] = value;
+        }
+    });
+    return target;
+};
+
+const setValueAtPath = (target: Record<string, any>, path: string[], value: any) => {
+    if (path.length === 0) return;
+    let current = target;
+    path.forEach((segment, index) => {
+        if (index === path.length - 1) {
+            current[segment] = value;
+        } else {
+            if (!current[segment] || typeof current[segment] !== 'object' || Array.isArray(current[segment])) {
+                current[segment] = {};
+            }
+            current = current[segment];
+        }
+    });
+};
+
+const collectPrefillValuesFromFields = (
+    fields: FormField[],
+    data: Record<string, any>,
+    parentPath: string[] = []
+): Record<string, any> => {
+    return fields.reduce((acc, field) => {
+        const currentPath = field.name ? [...parentPath, field.name] : parentPath;
+
+        if (field.prefillKey && field.name) {
+            const value = data[field.prefillKey];
+            if (value !== undefined) {
+                setValueAtPath(acc, currentPath, value);
+            }
+        }
+
+        if (field.fields) {
+            const nestedValues = collectPrefillValuesFromFields(field.fields, data, currentPath);
+            mergeDeep(acc, nestedValues);
+        }
+
+        return acc;
+    }, {} as Record<string, any>);
+};
+
 function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGeneratorFormProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
+    const defaultValues = useMemo(() => buildDefaultValues(generatorConfig.form), [generatorConfig.form]);
+
     const methods = useForm({
         criteriaMode: 'all',
-        defaultValues: buildDefaultValues(generatorConfig.form)
+        defaultValues
     });
     const { register, handleSubmit, control, watch, trigger, getValues, formState: { errors } } = methods;
 
@@ -162,9 +219,16 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     }, [errors, getValues]);
 
     const officers = useOfficerStore(state => state.officers);
-    const generalData = useBasicFormStore(state => state.formData.general);
+    const basicFormData = useBasicFormStore(state => state.formData);
+    const generalData = basicFormData.general;
 
-    const { setGeneratorData, setFormData, reset } = usePaperworkStore();
+    const { report: arrestReport, penalCode: storedPenalCode, additions } = useChargeStore(state => ({
+        report: state.report,
+        penalCode: state.penalCode,
+        additions: state.additions,
+    }));
+
+    const { setGeneratorData, setFormData, reset: resetPaperworkStore } = usePaperworkStore();
     const { toast } = useToast();
     
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
@@ -172,6 +236,98 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     const [vehicles, setVehicles] = useState<string[]>([]);
     const [vehiclesFetched, setVehiclesFetched] = useState(false);
     const [isFetchingVehicles, setIsFetchingVehicles] = useState(false);
+    const [prefillApplied, setPrefillApplied] = useState(false);
+
+    const prefillSource = searchParams.get('prefill');
+
+    const totalImpoundDays = useMemo(() => {
+        if (!storedPenalCode) return 0;
+        return (arrestReport || []).reduce((total, row) => {
+            if (!row.chargeId) return total;
+            const chargeDetails = storedPenalCode[row.chargeId];
+            if (!chargeDetails || !chargeDetails.impound) return total;
+            const offenseKey = (row.offense || '1') as keyof typeof chargeDetails.impound;
+            const baseImpound = chargeDetails.impound[offenseKey] ?? 0;
+            if (!baseImpound) return total;
+            const additionDetails = (additions || []).find(add => add.name === row.addition);
+            const multiplier = additionDetails?.sentence_multiplier ?? 1;
+            return total + baseImpound * multiplier;
+        }, 0);
+    }, [arrestReport, storedPenalCode, additions]);
+
+    const cappedImpoundDays = useMemo(() => Math.min(totalImpoundDays, configData.MAX_IMPOUND_DAYS), [totalImpoundDays]);
+
+    const chargeDescriptions = useMemo(() => {
+        if (!storedPenalCode) return [] as string[];
+        return (arrestReport || [])
+            .map(row => {
+                if (!row.chargeId) return null;
+                const charge = storedPenalCode[row.chargeId];
+                if (!charge) return null;
+                let description = `${charge.id}. ${charge.charge}`;
+                if (row.offense && row.offense !== '1') {
+                    description += ` (Offense #${row.offense})`;
+                }
+                if (charge.drugs && row.category) {
+                    description += ` (Category ${row.category})`;
+                }
+                return description;
+            })
+            .filter((value): value is string => Boolean(value));
+    }, [arrestReport, storedPenalCode]);
+
+    const computedPrefillData = useMemo(() => {
+        if (prefillSource !== 'basic-arrest-report') {
+            return null;
+        }
+
+        const suspectName = basicFormData?.arrest?.suspectName?.trim() || '';
+        const location = basicFormData?.location || { district: '', street: '' };
+        const durationValue = cappedImpoundDays > 0 ? Math.round(cappedImpoundDays).toString() : '';
+        const chargesText = chargeDescriptions.length > 0
+            ? chargeDescriptions.map(charge => `- ${charge}`).join('\n')
+            : '';
+        const driverName = suspectName || 'the suspect';
+        const reasonText = chargesText
+            ? `Vehicle was driven by ${driverName} and used in the commission of the following crimes: \n${chargesText}`
+            : '';
+
+        const payload: Record<string, any> = {
+            vehicle_owner: suspectName,
+            location: {
+                district: location.district || '',
+                street: location.street || '',
+            },
+        };
+
+        if (durationValue) {
+            payload.impound_duration = durationValue;
+        }
+
+        if (reasonText) {
+            payload.impound_reason = reasonText;
+        }
+
+        return payload;
+    }, [prefillSource, basicFormData, cappedImpoundDays, chargeDescriptions]);
+
+    const prefillValues = useMemo(() => {
+        if (!computedPrefillData) return null;
+        return collectPrefillValuesFromFields(generatorConfig.form, computedPrefillData);
+    }, [computedPrefillData, generatorConfig.form]);
+
+    useEffect(() => {
+        setPrefillApplied(false);
+    }, [generatorConfig.id, prefillSource]);
+
+    useEffect(() => {
+        if (prefillValues && Object.keys(prefillValues).length > 0 && !prefillApplied) {
+            const mergedValues = JSON.parse(JSON.stringify(defaultValues));
+            mergeDeep(mergedValues, prefillValues);
+            methods.reset(mergedValues, { keepDefaultValues: true });
+            setPrefillApplied(true);
+        }
+    }, [prefillValues, defaultValues, methods, prefillApplied]);
 
     const modifierInputGroupLookup = useMemo(() => {
         const map: Record<string, { textareaName: string; groupConfig: any }> = {};
@@ -194,8 +350,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     }, [generatorConfig.form]);
 
     useEffect(() => {
-        reset();
-    }, [generatorConfig.id, reset]);
+        resetPaperworkStore();
+    }, [generatorConfig.id, resetPaperworkStore]);
 
     useEffect(() => {
         const hasChargeField = generatorConfig.form.some(field => field.type === 'charge' || field.fields?.some(f => f.type === 'charge'));

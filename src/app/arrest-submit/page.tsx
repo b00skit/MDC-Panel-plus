@@ -4,7 +4,7 @@
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Clipboard, Info, ExternalLink } from 'lucide-react';
-import { useEffect, useState, useRef, Suspense } from 'react';
+import { useEffect, useState, useRef, Suspense, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -17,10 +17,11 @@ import { ArrestCalculatorResults } from '@/components/arrest-calculator/arrest-c
 import { BasicFormattedReport } from '@/components/arrest-report/basic-formatted-report';
 import { AdvancedFormattedReport } from '@/components/arrest-report/advanced-formatted-report';
 import { useArchiveStore } from '@/stores/archive-store';
+import configData from '../../../data/config.json';
 
 
 function ArrestSubmitContent() {
-    const { report, penalCode } = useChargeStore();
+    const { report, penalCode, additions } = useChargeStore();
     const { formData: basicFormData } = useFormStore();
     const { formData: advancedFormData } = useAdvancedReportStore();
     const { archiveReport } = useArchiveStore();
@@ -39,10 +40,38 @@ function ArrestSubmitContent() {
 
     const isBasicReport = reportType === 'basic';
     const isAdvancedReport = reportType === 'advanced';
-    
+
     const formData = isBasicReport ? basicFormData : advancedFormData;
-    
+
+    const impoundDurationDays = useMemo(() => {
+        if (!penalCode) return 0;
+        const total = report.reduce((acc, row) => {
+            if (!row.chargeId) {
+                return acc;
+            }
+
+            const chargeDetails = penalCode[row.chargeId];
+            if (!chargeDetails || !chargeDetails.impound) {
+                return acc;
+            }
+
+            const offenseKey = (row.offense || '1') as keyof typeof chargeDetails.impound;
+            const baseImpound = chargeDetails.impound[offenseKey] ?? 0;
+            if (!baseImpound) {
+                return acc;
+            }
+
+            const additionDetails = (additions || []).find(add => add.name === row.addition);
+            const multiplier = additionDetails?.sentence_multiplier ?? 1;
+
+            return acc + baseImpound * multiplier;
+        }, 0);
+
+        return Math.min(total, configData.MAX_IMPOUND_DAYS);
+    }, [report, penalCode, additions]);
+
     const hasReport = isClient && report.length > 0 && !!penalCode;
+    const showQuickCreateImpound = isBasicReport && Math.round(impoundDurationDays) > 0;
 
     // Effect to archive the report once data is available
     useEffect(() => {
@@ -130,6 +159,13 @@ function ArrestSubmitContent() {
                       </a>
                   </Button>
                 )}
+              {showQuickCreateImpound && (
+                  <Button asChild>
+                      <a href="/paperwork-generators/form?type=static&id=impound-report&prefill=basic-arrest-report">
+                          Quick-Create Impound Report
+                      </a>
+                  </Button>
+              )}
               <Button onClick={handleCopy} disabled={isClient && !formData}>
                   <Clipboard className="mr-2 h-4 w-4" />
                   Copy Paperwork
