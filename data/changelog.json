@@ -1,6 +1,26 @@
 {
     "changelogs": [
         {
+            "version": "3.3.2",
+            "type": "Minor Update",
+            "date": "2025-09-27",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Report:</b> Added a \"Quick-Create an Impound Report\" to the basic arrest report submission."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Added a missing 435 charge to the Traffic Report."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added support for the maximum impound & suspension time to the arrest calculation."
+                }
+            ],
+            "cacheVersion": "elevator-stuf-1"
+        },
+        {
             "version": "3.3.1.03",
             "type": "Hotfix",
             "date": "2025-09-14",
