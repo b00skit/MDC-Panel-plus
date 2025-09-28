@@ -340,29 +340,20 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
     }
   };
   
-  const handleNarrativeGenerated = ({ narrative, dashcamNarrative }: { narrative: string; dashcamNarrative: string }) => {
-    // Update RHF state
+  const handleNarrativeGenerated = ({ narrative }: { narrative: string }) => {
     setValue('arrest.narrative', narrative, { shouldDirty: true });
-    setValue('evidence.dashcam', dashcamNarrative, { shouldDirty: true });
-
-    // Directly update the component's state to re-render TextareaWithPreset
-    // This is a bit of a workaround because TextareaWithPreset has its own internal `localValue`
-    // which doesn't automatically sync with `setValue` from RHF in all cases.
-    // By passing the new value through the form's `defaultValues`, we can force a reset and update.
-     reset({
+    
+    reset({
         ...getValues(),
         arrest: { ...getValues('arrest'), narrative },
-        evidence: { ...getValues('evidence'), dashcam: dashcamNarrative },
         narrative: {
             ...getValues('narrative'),
             narrative: narrative,
-            userModified: true, // Mark as user modified to prevent preset from overwriting
+            userModified: true,
         }
     });
 
-    // Also update the Zustand store
     setFormField('arrest', 'narrative', narrative);
-    setFormField('evidence', 'dashcam', dashcamNarrative);
     setUserModified('narrative', true);
   };
 

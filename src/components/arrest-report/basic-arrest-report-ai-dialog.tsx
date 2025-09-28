@@ -10,7 +10,6 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Sparkles, AlertTriangle } from 'lucide-react';
@@ -23,7 +22,7 @@ import { SelectedCharge, PenalCode } from '@/stores/charge-store';
 interface DialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onNarrativeGenerated: (narratives: { narrative: string; dashcamNarrative: string }) => void;
+  onNarrativeGenerated: (narratives: { narrative: string }) => void;
   context: {
     officers: Officer[];
     charges: SelectedCharge[];
@@ -36,13 +35,12 @@ interface DialogProps {
 
 export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGenerated, context }: DialogProps) {
   const [logs, setLogs] = useState('');
-  const [dashcamLocation, setDashcamLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!logs.trim() || !dashcamLocation.trim()) return;
+    if (!logs.trim()) return;
 
     setIsLoading(true);
     setError(null);
@@ -57,7 +55,6 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
     try {
       const flowResult = await generateBasicArrestNarrativeFlow({
         logs,
-        dashcamLocation,
         officerName: primaryOfficer.name,
         officerBadge: primaryOfficer.badgeNumber,
         officerDepartment: primaryOfficer.department,
@@ -82,7 +79,6 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
     onOpenChange(false);
     setTimeout(() => {
       setLogs('');
-      setDashcamLocation('');
       setIsLoading(false);
       setError(null);
     }, 300);
@@ -97,7 +93,7 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
             Generate Narrative with AI
           </DialogTitle>
           <DialogDescription>
-            Paste your logs and provide the dashcam location to generate a report.
+            Paste your logs to generate a report narrative.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
@@ -121,16 +117,6 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
                     rows={10}
                 />
             </div>
-            <div className="space-y-2">
-                <Label htmlFor="ai-dashcam">Dashcam Location</Label>
-                <Input
-                    id="ai-dashcam"
-                    value={dashcamLocation}
-                    onChange={(e) => setDashcamLocation(e.target.value)}
-                    placeholder="e.g., facing east on Vespucci Boulevard"
-                    disabled={isLoading}
-                />
-            </div>
           </form>
 
           {isLoading && <Skeleton className="h-10 w-full" />}
@@ -147,7 +133,7 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
             <Button
                 type="submit"
                 onClick={handleSubmit}
-                disabled={isLoading || !logs.trim() || !dashcamLocation.trim()}
+                disabled={isLoading || !logs.trim()}
             >
                 {isLoading ? 'Generating...' : 'Generate'}
             </Button>
