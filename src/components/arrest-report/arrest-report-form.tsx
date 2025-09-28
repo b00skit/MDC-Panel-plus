@@ -1,6 +1,7 @@
+
 'use client';
 import { useRouter } from 'next/navigation';
-import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from 'react';
+import { useRef, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback, useState } from 'react';
 import { useForm, FormProvider, Controller, useFormContext } from 'react-hook-form';
 import {
   Card,
@@ -18,6 +19,7 @@ import {
   Video,
   FileText,
   User,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { GeneralSection } from '@/components/shared/general-section';
@@ -29,6 +31,9 @@ import { useBasicReportModifiersStore, Modifier } from '@/stores/basic-report-mo
 import { TextareaWithPreset } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
 import React from 'react';
+import { useSettingsStore } from '@/stores/settings-store';
+import { BasicArrestReportAIDialog } from './basic-arrest-report-ai-dialog';
+import { useChargeStore } from '@/stores/charge-store';
 
 /* --------------------------------- Layout -------------------------------- */
 
@@ -162,9 +167,13 @@ type ArrestReportFormHandle = {
 
 export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function ArrestReportForm(_, ref) {
   const router = useRouter();
+  const { experimentalFeatures } = useSettingsStore();
+  const showAiFeature = experimentalFeatures.includes('ai_arrest_reports');
+  const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 
   const { formData, setFormField, setAll } = useFormStore();
   const { officers } = useOfficerStore();
+  const { report, penalCode } = useChargeStore();
   const {
     modifiers,
     presets,
@@ -194,6 +203,7 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
     getValues,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = methods;
 
@@ -332,6 +342,28 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
 
   return (
     <FormProvider {...methods}>
+        {showAiFeature && (
+            <BasicArrestReportAIDialog
+                open={isAiDialogOpen}
+                onOpenChange={setIsAiDialogOpen}
+                onNarrativeGenerated={({ narrative, dashcamNarrative }) => {
+                    setValue('arrest.narrative', narrative);
+                    setFormField('arrest', 'narrative', narrative);
+                    setValue('evidence.dashcam', dashcamNarrative);
+                    setFormField('evidence', 'dashcam', dashcamNarrative);
+                    
+                    // Mark as user modified to prevent preset from overwriting
+                    setValue('narrative.userModified', true);
+                    setUserModified('narrative', true);
+                }}
+                context={{
+                    officers: officers,
+                    charges: report,
+                    penalCode: penalCode,
+                    ...formData,
+                }}
+            />
+        )}
       <form ref={formRef} onSubmit={handleSubmitForm} onBlur={saveDraft} className="space-y-6">
         <GeneralSection />
         <OfficerSection isArrestReport={true} showBadgeNumber={true} />
@@ -383,6 +415,14 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
                 />
               )}
             />
+            {showAiFeature && (
+                <div className="flex justify-start">
+                    <Button type="button" variant="outline" onClick={() => setIsAiDialogOpen(true)}>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Generate Narrative with AI
+                    </Button>
+                </div>
+            )}
           </div>
         </FormSection>
 
