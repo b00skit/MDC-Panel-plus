@@ -101,7 +101,7 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Important Disclaimer</AlertTitle>
             <AlertDescription>
-              AI should only be used for arrests where the suspect pled **guilty**. The responsibility for the authenticity and accuracy of the report lies with you. Always fact-check the generated narrative.
+              The usage of AI is heavily discouraged and in the majority of cases disallowed, you should check with your department's policies as well as any standing LFM directives before utilizing AI to write arrest reports. This is meant as a tool and not as an outright replacement. The authenticity of the narrative is your responsibility.
             </AlertDescription>
           </Alert>
 

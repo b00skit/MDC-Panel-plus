@@ -63,7 +63,18 @@ export function TextareaWithPreset({
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
-    
+    const watchedNarrative = watch(`${basePath}.narrative`);
+
+    useEffect(() => {
+        if (typeof watchedNarrative === 'undefined') {
+            return;
+        }
+
+        const normalizedWatchedNarrative = watchedNarrative || '';
+
+        setLocalValue((previous) => (previous === normalizedWatchedNarrative ? previous : normalizedWatchedNarrative));
+    }, [watchedNarrative]);
+
     useEffect(() => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
