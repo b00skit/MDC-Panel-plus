@@ -339,6 +339,33 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
       router.push('/arrest-submit?type=basic');
     }
   };
+  
+  const handleNarrativeGenerated = ({ narrative, dashcamNarrative }: { narrative: string; dashcamNarrative: string }) => {
+    // Update RHF state
+    setValue('arrest.narrative', narrative, { shouldDirty: true });
+    setValue('evidence.dashcam', dashcamNarrative, { shouldDirty: true });
+
+    // Directly update the component's state to re-render TextareaWithPreset
+    // This is a bit of a workaround because TextareaWithPreset has its own internal `localValue`
+    // which doesn't automatically sync with `setValue` from RHF in all cases.
+    // By passing the new value through the form's `defaultValues`, we can force a reset and update.
+     reset({
+        ...getValues(),
+        arrest: { ...getValues('arrest'), narrative },
+        evidence: { ...getValues('evidence'), dashcam: dashcamNarrative },
+        narrative: {
+            ...getValues('narrative'),
+            narrative: narrative,
+            userModified: true, // Mark as user modified to prevent preset from overwriting
+        }
+    });
+
+    // Also update the Zustand store
+    setFormField('arrest', 'narrative', narrative);
+    setFormField('evidence', 'dashcam', dashcamNarrative);
+    setUserModified('narrative', true);
+  };
+
 
   return (
     <FormProvider {...methods}>
@@ -346,16 +373,7 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
             <BasicArrestReportAIDialog
                 open={isAiDialogOpen}
                 onOpenChange={setIsAiDialogOpen}
-                onNarrativeGenerated={({ narrative, dashcamNarrative }) => {
-                    setValue('arrest.narrative', narrative);
-                    setFormField('arrest', 'narrative', narrative);
-                    setValue('evidence.dashcam', dashcamNarrative);
-                    setFormField('evidence', 'dashcam', dashcamNarrative);
-                    
-                    // Mark as user modified to prevent preset from overwriting
-                    setValue('narrative.userModified', true);
-                    setUserModified('narrative', true);
-                }}
+                onNarrativeGenerated={handleNarrativeGenerated}
                 context={{
                     officers: officers,
                     charges: report,
