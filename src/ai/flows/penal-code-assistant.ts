@@ -2,7 +2,7 @@
 'use server';
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import config from '@/../data/config.json';
 import { sanitizeLocations } from '@/lib/sanitize-locations';
 

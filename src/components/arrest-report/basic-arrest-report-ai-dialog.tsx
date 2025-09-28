@@ -67,9 +67,9 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
       });
       onNarrativeGenerated(flowResult);
       handleClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('An error occurred while generating the narrative. Please try again.');
+      setError(err.message || 'An error occurred while generating the narrative. Please try again.');
     } finally {
       setIsLoading(false);
     }

@@ -2,7 +2,7 @@
 'use server';
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import caselaws from '@/../data/caselaws.json';
 import { Action, Tool } from 'genkit/experimental/ai';
 import { sanitizeLocations } from '@/lib/sanitize-locations';

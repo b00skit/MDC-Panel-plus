@@ -52,9 +52,9 @@ export function CaselawAIDialog({ open, onOpenChange }: CaselawAIDialogProps) {
     try {
       const flowResult = await caselawAssistantFlow({ query });
       setResult(sanitizeLocations(flowResult));
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('An error occurred while fetching the answer. Please try again.');
+      setError(err.message || 'An error occurred while fetching the answer. Please try again.');
     } finally {
       setIsLoading(false);
     }
