@@ -21,6 +21,7 @@ import { Badge } from '../ui/badge';
 import { FeedbackDialog } from '@/components/dashboard/feedback-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { CaselawAIDialog } from './caselaw-ai-dialog';
+import { useSettingsStore } from '@/stores/settings-store';
 
 type Resource = {
     id: string;
@@ -236,7 +237,7 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     const [jurisdictionFilter, setJurisdictionFilter] = useState<'all' | 'federal' | 'local'>('all');
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
     const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
-
+    const { experimentalFeatures } = useSettingsStore();
 
     const filteredCaselaws = useMemo(() => {
         if (!caselaws) return [];
@@ -269,18 +270,20 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
              </div>
             }
             
-            <div className="flex flex-col items-center justify-center text-center gap-4 p-6 border-2 border-dashed rounded-lg bg-card">
-                 <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
-                    <Sparkles className="h-6 w-6 text-primary" />
-                 </div>
-                 <h3 className="text-xl font-semibold">Need a quick answer?</h3>
-                 <p className="text-center text-muted-foreground max-w-md">
-                    Use the experimental AI assistant to find relevant caselaw by describing a situation in plain English.
-                 </p>
-                 <Button onClick={() => setIsAIDialogOpen(true)}>
-                    <Sparkles className="mr-2 h-4 w-4" /> AI Caselaw Assistant
-                 </Button>
-            </div>
+            {!experimentalFeatures.includes('ai_legal_search') && (
+                <div className="flex flex-col items-center justify-center text-center gap-4 p-6 border-2 border-dashed rounded-lg bg-card">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
+                        <Sparkles className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Need a quick answer?</h3>
+                    <p className="text-center text-muted-foreground max-w-md">
+                        Use the experimental AI assistant to find relevant caselaw by describing a situation in plain English.
+                    </p>
+                    <Button onClick={() => setIsAIDialogOpen(true)}>
+                        <Sparkles className="mr-2 h-4 w-4" /> AI Caselaw Assistant
+                    </Button>
+                </div>
+            )}
 
             <div>
                 <h2 className="text-2xl font-bold tracking-tight">Caselaw Database</h2>

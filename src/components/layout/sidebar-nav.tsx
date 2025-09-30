@@ -19,6 +19,7 @@ import {
   MessageSquare,
   Map,
   History,
+  Search,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -38,6 +39,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import announcementsData from '../../../data/announcements.json';
 import { FeedbackDialog } from '../dashboard/feedback-dialog';
+import { useSettingsStore } from '@/stores/settings-store';
 
 type SiteConfig = {
   SITE_NAME: string;
@@ -52,6 +54,7 @@ export function SidebarNav() {
   const { state } = useSidebar();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+  const { experimentalFeatures } = useSettingsStore();
 
   useEffect(() => {
     setMounted(true);
@@ -132,6 +135,20 @@ export function SidebarNav() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+           {experimentalFeatures.includes('ai_legal_search') && (
+            <SidebarMenuItem>
+                <SidebarMenuButton
+                asChild
+                isActive={isActive('/legal-search')}
+                tooltip="Legal Search"
+                >
+                <Link href="/legal-search">
+                    <Search />
+                    <span>Legal Search</span>
+                </Link>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+           )}
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
