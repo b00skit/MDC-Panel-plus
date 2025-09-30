@@ -20,20 +20,65 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
         ));
     };
 
-    const cellStyle = { fontSize: '14px', borderTop: 'none', fontFamily: "'Times New Roman', serif" };
-    const headerCellStyle: React.CSSProperties = { fontWeight: 'bold', fontSize: '10px', borderBottom: 'none', backgroundColor: 'white', textAlign: 'left' };
-    const sectionHeaderStyle: React.CSSProperties = { fontWeight: 'bold', fontSize: '10px', borderTop: '2px solid black', borderBottom: 'none', backgroundColor: 'white', textAlign: 'left' };
+    const tableStyle: React.CSSProperties = {
+        padding: '2px',
+        border: '2px solid #000',
+        backgroundColor: 'white',
+        width: '100%',
+        color: 'black',
+        fontFamily: 'Arial, sans-serif',
+        borderCollapse: 'collapse'
+    };
+
+    const baseCellStyle: React.CSSProperties = {
+        fontFamily: "'Times New Roman', serif",
+        border: '1px solid black',
+        padding: '4px',
+        backgroundColor: 'white'
+    };
+
+    const cellStyle: React.CSSProperties = {
+        ...baseCellStyle,
+        fontSize: '14px',
+        textAlign: 'left'
+    };
+
+    const headerCellStyle: React.CSSProperties = {
+        ...baseCellStyle,
+        fontWeight: 'bold',
+        fontSize: '10px',
+        textAlign: 'left'
+    };
+
+    const sectionHeaderStyle: React.CSSProperties = {
+        ...headerCellStyle,
+        borderTop: '2px solid black'
+    };
+
+    const reportHeaderStyle: React.CSSProperties = {
+        ...baseCellStyle,
+        fontWeight: 'bold',
+        fontSize: '16px',
+        textAlign: 'center',
+        borderBottom: '2px solid black',
+        padding: '12px 8px'
+    };
 
     return (
         <table
             ref={innerRef}
             border={1}
             cellPadding={2}
-            style={{ padding: '2px', border: '1px solid #000', backgroundColor: 'white', width: '100%', color: 'black', fontFamily: 'Arial, sans-serif', borderCollapse: 'collapse' }}
+            style={tableStyle}
         >
-            <caption style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: 'black', captionSide: 'top', backgroundColor: 'white' }}>
-                {isLSSD ? "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT" : "LOS SANTOS POLICE DEPARTMENT"}<br />ARREST REPORT
-            </caption>
+            <thead>
+                <tr>
+                    <th colSpan={5} style={reportHeaderStyle}>
+                        {isLSSD ? "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT" : "LOS SANTOS POLICE DEPARTMENT"}<br />
+                        ARREST REPORT
+                    </th>
+                </tr>
+            </thead>
             <tbody>
                     <tr>
                         <th colSpan={2} style={headerCellStyle}>ARRESTEE NAME (FIRST, MIDDLE, LAST)</th>
@@ -88,9 +133,11 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                             <td colSpan={2} style={cellStyle}>{person.gang || 'N/A'}</td>
                         </tr>
                     ))}
-                     <tr><th style={{...headerCellStyle, ...sectionHeaderStyle}}>DATE</th>
-                        <th style={{...headerCellStyle, ...sectionHeaderStyle}}>TIME</th>
-                        <th colSpan={3} style={{...headerCellStyle, ...sectionHeaderStyle, textTransform: 'uppercase' }}>LOCATION</th></tr>
+                     <tr>
+                        <th style={sectionHeaderStyle}>DATE</th>
+                        <th style={sectionHeaderStyle}>TIME</th>
+                        <th colSpan={3} style={{ ...sectionHeaderStyle, textTransform: 'uppercase' }}>LOCATION</th>
+                    </tr>
                     <tr>
                         <td style={cellStyle}>{incident.date || 'N/A'}</td>
                         <td style={cellStyle}>{incident.time || 'N/A'}</td>
@@ -114,31 +161,31 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.source)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={headerCellStyle}>INVESTIGATION</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>INVESTIGATION</th></tr>
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.investigation)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={headerCellStyle}>ARREST</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>ARREST</th></tr>
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.arrest)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={headerCellStyle}>PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), AND DIGITAL IMAGING</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), AND DIGITAL IMAGING</th></tr>
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.photographs)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={headerCellStyle}>BOOKING</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>BOOKING</th></tr>
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.booking)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={headerCellStyle}>PHYSICAL EVIDENCE</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>PHYSICAL EVIDENCE</th></tr>
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.evidence)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={headerCellStyle}>COURT INFORMATION</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>COURT INFORMATION</th></tr>
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.court)}</td>
                     </tr>
-                    <tr><th colSpan={5} style={headerCellStyle}>ADDITIONAL</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>ADDITIONAL</th></tr>
                     <tr>
                         <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.additional)}</td>
                     </tr>
