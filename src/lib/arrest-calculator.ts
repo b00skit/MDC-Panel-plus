@@ -1,3 +1,4 @@
+
 import type { SelectedCharge, Charge, Addition, PenalCode } from '@/stores/charge-store';
 import additionsData from '../../data/additions.json';
 import config from '../../data/config.json';
@@ -71,17 +72,13 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
     const chargeDetails = penalCode[row.chargeId!];
     if (!chargeDetails) return null;
 
-    let additionDetails = additions.find(a => a.name === row.addition);
+    const additionDetails = additions.find(a => a.name === row.addition);
     let sentenceMultiplier = additionDetails?.sentence_multiplier ?? 1;
     let pointsMultiplier = additionDetails?.points_multiplier ?? 1;
 
     if (isParoleViolator && paroleViolationAddition) {
         sentenceMultiplier *= paroleViolationAddition.sentence_multiplier;
         pointsMultiplier *= paroleViolationAddition.points_multiplier;
-
-        if (!additionDetails || (additionDetails.name !== paroleViolationAddition.name)) {
-            additionDetails = paroleViolationAddition;
-        }
     }
 
     const isDrugCharge = !!chargeDetails.drugs;
