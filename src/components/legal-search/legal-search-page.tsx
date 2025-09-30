@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useMemo, useState } from 'react';
@@ -89,11 +90,14 @@ export function LegalSearchPage() {
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
       console.error(err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Something went wrong while searching. Please try again.'
-      );
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
+      if (errorMessage.includes('503') || errorMessage.toLowerCase().includes('overloaded')) {
+          setError('The model is currently overloaded. Please try your search again in a moment.');
+          setInput(query); // Restore the user's query
+          setMessages(prev => prev.slice(0, -1)); // Remove the user message from the chat
+      } else {
+          setError('An error occurred while searching. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
