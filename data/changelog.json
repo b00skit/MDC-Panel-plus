@@ -1,6 +1,66 @@
 {
     "changelogs": [
         {
+            "version": "3.4.0",
+            "type": "Minor Update",
+            "date": "2025-09-30",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Added the ability to download reports as images."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Modified the \"Parking Ticket\" report to be a bit more realistic in terms of citing reasoning for the violations."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Modified the text for the trespass notice to be a bit more clear as to where someone's trespassed from."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Report:</b> Added a few more modifiers for the arrest reports, adding a bit more support for future arrest reports."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Finally fixed the formatting of the advanced arrest report, so that the preview is in-line to the actual report."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Report:</b> Ported over the feature of quick-creating impound reports to the advanced arrest report."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Report:</b> Added the ability to download reports as images."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Settings:</b> Added support for experimental features."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>General:</b> Modified the visuals of the about page, very minor modifications."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Calculator:</b> Refactored the way Parole Violations are handled, no longer being bound to an addition, rather being bound to the entire charge-set."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> A small text modification on the basic arrest report to make the section regarding sentencing & auto-bail an OOC section."
+                }
+            ],
+            "cacheVersion": "world-swft-1",
+            "experimentalFeatures": [
+                {
+                    "title": "Legal Search",
+                    "variable": "ai_legal_search",
+                    "description": "The AI Legal Search is a sort-of search engine combined with a chatbot, it'll provide you brief reasoning before returning you the results of it's search, including searching the penal code & caselaw.",
+                    "defaultEnabled": false
+                }
+            ]
+        },
+        {
             "version": "3.3.2.01",
             "type": "Hotfix",
             "date": "2025-09-28",

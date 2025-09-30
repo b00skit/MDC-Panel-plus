@@ -193,7 +193,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                 </tr>
                 <tr>
                     <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>8. SENTENCING & AUTO-BAIL SUMMARY</h3>
+                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>(( 8. SENTENCING & AUTO-BAIL SUMMARY ))</h3>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <tbody>
                                 <tr>

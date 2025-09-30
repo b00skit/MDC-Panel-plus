@@ -22,6 +22,13 @@ export type ChangelogItem = {
   description: string;
 };
 
+export type ExperimentalFeature = {
+  title: string;
+  variable: string;
+  description: string;
+  defaultEnabled?: boolean;
+};
+
 export type ChangelogEntry = {
   version: string;
   type: 'Release' | 'Major Update' | 'Minor Update' | 'Hotfix';
@@ -29,6 +36,7 @@ export type ChangelogEntry = {
   items: ChangelogItem[];
   cacheVersion?: string;
   localStorageVersion?: string;
+  experimentalFeatures?: ExperimentalFeature[];
 };
 
 const emptyChangelog: ChangelogEntry = {
@@ -38,11 +46,15 @@ const emptyChangelog: ChangelogEntry = {
   items: [],
   cacheVersion: '',
   localStorageVersion: '',
+  experimentalFeatures: [],
 };
 
 export default function Area51Page() {
   const [allChangelogs, setAllChangelogs] = useState<ChangelogEntry[]>(
-    (changelogData as { changelogs: ChangelogEntry[] }).changelogs || []
+    ((changelogData as { changelogs: ChangelogEntry[] }).changelogs || []).map((entry) => ({
+      ...entry,
+      experimentalFeatures: entry.experimentalFeatures || [],
+    }))
   );
   const [selectedChangelogIndex, setSelectedChangelogIndex] = useState<number | 'new'>(0);
   const [showCacheVersion, setShowCacheVersion] = useState(false);
@@ -53,6 +65,11 @@ export default function Area51Page() {
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
+  const {
+    fields: experimentalFeatureFields,
+    append: appendExperimentalFeature,
+    remove: removeExperimentalFeature,
+  } = useFieldArray({ control, name: 'experimentalFeatures' });
 
   const { toast } = useToast();
   const [jsonOutput, setJsonOutput] = useState('');
@@ -82,7 +99,10 @@ export default function Area51Page() {
     } else {
       const index = parseInt(indexStr, 10);
       setSelectedChangelogIndex(index);
-      reset(allChangelogs[index]);
+      reset({
+        ...allChangelogs[index],
+        experimentalFeatures: allChangelogs[index].experimentalFeatures || [],
+      });
     }
   };
 
@@ -93,22 +113,61 @@ export default function Area51Page() {
     if (!showCacheVersion) delete (currentData as Partial<ChangelogEntry>).cacheVersion;
     if (!showLocalStorageVersion) delete (currentData as Partial<ChangelogEntry>).localStorageVersion;
 
-    const newEntry: ChangelogEntry = currentData;
+    const sanitizedItems = currentData.items.map((item) => ({
+      ...item,
+      description: item.description?.trim() || '',
+    }));
+
+    const sanitizedExperimentalFeatures = (currentData.experimentalFeatures || [])
+      .map((feature) => ({
+        title: feature.title?.trim() || '',
+        variable: feature.variable?.trim() || '',
+        description: feature.description?.trim() || '',
+        defaultEnabled: Boolean(feature.defaultEnabled),
+      }))
+      .filter((feature) => feature.title || feature.variable || feature.description);
+
+    const entryForState: ChangelogEntry = {
+      ...currentData,
+      items: sanitizedItems,
+      experimentalFeatures: sanitizedExperimentalFeatures,
+    };
+
+    if (!showCacheVersion) delete (entryForState as Partial<ChangelogEntry>).cacheVersion;
+    if (!showLocalStorageVersion) delete (entryForState as Partial<ChangelogEntry>).localStorageVersion;
 
     let updatedChangelogs: ChangelogEntry[];
     if (selectedChangelogIndex === 'new') {
       // Prepend the new entry to the list
-      updatedChangelogs = [newEntry, ...allChangelogs];
+      updatedChangelogs = [entryForState, ...allChangelogs];
       setSelectedChangelogIndex(0); // newly added is now index 0
     } else {
       updatedChangelogs = [...allChangelogs];
-      updatedChangelogs[selectedChangelogIndex as number] = newEntry;
+      updatedChangelogs[selectedChangelogIndex as number] = entryForState;
     }
 
     setAllChangelogs(updatedChangelogs);
-    reset(newEntry); // reflect saved values in the form
+    reset({
+      ...entryForState,
+      experimentalFeatures: entryForState.experimentalFeatures || [],
+    }); // reflect saved values in the form
 
-    setJsonOutput(JSON.stringify({ changelogs: updatedChangelogs }, null, 4));
+    const jsonReadyChangelogs = updatedChangelogs.map((entry) => {
+      const clonedEntry: ChangelogEntry = {
+        ...entry,
+        experimentalFeatures: entry.experimentalFeatures
+          ? entry.experimentalFeatures.map((feature) => ({ ...feature }))
+          : [],
+      };
+
+      if (!clonedEntry.experimentalFeatures?.length) {
+        delete (clonedEntry as Partial<ChangelogEntry>).experimentalFeatures;
+      }
+
+      return clonedEntry;
+    });
+
+    setJsonOutput(JSON.stringify({ changelogs: jsonReadyChangelogs }, null, 4));
     toast({
       title: 'JSON Generated',
       description: 'The JSON output has been updated with the current form data.',
@@ -275,6 +334,84 @@ export default function Area51Page() {
                   ))}
                   <Button type="button" variant="secondary" size="sm" onClick={() => append({ type: 'feature', description: '' })}>
                     <Plus className="mr-2 h-4 w-4" /> Add Item
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Experimental Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {experimentalFeatureFields.map((featureField, featureIndex) => (
+                    <div key={featureField.id} className="space-y-3 rounded-md border p-3">
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <div>
+                          <Label>Feature Title</Label>
+                          <Input
+                            {...register(`experimentalFeatures.${featureIndex}.title` as const)}
+                            placeholder="e.g., Interactive Map Overlay"
+                          />
+                        </div>
+                        <div>
+                          <Label>Variable Name</Label>
+                          <Input
+                            {...register(`experimentalFeatures.${featureIndex}.variable` as const)}
+                            placeholder="e.g., map_overlay_experiment"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label>Description</Label>
+                        <Textarea
+                          {...register(`experimentalFeatures.${featureIndex}.description` as const)}
+                          placeholder="Describe what the experimental feature does and any caveats."
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Controller
+                            control={control}
+                            name={`experimentalFeatures.${featureIndex}.defaultEnabled` as const}
+                            render={({ field }) => (
+                              <Checkbox
+                                id={`experimentalFeatures.${featureIndex}.defaultEnabled`}
+                                checked={Boolean(field.value)}
+                                onCheckedChange={(checked) => field.onChange(Boolean(checked))}
+                              />
+                            )}
+                          />
+                          <Label htmlFor={`experimentalFeatures.${featureIndex}.defaultEnabled`}>
+                            Enabled by default
+                          </Label>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeExperimentalFeature(featureIndex)}
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() =>
+                      appendExperimentalFeature({
+                        title: '',
+                        variable: '',
+                        description: '',
+                        defaultEnabled: false,
+                      })
+                    }
+                  >
+                    <Plus className="mr-2 h-4 w-4" /> Add Experimental Feature
                   </Button>
                 </div>
               </CardContent>

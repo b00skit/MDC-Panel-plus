@@ -108,8 +108,8 @@ export function LegalSearchPage() {
   return (
     <div className="container mx-auto py-8 space-y-6">
       <PageHeader
-        title="AI Legal Search"
-        description="Ask one question and get penal code and caselaw citations in a single response."
+        title="Legal Search"
+        description="Ask any questions and get penal code and caselaw citations in a single response."
       />
 
       <Alert variant="warning">

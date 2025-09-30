@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
@@ -22,6 +23,7 @@ import {
     GitMerge,
     Rocket,
     Bug,
+    FlaskConical,
     LucideIcon
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -35,6 +37,13 @@ type ChangelogItem = {
     description: string;
 };
 
+type ExperimentalFeature = {
+    title: string;
+    variable: string;
+    description: string;
+    defaultEnabled?: boolean;
+};
+
 type ChangelogEntry = {
     version: string;
     type: 'Release' | 'Major Update' | 'Minor Update' | 'Hotfix';
@@ -42,6 +51,7 @@ type ChangelogEntry = {
     cacheVersion?: string;
     localStorageVersion?: string;
     items: ChangelogItem[];
+    experimentalFeatures?: ExperimentalFeature[];
 };
 
 interface ChangelogPageProps {
@@ -134,6 +144,45 @@ function StatCard({ title, value, icon: Icon }: StatCardProps) {
 export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
     const [search, setSearch] = useState('');
     const [typeFilter, setTypeFilter] = useState<string>('all');
+    const [featureStates, setFeatureStates] = useState<Record<string, boolean>>({});
+
+    useEffect(() => {
+        const storedStates: Record<string, boolean> = {};
+
+        try {
+            initialChangelogs.forEach((entry) => {
+                entry.experimentalFeatures?.forEach((feature) => {
+                    const storageKey = `mdc-feature-${feature.variable}`;
+                    const storedValue = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+                    if (storedValue === null) {
+                        storedStates[feature.variable] = Boolean(feature.defaultEnabled);
+                    } else {
+                        storedStates[feature.variable] = storedValue === 'enabled';
+                    }
+                });
+            });
+        } catch (error) {
+            // If localStorage is unavailable, fall back to defaults without breaking rendering
+            initialChangelogs.forEach((entry) => {
+                entry.experimentalFeatures?.forEach((feature) => {
+                    storedStates[feature.variable] = Boolean(feature.defaultEnabled);
+                });
+            });
+        }
+
+        setFeatureStates(storedStates);
+    }, [initialChangelogs]);
+
+    const handleFeatureToggle = (variable: string, enabled: boolean) => {
+        setFeatureStates((prev) => ({ ...prev, [variable]: enabled }));
+        try {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(`mdc-feature-${variable}`, enabled ? 'enabled' : 'disabled');
+            }
+        } catch (error) {
+            // Ignore localStorage write errors
+        }
+    };
 
     const stats = useMemo(() => {
         const allItems = initialChangelogs.flatMap(log => log.items);
@@ -263,6 +312,54 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                         );
                                     })}
                                 </div>
+                                {changelog.experimentalFeatures?.length ? (
+                                    <div className="mt-6 space-y-4 rounded-lg border border-dashed border-primary/30 bg-primary/5 p-4">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <div className="flex items-center gap-2 text-primary">
+                                                <FlaskConical className="h-5 w-5" />
+                                                <h3 className="text-lg font-semibold">Experimental Features</h3>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                Try upcoming ideas before they become permanent. Your choices are saved locally.
+                                            </p>
+                                        </div>
+                                        <div className="grid gap-4">
+                                            {changelog.experimentalFeatures.map((feature) => {
+                                                const isEnabled = featureStates[feature.variable] ?? Boolean(feature.defaultEnabled);
+                                                return (
+                                                    <div key={feature.variable} className="space-y-3 rounded-md border bg-background p-4 shadow-sm">
+                                                        <div className="flex flex-wrap items-start justify-between gap-3">
+                                                            <div>
+                                                                <h4 className="text-base font-semibold">{feature.title}</h4>
+                                                                <p className="text-sm text-muted-foreground">{feature.description}</p>
+                                                            </div>
+                                                            <Badge variant="secondary">{feature.variable}</Badge>
+                                                        </div>
+                                                        <div className="flex flex-wrap items-center gap-2">
+                                                            <Button
+                                                                type="button"
+                                                                variant={isEnabled ? 'default' : 'secondary'}
+                                                                onClick={() => handleFeatureToggle(feature.variable, true)}
+                                                            >
+                                                                Enable
+                                                            </Button>
+                                                            <Button
+                                                                type="button"
+                                                                variant={!isEnabled ? 'default' : 'outline'}
+                                                                onClick={() => handleFeatureToggle(feature.variable, false)}
+                                                            >
+                                                                Disable
+                                                            </Button>
+                                                            <span className="text-xs text-muted-foreground">
+                                                                Currently {isEnabled ? 'enabled' : 'disabled'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                ) : null}
                                 {(changelog.cacheVersion || changelog.localStorageVersion) && (
                                     <div className="mt-6 border-t pt-4 space-y-2 text-sm text-muted-foreground">
                                         {changelog.cacheVersion && (
