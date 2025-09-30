@@ -15,6 +15,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { Metadata } from 'next';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -101,7 +102,14 @@ export default async function AboutPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Badge variant="secondary" className="text-green-600 border-green-600/50 bg-green-500/10">
+                                            <Badge
+                                                variant="secondary"
+                                                className={cn(
+                                                    key === 'SITE_VERSION'
+                                                    ? 'text-green-600 border-green-600/50 bg-green-500/10'
+                                                    : 'text-primary border-primary/50 bg-primary/10'
+                                                )}
+                                            >
                                                 {config[key] || 'Not Set'}
                                             </Badge>
                                         </TableCell>
