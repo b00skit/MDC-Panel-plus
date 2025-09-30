@@ -74,7 +74,7 @@
         {
             "type": "datalist",
             "name": "vehicle_make_model",
-            "label": "Make &amp; Model",
+            "label": "Make & Model",
             "placeholder": "e.g. Benefactor Dubsta",
             "optionsSource": "vehicles",
             "required": true,

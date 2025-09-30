@@ -94,7 +94,7 @@
                 { "value": "Within a marked crosswalk.", "label": "In Crosswalk" },
                 { "value": "On any part of a sidewalk.", "label": "On Sidewalk" },
                 { "value": "On any sidewalk that completely obstructs pedestrian foot traffic, or on any median.", "label": "Obstructing Sidewalk/Median" },
-                { "value": "In the immediate vicinity of the Bank's entrance, including the sidewalk adjacent to the metal barriers.", "label": "Obstructing Bank Entrance" }
+                { "value": "In the immediate vicinity of the Banks entrance, including the sidewalk adjacent to the metal barriers.", "label": "Obstructing Bank Entrance" }
             ]
         }
     ],
