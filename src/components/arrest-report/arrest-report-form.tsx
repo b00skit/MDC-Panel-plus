@@ -226,6 +226,21 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
     () => [
       { name: 'callOfService', label: 'Call of Service', text: 'received a call of service #' },
       {
+        name: 'evaded',
+        label: 'Evaded',
+        text: 'When attempting to detain {{suspect}}, they fled within the a vehicle leading to a pursuit by the department.',
+      },
+      {
+        name: 'resistedArrest',
+        label: 'Resisted Arrest',
+        text: 'When attempting to apprehend {{suspect}}, the suspect physically arrested detainment and attempted to flee from the peace officers involved in the arrest.',
+      },
+      {
+        name: 'searched',
+        label: 'Searched',
+        text: '{{suspect}} was positioned in front of a department vehicle\'s dashcam and searched in accordance to the legal requirements as well as department\'s policy as well as the training I\'ve undergone, the following items have been found in the posession of the suspect:',
+      },
+      {
         name: 'booking',
         label: 'Booking',
         text:

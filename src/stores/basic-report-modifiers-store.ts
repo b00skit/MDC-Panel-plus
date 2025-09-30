@@ -28,6 +28,9 @@ const getInitialState = (): Omit<BasicReportModifiersState, 'setModifier' | 'set
     modifiers: {
         callOfService: false,
         booking: false,
+        evaded: false,
+        resistedArrest: false,
+        searched: false,
     },
     presets: {
         narrative: true,
