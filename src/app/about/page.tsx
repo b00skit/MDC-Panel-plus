@@ -106,8 +106,7 @@ export default async function AboutPage() {
                                                 variant="secondary"
                                                 className={cn(
                                                     key === 'SITE_VERSION'
-                                                    ? 'text-green-600 border-green-600/50 bg-green-500/10'
-                                                    : 'text-primary border-primary/50 bg-primary/10'
+                                                    && 'text-green-600 border-green-600/50 bg-green-500/10'
                                                 )}
                                             >
                                                 {config[key] || 'Not Set'}
