@@ -106,7 +106,7 @@ export function LegalSearchPage() {
   const introShown = useMemo(() => messages.length === 0 && !isLoading, [messages.length, isLoading]);
 
   return (
-    <div className="container mx-auto max-w-4xl py-8 space-y-6">
+    <div className="container mx-auto py-8 space-y-6">
       <PageHeader
         title="AI Legal Search"
         description="Ask one question and get penal code and caselaw citations in a single response."
