@@ -208,15 +208,22 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
   } = methods;
 
   useEffect(() => {
-    reset({
-      ...formData,
-      narrative: {
-        modifiers: modifiers,
-        isPreset: presets.narrative,
-        userModified: userModified.narrative,
-        narrative: formData.arrest.narrative,
+    reset(
+      {
+        ...formData,
+        narrative: {
+          modifiers: modifiers,
+          isPreset: presets.narrative,
+          userModified: userModified.narrative,
+          narrative: formData.arrest.narrative,
+        },
       },
-    });
+      {
+        keepDirty: true,
+        keepDirtyValues: true,
+        keepTouched: true,
+      }
+    );
   }, [formData, modifiers, presets, userModified, reset]);
 
   const formRef = useRef<HTMLFormElement>(null);
