@@ -233,7 +233,7 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
       {
         name: 'resistedArrest',
         label: 'Resisted Arrest',
-        text: 'When attempting to apprehend {{suspect}}, the suspect physically arrested detainment and attempted to flee from the peace officers involved in the arrest.',
+        text: 'When attempting to apprehend {{suspect}}, the suspect physically resisted detainment and attempted to flee from the peace officers involved in the arrest.',
       },
       {
         name: 'searched',
@@ -244,7 +244,7 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
         name: 'booking',
         label: 'Booking',
         text:
-          "I transported {{suspect}} to the nearest department's station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training",
+          "I transported {{suspect}} to the nearest department's station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training.",
       },
     ],
     []
@@ -255,53 +255,56 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
     const isUserModified = userModified.narrative;
 
     if (!isPresetActive || isUserModified) {
-      return getValues('arrest.narrative') || '';
+        return getValues('arrest.narrative') || '';
     }
 
     const primaryOfficer = officers[0];
     const data = {
-      date: allWatchedFields.general?.date || '',
-      time: allWatchedFields.general?.time || '',
-      street: allWatchedFields.location?.street || '',
-      suspect: allWatchedFields.arrest?.suspectName || formData.arrest?.suspectName || '',
-      rank: primaryOfficer?.rank || '',
-      name: primaryOfficer?.name || '',
-      badge: primaryOfficer?.badgeNumber || '',
-      department: primaryOfficer?.department || '',
+        date: allWatchedFields.general?.date || '',
+        time: allWatchedFields.general?.time || '',
+        street: allWatchedFields.location?.street || '',
+        suspect: allWatchedFields.arrest?.suspectName || formData.arrest?.suspectName || '',
+        rank: primaryOfficer?.rank || '',
+        name: primaryOfficer?.name || '',
+        badge: primaryOfficer?.badgeNumber || '',
+        department: primaryOfficer?.department || '',
     };
 
     let baseText = `On the ${data.date}, I ${data.rank} ${data.name} (#${data.badge}) of the ${data.department} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
 
-    const activeModifiers = arrestReportModifiers.filter(
-      (mod) => allWatchedFields.narrative?.modifiers?.[mod.name]
-    );
+    const modifierOrder: (keyof typeof allWatchedFields.narrative.modifiers)[] = ['callOfService', 'evaded', 'resistedArrest', 'searched', 'booking'];
+    let firstModifierAdded = false;
+    
+    modifierOrder.forEach((modName) => {
+        if (allWatchedFields.narrative?.modifiers?.[modName]) {
+            const modifier = arrestReportModifiers.find(m => m.name === modName);
+            if (modifier?.text) {
+                const template = Handlebars.compile(modifier.text, { noEscape: true });
+                const modifierText = template(data);
 
-    activeModifiers.forEach((mod) => {
-      if (mod.name === 'booking') return; // handled separately
-      if (mod.text) {
-        const template = Handlebars.compile(mod.text, { noEscape: true });
-        baseText += template(data);
-      }
+                if(modName === 'callOfService' && !firstModifierAdded) {
+                     baseText += modifierText;
+                } else {
+                     baseText += `\n\n${modifierText}`;
+                }
+                firstModifierAdded = true;
+            }
+        }
     });
-
-    const bookingModifier = arrestReportModifiers.find((m) => m.name === 'booking');
-    if (allWatchedFields.narrative?.modifiers?.[bookingModifier!.name] && bookingModifier?.text) {
-      const template = Handlebars.compile(bookingModifier.text, { noEscape: true });
-      baseText += `\n\n${template(data)}`;
-    }
 
     return baseText;
   }, [
     allWatchedFields.general,
     allWatchedFields.location,
-    formData.arrest?.suspectName,
+    allWatchedFields.arrest?.suspectName,
     allWatchedFields.narrative?.isPreset,
     JSON.stringify(allWatchedFields.narrative?.modifiers),
     officers,
     arrestReportModifiers,
     getValues,
     userModified.narrative,
-  ]);
+    formData.arrest?.suspectName
+]);
 
   const isInvalid = (fieldName: string) => {
     const fields = fieldName.split('.');
