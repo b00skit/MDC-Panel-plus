@@ -71,7 +71,7 @@ function ArrestSubmitContent() {
     }, [report, penalCode, additions]);
 
     const hasReport = isClient && report.length > 0 && !!penalCode;
-    const showQuickCreateImpound = isBasicReport && Math.round(impoundDurationDays) > 0;
+    const showQuickCreateImpound = hasReport && Math.round(impoundDurationDays) > 0;
 
     // Effect to archive the report once data is available
     useEffect(() => {
@@ -161,7 +161,9 @@ function ArrestSubmitContent() {
                 )}
               {showQuickCreateImpound && (
                   <Button variant="secondary" asChild>
-                      <a href="/paperwork-generators/form?type=static&id=impound-report&prefill=basic-arrest-report">
+                      <a
+                          href={`/paperwork-generators/form?type=static&id=impound-report&prefill=${isAdvancedReport ? 'advanced-arrest-report' : 'basic-arrest-report'}`}
+                      >
                           <Car className="mr-2 h-4 w-4" />
                           Quick-Create Impound Report
                       </a>

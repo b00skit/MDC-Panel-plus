@@ -15,6 +15,7 @@ import { Separator } from '../ui/separator';
 import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore as useBasicFormStore } from '@/stores/form-store';
+import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { Switch } from '../ui/switch';
 import { type PenalCode } from '@/stores/charge-store';
@@ -220,6 +221,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
 
     const officers = useOfficerStore(state => state.officers);
     const basicFormData = useBasicFormStore(state => state.formData);
+    const advancedFormData = useAdvancedReportStore(state => state.formData);
     const generalData = basicFormData.general;
 
     const { report: arrestReport, penalCode: storedPenalCode, additions } = useChargeStore(state => ({
@@ -277,12 +279,21 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     }, [arrestReport, storedPenalCode]);
 
     const computedPrefillData = useMemo(() => {
-        if (prefillSource !== 'basic-arrest-report') {
+        if (prefillSource !== 'basic-arrest-report' && prefillSource !== 'advanced-arrest-report') {
             return null;
         }
 
-        const suspectName = basicFormData?.arrest?.suspectName?.trim() || '';
-        const location = basicFormData?.location || { district: '', street: '' };
+        const suspectName = prefillSource === 'basic-arrest-report'
+            ? basicFormData?.arrest?.suspectName?.trim() || ''
+            : advancedFormData?.arrestee?.name?.trim() || '';
+
+        const location = prefillSource === 'basic-arrest-report'
+            ? basicFormData?.location || { district: '', street: '' }
+            : {
+                district: advancedFormData?.incident?.locationDistrict || '',
+                street: advancedFormData?.incident?.locationStreet || '',
+            };
+
         const durationValue = cappedImpoundDays > 0 ? Math.round(cappedImpoundDays).toString() : '';
         const chargesText = chargeDescriptions.length > 0
             ? chargeDescriptions.map(charge => `- ${charge}`).join('\n')
@@ -295,8 +306,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         const payload: Record<string, any> = {
             vehicle_owner: suspectName,
             location: {
-                district: location.district || '',
-                street: location.street || '',
+                district: location?.district || '',
+                street: location?.street || '',
             },
         };
 
@@ -309,7 +320,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         }
 
         return payload;
-    }, [prefillSource, basicFormData, cappedImpoundDays, chargeDescriptions]);
+    }, [prefillSource, basicFormData, advancedFormData, cappedImpoundDays, chargeDescriptions]);
 
     const prefillValues = useMemo(() => {
         if (!computedPrefillData) return null;
