@@ -1,6 +1,16 @@
 {
     "announcements": [
         {
+            "id": 3,
+            "date": "2025-09-30",
+            "title": "Major Update: Parole Violations & Experimental Features",
+            "content": "We've heavily adjusted the way parole violations get handled, as they are no longer bound to a singular addition. Meaning you're able to still charge someone as a parole violation on top of an attempt charge or anything similar to that, alongside that we've added a few experimental features!",
+            "button": {
+                "text": "Experimental Features",
+                "href": "/changelog"
+            }
+        },
+        {
             "id": 2,
             "date": "2025-09-05",
             "title": "Major Update: Penal Code AI Assistant & Privacy Settings",

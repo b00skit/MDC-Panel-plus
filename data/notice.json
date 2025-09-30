@@ -1,14 +1,9 @@
 
 {
-    "enabled": false,
+    "enabled": true,
     "dismissible": true,
     "variant": "default",
     "icon": "Info",
-    "title": "Welcome to the all new MDC Panel!",
-    "content": "We've completely revamped the MDC Panel to provide a new look, provide a ton of quality-of-life features while maintaining the same exact use-flow and most importantly, maintaining minimalism. Any and all feedback is welcome!",
-    "button": {
-        "text": "Give Feedback",
-        "type": "function",
-        "action": "open_feedback_dialog"
-    }
+    "title": "Experimental Feature: Legal Search",
+    "content": "We've released a new Experimental Feature called 'Legal Search', you can enable it in your settings or on the changelog."
 }
