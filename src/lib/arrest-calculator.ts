@@ -43,9 +43,11 @@ export interface ArrestCalculation {
   isSuspensionCapped: boolean;
 }
 
-export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestCalculation> {
+export async function calculateArrest(report: SelectedCharge[], isParoleViolator: boolean): Promise<ArrestCalculation> {
   const penalCode: PenalCode = await fetch(`${config.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`).then(res => res.json());
   const additions: Addition[] = additionsData.additions;
+
+  const paroleViolationAddition = additions.find(a => a.name === config.PAROLE_VIOLATION_DEFINITION);
 
   const extras = report
     .map(row => {
@@ -69,9 +71,18 @@ export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestC
     const chargeDetails = penalCode[row.chargeId!];
     if (!chargeDetails) return null;
 
-    const additionDetails = additions.find(a => a.name === row.addition);
-    const sentenceMultiplier = additionDetails?.sentence_multiplier ?? 1;
-    const pointsMultiplier = additionDetails?.points_multiplier ?? 1;
+    let additionDetails = additions.find(a => a.name === row.addition);
+    let sentenceMultiplier = additionDetails?.sentence_multiplier ?? 1;
+    let pointsMultiplier = additionDetails?.points_multiplier ?? 1;
+
+    if (isParoleViolator && paroleViolationAddition) {
+        sentenceMultiplier *= paroleViolationAddition.sentence_multiplier;
+        pointsMultiplier *= paroleViolationAddition.points_multiplier;
+
+        if (!additionDetails || (additionDetails.name !== paroleViolationAddition.name)) {
+            additionDetails = paroleViolationAddition;
+        }
+    }
 
     const isDrugCharge = !!chargeDetails.drugs;
 
@@ -113,7 +124,7 @@ export async function calculateArrest(report: SelectedCharge[]): Promise<ArrestC
       row,
       chargeDetails,
       additionDetails,
-      isModified: sentenceMultiplier !== 1 || pointsMultiplier !== 1,
+      isModified: sentenceMultiplier !== 1 || pointsMultiplier !== 1 || isParoleViolator,
       original: { minTime: originalMinTime, maxTime: originalMaxTime, points: originalPoints },
       modified: { minTime: modifiedMinTime, maxTime: modifiedMaxTime, points: modifiedPoints },
       fine,

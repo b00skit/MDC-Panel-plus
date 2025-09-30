@@ -1,7 +1,7 @@
 {
     "SITE_LIVE": true,
     "SITE_NAME": "MDC Panel+",
-    "SITE_VERSION": "3.3.2.01",
+    "SITE_VERSION": "3.4.0",
     "CACHE_VERSION": "elevator-stuf-1",
     "LOCAL_STORAGE_VERSION": "cookie-apxn-1",
     "SITE_LOGO": "/img/logos/MDC-Panel.svg",
@@ -15,6 +15,7 @@
     "MAX_SENTENCE_DAYS": 25,
     "MAX_IMPOUND_DAYS": 35,
     "MAX_SUSPENSION_DAYS": 35,
+    "PAROLE_VIOLATION_DEFINITION": "Parole Violation",
     "CONTENT_DELIVERY_NETWORK": "https://sys.booskit.dev/cdn/serve.php",
     "URL_GITHUB": "https://github.com/b00skit/MDC-Panel-plus",
     "URL_DISCORD": "https://discord.gg/rxfYd23TNz",

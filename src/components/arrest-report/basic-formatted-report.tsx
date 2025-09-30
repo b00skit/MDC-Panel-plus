@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import type { ArrestCalculation } from '@/lib/arrest-calculator';
+import { useChargeStore } from '@/stores/charge-store';
 
 const getType = (type: string | undefined) => {
     switch (type) {
@@ -39,6 +40,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
     const { general, arrest, location, evidence, officers } = formData;
     const [header, setHeader] = useState('COUNTY OF LOS SANTOS');
     const [calculation, setCalculation] = useState<ArrestCalculation | null>(null);
+    const { isParoleViolator } = useChargeStore();
 
     useEffect(() => {
         if (officers && officers.length > 0 && officers[0].department) {
@@ -50,12 +52,12 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         fetch('/api/arrest-calculator', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ report }),
+            body: JSON.stringify({ report, isParoleViolator }),
         })
             .then(res => res.json())
             .then(setCalculation)
             .catch(err => console.error('Failed to load arrest calculation:', err));
-    }, [report]);
+    }, [report, isParoleViolator]);
 
     return (
         <table ref={innerRef} style={{ width: '100%', fontFamily: "'Times New Roman', serif", borderCollapse: 'collapse', border: '4px solid black', backgroundColor: 'white', color: 'black' }}>

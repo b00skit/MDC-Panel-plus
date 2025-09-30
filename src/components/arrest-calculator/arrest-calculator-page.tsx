@@ -40,6 +40,7 @@ import configData from '../../../data/config.json';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { useBasicReportModifiersStore } from '@/stores/basic-report-modifiers-store';
+import { Checkbox } from '../ui/checkbox';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -82,6 +83,8 @@ export function ArrestCalculatorPage() {
     resetCharges,
     setCharges,
     report,
+    isParoleViolator,
+    toggleParoleViolator
   } = useChargeStore();
   const resetForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
@@ -162,6 +165,8 @@ export function ArrestCalculatorPage() {
   }
 
   const penalCodeArray = useMemo(() => penalCode ? Object.values(penalCode) : [], [penalCode]);
+  const additionsWithoutParole = useMemo(() => additions.filter(a => a.name !== configData.PAROLE_VIOLATION_DEFINITION), [additions]);
+
 
   const showDrugChargeWarning = useMemo(() => {
     return charges.some(charge => {
@@ -225,6 +230,11 @@ export function ArrestCalculatorPage() {
           <Button variant="default" disabled={charges.length === 0} onClick={handleCalculate}>
             Calculate Arrest
           </Button>
+        </div>
+
+        <div className="flex items-center space-x-2">
+            <Checkbox id="parole-violator" checked={isParoleViolator} onCheckedChange={toggleParoleViolator} />
+            <Label htmlFor="parole-violator" className="text-base font-medium">Suspect is a Parole Violator</Label>
         </div>
 
         {charges.map((chargeRow) => {
@@ -439,7 +449,7 @@ export function ArrestCalculatorPage() {
                       <SelectValue placeholder="Select addition" />
                     </SelectTrigger>
                     <SelectContent>
-                      {additions.map((addition) => (
+                      {additionsWithoutParole.map((addition) => (
                         <SelectItem key={addition.name} value={addition.name}>{addition.name}</SelectItem>
                       ))}
                     </SelectContent>

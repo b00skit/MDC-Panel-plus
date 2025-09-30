@@ -46,6 +46,7 @@ interface ChargeState {
   additions: Addition[];
   charges: SelectedCharge[];
   report: SelectedCharge[];
+  isParoleViolator: boolean;
   setPenalCode: (penalCode: PenalCode) => void;
   setAdditions: (additions: Addition[]) => void;
   addCharge: () => void;
@@ -54,11 +55,13 @@ interface ChargeState {
   setReport: (report: SelectedCharge[]) => void;
   resetCharges: () => void;
   setCharges: (charges: SelectedCharge[]) => void;
+  toggleParoleViolator: () => void;
 }
 
 const initialState = {
     charges: [],
     report: [],
+    isParoleViolator: false,
 };
 
 export const useChargeStore = create<ChargeState>()(
@@ -94,8 +97,9 @@ export const useChargeStore = create<ChargeState>()(
           ),
         })),
        setReport: (report) => set({ report }),
-       resetCharges: () => set((state) => ({ ...state, charges: [] })),
+       resetCharges: () => set((state) => ({ ...state, charges: [], isParoleViolator: false })),
        setCharges: (charges) => set({ charges }),
+       toggleParoleViolator: () => set(state => ({ isParoleViolator: !state.isParoleViolator })),
     }),
     {
       name: 'charge-storage', // name of the item in the storage (must be unique)

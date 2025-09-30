@@ -191,7 +191,7 @@ export function ArrestCalculatorResults({
 }: ArrestCalculatorResultsProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const setChargesForModification = useChargeStore(state => state.setCharges);
+  const { setCharges: setChargesForModification, isParoleViolator } = useChargeStore();
 
   const [data, setData] = useState<ArrestCalculation | null>(null);
 
@@ -199,12 +199,12 @@ export function ArrestCalculatorResults({
     fetch('/api/arrest-calculator', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ report }),
+      body: JSON.stringify({ report, isParoleViolator }),
     })
       .then(res => res.json())
       .then(setData)
       .catch(err => console.error('Failed to load arrest calculation:', err));
-  }, [report]);
+  }, [report, isParoleViolator]);
 
   if (!data) {
     return (
