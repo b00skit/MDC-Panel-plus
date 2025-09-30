@@ -12,6 +12,10 @@ export interface ChargeResult {
   row: SelectedCharge;
   chargeDetails: Charge;
   additionDetails?: Addition;
+  paroleAdditionDetails?: Addition;
+  appliedAdditions: Addition[];
+  sentenceMultiplier: number;
+  pointsMultiplier: number;
   isModified: boolean;
   original: { minTime: number; maxTime: number; points: number };
   modified: { minTime: number; maxTime: number; points: number };
@@ -73,13 +77,27 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
     if (!chargeDetails) return null;
 
     const additionDetails = additions.find(a => a.name === row.addition);
-    let sentenceMultiplier = additionDetails?.sentence_multiplier ?? 1;
-    let pointsMultiplier = additionDetails?.points_multiplier ?? 1;
+    const appliedAdditions: Addition[] = [];
+
+    if (additionDetails) {
+      appliedAdditions.push(additionDetails);
+    }
+
+    let paroleAdditionDetails: Addition | undefined;
 
     if (isParoleViolator && paroleViolationAddition) {
-        sentenceMultiplier *= paroleViolationAddition.sentence_multiplier;
-        pointsMultiplier *= paroleViolationAddition.points_multiplier;
+      paroleAdditionDetails = paroleViolationAddition;
+      appliedAdditions.push(paroleViolationAddition);
     }
+
+    const sentenceMultiplier = appliedAdditions.reduce(
+      (acc, addition) => acc * (addition.sentence_multiplier ?? 1),
+      1
+    );
+    const pointsMultiplier = appliedAdditions.reduce(
+      (acc, addition) => acc * (addition.points_multiplier ?? 1),
+      1
+    );
 
     const isDrugCharge = !!chargeDetails.drugs;
 
@@ -117,11 +135,20 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
     const bailAuto = chargeDetails.bail ? getBailAuto() : null;
     const bailCost = chargeDetails.bail && bailAuto !== false ? getBailCost() : 0;
 
+    const uniqueAppliedAdditions = appliedAdditions.filter(
+      (addition, index, arr) =>
+        addition?.name ? arr.findIndex(item => item?.name === addition.name) === index : true
+    );
+
     return {
       row,
       chargeDetails,
       additionDetails,
-      isModified: sentenceMultiplier !== 1 || pointsMultiplier !== 1 || isParoleViolator,
+      paroleAdditionDetails,
+      appliedAdditions: uniqueAppliedAdditions,
+      sentenceMultiplier,
+      pointsMultiplier,
+      isModified: sentenceMultiplier !== 1 || pointsMultiplier !== 1,
       original: { minTime: originalMinTime, maxTime: originalMaxTime, points: originalPoints },
       modified: { minTime: modifiedMinTime, maxTime: modifiedMaxTime, points: modifiedPoints },
       fine,
@@ -144,8 +171,8 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
 
       acc.fine += result.fine;
       
-      const impound = result.impound * (result.additionDetails?.sentence_multiplier ?? 1);
-      const suspension = result.suspension * (result.additionDetails?.sentence_multiplier ?? 1);
+      const impound = result.impound * result.sentenceMultiplier;
+      const suspension = result.suspension * result.sentenceMultiplier;
       
       acc.original.impound += result.impound;
       acc.original.suspension += result.suspension;

@@ -28,6 +28,7 @@ import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { AdvancedArrestReportForm } from './advanced-arrest-report-form';
+import configData from '../../../data/config.json';
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -115,7 +116,7 @@ const CopyableCard = ({ label, value }: { label: string, value: string | number 
   };
 
 export function ArrestReportPage() {
-  const { report, penalCode } = useChargeStore();
+  const { report, penalCode, reportIsParoleViolator } = useChargeStore();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const { isAdvanced, toggleAdvanced } = useAdvancedReportStore();
@@ -338,10 +339,14 @@ export function ArrestReportPage() {
                             }
                             const bailInfo = getBailInfo();
 
+                            const additionDisplay = reportIsParoleViolator && row.addition
+                                ? `${row.addition} + ${configData.PAROLE_VIOLATION_DEFINITION}`
+                                : row.addition || 'Offender';
+
                             return (
                                 <TableRow key={row.uniqueId}>
                                     <TableCell className="font-medium">{title}</TableCell>
-                                    <TableCell>{row.addition}</TableCell>
+                                    <TableCell>{additionDisplay}</TableCell>
                                     <TableCell>{row.offense}</TableCell>
                                     <TableCell>
                                         <span className={cn('font-bold', {

@@ -177,6 +177,7 @@ interface ArrestCalculatorResultsProps {
   clickToCopy?: boolean;
   showModifyChargesButton?: boolean;
   onModifyCharges?: () => void;
+  paroleViolatorOverride?: boolean;
 }
 
 export function ArrestCalculatorResults({
@@ -188,23 +189,26 @@ export function ArrestCalculatorResults({
   clickToCopy = false,
   showModifyChargesButton = false,
   onModifyCharges,
+  paroleViolatorOverride,
 }: ArrestCalculatorResultsProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const { setCharges: setChargesForModification, isParoleViolator } = useChargeStore();
+  const { setCharges: setChargesForModification, isParoleViolator, reportIsParoleViolator } = useChargeStore();
 
   const [data, setData] = useState<ArrestCalculation | null>(null);
+
+  const effectiveParoleStatus = paroleViolatorOverride ?? (report.length > 0 ? reportIsParoleViolator : isParoleViolator);
 
   useEffect(() => {
     fetch('/api/arrest-calculator', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ report, isParoleViolator }),
+      body: JSON.stringify({ report, isParoleViolator: effectiveParoleStatus }),
     })
       .then(res => res.json())
       .then(setData)
       .catch(err => console.error('Failed to load arrest calculation:', err));
-  }, [report, isParoleViolator]);
+  }, [report, effectiveParoleStatus]);
 
   if (!data) {
     return (
@@ -274,7 +278,11 @@ export function ArrestCalculatorResults({
     });
 
     if (chargeParams.length > 0) {
-      const url = `${window.location.origin}/arrest-calculation?${chargeParams.join('&')}`;
+      const queryParts = [...chargeParams];
+      if (effectiveParoleStatus) {
+        queryParts.push('pv=1');
+      }
+      const url = `${window.location.origin}/arrest-calculation?${queryParts.join('&')}`;
       navigator.clipboard.writeText(url);
       toast({
         title: 'Link Copied!',
@@ -325,7 +333,7 @@ export function ArrestCalculatorResults({
                 </TableHeader>
                 <TableBody>
                   {calculationResults.map(result => {
-                    const { row, chargeDetails, additionDetails, isModified, original, modified, fine, impound, suspension, bailAuto, bailCost } = result as ChargeResult;
+                    const { row, chargeDetails, appliedAdditions, isModified, original, modified, fine, impound, suspension, bailAuto, bailCost } = result as ChargeResult;
 
                     const typePrefix = `${chargeDetails.type}${row.class}`;
                     let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;
@@ -335,6 +343,10 @@ export function ArrestCalculatorResults({
                     } else if (row.offense !== '1') {
                         title += ` (Offence #${row.offense})`;
                     }
+
+                    const additionDisplayNames = appliedAdditions && appliedAdditions.length > 0
+                      ? appliedAdditions.map(add => add.name).join(' + ')
+                      : (row.addition || 'Offender');
 
                     return (
                       <TableRow key={row.uniqueId}>
@@ -349,15 +361,20 @@ export function ArrestCalculatorResults({
                           {isModified ? (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className="font-bold text-yellow-500 cursor-help">{row.addition}</span>
+                                <span className="font-bold text-yellow-500 cursor-help">{additionDisplayNames}</span>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Sentence Multiplier: {additionDetails?.sentence_multiplier}x</p>
-                                <p>Points Multiplier: {additionDetails?.points_multiplier}x</p>
+                              <TooltipContent className="space-y-2">
+                                {appliedAdditions.map(addition => (
+                                  <div key={addition.name} className="space-y-1">
+                                    <p className="font-semibold">{addition.name}</p>
+                                    <p>Sentence Multiplier: {addition.sentence_multiplier}x</p>
+                                    <p>Points Multiplier: {addition.points_multiplier}x</p>
+                                  </div>
+                                ))}
                               </TooltipContent>
                             </Tooltip>
                           ) : (
-                            <span>{row.addition}</span>
+                            <span>{additionDisplayNames}</span>
                           )}
                         </TableCell>
                         <TableCell>{row.offense}</TableCell>

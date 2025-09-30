@@ -29,7 +29,7 @@ const classMapping: { [key: string]: string } = {
 
 function ArrestCalculationContent() {
   const searchParams = useSearchParams();
-  const { penalCode, setPenalCode } = useChargeStore();
+  const { penalCode, setPenalCode, setParoleViolator, setReportParoleViolator } = useChargeStore();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,17 +37,18 @@ function ArrestCalculationContent() {
     document.title = 'MDC Panel – Arrest Calculation';
   }, []);
 
-  const parsedCharges = useMemo<SelectedCharge[]>(() => {
-    if (!penalCode) return [];
-    
+  const parsedData = useMemo(() => {
+    if (!penalCode) return { charges: [] as SelectedCharge[], paroleFromAdditions: false };
+
     const chargeStrings = searchParams.getAll('c');
     if (chargeStrings.length === 0) {
         setError("No charges provided in the URL.");
-        return [];
+        return { charges: [] as SelectedCharge[], paroleFromAdditions: false };
     }
-    
+
     const charges: SelectedCharge[] = [];
     let parsingError = false;
+    let paroleFromAdditions = false;
 
     chargeStrings.forEach((chargeStr, index) => {
         if (parsingError) return;
@@ -66,7 +67,7 @@ function ArrestCalculationContent() {
 
         const classChar = chargeIdWithClass.charAt(0).toLowerCase();
         const chargeId = chargeIdWithClass.substring(1);
-        
+
         const chargeDetails = Object.values(penalCode).find(c => c.id === chargeId);
 
         if (!chargeDetails) {
@@ -75,12 +76,18 @@ function ArrestCalculationContent() {
             return;
         }
 
+        let additionName = additionMapping[additionIndex] || 'Offender';
+        if (additionName === configData.PAROLE_VIOLATION_DEFINITION) {
+            paroleFromAdditions = true;
+            additionName = 'Offender';
+        }
+
         const selectedCharge: SelectedCharge = {
             uniqueId: Date.now() + index,
             chargeId: chargeDetails.id,
             class: classMapping[classChar] || null,
             offense: offense,
-            addition: additionMapping[additionIndex] || 'Offender',
+            addition: additionName,
             category: null,
         };
 
@@ -95,10 +102,17 @@ function ArrestCalculationContent() {
         charges.push(selectedCharge);
     });
 
-    if (parsingError) return [];
-    return charges;
+    if (parsingError) return { charges: [] as SelectedCharge[], paroleFromAdditions: false };
+    return { charges, paroleFromAdditions };
 
-  }, [searchParams, penalCode]);
+  }, [searchParams, penalCode, setError]);
+
+  const parsedCharges = parsedData.charges;
+  const paroleFromAdditions = parsedData.paroleFromAdditions;
+
+  const paroleQueryParam = searchParams.get('pv');
+  const paroleFromQuery = paroleQueryParam !== null ? (paroleQueryParam === '1' || paroleQueryParam.toLowerCase() === 'true') : undefined;
+  const paroleViolatorOverride = paroleFromQuery ?? paroleFromAdditions;
 
   useEffect(() => {
     if (!penalCode) {
@@ -117,6 +131,12 @@ function ArrestCalculationContent() {
         setLoading(false);
     }
   }, [penalCode, setPenalCode]);
+
+  useEffect(() => {
+    const paroleValue = paroleViolatorOverride || false;
+    setParoleViolator(paroleValue);
+    setReportParoleViolator(paroleValue);
+  }, [paroleViolatorOverride, setParoleViolator, setReportParoleViolator]);
 
   if (loading) {
     return (
@@ -151,6 +171,7 @@ function ArrestCalculationContent() {
                 showSummary={true}
                 clickToCopy={true}
                 showCopyables={true}
+                paroleViolatorOverride={paroleViolatorOverride}
             />
         ) : (
             <Alert variant="secondary">

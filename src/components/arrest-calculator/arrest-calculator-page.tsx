@@ -70,21 +70,22 @@ export function ArrestCalculatorPage() {
   const isModifyMode = searchParams.get('modify') === 'true';
 
   const { toast } = useToast();
-  const { 
-    charges, 
+  const {
+    charges,
     penalCode,
     additions,
     setPenalCode,
     setAdditions,
-    addCharge, 
-    removeCharge, 
-    updateCharge, 
+    addCharge,
+    removeCharge,
+    updateCharge,
     setReport,
     resetCharges,
     setCharges,
     report,
     isParoleViolator,
-    toggleParoleViolator
+    reportIsParoleViolator,
+    setParoleViolator
   } = useChargeStore();
   const resetForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
@@ -105,6 +106,7 @@ export function ArrestCalculatorPage() {
   useEffect(() => {
     if (isModifyMode) {
       setCharges(report); // Load report charges into the calculator for editing
+      setParoleViolator(reportIsParoleViolator);
     } else {
       resetCharges();
     }
@@ -123,7 +125,7 @@ export function ArrestCalculatorPage() {
         setLoading(false);
     });
 
-  }, [setPenalCode, resetCharges, isModifyMode, report, setCharges, setAdditions]);
+  }, [setPenalCode, resetCharges, isModifyMode, report, setCharges, setAdditions, reportIsParoleViolator, setParoleViolator]);
   
   const handleCalculate = () => {
      if (charges.length === 0) {
@@ -233,7 +235,7 @@ export function ArrestCalculatorPage() {
         </div>
 
         <div className="flex items-center space-x-2">
-            <Checkbox id="parole-violator" checked={isParoleViolator} onCheckedChange={toggleParoleViolator} />
+            <Checkbox id="parole-violator" checked={isParoleViolator} onCheckedChange={(value) => setParoleViolator(value === true)} />
             <Label htmlFor="parole-violator" className="text-base font-medium">Suspect is a Parole Violator</Label>
         </div>
 
