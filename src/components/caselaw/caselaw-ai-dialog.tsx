@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Sparkles, AlertTriangle, ExternalLink } from 'lucide-react';
-import { caselawAssistantFlow, CaselawOutput } from '@/ai/flows/caselaw-assistant';
+import { caselawAssistantFlow, CaselawAssistantOutput } from '@/ai/flows/caselaw-assistant';
 import { Skeleton } from '../ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -39,7 +39,7 @@ export function CaselawAIDialog({ open, onOpenChange }: CaselawAIDialogProps) {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<CaselawOutput | null>(null);
+  const [result, setResult] = useState<CaselawAssistantOutput | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
