@@ -81,6 +81,7 @@ const GeneratedFormattedReport = ({
                 }
                 return ret;
             });
+            Handlebars.registerHelper('is_in', (array, value) => array?.includes(value));
             
             const processedData = { ...formData };
             if (generatorConfig.conditionals) {
@@ -290,3 +291,5 @@ export function PaperworkSubmitPage() {
         </Suspense>
     )
 }
+
+    
