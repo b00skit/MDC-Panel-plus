@@ -269,6 +269,7 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
     const data = {
         date: allWatchedFields.general?.date || '',
         time: allWatchedFields.general?.time || '',
+        callsign: allWatchedFields.general?.callSign || '',
         street: allWatchedFields.location?.street || '',
         suspect: allWatchedFields.arrest?.suspectName || formData.arrest?.suspectName || '',
         rank: primaryOfficer?.rank || '',
@@ -277,7 +278,7 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
         department: primaryOfficer?.department || '',
     };
 
-    let baseText = `On the ${data.date}, I ${data.rank} ${data.name} (#${data.badge}) of the ${data.department} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
+    let baseText = `On the ${data.date}, I ${data.rank} ${data.name} (#${data.badge}) of the ${data.department} while under the callsign ${data.callsign} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
 
     const modifierOrder: (keyof typeof allWatchedFields.narrative.modifiers)[] = ['callOfService', 'evaded', 'resistedArrest', 'searched', 'booking'];
     let firstModifierAdded = false;
