@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useMemo, useState, useEffect, useRef } from 'react';
@@ -29,6 +30,7 @@ import {
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { motion, useInView, useSpring, useTransform } from 'framer-motion';
+import { useSettingsStore } from '@/stores/settings-store';
 
 // --- TYPE DEFINITIONS ---
 type ChangelogItem = {
@@ -144,45 +146,7 @@ function StatCard({ title, value, icon: Icon }: StatCardProps) {
 export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
     const [search, setSearch] = useState('');
     const [typeFilter, setTypeFilter] = useState<string>('all');
-    const [featureStates, setFeatureStates] = useState<Record<string, boolean>>({});
-
-    useEffect(() => {
-        const storedStates: Record<string, boolean> = {};
-
-        try {
-            initialChangelogs.forEach((entry) => {
-                entry.experimentalFeatures?.forEach((feature) => {
-                    const storageKey = `mdc-feature-${feature.variable}`;
-                    const storedValue = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
-                    if (storedValue === null) {
-                        storedStates[feature.variable] = Boolean(feature.defaultEnabled);
-                    } else {
-                        storedStates[feature.variable] = storedValue === 'enabled';
-                    }
-                });
-            });
-        } catch (error) {
-            // If localStorage is unavailable, fall back to defaults without breaking rendering
-            initialChangelogs.forEach((entry) => {
-                entry.experimentalFeatures?.forEach((feature) => {
-                    storedStates[feature.variable] = Boolean(feature.defaultEnabled);
-                });
-            });
-        }
-
-        setFeatureStates(storedStates);
-    }, [initialChangelogs]);
-
-    const handleFeatureToggle = (variable: string, enabled: boolean) => {
-        setFeatureStates((prev) => ({ ...prev, [variable]: enabled }));
-        try {
-            if (typeof window !== 'undefined') {
-                localStorage.setItem(`mdc-feature-${variable}`, enabled ? 'enabled' : 'disabled');
-            }
-        } catch (error) {
-            // Ignore localStorage write errors
-        }
-    };
+    const { experimentalFeatures, toggleExperimentalFeature } = useSettingsStore();
 
     const stats = useMemo(() => {
         const allItems = initialChangelogs.flatMap(log => log.items);
@@ -325,7 +289,7 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                         </div>
                                         <div className="grid gap-4">
                                             {changelog.experimentalFeatures.map((feature) => {
-                                                const isEnabled = featureStates[feature.variable] ?? Boolean(feature.defaultEnabled);
+                                                const isEnabled = experimentalFeatures.includes(feature.variable);
                                                 return (
                                                     <div key={feature.variable} className="space-y-3 rounded-md border bg-background p-4 shadow-sm">
                                                         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -339,14 +303,16 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                                             <Button
                                                                 type="button"
                                                                 variant={isEnabled ? 'default' : 'secondary'}
-                                                                onClick={() => handleFeatureToggle(feature.variable, true)}
+                                                                onClick={() => toggleExperimentalFeature(feature.variable)}
+                                                                disabled={isEnabled}
                                                             >
                                                                 Enable
                                                             </Button>
                                                             <Button
                                                                 type="button"
                                                                 variant={!isEnabled ? 'default' : 'outline'}
-                                                                onClick={() => handleFeatureToggle(feature.variable, false)}
+                                                                onClick={() => toggleExperimentalFeature(feature.variable)}
+                                                                disabled={!isEnabled}
                                                             >
                                                                 Disable
                                                             </Button>
