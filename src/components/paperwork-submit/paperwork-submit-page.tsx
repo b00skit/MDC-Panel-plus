@@ -2,7 +2,7 @@
 'use client';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Clipboard, Info, ExternalLink } from 'lucide-react';
+import { Clipboard, Info, ExternalLink, ImageDown } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '../ui/skeleton';
@@ -180,6 +180,7 @@ function PaperworkSubmitContent() {
     const reportRef = useRef<HTMLDivElement>(null);
     const [reportTitle, setReportTitle] = useState('');
     const [customButton, setCustomButton] = useState<{ text: string, link: string } | null>(null);
+    const [isDownloadingImage, setIsDownloadingImage] = useState(false);
   
     useEffect(() => {
       setIsClient(true);
@@ -202,6 +203,43 @@ function PaperworkSubmitContent() {
           title: "Success",
           description: "Report title copied to clipboard.",
         })
+    };
+
+    const handleDownloadImage = async () => {
+        if (!reportRef.current || isDownloadingImage) {
+            return;
+        }
+
+        try {
+            setIsDownloadingImage(true);
+            const html2canvas = (await import('html2canvas')).default;
+            const canvas = await html2canvas(reportRef.current, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true,
+            });
+
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const sanitizedTitle = reportTitle ? reportTitle.replace(/[^a-z0-9-_]+/gi, '_').toLowerCase() : 'paperwork';
+            link.download = `${sanitizedTitle}-${timestamp}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            toast({
+                title: 'Download started',
+                description: 'Your paperwork image is being downloaded.',
+            });
+        } catch (error) {
+            console.error('Failed to download paperwork image:', error);
+            toast({
+                title: 'Download failed',
+                description: 'Could not create an image from the paperwork preview. Please try again.',
+                variant: 'destructive',
+            });
+        } finally {
+            setIsDownloadingImage(false);
+        }
     };
   
     if (!isClient) {
@@ -275,6 +313,10 @@ function PaperworkSubmitContent() {
                     </a>
                 </Button>
             )}
+            <Button variant="outline" onClick={handleDownloadImage} disabled={!reportRef.current || isDownloadingImage}>
+                <ImageDown className="mr-2 h-4 w-4" />
+                {isDownloadingImage ? 'Preparing Image...' : 'Download Report'}
+            </Button>
             <Button onClick={handleCopy} disabled={!isClient}>
                 <Clipboard className="mr-2 h-4 w-4" />
                 Copy Paperwork

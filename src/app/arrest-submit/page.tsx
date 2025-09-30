@@ -3,7 +3,7 @@
 
 import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Clipboard, Info, ExternalLink, Car } from 'lucide-react';
+import { Clipboard, Info, ExternalLink, Car, ImageDown } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -32,6 +32,7 @@ function ArrestSubmitContent() {
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
     const reportRef = useRef<HTMLTableElement>(null);
+    const [isDownloadingImage, setIsDownloadingImage] = useState(false);
   
     useEffect(() => {
       setIsClient(true);
@@ -96,6 +97,43 @@ function ArrestSubmitContent() {
           });
         }
       };
+
+    const handleDownloadImage = async () => {
+        if (!reportRef.current || isDownloadingImage) {
+            return;
+        }
+
+        try {
+            setIsDownloadingImage(true);
+            const html2canvas = (await import('html2canvas')).default;
+            const canvas = await html2canvas(reportRef.current, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true,
+            });
+
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filenameBase = isAdvancedReport ? 'advanced-arrest-report' : 'basic-arrest-report';
+            link.download = `${filenameBase}-${timestamp}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            toast({
+                title: 'Download started',
+                description: 'Your formatted report image is being downloaded.',
+            });
+        } catch (error) {
+            console.error('Failed to download report image:', error);
+            toast({
+                title: 'Download failed',
+                description: 'Could not create an image from the report. Please try again.',
+                variant: 'destructive',
+            });
+        } finally {
+            setIsDownloadingImage(false);
+        }
+    };
 
     const suspectName = isBasicReport ? formData?.arrest?.suspectName : formData?.arrestee?.name;
     const mdcRecordUrl = suspectName ? `https://mdc.gta.world/record/${suspectName.replace(/ /g, '_')}` : null;
@@ -169,6 +207,10 @@ function ArrestSubmitContent() {
                       </a>
                   </Button>
               )}
+              <Button variant="outline" onClick={handleDownloadImage} disabled={!reportRef.current || isDownloadingImage}>
+                  <ImageDown className="mr-2 h-4 w-4" />
+                  {isDownloadingImage ? 'Preparing Image...' : 'Download Report'}
+              </Button>
               <Button onClick={handleCopy} disabled={isClient && !formData}>
                   <Clipboard className="mr-2 h-4 w-4" />
                   Copy Paperwork
