@@ -3,32 +3,46 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { penalCodeSearchTool, PenalCodeSearchOutputSchema } from './penal-code-search-flow';
+import config from '@/../data/config.json';
 import { sanitizeLocations } from '@/lib/sanitize-locations';
 
-const PenalCodeAssistantInputSchema = z.object({
-  query: z.string().describe("The user's question about a criminal charge."),
+const PenalCodeInputSchema = z.object({
+    query: z.string().describe("The user's question about a criminal charge."),
 });
-export type PenalCodeAssistantInput = z.infer<typeof PenalCodeAssistantInputSchema>;
+export type PenalCodeInput = z.infer<typeof PenalCodeInputSchema>;
+
+const PenalCodeOutputSchema = z.object({
+  relevant_charges: z.array(z.object({
+    id: z.string().describe("The ID of the charge, e.g., '101'."),
+    name: z.string().describe("The name of the charge, e.g., 'First-Degree Murder'."),
+    type: z.enum(['F', 'M', 'I']).describe("The type of the charge: F (Felony), M (Misdemeanor), or I (Infraction)."),
+    definition: z.string().describe("The legal definition of the charge."),
+  })).describe("An array of the most relevant charges found in the provided penal code data. Return up to 5 of the most relevant charges. Do not return charges that are not relevant.")
+});
+export type PenalCodeOutput = z.infer<typeof PenalCodeOutputSchema>;
+
 
 const penalCodeAssistantPrompt = ai.definePrompt({
-  name: 'penalCodeAssistantPrompt',
-  tools: [penalCodeSearchTool],
-  prompt: `You are a helpful legal assistant for Law Enforcement Officers.
+    name: "penalCodeAssistantPrompt",
+    prompt: `You are a helpful legal assistant for Law Enforcement Officers.
     Your goal is to answer questions about criminal charges by searching the provided San Andreas Penal Code.
     
-    Use the 'penalCodeSearchTool' to find the most relevant charges from the penal code data based on the user's query.
+    Analyze the user's query and find the most relevant charges from the provided JSON data.
+    A charge is relevant if its name or definition directly addresses the user's situation.
     Return up to 5 of the most relevant charges. If no relevant charges are found, return an empty array.
 
-    Your instructions are to respond ONLY in the format defined by the output schema. Do not add any conversational text or markdown.
+    Your instructions are to respond ONLY in the format defined by the PenalCodeOutputSchema. Do not add any conversational text or markdown.
+
+    PENAL CODE:
+    {{{json penalCode}}}
     
     User Query: {{query}}`,
-  output: {
-    schema: PenalCodeSearchOutputSchema,
-  },
+    output: {
+        schema: PenalCodeOutputSchema
+    }
 });
 
-async function logToDiscord(query: string, result: PenalCodeSearchOutput) {
+async function logToDiscord(query: string, result: PenalCodeOutput) {
     const webhookUrl = process.env.DISCORD_LOGS_WEBHOOK_URL;
     if (!webhookUrl) return;
 
@@ -67,15 +81,31 @@ async function logToDiscord(query: string, result: PenalCodeSearchOutput) {
 }
 
 
-export async function penalCodeAssistantFlow(input: PenalCodeAssistantInput): Promise<PenalCodeSearchOutput> {
-    const result = await penalCodeAssistantPrompt(input);
-    const output = result.output;
-    if (!output) {
-        throw new Error("The AI failed to produce a valid output.");
-    }
-    
-    await logToDiscord(input.query, output);
+export const penalCodeAssistantFlow = ai.defineFlow(
+    {
+      name: 'penalCodeAssistantFlow',
+      inputSchema: PenalCodeInputSchema,
+      outputSchema: PenalCodeOutputSchema,
+    },
+    async (input) => {
+        const penalCodeRes = await fetch(`${config.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`);
+        if (!penalCodeRes.ok) {
+            throw new Error('Failed to fetch penal code data');
+        }
+        const penalCodeData = await penalCodeRes.json();
 
-    const sanitized = sanitizeLocations(output) as PenalCodeSearchOutput;
-    return sanitized;
-}
+        const result = await penalCodeAssistantPrompt({ 
+            query: input.query,
+            penalCode: penalCodeData
+        });
+        const output = result.output;
+        if (!output) {
+            throw new Error("The AI failed to produce a valid output.");
+        }
+        
+        await logToDiscord(input.query, output);
+
+        const sanitized = sanitizeLocations(output) as PenalCodeOutput;
+        return sanitized;
+    }
+);

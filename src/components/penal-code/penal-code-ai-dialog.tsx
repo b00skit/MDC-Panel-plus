@@ -13,8 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Sparkles, AlertTriangle, BookOpen } from 'lucide-react';
-import { penalCodeAssistantFlow } from '@/ai/flows/penal-code-assistant';
-import { type PenalCodeSearchOutput } from '@/ai/flows/penal-code-search-flow';
+import { penalCodeAssistantFlow, PenalCodeOutput } from '@/ai/flows/penal-code-assistant';
 import { Skeleton } from '../ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -47,7 +46,7 @@ export function PenalCodeAIDialog({ open, onOpenChange }: PenalCodeAIDialogProps
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<PenalCodeSearchOutput | null>(null);
+  const [result, setResult] = useState<PenalCodeOutput | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
