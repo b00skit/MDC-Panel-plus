@@ -69,7 +69,14 @@ function GeneratorPageContent() {
         return notFound();
     }
 
-    return <PaperworkGeneratorForm generatorConfig={generatorConfig} />;
+    return (
+        <PaperworkGeneratorForm
+            generatorConfig={generatorConfig}
+            generatorId={id}
+            generatorType={type as 'static' | 'user'}
+            groupId={groupId}
+        />
+    );
 }
 
 

@@ -4,36 +4,41 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Clipboard, Info, ExternalLink, ImageDown } from 'lucide-react';
 import { useEffect, useState, useRef, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '../ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { usePaperworkStore } from '@/stores/paperwork-store';
+import { useArchiveStore } from '@/stores/archive-store';
 import Handlebars from 'handlebars';
 import { ConditionalVariable } from '@/stores/paperwork-builder-store';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
-const GeneratedFormattedReport = ({ 
-    innerRef, 
+const GeneratedFormattedReport = ({
+    innerRef,
     setReportTitle,
     setCustomButton,
-}: { 
-    innerRef: React.RefObject<HTMLDivElement>, 
+    onGeneratorLoaded,
+}: {
+    innerRef: React.RefObject<HTMLDivElement>,
     setReportTitle: (title: string) => void,
-    setCustomButton: (button: { text: string; link: string } | null) => void 
+    setCustomButton: (button: { text: string; link: string } | null) => void,
+    onGeneratorLoaded?: (details: { title?: string; description?: string; icon?: string }) => void,
 }) => {
     const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
-    const [generatorConfig, setGeneratorConfig] = useState<{ 
-        output: string; 
-        output_title?: string; 
-        conditionals?: ConditionalVariable[], 
-        countyCityStipulation?: boolean, 
+    const [generatorConfig, setGeneratorConfig] = useState<{
+        output: string;
+        output_title?: string;
+        conditionals?: ConditionalVariable[],
+        countyCityStipulation?: boolean,
         is_html_output?: boolean,
         custom_button_text?: string;
         custom_button_link?: string;
         custom_button_replace_spaces?: boolean;
+        title?: string;
+        description?: string;
+        icon?: string;
     } | null>(null);
   
     useEffect(() => {
@@ -51,6 +56,16 @@ const GeneratedFormattedReport = ({
                 .catch(err => console.error("Failed to load generator template", err));
         }
     }, [generatorId, generatorType, groupId]);
+
+    useEffect(() => {
+        if (generatorConfig) {
+            onGeneratorLoaded?.({
+                title: generatorConfig.title,
+                description: generatorConfig.description,
+                icon: generatorConfig.icon,
+            });
+        }
+    }, [generatorConfig, onGeneratorLoaded]);
 
     useEffect(() => {
         if(generatorConfig && formData) {
@@ -173,18 +188,59 @@ const GeneratedFormattedReport = ({
   
 
 function PaperworkSubmitContent() {
-    const { formData, generatorId } = usePaperworkStore();
-    
+    const { formData, generatorId, generatorType, groupId, lastFormValues } = usePaperworkStore();
+    const { archiveReport } = useArchiveStore();
+
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
     const reportRef = useRef<HTMLDivElement>(null);
     const [reportTitle, setReportTitle] = useState('');
     const [customButton, setCustomButton] = useState<{ text: string, link: string } | null>(null);
     const [isDownloadingImage, setIsDownloadingImage] = useState(false);
-  
+    const [generatorDetails, setGeneratorDetails] = useState<{ title?: string; description?: string; icon?: string } | null>(null);
+    const [hasArchived, setHasArchived] = useState(false);
+
     useEffect(() => {
       setIsClient(true);
     }, []);
+
+    useEffect(() => {
+        setHasArchived(false);
+    }, [generatorId, lastFormValues]);
+
+    useEffect(() => {
+        if (
+            hasArchived ||
+            !generatorId ||
+            !generatorType ||
+            !lastFormValues ||
+            !generatorDetails
+        ) {
+            return;
+        }
+
+        archiveReport({
+            paperworkType: 'paperwork-generator',
+            fields: lastFormValues,
+            generator: {
+                id: generatorId,
+                type: generatorType,
+                groupId: groupId || null,
+                title: generatorDetails.title,
+                description: generatorDetails.description,
+                icon: generatorDetails.icon,
+            },
+        });
+        setHasArchived(true);
+    }, [
+        archiveReport,
+        generatorId,
+        generatorType,
+        groupId,
+        lastFormValues,
+        generatorDetails,
+        hasArchived,
+    ]);
 
     const handleCopy = () => {
         if (reportRef.current?.firstChild) {
@@ -298,10 +354,11 @@ function PaperworkSubmitContent() {
                 </div>
             </div>
         )}
-        <GeneratedFormattedReport 
-            innerRef={reportRef} 
-            setReportTitle={setReportTitle} 
-            setCustomButton={setCustomButton} 
+        <GeneratedFormattedReport
+            innerRef={reportRef}
+            setReportTitle={setReportTitle}
+            setCustomButton={setCustomButton}
+            onGeneratorLoaded={setGeneratorDetails}
         />
 
         <div className="flex justify-end mt-6 gap-2">

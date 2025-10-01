@@ -95,59 +95,16 @@ type GeneratorConfig = {
 
 interface PaperworkGeneratorFormProps {
     generatorConfig: GeneratorConfig;
+    generatorId: string;
+    generatorType: 'static' | 'user';
+    groupId: string | null;
 }
 
-const buildDefaultValues = (fields: FormField[]): Record<string, any> => {
-    const defaults: Record<string, any> = {};
-
-    for (const field of fields) {
-        if (field.type === 'group' && field.fields) {
-            Object.assign(defaults, buildDefaultValues(field.fields));
-        } else if (field.type === 'input_group' && field.name) {
-            defaults[field.name] = field.defaultValue ?? [];
-        } else if (field.type === 'textarea-with-preset' && field.name) {
-            const modifierInputs: Record<string, any[]> = {};
-            (field.modifiers || []).forEach((mod: any) => {
-                if (mod.inputGroup) {
-                    modifierInputs[mod.name] = [];
-                }
-            });
-
-            defaults[field.name] = {
-                modifiers: (field.modifiers || []).reduce((acc, mod) => ({ ...acc, [mod.name]: true }), {}),
-                modifierInputs,
-                narrative: '',
-                isPreset: true,
-                userModified: false
-            };
-        } else if (field.type === 'modifier_itemgroup') {
-            // no default values needed
-        } else if (field.name) {
-            if (field.type === 'toggle') {
-                defaults[field.name] = field.defaultValue === true;
-            } else if (field.type === 'multi-select') {
-                defaults[field.name] = field.defaultValue || [];
-            } else {
-                defaults[field.name] = field.defaultValue ?? '';
-            }
-        }
-    }
-    return defaults;
-};
-
-const mergeDeep = (target: Record<string, any>, source: Record<string, any>): Record<string, any> => {
-    Object.entries(source).forEach(([key, value]) => {
-        if (value && typeof value === 'object' && !Array.isArray(value)) {
-            if (!target[key] || typeof target[key] !== 'object' || Array.isArray(target[key])) {
-                target[key] = {};
-            }
-            mergeDeep(target[key] as Record<string, any>, value as Record<string, any>);
-        } else {
-            target[key] = value;
-        }
-    });
-    return target;
-};
+const splitFieldPath = (fieldName: string): string[] =>
+    fieldName
+        .split('.')
+        .map(segment => segment.trim())
+        .filter(Boolean);
 
 const setValueAtPath = (target: Record<string, any>, path: string[], value: any) => {
     if (path.length === 0) return;
@@ -164,13 +121,125 @@ const setValueAtPath = (target: Record<string, any>, path: string[], value: any)
     });
 };
 
+const mergeDeep = (target: Record<string, any>, source: Record<string, any>): Record<string, any> => {
+    Object.entries(source).forEach(([key, value]) => {
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+            if (!target[key] || typeof target[key] !== 'object' || Array.isArray(target[key])) {
+                target[key] = {};
+            }
+            mergeDeep(target[key] as Record<string, any>, value as Record<string, any>);
+        } else {
+            target[key] = value;
+        }
+    });
+    return target;
+};
+
+const normalizeFieldPaths = (input: Record<string, any>): Record<string, any> => {
+    const normalized: Record<string, any> = {};
+
+    Object.entries(input).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+            const normalizedArray = value.map((item) =>
+                item && typeof item === 'object' && !Array.isArray(item)
+                    ? normalizeFieldPaths(item as Record<string, any>)
+                    : item
+            );
+
+            if (key.includes('.')) {
+                setValueAtPath(normalized, splitFieldPath(key), normalizedArray);
+            } else {
+                normalized[key] = normalizedArray;
+            }
+            return;
+        }
+
+        if (value && typeof value === 'object') {
+            const nested = normalizeFieldPaths(value as Record<string, any>);
+            if (key.includes('.')) {
+                setValueAtPath(normalized, splitFieldPath(key), nested);
+            } else {
+                normalized[key] = nested;
+            }
+            return;
+        }
+
+        if (key.includes('.')) {
+            setValueAtPath(normalized, splitFieldPath(key), value);
+        } else {
+            normalized[key] = value;
+        }
+    });
+
+    return normalized;
+};
+
+const buildDefaultValues = (fields: FormField[], parentPath: string[] = []): Record<string, any> => {
+    const defaults: Record<string, any> = {};
+
+    for (const field of fields) {
+        if (field.type === 'group' && field.fields) {
+            const nextParentPath = field.name
+                ? [...parentPath, ...splitFieldPath(field.name)]
+                : parentPath;
+            mergeDeep(defaults, buildDefaultValues(field.fields, nextParentPath));
+            continue;
+        }
+
+        if (!field.name) {
+            continue;
+        }
+
+        const currentPath = [...parentPath, ...splitFieldPath(field.name)];
+
+        if (field.type === 'input_group') {
+            setValueAtPath(defaults, currentPath, field.defaultValue ?? []);
+            continue;
+        }
+
+        if (field.type === 'textarea-with-preset') {
+            const modifierInputs: Record<string, any[]> = {};
+            (field.modifiers || []).forEach((mod: any) => {
+                if (mod.inputGroup) {
+                    modifierInputs[mod.name] = [];
+                }
+            });
+
+            setValueAtPath(defaults, currentPath, {
+                modifiers: (field.modifiers || []).reduce((acc, mod) => ({ ...acc, [mod.name]: true }), {}),
+                modifierInputs,
+                narrative: '',
+                isPreset: true,
+                userModified: false
+            });
+            continue;
+        }
+
+        if (field.type === 'modifier_itemgroup') {
+            continue;
+        }
+
+        if (field.type === 'toggle') {
+            setValueAtPath(defaults, currentPath, field.defaultValue === true);
+        } else if (field.type === 'multi-select') {
+            setValueAtPath(defaults, currentPath, field.defaultValue || []);
+        } else {
+            setValueAtPath(defaults, currentPath, field.defaultValue ?? '');
+        }
+    }
+
+    return defaults;
+};
+
 const collectPrefillValuesFromFields = (
     fields: FormField[],
     data: Record<string, any>,
     parentPath: string[] = []
 ): Record<string, any> => {
     return fields.reduce((acc, field) => {
-        const currentPath = field.name ? [...parentPath, field.name] : parentPath;
+        const currentPath = field.name
+            ? [...parentPath, ...splitFieldPath(field.name)]
+            : parentPath;
 
         if (field.prefillKey && field.name) {
             const value = data[field.prefillKey];
@@ -188,7 +257,7 @@ const collectPrefillValuesFromFields = (
     }, {} as Record<string, any>);
 };
 
-function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGeneratorFormProps) {
+function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generatorType, groupId }: PaperworkGeneratorFormProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -230,7 +299,14 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         additions: state.additions,
     }));
 
-    const { setGeneratorData, setFormData, reset: resetPaperworkStore } = usePaperworkStore();
+    const {
+        setGeneratorData,
+        setFormData,
+        setLastFormValues,
+        pendingRestore,
+        clearPendingRestore,
+        reset: resetPaperworkStore,
+    } = usePaperworkStore();
     const { toast } = useToast();
     
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
@@ -334,7 +410,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     useEffect(() => {
         if (prefillValues && Object.keys(prefillValues).length > 0 && !prefillApplied) {
             const mergedValues = JSON.parse(JSON.stringify(defaultValues));
-            mergeDeep(mergedValues, prefillValues);
+            mergeDeep(mergedValues, normalizeFieldPaths(prefillValues));
             methods.reset(mergedValues, { keepDefaultValues: true });
             setPrefillApplied(true);
         }
@@ -363,6 +439,35 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
     useEffect(() => {
         resetPaperworkStore();
     }, [generatorConfig.id, resetPaperworkStore]);
+
+    useEffect(() => {
+        setGeneratorData({
+            generatorId,
+            generatorType,
+            groupId: groupId || null,
+        });
+    }, [setGeneratorData, generatorId, generatorType, groupId]);
+
+    useEffect(() => {
+        if (!pendingRestore) {
+            return;
+        }
+
+        const matchesGenerator =
+            pendingRestore.generatorId === generatorId &&
+            pendingRestore.generatorType === generatorType &&
+            (pendingRestore.groupId || null) === (groupId || null);
+
+        if (!matchesGenerator) {
+            return;
+        }
+
+        const mergedValues = JSON.parse(JSON.stringify(defaultValues));
+        mergeDeep(mergedValues, normalizeFieldPaths(pendingRestore.fields));
+        methods.reset(mergedValues, { keepDefaultValues: true });
+        setPrefillApplied(true);
+        clearPendingRestore();
+    }, [pendingRestore, generatorId, generatorType, groupId, defaultValues, methods, clearPendingRestore, setPrefillApplied]);
 
     useEffect(() => {
         const hasChargeField = generatorConfig.form.some(field => field.type === 'charge' || field.fields?.some(f => f.type === 'charge'));
@@ -885,14 +990,15 @@ function PaperworkGeneratorFormComponent({ generatorConfig }: PaperworkGenerator
         };
 
         const type = searchParams.get('type') as 'static' | 'user';
-        const groupId = searchParams.get('group_id');
-        
+        const groupIdFromParams = searchParams.get('group_id');
+
         setGeneratorData({
             generatorId: generatorConfig.id,
             generatorType: type,
-            groupId: groupId
+            groupId: groupIdFromParams
         });
 
+        setLastFormValues(data);
         setFormData(fullData);
         router.push('/paperwork-submit');
     };

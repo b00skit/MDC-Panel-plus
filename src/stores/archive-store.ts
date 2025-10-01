@@ -4,12 +4,22 @@ import create from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { SelectedCharge } from './charge-store';
 
+export interface ArchivedPaperworkGenerator {
+    id: string;
+    type: 'static' | 'user';
+    groupId?: string | null;
+    title?: string;
+    description?: string;
+    icon?: string;
+}
+
 export interface ArchivedReport {
     id: number;
-    paperworkType: 'arrest-report' | string;
-    type: 'basic' | 'advanced';
-    fields: any; 
-    charges: SelectedCharge[];
+    paperworkType: 'arrest-report' | 'paperwork-generator';
+    type?: 'basic' | 'advanced';
+    fields: any;
+    charges?: SelectedCharge[];
+    generator?: ArchivedPaperworkGenerator;
 }
 
 interface ArchiveState {
