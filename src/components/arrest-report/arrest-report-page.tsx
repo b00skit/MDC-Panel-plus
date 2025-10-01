@@ -270,7 +270,8 @@ export function ArrestReportPage() {
                     <CardTitle>Charges</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Table>
+                    <div className="overflow-x-auto">
+                      <Table className="min-w-[720px] md:min-w-full">
                         <TableHeader>
                         <TableRow>
                             <TableHead>Title</TableHead>
@@ -443,7 +444,8 @@ export function ArrestReportPage() {
                                 <TableCell>${totals.bailCost.toLocaleString()}</TableCell>
                             </TableRow>
                         </TableBody>
-                    </Table>
+                      </Table>
+                    </div>
                 </CardContent>
             </Card>
 

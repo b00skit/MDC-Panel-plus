@@ -208,7 +208,7 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
                                 <CardContent className="p-4 pt-0 space-y-2">
                                      {chargeCustomFields.map((customField, cfIndex) => (
                                          <div key={customField.id} className="flex items-center gap-2">
-                                            <div className="flex-1 grid grid-cols-3 gap-2">
+                                            <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
                                                 <Input {...register(`form.${index}.customFields.${cfIndex}.name`)} placeholder="Field Name"/>
                                                 <Input {...register(`form.${index}.customFields.${cfIndex}.label`)} placeholder="Label"/>
                                                 <Input {...register(`form.${index}.customFields.${cfIndex}.placeholder`)} placeholder="Placeholder"/>

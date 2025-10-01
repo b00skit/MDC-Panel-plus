@@ -854,7 +854,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={5} className="bg-muted p-1">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-2 gap-y-2 p-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-2 p-2">
                         <div className="flex items-center space-x-2"><Controller name="modifiers.markedUnit" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="markedUnit" />} /><Label htmlFor="markedUnit">Marked Unit?</Label></div>
                         {watchedFields.modifiers?.markedUnit && <div className="flex items-center space-x-2"><Controller name="modifiers.slicktop" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="slicktop" />} /><Label htmlFor="slicktop">Slicktop?</Label></div>}
                         <div className="flex items-center space-x-2"><Controller name="modifiers.inUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inUniform" />} /><Label htmlFor="inUniform">In Uniform?</Label></div>
@@ -898,7 +898,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                     onToggle={() => handlePresetToggle('investigation')}
                 >
                     {watchedFields.modifiers?.wasSuspectInVehicle &&
-                        <div className="grid grid-cols-3 gap-2 mb-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mb-2">
                             <Input placeholder="VEHICLE COLOR" {...register('narrative.vehicleColor')} />
                             <Input placeholder="VEHICLE MODEL" {...register('narrative.vehicleModel')} />
                             <Input placeholder="VEHICLE PLATE" {...register('narrative.vehiclePlate')} />
@@ -920,7 +920,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                     onToggle={() => handlePresetToggle('arrest')}
                 >
                     {!watchedFields.modifiers?.didYouTransport && (
-                        <div className="grid grid-cols-2 gap-2 mb-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                             <Input placeholder="TRANSPORTING OFFICER RANK" {...register('narrative.transportingRank')} />
                             <Input placeholder="TRANSPORTING OFFICER NAME" {...register('narrative.transportingName')} />
                         </div>
@@ -968,7 +968,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                     onToggle={() => handlePresetToggle('booking')}
                 >
                     {!watchedFields.modifiers?.didYouBook && (
-                         <div className="grid grid-cols-2 gap-2 mb-2">
+                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                             <Input placeholder="BOOKING OFFICER RANK" {...register('narrative.bookingRank')} />
                             <Input placeholder="BOOKING OFFICER NAME" {...register('narrative.bookingName')} />
                         </div>

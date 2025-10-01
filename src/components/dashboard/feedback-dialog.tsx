@@ -134,7 +134,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
              <div className="space-y-4 animate-in fade-in-50 duration-500">
                 <div>
                     <Label>What's on your mind?</Label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                         {reasons.map(reason => (
                             <div key={reason.id} className="flex items-center space-x-2">
                                 <Checkbox 

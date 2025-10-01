@@ -84,7 +84,7 @@ const ChargeCard = ({ charge }: { charge: Charge }) => {
             </CardHeader>
             <CardContent className="space-y-4">
                 <Separator />
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <ChargeDetail label="Classes" value={Object.entries(charge.class).filter(([, v]) => v).map(([k]) => k).join(', ') || 'N/A'} />
                     <ChargeDetail label="Offenses" value={Object.entries(charge.offence).filter(([, v]) => v).map(([k]) => `#${k}`).join(', ') || 'N/A'} />
                     <ChargeDetail label="Points" value={!isDrugCharge ? `A: ${charge.points.A}, B: ${charge.points.B}, C: ${charge.points.C}`: 'Varies'} />
@@ -136,7 +136,7 @@ const PenalCodeSkeleton = () => (
                     <Skeleton className="h-4 w-1/4 mt-1" />
                 </CardHeader>
                 <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                         <Skeleton className="h-10 w-full" />
                         <Skeleton className="h-10 w-full" />
                         <Skeleton className="h-10 w-full" />

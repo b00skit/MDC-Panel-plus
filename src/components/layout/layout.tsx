@@ -2,9 +2,10 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { SidebarNav } from './sidebar-nav';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type LayoutProps = {
   children: ReactNode;
@@ -18,7 +19,7 @@ export function Layout({ children, footer }: LayoutProps) {
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-      <div
+        <div
           className="fixed top-0 bottom-0 right-0 left-0 md:left-[var(--sidebar-width)] z-0 flex items-center justify-center pointer-events-none"
         >
             <div className="relative w-[60%] h-[60%]">
@@ -32,10 +33,20 @@ export function Layout({ children, footer }: LayoutProps) {
             </div>
         </div>
         <div className="relative z-10 flex flex-col min-h-screen">
-            <div className="flex-grow">
-                {children}
+          <div className="md:hidden sticky top-0 z-20 border-b border-border/60 bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+            <div className="flex items-center justify-between">
+              <SidebarTrigger className="-ml-2" />
+              <Link href="/" className="flex items-baseline gap-1 font-headline text-lg font-semibold">
+                <span>MDC Panel</span>
+                <span className="text-primary">+</span>
+              </Link>
+              <div className="w-9" aria-hidden />
             </div>
-            {footer}
+          </div>
+          <div className="flex-grow">
+            {children}
+          </div>
+          {footer}
         </div>
       </SidebarInset>
     </SidebarProvider>

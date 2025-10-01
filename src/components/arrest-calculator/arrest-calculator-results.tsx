@@ -314,25 +314,26 @@ export function ArrestCalculatorResults({
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Addition</TableHead>
-                    <TableHead>Offence</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Min Time</TableHead>
-                    <TableHead>Max Time</TableHead>
-                    <TableHead>Points</TableHead>
-                    <TableHead>Fine</TableHead>
-                    <TableHead>Impound</TableHead>
-                    <TableHead>Suspension</TableHead>
-                    <TableHead>Auto-Bail</TableHead>
-                    <TableHead>Bail</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {calculationResults.map(result => {
+              <div className="w-full overflow-x-auto">
+                <Table className="w-full sm:min-w-[960px]">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Addition</TableHead>
+                      <TableHead>Offence</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Min Time</TableHead>
+                      <TableHead>Max Time</TableHead>
+                      <TableHead>Points</TableHead>
+                      <TableHead>Fine</TableHead>
+                      <TableHead>Impound</TableHead>
+                      <TableHead>Suspension</TableHead>
+                      <TableHead>Auto-Bail</TableHead>
+                      <TableHead>Bail</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {calculationResults.map(result => {
                     const { row, chargeDetails, appliedAdditions, isModified, original, modified, fine, impound, suspension, bailAuto, bailCost } = result as ChargeResult;
 
                     const typePrefix = `${chargeDetails.type}${row.class}`;
@@ -455,8 +456,9 @@ export function ArrestCalculatorResults({
                       </TableRow>
                     );
                   })}
-                </TableBody>
-              </Table>
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -467,22 +469,24 @@ export function ArrestCalculatorResults({
               <CardTitle>Stipulations</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Charge</TableHead>
-                    <TableHead>Stipulation</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {extras.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{item.title}</TableCell>
-                      <TableCell className="whitespace-pre-wrap">{item.extra}</TableCell>
+              <div className="w-full overflow-x-auto">
+                <Table className="w-full sm:min-w-[480px]">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Charge</TableHead>
+                      <TableHead>Stipulation</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {extras.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{item.title}</TableCell>
+                        <TableCell className="whitespace-pre-wrap">{item.extra}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -524,8 +528,9 @@ export function ArrestCalculatorResults({
                   </AlertDescription>
                 </Alert>
               )}
-              <Table>
-                <TableHeader>
+              <div className="w-full overflow-x-auto">
+                <Table className="w-full sm:min-w-[720px]">
+                  <TableHeader>
                   <TableRow>
                     <TableHead>Total Min Time</TableHead>
                     <TableHead>Total Max Time</TableHead>
@@ -536,8 +541,8 @@ export function ArrestCalculatorResults({
                     <TableHead>Bail Status</TableHead>
                     <TableHead>Highest Bail Amount</TableHead>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
+                  </TableHeader>
+                  <TableBody>
                   <TableRow>
                     <TableCell>
                       <div className="flex items-center gap-1">
@@ -600,8 +605,9 @@ export function ArrestCalculatorResults({
                     </TableCell>
                     <TableCell>${totals.highestBail.toLocaleString()}</TableCell>
                   </TableRow>
-                </TableBody>
-              </Table>
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         )}

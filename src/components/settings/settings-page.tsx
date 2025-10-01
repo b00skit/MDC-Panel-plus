@@ -284,7 +284,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <Button variant={theme === 'light' ? 'default' : 'outline'} onClick={() => setTheme('light')}>
                         <Sun className="mr-2" /> Light
                     </Button>
