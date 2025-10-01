@@ -46,6 +46,7 @@ interface ChargeState {
   additions: Addition[];
   charges: SelectedCharge[];
   report: SelectedCharge[];
+  reportInitialized: boolean;
   isParoleViolator: boolean;
   reportIsParoleViolator: boolean;
   setPenalCode: (penalCode: PenalCode) => void;
@@ -64,6 +65,7 @@ interface ChargeState {
 const initialState = {
     charges: [],
     report: [],
+    reportInitialized: false,
     isParoleViolator: false,
     reportIsParoleViolator: false,
 };
@@ -101,7 +103,11 @@ export const useChargeStore = create<ChargeState>()(
           ),
         })),
       setReport: (report) =>
-        set((state) => ({ report, reportIsParoleViolator: state.isParoleViolator })),
+        set((state) => ({
+          report,
+          reportInitialized: true,
+          reportIsParoleViolator: state.isParoleViolator,
+        })),
       resetCharges: () => set((state) => ({ ...state, charges: [], isParoleViolator: false })),
       setCharges: (charges) => set({ charges }),
       toggleParoleViolator: () => set(state => ({ isParoleViolator: !state.isParoleViolator })),

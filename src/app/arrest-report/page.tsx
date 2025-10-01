@@ -17,7 +17,7 @@ import { AdvancedArrestReportForm } from '@/components/arrest-report/advanced-ar
 import { ArrestCalculatorResults } from '@/components/arrest-calculator/arrest-calculator-results';
 
 export default function ArrestReportPage() {
-  const { report, penalCode } = useChargeStore();
+  const { report, penalCode, reportInitialized } = useChargeStore();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const { isAdvanced, toggleAdvanced } = useAdvancedReportStore();
@@ -31,7 +31,7 @@ export default function ArrestReportPage() {
     document.title = 'MDC Panel – Arrest Report';
   }, []);
   
-  const hasReport = isClient && report.length > 0 && !!penalCode;
+  const hasReport = isClient && reportInitialized && (report.length > 0 ? !!penalCode : true);
 
   const handleSaveDraft = () => {
     if (isAdvanced) {

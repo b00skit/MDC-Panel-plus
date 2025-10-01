@@ -23,11 +23,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
+  } from "@/components/ui/alert-dialog";
+import configData from '../../../data/config.json';
 
 export default function ReportArchivePage() {
     const { reports, deleteReport, clearArchive } = useArchiveStore();
-    const { setReport } = useChargeStore();
+    const { setReport, setPenalCode, setAdditions, penalCode, additions } = useChargeStore();
     const setBasicForm = useFormStore(state => state.setAll);
     const setAdvancedForm = useAdvancedReportStore(state => state.setFields);
     const setAdvancedMode = useAdvancedReportStore(state => state.setAdvanced);
@@ -39,8 +40,20 @@ export default function ReportArchivePage() {
         document.title = 'MDC Panel – Report Archive';
     }, []);
 
-    const handleRestore = (report: ArchivedReport) => {
+    const handleRestore = async (report: ArchivedReport) => {
         setReport(report.charges);
+        if (!penalCode || additions.length === 0) {
+            try {
+                const [penalCodeData, additionsData] = await Promise.all([
+                    fetch(`${configData.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`).then(res => res.json()),
+                    fetch('/data/additions.json').then(res => res.json()),
+                ]);
+                setPenalCode(penalCodeData);
+                setAdditions(additionsData.additions);
+            } catch (error) {
+                console.error('Failed to load charge data for restore:', error);
+            }
+        }
         if (report.type === 'basic') {
             setBasicForm(report.fields);
             setAdvancedMode(false);

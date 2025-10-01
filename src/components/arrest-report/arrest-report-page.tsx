@@ -116,7 +116,7 @@ const CopyableCard = ({ label, value }: { label: string, value: string | number 
   };
 
 export function ArrestReportPage() {
-  const { report, penalCode, reportIsParoleViolator } = useChargeStore();
+  const { report, penalCode, reportIsParoleViolator, reportInitialized } = useChargeStore();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const { isAdvanced, toggleAdvanced } = useAdvancedReportStore();
@@ -125,7 +125,7 @@ export function ArrestReportPage() {
     setIsClient(true);
   }, []);
   
-  const hasReport = isClient && report.length > 0 && !!penalCode;
+  const hasReport = isClient && reportInitialized && (report.length > 0 ? !!penalCode : true);
 
   const renderSkeleton = () => (
      <div className="space-y-6">

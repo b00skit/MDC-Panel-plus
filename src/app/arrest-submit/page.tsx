@@ -21,7 +21,7 @@ import configData from '../../../data/config.json';
 
 
 function ArrestSubmitContent() {
-    const { report, penalCode, additions } = useChargeStore();
+    const { report, penalCode, additions, reportInitialized } = useChargeStore();
     const { formData: basicFormData } = useFormStore();
     const { formData: advancedFormData } = useAdvancedReportStore();
     const { archiveReport } = useArchiveStore();
@@ -71,7 +71,7 @@ function ArrestSubmitContent() {
         return Math.min(total, configData.MAX_IMPOUND_DAYS);
     }, [report, penalCode, additions]);
 
-    const hasReport = isClient && report.length > 0 && !!penalCode;
+    const hasReport = isClient && reportInitialized && (report.length > 0 ? !!penalCode : true);
     const showQuickCreateImpound = hasReport && Math.round(impoundDurationDays) > 0;
 
     // Effect to archive the report once data is available
