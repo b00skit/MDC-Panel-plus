@@ -95,6 +95,11 @@ const CacheBuster = ({
 const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const { toast } = useToast();
+  const liveSiteUrl = configData.SITE_URL
+    ? configData.SITE_URL.endsWith('/')
+      ? configData.SITE_URL
+      : `${configData.SITE_URL}/`
+    : 'https://panel.booskit.dev/';
 
   useEffect(() => {
     const betaEnabled = configData.BETA_ENABLED;
@@ -143,7 +148,7 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
       <FullScreenMessage
         title="Beta Access has Ended"
         message="This beta version is no longer active. Please use the main site."
-        linkHref="https://panel.booskit.dev/"
+        linkHref={liveSiteUrl}
         linkText="Go to Live Site"
         onActionClick={handleExportData}
         actionText="Export Data"

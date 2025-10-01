@@ -1,6 +1,7 @@
 {
     "SITE_LIVE": true,
     "SITE_NAME": "MDC Panel+",
+    "SITE_URL": "https://panel.booskit.dev",
     "SITE_VERSION": "3.4.0",
     "CACHE_VERSION": "world-swft-1",
     "LOCAL_STORAGE_VERSION": "cookie-apxn-1",

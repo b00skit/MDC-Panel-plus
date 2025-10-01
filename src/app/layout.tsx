@@ -14,6 +14,7 @@ import { Suspense } from 'react';
 type SiteConfig = {
   SITE_LIVE: boolean;
   SITE_NAME: string;
+  SITE_URL?: string;
   SITE_DESCRIPTION: string;
   SITE_VERSION: string;
   SITE_FAVICON?: string;
@@ -30,7 +31,17 @@ export async function generateMetadata(): Promise<Metadata> {
   );
   const config: SiteConfig = JSON.parse(file);
 
+  const metadataBase = config.SITE_URL ? new URL(config.SITE_URL) : undefined;
+  const imageUrl = config.SITE_IMAGE
+    ? config.SITE_IMAGE.startsWith('http')
+      ? config.SITE_IMAGE
+      : config.SITE_URL
+        ? new URL(config.SITE_IMAGE, config.SITE_URL).toString()
+        : undefined
+    : undefined;
+
   return {
+    metadataBase,
     title: {
       default: 'MDC Panel+',
       template: `MDC Panel – %s`,
@@ -59,10 +70,10 @@ export async function generateMetadata(): Promise<Metadata> {
       description: config.SITE_DESCRIPTION,
       siteName: config.SITE_NAME,
       type: 'website',
-      images: config.SITE_IMAGE
+      images: imageUrl
         ? [
             {
-              url: config.SITE_IMAGE,
+              url: imageUrl,
               width: 1200,
               height: 630,
               alt: `${config.SITE_NAME}`,
@@ -74,7 +85,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: config.SITE_NAME,
       description: config.SITE_DESCRIPTION,
-      images: config.SITE_IMAGE ? [config.SITE_IMAGE] : [],
+      images: imageUrl ? [imageUrl] : [],
     },
   };
 }
