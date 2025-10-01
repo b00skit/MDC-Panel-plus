@@ -46,11 +46,6 @@
         },
         {
             "id": "q5",
-            "question": "How does the AI Caselaw Assistant work?",
-            "answer": "The AI assistant is an experimental feature that helps you find relevant caselaw by describing a situation in plain English. It searches our local database first and then looks for similar real-world cases on Oyez.org for broader context. Please remember that the AI can make mistakes, so always verify its suggestions."
-        },
-        {
-            "id": "q6",
             "question": "Where are my submitted reports stored?",
             "answer": "Submitted arrest reports are automatically saved to your **Report Archive**. You can access, view, and restore them at any time from the Report Archive page. This data is stored locally in your browser, so it will persist between sessions."
         }

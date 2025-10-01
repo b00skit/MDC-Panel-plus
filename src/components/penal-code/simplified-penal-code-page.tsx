@@ -7,15 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search, Sparkles } from 'lucide-react';
+import { AlertCircle, Search } from 'lucide-react';
 import { type PenalCode, type Charge } from '@/stores/charge-store';
 import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
 import configData from '../../../data/config.json';
 import { Alert, AlertTitle } from '../ui/alert';
-import { PenalCodeAIDialog } from './penal-code-ai-dialog';
-import { useSettingsStore } from '@/stores/settings-store';
 
 const getTypeClasses = (type: Charge['type']) => {
     switch (type) {
@@ -154,8 +152,6 @@ export function SimplifiedPenalCodePage() {
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [typeFilter, setTypeFilter] = useState<'all' | 'F' | 'M' | 'I'>('all');
-    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
-    const { experimentalFeatures } = useSettingsStore();
 
     useEffect(() => {
         fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
@@ -196,26 +192,10 @@ export function SimplifiedPenalCodePage() {
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
-            <PenalCodeAIDialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen} />
             <PageHeader
                 title="Simplified Penal Code"
                 description="Browse and search through the list of charges."
             />
-
-            {!experimentalFeatures.includes('ai_legal_search') && (
-                <div className="flex flex-col items-center justify-center text-center gap-4 p-6 border-2 border-dashed rounded-lg bg-card">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
-                        <Sparkles className="h-6 w-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold">Need a quick answer?</h3>
-                    <p className="text-center text-muted-foreground max-w-md">
-                        Use the experimental AI assistant to find relevant charges by describing a criminal situation in plain English.
-                    </p>
-                    <Button onClick={() => setIsAIDialogOpen(true)}>
-                        <Sparkles className="mr-2 h-4 w-4" /> AI Penal Code Assistant
-                    </Button>
-                </div>
-            )}
 
             <div className="space-y-4">
                 <div className="relative">

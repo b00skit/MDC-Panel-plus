@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car, Sparkles } from 'lucide-react';
+import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -20,8 +20,6 @@ import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 import { FeedbackDialog } from '@/components/dashboard/feedback-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { CaselawAIDialog } from './caselaw-ai-dialog';
-import { useSettingsStore } from '@/stores/settings-store';
 
 type Resource = {
     id: string;
@@ -236,8 +234,6 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     const [searchTerm, setSearchTerm] = useState('');
     const [jurisdictionFilter, setJurisdictionFilter] = useState<'all' | 'federal' | 'local'>('all');
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
-    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
-    const { experimentalFeatures } = useSettingsStore();
 
     const filteredCaselaws = useMemo(() => {
         if (!caselaws) return [];
@@ -257,7 +253,6 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
             <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
-            <CaselawAIDialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen} />
 
             <PageHeader
                 title="Caselaw & Legal Resources"
@@ -270,20 +265,6 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
              </div>
             }
             
-            {!experimentalFeatures.includes('ai_legal_search') && (
-                <div className="flex flex-col items-center justify-center text-center gap-4 p-6 border-2 border-dashed rounded-lg bg-card">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10">
-                        <Sparkles className="h-6 w-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold">Need a quick answer?</h3>
-                    <p className="text-center text-muted-foreground max-w-md">
-                        Use the experimental AI assistant to find relevant caselaw by describing a situation in plain English.
-                    </p>
-                    <Button onClick={() => setIsAIDialogOpen(true)}>
-                        <Sparkles className="mr-2 h-4 w-4" /> AI Caselaw Assistant
-                    </Button>
-                </div>
-            )}
 
             <div>
                 <h2 className="text-2xl font-bold tracking-tight">Caselaw Database</h2>
