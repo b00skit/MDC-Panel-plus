@@ -1,6 +1,33 @@
 {
     "changelogs": [
         {
+            "version": "3.4.1",
+            "type": "Minor Update",
+            "date": "2025-10-01",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Added support for Mobile View, making it entirely possible to browse the MDC Panel on a phone."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>General:</b> Fixed the collapsed sidebar from dissapearing upon certain conditions."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>General:</b> Fixed the collapsed sidebar logo from being squished together."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Report Archive:</b> Paperwork Generators will now also archive and can be restored or deleted."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Legal Search</b> Created a new AI chatbot-like legal search in which you can cite any questions which will return a result to you based on the penal code and caselaw data."
+                }
+            ]
+        },
+        {
             "version": "3.4.0",
             "type": "Major Update",
             "date": "2025-09-30",
