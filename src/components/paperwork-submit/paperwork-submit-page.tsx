@@ -80,6 +80,20 @@ const GeneratedFormattedReport = ({
                     return options.inverse(this);
                 }
             });
+            Handlebars.registerHelper('or', function(this: any, a, b, options) {
+                if (a || b) {
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            })
+            Handlebars.registerHelper('and', function(this: any, a, b, options) {
+                if (a && b) {
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            })
             Handlebars.registerHelper('eq', (a, b) => a === b);
             Handlebars.registerHelper('each', function(context, options) {
                 let ret = "";
