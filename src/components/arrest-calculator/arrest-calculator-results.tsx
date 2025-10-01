@@ -293,6 +293,73 @@ export function ArrestCalculatorResults({
 
   const hasAnyModifiers = calculationResults.some(r => r.isModified);
 
+  const charges = calculationResults.map(result => {
+    const {
+      row,
+      chargeDetails,
+      appliedAdditions,
+      isModified,
+      original,
+      modified,
+      fine,
+      impound,
+      suspension,
+      bailAuto,
+      bailCost,
+    } = result as ChargeResult;
+
+    const typePrefix = `${chargeDetails.type}${row.class}`;
+    let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;
+
+    if (chargeDetails.drugs && row.category) {
+      title += ` (Category ${row.category})`;
+    } else if (row.offense !== '1') {
+      title += ` (Offence #${row.offense})`;
+    }
+
+    const additions = appliedAdditions ?? [];
+    const additionDisplayNames =
+      additions.length > 0 ? additions.map(add => add.name).join(' + ') : row.addition || 'Offender';
+
+    const typeDisplay = getType(chargeDetails.type);
+    const typeColorClass =
+      chargeDetails.type === 'F'
+        ? 'text-red-500'
+        : chargeDetails.type === 'M'
+          ? 'text-yellow-500'
+          : chargeDetails.type === 'I'
+            ? 'text-green-500'
+            : '';
+
+    const minTimeFull = formatTotalTime(modified.minTime);
+    const maxTimeFull = formatTotalTime(modified.maxTime);
+
+    return {
+      key: row.uniqueId,
+      title,
+      additionDisplayNames,
+      additions,
+      isModified,
+      offense: row.offense,
+      typeDisplay,
+      typeColorClass,
+      minTimeText: minTimeFull.split('(')[0].trim(),
+      maxTimeText: maxTimeFull.split('(')[0].trim(),
+      modifiedMinTimeFull: minTimeFull,
+      modifiedMaxTimeFull: maxTimeFull,
+      originalMinTime: formatTotalTime(original.minTime),
+      originalMaxTime: formatTotalTime(original.maxTime),
+      pointsDisplay: Math.round(modified.points),
+      originalPoints: original.points,
+      fine,
+      impoundDisplay: impound ? `Yes | ${impound} Day(s)` : 'No',
+      suspensionDisplay: suspension ? `Yes | ${suspension} Day(s)` : 'No',
+      bailAuto,
+      bailCost,
+      bailCostDisplay: bailAuto !== false && bailCost > 0 ? `$${bailCost.toLocaleString()}` : 'N/A',
+    };
+  });
+
   return (
     <TooltipProvider>
       <div className="space-y-6">
@@ -314,7 +381,7 @@ export function ArrestCalculatorResults({
               </div>
             </CardHeader>
             <CardContent>
-              <div className="w-full overflow-x-auto">
+              <div className="hidden w-full overflow-x-auto sm:block">
                 <Table className="w-full sm:min-w-[960px]">
                   <TableHeader>
                     <TableRow>
@@ -333,39 +400,23 @@ export function ArrestCalculatorResults({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {calculationResults.map(result => {
-                    const { row, chargeDetails, appliedAdditions, isModified, original, modified, fine, impound, suspension, bailAuto, bailCost } = result as ChargeResult;
-
-                    const typePrefix = `${chargeDetails.type}${row.class}`;
-                    let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;
-
-                    if (chargeDetails.drugs && row.category) {
-                        title += ` (Category ${row.category})`;
-                    } else if (row.offense !== '1') {
-                        title += ` (Offence #${row.offense})`;
-                    }
-
-                    const additionDisplayNames = appliedAdditions && appliedAdditions.length > 0
-                      ? appliedAdditions.map(add => add.name).join(' + ')
-                      : (row.addition || 'Offender');
-
-                    return (
-                      <TableRow key={row.uniqueId}>
+                    {charges.map(charge => (
+                      <TableRow key={charge.key}>
                         <TableCell
                           className={cn('font-medium', clickToCopy && 'cursor-pointer hover:text-primary')}
-                          onClick={clickToCopy ? () => handleCopyToClipboard(title, 'Title') : undefined}
+                          onClick={clickToCopy ? () => handleCopyToClipboard(charge.title, 'Title') : undefined}
                           title={clickToCopy ? 'Click to copy title' : undefined}
                         >
-                          {title}
+                          {charge.title}
                         </TableCell>
                         <TableCell>
-                          {isModified ? (
+                          {charge.isModified && charge.additions.length > 0 ? (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className="font-bold text-yellow-500 cursor-help">{additionDisplayNames}</span>
+                                <span className="cursor-help font-bold text-yellow-500">{charge.additionDisplayNames}</span>
                               </TooltipTrigger>
                               <TooltipContent className="space-y-2">
-                                {appliedAdditions.map(addition => (
+                                {charge.additions.map(addition => (
                                   <div key={addition.name} className="space-y-1">
                                     <p className="font-semibold">{addition.name}</p>
                                     <p>Sentence Multiplier: {addition.sentence_multiplier}x</p>
@@ -375,32 +426,24 @@ export function ArrestCalculatorResults({
                               </TooltipContent>
                             </Tooltip>
                           ) : (
-                            <span>{additionDisplayNames}</span>
+                            <span>{charge.additionDisplayNames}</span>
                           )}
                         </TableCell>
-                        <TableCell>{row.offense}</TableCell>
+                        <TableCell>{charge.offense}</TableCell>
                         <TableCell>
-                          <span
-                            className={cn('font-bold', {
-                              'text-red-500': chargeDetails.type === 'F',
-                              'text-yellow-500': chargeDetails.type === 'M',
-                              'text-green-500': chargeDetails.type === 'I',
-                            })}
-                          >
-                            {getType(chargeDetails.type)}
-                          </span>
+                          <span className={cn('font-bold', charge.typeColorClass)}>{charge.typeDisplay}</span>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            {formatTotalTime(modified.minTime).split('(')[0].trim()}
-                            {isModified && (
+                            {charge.minTimeText}
+                            {charge.isModified && (
                               <Tooltip>
                                 <TooltipTrigger>
                                   <Asterisk className="h-3 w-3 text-yellow-500" />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Original: {formatTotalTime(original.minTime)}</p>
-                                  <p>Modified: {formatTotalTime(modified.minTime)}</p>
+                                  <p>Original: {charge.originalMinTime}</p>
+                                  <p>Modified: {charge.modifiedMinTimeFull}</p>
                                 </TooltipContent>
                               </Tooltip>
                             )}
@@ -408,15 +451,15 @@ export function ArrestCalculatorResults({
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            {formatTotalTime(modified.maxTime).split('(')[0].trim()}
-                            {isModified && (
+                            {charge.maxTimeText}
+                            {charge.isModified && (
                               <Tooltip>
                                 <TooltipTrigger>
                                   <Asterisk className="h-3 w-3 text-yellow-500" />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Original: {formatTotalTime(original.maxTime)}</p>
-                                  <p>Modified: {formatTotalTime(modified.maxTime)}</p>
+                                  <p>Original: {charge.originalMaxTime}</p>
+                                  <p>Modified: {charge.modifiedMaxTimeFull}</p>
                                 </TooltipContent>
                               </Tooltip>
                             )}
@@ -424,40 +467,160 @@ export function ArrestCalculatorResults({
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            {Math.round(modified.points)}
-                            {isModified && (
+                            {charge.pointsDisplay}
+                            {charge.isModified && (
                               <Tooltip>
                                 <TooltipTrigger>
                                   <Asterisk className="h-3 w-3 text-yellow-500" />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Original: {original.points} points</p>
-                                  <p>Modified: {Math.round(modified.points)} points</p>
+                                  <p>Original: {charge.originalPoints} points</p>
+                                  <p>Modified: {charge.pointsDisplay} points</p>
                                 </TooltipContent>
                               </Tooltip>
                             )}
                           </div>
                         </TableCell>
-
-                        {/* 👇 Fine cell: click to copy RAW number */}
                         <TableCell
                           className={cn(clickToCopy && 'cursor-pointer hover:text-primary')}
-                          onClick={clickToCopy ? () => handleCopyToClipboard(fine, 'Raw fine') : undefined}
+                          onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, 'Raw fine') : undefined}
                           title={clickToCopy ? 'Click to copy raw fine' : undefined}
                           aria-label={clickToCopy ? 'Copy raw fine' : undefined}
                         >
-                          ${fine.toLocaleString()}
+                          ${charge.fine.toLocaleString()}
                         </TableCell>
-
-                        <TableCell>{impound ? `Yes | ${impound} Day(s)` : 'No'}</TableCell>
-                        <TableCell>{suspension ? `Yes | ${suspension} Day(s)` : 'No'}</TableCell>
-                        <TableCell><BailStatusBadge bailInfo={{ auto: bailAuto }} /></TableCell>
-                        <TableCell>{bailAuto !== false && bailCost > 0 ? `$${bailCost.toLocaleString()}` : 'N/A'}</TableCell>
+                        <TableCell>{charge.impoundDisplay}</TableCell>
+                        <TableCell>{charge.suspensionDisplay}</TableCell>
+                        <TableCell>
+                          <BailStatusBadge bailInfo={{ auto: charge.bailAuto }} />
+                        </TableCell>
+                        <TableCell>{charge.bailCostDisplay}</TableCell>
                       </TableRow>
-                    );
-                  })}
+                    ))}
                   </TableBody>
                 </Table>
+              </div>
+              <div className="space-y-4 sm:hidden">
+                {charges.map(charge => (
+                  <div
+                    key={charge.key}
+                    className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm text-center sm:text-left"
+                  >
+                    <div
+                      className={cn('text-base font-semibold', clickToCopy && 'cursor-pointer hover:text-primary')}
+                      onClick={clickToCopy ? () => handleCopyToClipboard(charge.title, 'Title') : undefined}
+                    >
+                      {charge.title}
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs uppercase text-muted-foreground sm:justify-start">
+                      <span className={cn('font-semibold', charge.typeColorClass)}>{charge.typeDisplay}</span>
+                      <span>Offence #{charge.offense}</span>
+                    </div>
+                    <div className="mt-3 text-sm text-center sm:text-left">
+                      <p className="text-xs font-semibold uppercase text-muted-foreground">Addition</p>
+                      {charge.isModified && charge.additions.length > 0 ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="mt-1 inline-flex cursor-help font-semibold text-yellow-500">
+                              {charge.additionDisplayNames}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent className="space-y-2">
+                            {charge.additions.map(addition => (
+                              <div key={addition.name} className="space-y-1">
+                                <p className="font-semibold">{addition.name}</p>
+                                <p>Sentence Multiplier: {addition.sentence_multiplier}x</p>
+                                <p>Points Multiplier: {addition.points_multiplier}x</p>
+                              </div>
+                            ))}
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <span className="mt-1 block">{charge.additionDisplayNames}</span>
+                      )}
+                    </div>
+                    <dl className="mt-3 space-y-3 text-sm">
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Min Time</dt>
+                        <dd className="mt-1 flex items-center justify-center gap-1 sm:justify-start">
+                          {charge.minTimeText}
+                          {charge.isModified && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Asterisk className="h-3 w-3 text-yellow-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Original: {charge.originalMinTime}</p>
+                                <p>Modified: {charge.modifiedMinTimeFull}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Max Time</dt>
+                        <dd className="mt-1 flex items-center justify-center gap-1 sm:justify-start">
+                          {charge.maxTimeText}
+                          {charge.isModified && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Asterisk className="h-3 w-3 text-yellow-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Original: {charge.originalMaxTime}</p>
+                                <p>Modified: {charge.modifiedMaxTimeFull}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Points</dt>
+                        <dd className="mt-1 flex items-center justify-center gap-1 sm:justify-start">
+                          {charge.pointsDisplay}
+                          {charge.isModified && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Asterisk className="h-3 w-3 text-yellow-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Original: {charge.originalPoints} points</p>
+                                <p>Modified: {charge.pointsDisplay} points</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Fine</dt>
+                        <dd
+                          className={cn('mt-1', clickToCopy && 'cursor-pointer hover:text-primary')}
+                          onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, 'Raw fine') : undefined}
+                        >
+                          ${charge.fine.toLocaleString()}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Impound</dt>
+                        <dd className="mt-1">{charge.impoundDisplay}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Suspension</dt>
+                        <dd className="mt-1">{charge.suspensionDisplay}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Auto-Bail</dt>
+                        <dd className="mt-1">
+                          <BailStatusBadge bailInfo={{ auto: charge.bailAuto }} />
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">Bail</dt>
+                        <dd className="mt-1">{charge.bailCostDisplay}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -528,7 +691,89 @@ export function ArrestCalculatorResults({
                   </AlertDescription>
                 </Alert>
               )}
-              <div className="w-full overflow-x-auto">
+              <div className="grid gap-3 sm:hidden">
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Total Min Time</p>
+                  <div className="mt-1 flex items-center justify-center gap-1 text-sm font-medium">
+                    {formatTotalTime(minTimeCapped)}
+                    {hasAnyModifiers && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Asterisk className="h-3 w-3 text-yellow-500" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Original: {formatTotalTime(totals.original.minTime)}</p>
+                          <p>Modified: {formatTotalTime(totals.modified.minTime)}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                </div>
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Total Max Time</p>
+                  <div className="mt-1 flex items-center justify-center gap-1 text-sm font-medium">
+                    {formatTotalTime(maxTimeCapped)}
+                    {hasAnyModifiers && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Asterisk className="h-3 w-3 text-yellow-500" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Original: {formatTotalTime(totals.original.maxTime)}</p>
+                          <p>Modified: {formatTotalTime(totals.modified.maxTime)}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                </div>
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Total Points</p>
+                  <div className="mt-1 flex items-center justify-center gap-1 text-sm font-medium">
+                    {Math.round(totals.modified.points)}
+                    {hasAnyModifiers && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Asterisk className="h-3 w-3 text-yellow-500" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Original: {totals.original.points} points</p>
+                          <p>Modified: {Math.round(totals.modified.points)} points</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                </div>
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Total Fine</p>
+                  <p className="mt-1 text-sm font-medium">${totals.fine.toLocaleString()}</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Total Impound</p>
+                  <p className="mt-1 text-sm font-medium">{impoundCapped > 0 ? `${Math.round(impoundCapped)} Day(s)` : 'No'}</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Total Suspension</p>
+                  <p className="mt-1 text-sm font-medium">{suspensionCapped > 0 ? `${Math.round(suspensionCapped)} Day(s)` : 'No'}</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Bail Status</p>
+                  <div className="mt-2 flex justify-center">
+                    {(() => {
+                      if (bailStatus === 'NOT ELIGIBLE') return <Badge variant="destructive">NOT ELIGIBLE</Badge>;
+                      if (bailStatus === 'DISCRETIONARY')
+                        return <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">DISCRETIONARY</Badge>;
+                      if (bailStatus === 'ELIGIBLE')
+                        return <Badge className="bg-green-500 hover:bg-green-600 text-white">ELIGIBLE</Badge>;
+                      return <Badge variant="secondary">N/A</Badge>;
+                    })()}
+                  </div>
+                </div>
+                <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">Highest Bail Amount</p>
+                  <p className="mt-1 text-sm font-medium">${totals.highestBail.toLocaleString()}</p>
+                </div>
+              </div>
+              <div className="hidden w-full overflow-x-auto sm:block">
                 <Table className="w-full sm:min-w-[720px]">
                   <TableHeader>
                   <TableRow>
