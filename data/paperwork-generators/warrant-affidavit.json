@@ -25,7 +25,7 @@
         { "type": "text", "name": "introduction_experience", "label": "Extensive Experience", "placeholder": "e.g. narcotics investigations", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.introduction", "value": true}] },
 
         { "type": "section", "title": "Submission Statement Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
-        { "type": "text", "name": "submission_subject", "label": "Subject/Location", "placeholder": "e.g., John Doe or 1234 Imagination Ave", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
+        { "type": "text", "name": "submission_subject", "label": "Subject/Location", "placeholder": "e.g., John Doe or 1234 Imagination Ave", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}], "required": true },
         { "type": "text", "name": "submission_crimes", "label": "Suspected Crimes", "placeholder": "FC. 115 Evading a Peace Officer, FA. 201 Capital Murder", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.submission_statement", "value": true}] },
         
         { "type": "section", "title": "Probable Cause Details", "stipulations": [{"field": "narrative.isPreset", "value": true}, {"field": "narrative.modifiers.probable_cause", "value": true}] },
