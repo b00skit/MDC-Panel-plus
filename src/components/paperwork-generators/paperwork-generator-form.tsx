@@ -29,7 +29,7 @@ import { useToast } from '@/hooks/use-toast';
 import { MultiSelect } from '../ui/multi-select';
 import { TextareaWithPreset, ModifierInputGroup } from '../shared/textarea-with-preset';
 import Handlebars from 'handlebars';
-import { cn } from '@/lib/utils';
+import { cn, registerHelpers } from '@/lib/utils';
 import configData from '../../../data/config.json';
 
 type FormField = {
@@ -659,6 +659,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                     });
 
                     const dataForHandlebars: any = { ...allData, ...externalData, modifiers: {} };
+
+                    registerHelpers();
 
                     (field.modifiers || []).forEach(mod => {
                         const isEnabled = watch(`${path}.modifiers.${mod.name}`);
