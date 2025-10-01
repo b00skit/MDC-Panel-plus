@@ -94,32 +94,43 @@ export function SidebarNav() {
     <>
       <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
       <SidebarHeader>
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Link href="/" className="flex items-center gap-2">
+        {state === 'collapsed' ? (
+          // Collapsed: logo with trigger underneath
+          <div className="flex w-full flex-col items-center gap-2 py-1">
+            <Link href="/" className="flex items-center">
               <Image
-                src={
-                  config?.SITE_FAVICON || '/img/logos/MDC-Panel-Favicon.svg'
-                }
+                src={config?.SITE_FAVICON || '/img/logos/MDC-Panel-Favicon.svg'}
                 width={40}
                 height={40}
                 alt="MDC Panel Logo"
               />
             </Link>
-            {state === 'expanded' && (
-              <div className="flex items-baseline gap-1">
-                <span className="text-xl font-semibold font-headline">
-                  {siteName}
-                </span>
-                <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">
-                  +
-                </span>
-              </div>
-            )}
+            <SidebarTrigger />
           </div>
-          <SidebarTrigger />
-        </div>
+        ) : (
+          // Expanded: logo+name on the left, trigger on the right
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <Link href="/" className="flex items-center gap-2">
+                <Image
+                  src={config?.SITE_FAVICON || '/img/logos/MDC-Panel-Favicon.svg'}
+                  width={40}
+                  height={40}
+                  alt="MDC Panel Logo"
+                />
+              </Link>
+              {state === 'expanded' && (
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-semibold font-headline">{siteName}</span>
+                  <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">+</span>
+                </div>
+              )}
+            </div>
+            <SidebarTrigger />
+          </div>
+        )}
       </SidebarHeader>
+
 
       <SidebarContent className="p-2">
         <SidebarMenu>
