@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import Handlebars from "handlebars";
+import { array } from "zod";
 
 let helpersRegistered = false;
 
@@ -52,5 +53,14 @@ export function registerHelpers(): void {
       }
       return ret;
   });
+  Handlebars.registerHelper('any', function(this: any, context, options) {
+    console.log(context)
+    console.log(context.length)
+    if (Array.isArray(context) && context.length > 0) {
+      return options.fn(this);
+    } else {
+      return options.inverse(this);
+    }
+  })
   Handlebars.registerHelper('is_in', (array, value) => array?.includes(value));
 }
