@@ -18,7 +18,6 @@ import {
   ExternalLink,
   Landmark,
   Scale,
-  Sparkles,
   User,
 } from 'lucide-react';
 
@@ -112,9 +111,9 @@ export function LegalSearchPage() {
         description="Ask any questions and get penal code and caselaw citations in a single response."
       />
 
-      <Alert variant="warning">
+      <Alert>
         <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Experimental Feature</AlertTitle>
+        <AlertTitle>Accuracy Notice</AlertTitle>
         <AlertDescription>
           This assistant can make mistakes. Always confirm the cited penal code and caselaw before acting on the
           information provided.
@@ -131,13 +130,7 @@ export function LegalSearchPage() {
                     <Bot className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold">Legal Search Assistant</h3>
-                      <Badge variant="secondary" className="flex items-center gap-1 text-xs uppercase tracking-wide">
-                        <Sparkles className="h-3 w-3" />
-                        Beta
-                      </Badge>
-                    </div>
+                    <h3 className="font-semibold">Legal Search Assistant</h3>
                     <p className="text-muted-foreground">
                       Describe a situation or ask about a statute. I will provide a short explanation and cite relevant penal
                       code charges or caselaw so you can dig deeper instantly.
