@@ -370,7 +370,8 @@ export function ArrestReportPage() {
                             );
                         })}
                         </TableBody>
-                    </Table>
+                      </Table>
+                    </div>
                 </CardContent>
             </Card>
 
@@ -445,7 +446,6 @@ export function ArrestReportPage() {
                             </TableRow>
                         </TableBody>
                       </Table>
-                    </div>
                 </CardContent>
             </Card>
 
