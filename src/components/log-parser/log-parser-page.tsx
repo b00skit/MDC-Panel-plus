@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef } from 'react';
@@ -11,18 +10,18 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, Copy, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Alert, AlertTitle } from '../ui/alert';
+import { Alert } from '../ui/alert';
 
 export function LogParserPage() {
   const [characterNames, setCharacterNames] = useState<string[]>(['']);
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [options, setOptions] = useState({
-    removeTimestamps: true,
-    removeEmotes: false,
-    removeRadio: true,
-    removeAme: true,
-    removeDo: true,
+    includeTimestamps: false,
+    includeEmotes: true,
+    includeRadio: false,
+    includeAme: false,
+    includeDo: false,
   });
   const outputRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
@@ -61,24 +60,26 @@ export function LogParserPage() {
 
     const lines = inputText.split(/\r?\n/);
     let filtered = lines.filter(line => {
-      if (options.removeRadio && line.includes('CH:')) return false;
-      if (options.removeAme && line.trim().startsWith('>')) return false;
-      if (options.removeDo && /\(\(.*\)\)\*/.test(line)) return false;
+      if (!options.includeRadio && line.includes('CH:')) return false;
+      if (!options.includeAme && line.trim().startsWith('>')) return false;
+      if (!options.includeDo && /\(\(.*\)\)\*/.test(line)) return false;
 
-      return names.some(name => {
-        const lowerLine = line.toLowerCase();
-        const speechRegex = new RegExp(`\\] ?${name.replace(/ /g, '[_ ]')} says:`, 'i');
-        const emoteRegex = new RegExp(`^\\* ?${name.replace(/ /g, '[_ ]')}\\b`, 'i');
-        const doRegex = new RegExp(`\\(\\( ?${name.replace(/ /g, '[_ ]')} ?\\)\\)\\*`, 'i');
+      const lowerLine = line.toLowerCase();
+      const speechRegex = new RegExp(`\\] ?${names.map(name => name.replace(/ /g, '[_ ]')).join('|')} says:`, 'i');
+      const emoteRegex = new RegExp(`^\\* ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
+      const doRegex = new RegExp(`\\(\\( ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')}) ?\\)\\)\\*`, 'i');
 
-        if (options.removeEmotes) {
-          return speechRegex.test(lowerLine) || doRegex.test(lowerLine);
-        }
-        return speechRegex.test(lowerLine) || emoteRegex.test(lowerLine) || doRegex.test(lowerLine);
-      });
+      const isSpeech = speechRegex.test(lowerLine);
+      const isEmote = options.includeEmotes && emoteRegex.test(lowerLine);
+      const isDo = options.includeDo && doRegex.test(lowerLine);
+
+      if (options.includeEmotes) {
+        return isSpeech || isEmote || isDo;
+      }
+      return isSpeech || doRegex.test(lowerLine);
     });
 
-    if (options.removeTimestamps) {
+    if (!options.includeTimestamps) {
       filtered = filtered.map(line => line.replace(/^\[\d{2}:\d{2}:\d{2}\]\s?/, ''));
     }
 
@@ -140,23 +141,28 @@ export function LogParserPage() {
             <div>
                 <Label>Filtering Options</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-2">
-                    {Object.entries(options).map(([key, value]) => (
-                        <div key={key} className="flex items-center space-x-2">
-                            <Checkbox id={key} checked={value} onCheckedChange={() => handleOptionChange(key as keyof typeof options)} />
-                            <Label htmlFor={key} className="text-sm font-normal cursor-pointer">
-                                {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                            </Label>
-                        </div>
-                    ))}
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="includeTimestamps" checked={options.includeTimestamps} onCheckedChange={() => handleOptionChange('includeTimestamps')} />
+                        <Label htmlFor="includeTimestamps" className="text-sm font-normal cursor-pointer">Include Timestamps</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="includeEmotes" checked={options.includeEmotes} onCheckedChange={() => handleOptionChange('includeEmotes')} />
+                        <Label htmlFor="includeEmotes" className="text-sm font-normal cursor-pointer">Include Emotes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="includeRadio" checked={options.includeRadio} onCheckedChange={() => handleOptionChange('includeRadio')} />
+                        <Label htmlFor="includeRadio" className="text-sm font-normal cursor-pointer">Include Radio</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="includeAme" checked={options.includeAme} onCheckedChange={() => handleOptionChange('includeAme')} />
+                        <Label htmlFor="includeAme" className="text-sm font-normal cursor-pointer">Include /ame</Label>
+                    </div>
+                     <div className="flex items-center space-x-2">
+                        <Checkbox id="includeDo" checked={options.includeDo} onCheckedChange={() => handleOptionChange('includeDo')} />
+                        <Label htmlFor="includeDo" className="text-sm font-normal cursor-pointer">Include /do</Label>
+                    </div>
                 </div>
             </div>
-             <Alert variant="warning">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Note on Names with Spaces</AlertTitle>
-                <CardDescription>
-                    The parser automatically handles names with spaces (e.g., "John Doe") by treating the space as potentially being an underscore in the logs.
-                </CardDescription>
-            </Alert>
           </CardContent>
         </Card>
 

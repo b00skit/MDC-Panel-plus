@@ -229,18 +229,6 @@ export function SidebarNav() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={isActive('/report-archive')}
-              tooltip="Report Archive"
-            >
-              <Link href="/report-archive">
-                <History />
-                <span>Report Archive</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
            <SidebarMenuItem>
             <SidebarMenuButton
               asChild
@@ -250,6 +238,18 @@ export function SidebarNav() {
               <Link href="/log-parser">
                 <TextSearch />
                 <span>Log Parser</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/report-archive')}
+              tooltip="Report Archive"
+            >
+              <Link href="/report-archive">
+                <History />
+                <span>Report Archive</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
