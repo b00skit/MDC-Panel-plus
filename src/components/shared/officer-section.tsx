@@ -249,6 +249,7 @@ export function OfficerSection({
                             icon={<BookUser className="h-4 w-4 text-muted-foreground" />}
                             value={officer.divDetail || ''}
                             onChange={(e) => updateOfficer(officer.id, { divDetail: e.target.value })}
+                            isInvalid={!officer.divDetail}
                         />
                     </div>
                  )}
