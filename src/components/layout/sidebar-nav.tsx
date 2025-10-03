@@ -20,6 +20,7 @@ import {
   Map,
   History,
   Search,
+  TextSearch,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -237,6 +238,18 @@ export function SidebarNav() {
               <Link href="/report-archive">
                 <History />
                 <span>Report Archive</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+           <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/log-parser')}
+              tooltip="Log Parser"
+            >
+              <Link href="/log-parser">
+                <TextSearch />
+                <span>Log Parser</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
