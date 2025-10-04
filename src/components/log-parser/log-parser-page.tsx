@@ -61,21 +61,21 @@ export function LogParserPage() {
 
     const lines = inputText.split(/\r?\n/);
     let filtered = lines.filter(line => {
-      if (!options.includeAme && line.trim().startsWith('>')) return false;
-      if (!options.includeDo && /\(\(.*\)\)\*/.test(line)) return false;
 
       const lowerLine = line.toLowerCase();
       const speechRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) ?${names.map(name => name.replace(/ /g, '[_ ]')).join('|')} says( |(phone|.*)|[.*]):`, 'i');
       const emoteRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) \\* (${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
       const radioRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) \\*\\* \\[.*\\] ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})`, 'i');
       const doRegex = new RegExp(`\\(\\( ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')}) ?\\)\\)\\*`, 'i');
+      const ameRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) > (${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
 
       const isSpeech = speechRegex.test(lowerLine);
       const isRadio = options.includeRadio && radioRegex.test(lowerLine);
       const isEmote = options.includeEmotes && emoteRegex.test(lowerLine);
       const isDo = options.includeDo && doRegex.test(lowerLine);
+      const isAme = options.includeAme && ameRegex.test(lowerLine);
 
-      return isSpeech || isRadio || isEmote || isDo;
+      return isSpeech || isRadio || isEmote || isDo || isAme;
     });
 
     if (!options.includeTimestamps) {
