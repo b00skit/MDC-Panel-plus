@@ -66,7 +66,7 @@ export function LogParserPage() {
 
       const lowerLine = line.toLowerCase();
       const speechRegex = new RegExp(`\\] ?${names.map(name => name.replace(/ /g, '[_ ]')).join('|')} says:`, 'i');
-      const emoteRegex = new RegExp(`^\\* ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
+      const emoteRegex = new RegExp(`\\] ?\\* ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
       const doRegex = new RegExp(`\\(\\( ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')}) ?\\)\\)\\*`, 'i');
 
       const isSpeech = speechRegex.test(lowerLine);
