@@ -142,7 +142,7 @@ export function LogParserPage() {
                 <Label>Filtering Options</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-2">
                   {Object.entries(options).map((entry) => entry[1]).map( (value: {isChecked: any, text: any}) => (
-                    <div className="flex items-center space-x-2">
+                    <div key={value.text} className="flex items-center space-x-2">
                       <Checkbox id={value.text} checked={value.isChecked} onCheckedChange={() => handleOptionChange(value.text)}/>
                       <Label htmlFor={value.text} className='text-sm font-normal cursor pointer'>{value.text.replace(/([A-Z])/g, ' $1').replace(/^./, (str:any) => str.toUpperCase())}</Label>
                     </div>
