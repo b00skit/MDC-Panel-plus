@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, Copy, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert } from '../ui/alert';
+import { retriever } from 'genkit/plugin';
 
 export function LogParserPage() {
   const [characterNames, setCharacterNames] = useState<string[]>(['']);
@@ -60,23 +61,21 @@ export function LogParserPage() {
 
     const lines = inputText.split(/\r?\n/);
     let filtered = lines.filter(line => {
-      if (!options.includeRadio && line.includes('CH:')) return false;
       if (!options.includeAme && line.trim().startsWith('>')) return false;
       if (!options.includeDo && /\(\(.*\)\)\*/.test(line)) return false;
 
       const lowerLine = line.toLowerCase();
-      const speechRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) ?${names.map(name => name.replace(/ /g, '[_ ]')).join('|')} says( |(phone|.)|[.]):`, 'i');
-      const emoteRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) ?\\* ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
+      const speechRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) ?${names.map(name => name.replace(/ /g, '[_ ]')).join('|')} says( |(phone|.*)|[.*]):`, 'i');
+      const emoteRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) \\* (${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
+      const radioRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) \\*\\* \\[.*\\] ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})`, 'i');
       const doRegex = new RegExp(`\\(\\( ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')}) ?\\)\\)\\*`, 'i');
 
       const isSpeech = speechRegex.test(lowerLine);
+      const isRadio = options.includeRadio && radioRegex.test(lowerLine);
       const isEmote = options.includeEmotes && emoteRegex.test(lowerLine);
       const isDo = options.includeDo && doRegex.test(lowerLine);
 
-      if (options.includeEmotes) {
-        return isSpeech || isEmote || isDo;
-      }
-      return isSpeech || doRegex.test(lowerLine);
+      return isSpeech || isRadio || isEmote || isDo;
     });
 
     if (!options.includeTimestamps) {
