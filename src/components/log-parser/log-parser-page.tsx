@@ -11,17 +11,19 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, Copy, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert } from '../ui/alert';
+import { retriever } from 'genkit/plugin';
+import { boolean } from 'zod';
 
 export function LogParserPage() {
   const [characterNames, setCharacterNames] = useState<string[]>(['']);
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [options, setOptions] = useState({
-    includeTimestamps: false,
-    includeEmotes: true,
-    includeRadio: false,
-    includeAme: false,
-    includeDo: false,
+    includeTimestamps: {isChecked: false, text: 'includeTimestamps'},
+    includeEmotes: {isChecked: true, text: 'includeEmotes'},
+    includeRadio: {isChecked: false, text: 'includeRadio'},
+    includeAme: {isChecked: false, text: 'includeAme'},
+    includeDo: {isChecked: true, text: 'includeDo'},
   });
   const outputRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
@@ -43,7 +45,7 @@ export function LogParserPage() {
   };
 
   const handleOptionChange = (option: keyof typeof options) => {
-    setOptions(prev => ({ ...prev, [option]: !prev[option] }));
+    setOptions(prev => ({ ...prev, [option]: {isChecked: !(prev[option].isChecked), text: prev[option].text}}));
   };
 
   const parseText = () => {
@@ -60,26 +62,24 @@ export function LogParserPage() {
 
     const lines = inputText.split(/\r?\n/);
     let filtered = lines.filter(line => {
-      if (!options.includeRadio && line.includes('CH:')) return false;
-      if (!options.includeAme && line.trim().startsWith('>')) return false;
-      if (!options.includeDo && /\(\(.*\)\)\*/.test(line)) return false;
 
       const lowerLine = line.toLowerCase();
-      const speechRegex = new RegExp(`\\] ?${names.map(name => name.replace(/ /g, '[_ ]')).join('|')} says:`, 'i');
-      const emoteRegex = new RegExp(`^\\* ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
+      const speechRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) ?${names.map(name => name.replace(/ /g, '[_ ]')).join('|')} says( |(phone|.*)|[.*]):`, 'i');
+      const emoteRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) \\* (${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
+      const radioRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) \\*\\* \\[.*\\] ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})`, 'i');
       const doRegex = new RegExp(`\\(\\( ?(${names.map(name => name.replace(/ /g, '[_ ]')).join('|')}) ?\\)\\)\\*`, 'i');
+      const ameRegex = new RegExp(`(\\[\\d{2}:\\d{2}:\\d{2}\\]|^) > (${names.map(name => name.replace(/ /g, '[_ ]')).join('|')})\\b`, 'i');
 
       const isSpeech = speechRegex.test(lowerLine);
-      const isEmote = options.includeEmotes && emoteRegex.test(lowerLine);
-      const isDo = options.includeDo && doRegex.test(lowerLine);
+      const isRadio = options.includeRadio.isChecked && radioRegex.test(lowerLine);
+      const isEmote = options.includeEmotes.isChecked && emoteRegex.test(lowerLine);
+      const isDo = options.includeDo.isChecked && doRegex.test(lowerLine);
+      const isAme = options.includeAme.isChecked && ameRegex.test(lowerLine);
 
-      if (options.includeEmotes) {
-        return isSpeech || isEmote || isDo;
-      }
-      return isSpeech || doRegex.test(lowerLine);
+      return isSpeech || isRadio || isEmote || isDo || isAme;
     });
 
-    if (!options.includeTimestamps) {
+    if (!options.includeTimestamps.isChecked) {
       filtered = filtered.map(line => line.replace(/^\[\d{2}:\d{2}:\d{2}\]\s?/, ''));
     }
 
@@ -141,26 +141,12 @@ export function LogParserPage() {
             <div>
                 <Label>Filtering Options</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-2">
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="includeTimestamps" checked={options.includeTimestamps} onCheckedChange={() => handleOptionChange('includeTimestamps')} />
-                        <Label htmlFor="includeTimestamps" className="text-sm font-normal cursor-pointer">Include Timestamps</Label>
+                  {Object.entries(options).map((entry) => entry[1]).map( (value: {isChecked: any, text: any}) => (
+                    <div key={value.text} className="flex items-center space-x-2">
+                      <Checkbox id={value.text} checked={value.isChecked} onCheckedChange={() => handleOptionChange(value.text)}/>
+                      <Label htmlFor={value.text} className='text-sm font-normal cursor pointer'>{value.text.replace(/([A-Z])/g, ' $1').replace(/^./, (str:any) => str.toUpperCase())}</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="includeEmotes" checked={options.includeEmotes} onCheckedChange={() => handleOptionChange('includeEmotes')} />
-                        <Label htmlFor="includeEmotes" className="text-sm font-normal cursor-pointer">Include Emotes</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="includeRadio" checked={options.includeRadio} onCheckedChange={() => handleOptionChange('includeRadio')} />
-                        <Label htmlFor="includeRadio" className="text-sm font-normal cursor-pointer">Include Radio</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="includeAme" checked={options.includeAme} onCheckedChange={() => handleOptionChange('includeAme')} />
-                        <Label htmlFor="includeAme" className="text-sm font-normal cursor-pointer">Include /ame</Label>
-                    </div>
-                     <div className="flex items-center space-x-2">
-                        <Checkbox id="includeDo" checked={options.includeDo} onCheckedChange={() => handleOptionChange('includeDo')} />
-                        <Label htmlFor="includeDo" className="text-sm font-normal cursor-pointer">Include /do</Label>
-                    </div>
+                  ))}
                 </div>
             </div>
           </CardContent>
