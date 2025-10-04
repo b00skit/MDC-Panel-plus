@@ -30,7 +30,7 @@ import {
   } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore } from '@/stores/officer-store';
-import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart, Settings2, AlertTriangle, FlaskConical, Search } from 'lucide-react';
+import { User, Shield, Badge as BadgeIcon, Trash2, Plus, Monitor, Moon, Sun, BookUser, Download, Upload, Radio, BarChart, Settings2, AlertTriangle, FlaskConical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
@@ -648,20 +648,6 @@ export default function SettingsPage() {
                         id="experimental-ai-reports"
                         checked={experimentalFeatures.includes('ai_arrest_reports')}
                         onCheckedChange={() => toggleExperimentalFeature('ai_arrest_reports')}
-                    />
-                </div>
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                        <Search className="h-5 w-5 text-muted-foreground" />
-                        <Label htmlFor="experimental-ai-legal-search" className="text-base flex flex-col">
-                            AI Legal Search
-                           <span className="text-xs text-muted-foreground">A Search Engine that returns legal information based on the community's law.</span>
-                        </Label>
-                    </div>
-                    <Switch
-                        id="experimental-ai-legal-search"
-                        checked={experimentalFeatures.includes('ai_legal_search')}
-                        onCheckedChange={() => toggleExperimentalFeature('ai_legal_search')}
                     />
                 </div>
             </CardContent>
