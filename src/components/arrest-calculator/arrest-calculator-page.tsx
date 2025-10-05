@@ -97,6 +97,7 @@ export function ArrestCalculatorPage() {
     null
   );
   const [depaData, setDepaData] = useState<DepaData | null>(null);
+  const [streetsActCharges, setStreetsActCharges] = useState<string[] | null>(null)
 
   const getChargeDetails = useCallback((chargeId: string | null): Charge | null => {
     if (!chargeId || !penalCode) return null;
@@ -114,11 +115,13 @@ export function ArrestCalculatorPage() {
     Promise.all([
         fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json').then(res => res.json()),
         fetch('/data/additions.json').then(res => res.json()),
-        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_depa_categories.json').then(res => res.json())
-    ]).then(([penalCodeData, additionsData, depaData]) => {
+        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_depa_categories.json').then(res => res.json()),
+        fetch('/data/streets-act-charges.json').then(res => res.json())
+    ]).then(([penalCodeData, additionsData, depaData, streetsActCharges]) => {
         setPenalCode(penalCodeData);
         setAdditions(additionsData.additions);
         setDepaData(depaData);
+        setStreetsActCharges(streetsActCharges.charges);
         setLoading(false);
     }).catch(error => {
         console.error("Failed to fetch initial data:", error);
@@ -176,6 +179,10 @@ export function ArrestCalculatorPage() {
         return !!details?.drugs;
     });
   }, [charges, getChargeDetails]);
+
+  const showStreetsActWarning = useMemo(() => {
+    return charges.some((charge : SelectedCharge) => (streetsActCharges?.includes(charge.chargeId!) && charge.offense! >= '3'))
+  }, [charges])
   
   const handleChargeSelect = (chargeRow: SelectedCharge, chargeId: string) => {
     if (!penalCode) return;
@@ -495,6 +502,18 @@ export function ArrestCalculatorPage() {
             </div>
           );
         })}
+
+        {showStreetsActWarning && (
+          <Alert variant="warning" className="mt-4">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
+              One or more of the charges are applicable to <strong>Section IV</strong> of the STREETS Act.<br/>
+              The arrestee may be subject to the repeat offender clause and increased vehicle seizures and license suspenses are eligible (from 7 to 28 days)<br/> 
+              Reference: <a href={configData.URL_STREETS} target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-700">Strengthen Traffic Regulations to Ensure Every Traveler's Safety Act 2024 (STREETS Act)</a>
+            </AlertDescription>
+          </Alert>
+        )}
         
         {showDrugChargeWarning && (
             <Alert variant="warning" className="mt-4">
