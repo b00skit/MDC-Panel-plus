@@ -195,17 +195,9 @@ export function ArrestCalculatorPage() {
     const chargeDetails = penalCode[chargeId];
     if (!chargeDetails) return;
   
-    let defaultClass: string | null = null;
-    if (chargeDetails.class?.A) defaultClass = 'A';
-    else if (chargeDetails.class?.B) defaultClass = 'B';
-    else if (chargeDetails.class?.C) defaultClass = 'C';
+    let defaultClass: string | null = Object.entries(chargeDetails.class).find((chargeClass) => chargeClass[1])![0];
   
-    let defaultOffense: string | null = null;
-    if (chargeDetails.offence?.['1']) defaultOffense = '1';
-    else if (chargeDetails.offence?.['2']) defaultOffense = '2';
-    else if (chargeDetails.offence?.['3']) defaultOffense = '3';
-    else if (chargeDetails.offence?.['4']) defaultOffense = '4';
-    else if (chargeDetails.offence?.['5']) defaultOffense = '5';
+    let defaultOffense: string | null = '1';
   
     updateCharge(chargeRow.uniqueId, {
       chargeId: chargeId,
