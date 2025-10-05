@@ -113,7 +113,7 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
     };
 
     const cardContent = (
-      <Card className="h-full flex flex-col justify-between transition-all duration-300 ease-in-out group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:-translate-y-1">
+      <Card className="h-full flex flex-col flex-start transition-all duration-300 ease-in-out group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:-translate-y-1">
         <CardHeader>
           <div className="flex items-center justify-between">
             {ICONS[resource.icon] || <BookOpen className="w-8 h-8 text-primary" />}
