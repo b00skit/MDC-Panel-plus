@@ -64,7 +64,7 @@ interface DepaData {
   categories: DepaCategory[];
 }
 
-interface StreetsActData {
+export interface StreetsActData {
   charges: string[];
   counts_required: any;
 }
