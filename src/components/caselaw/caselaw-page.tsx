@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car } from 'lucide-react';
+import { AlertCircle, Search, TrafficCone, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -56,6 +56,7 @@ const ICONS: { [key: string]: React.ReactNode } = {
     Landmark: <Landmark className="w-8 h-8 text-primary" />,
     ShieldCheck: <ShieldCheck className="w-8 h-8 text-primary" />,
     Car: <Car className="w-8 h-8 text-primary" />,
+    TrafficCone: <TrafficCone className='w-8 h-8 text-primary'/>,
 };
 
 const jurisdictionMap: { [key: string]: string } = {
