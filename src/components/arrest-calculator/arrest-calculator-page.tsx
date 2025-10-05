@@ -64,6 +64,11 @@ interface DepaData {
   categories: DepaCategory[];
 }
 
+interface StreetsActData {
+  charges: string[];
+  counts_required: any;
+}
+
 export function ArrestCalculatorPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -97,7 +102,7 @@ export function ArrestCalculatorPage() {
     null
   );
   const [depaData, setDepaData] = useState<DepaData | null>(null);
-  const [streetsActCharges, setStreetsActCharges] = useState<string[] | null>(null)
+  const [streetsActCharges, setStreetsActCharges] = useState<StreetsActData | null>(null)
 
   const getChargeDetails = useCallback((chargeId: string | null): Charge | null => {
     if (!chargeId || !penalCode) return null;
@@ -121,7 +126,7 @@ export function ArrestCalculatorPage() {
         setPenalCode(penalCodeData);
         setAdditions(additionsData.additions);
         setDepaData(depaData);
-        setStreetsActCharges(streetsActCharges.charges);
+        setStreetsActCharges(streetsActCharges);
         setLoading(false);
     }).catch(error => {
         console.error("Failed to fetch initial data:", error);
@@ -181,7 +186,7 @@ export function ArrestCalculatorPage() {
   }, [charges, getChargeDetails]);
 
   const showStreetsActWarning = useMemo(() => {
-    return charges.some((charge : SelectedCharge) => (streetsActCharges?.includes(charge.chargeId!) && charge.offense! >= '3'))
+    return charges.some((charge : SelectedCharge) => (streetsActCharges?.charges.includes(charge.chargeId!) && charge.offense! >= streetsActCharges.counts_required[charge.chargeId!]))
   }, [charges])
   
   const handleChargeSelect = (chargeRow: SelectedCharge, chargeId: string) => {
@@ -509,7 +514,7 @@ export function ArrestCalculatorPage() {
             <AlertTitle>Heads up!</AlertTitle>
             <AlertDescription>
               One or more of the charges are applicable to <strong>Section IV</strong> of the STREETS Act.<br/>
-              The arrestee may be subject to the repeat offender clause and increased vehicle seizures and license suspenses are eligible (from 7 to 28 days)<br/> 
+              The arrestee may be subject to the repeat offender clause and increased vehicle seizures and license suspenses (from 7 to 28 days).<br/> 
               Reference: <a href={configData.URL_STREETS} target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-700">Strengthen Traffic Regulations to Ensure Every Traveler's Safety Act 2024 (STREETS Act)</a>
             </AlertDescription>
           </Alert>
