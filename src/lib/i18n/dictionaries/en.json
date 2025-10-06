@@ -663,9 +663,9 @@
       "addEntry": "Add {label}"
     },
     "streetsAct": {
-      "title": "Streets Act Eligibility",
-      "description": "One or more selected charges are eligible under the Streets Act. Review departmental guidance before proceeding.",
-      "linkLabel": "Read the Streets Act guidance"
+      "title": "Heads up!",
+      "description": "One or more of the charges are applicable to <strong>Section IV</strong> of the STREETS Act.<br/>The arrestee may be subject to the repeat offender clause and increased vehicle seizures and license suspenses (from 7 to 28 days).<br/> Reference: {link}",
+      "linkLabel": "Strengthen Traffic Regulations to Ensure Every Traveler's Safety Act 2024 (STREETS Act)"
     }
   },
   "arrestCalculator": {
@@ -858,14 +858,14 @@
         }
       },
       "copyables": {
+        "toastTitle": "Copied",
+        "toastDescription": "{label} copied to clipboard.",
         "minMinutes": "Minimum minutes",
         "maxMinutes": "Maximum minutes",
         "totalImpound": "Total impound days",
         "totalSuspension": "Total suspension days",
         "bailCost": "Highest bail",
-        "originalValue": "Original value: {value}",
-        "toastTitle": "Copied",
-        "toastDescription": "{label} copied to clipboard."
+        "originalValue": "Original value: {value}"
       },
       "toasts": {
         "copiedTitle": "Copied",
@@ -873,6 +873,30 @@
         "copiedDescription": "{value} copied to clipboard.",
         "linkCopiedTitle": "Link copied",
         "linkCopiedDescription": "Calculation link copied to clipboard."
+      }
+    }
+  },
+  "arrestCalculation": {
+    "page": {
+      "documentTitle": "Arrest Calculation",
+      "loadingDescription": "Loading your shared arrest calculation...",
+      "title": "Arrest Calculation",
+      "description": "A shared arrest calculation.",
+      "error": {
+        "title": "Error Loading Calculation",
+        "description": "There was an issue processing the shared arrest calculation link.",
+        "alertTitle": "Error",
+        "missingCharges": "The shared link does not contain any charge information.",
+        "invalidFormat": "Charge #{index} has an invalid format. Expected at least 3 parts, but got {parts}.",
+        "unknownCharge": "Charge ID '{id}' is not a valid charge in the penal code.",
+        "invalidCategory": "Invalid drug category index '{category}' for charge '{id}'."
+      },
+      "errors": {
+        "penalCodeFetch": "Failed to fetch penal code data."
+      },
+      "empty": {
+        "title": "No Charges Found",
+        "description": "No valid charges were found in the provided link."
       }
     }
   },

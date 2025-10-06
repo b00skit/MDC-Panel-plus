@@ -663,9 +663,9 @@
       "addEntry": "Añadir {label}"
     },
     "streetsAct": {
-      "title": "Elegibilidad de la Ley de Calles",
-      "description": "Una o más imputaciones seleccionadas son elegibles según la Ley de Calles. Revise la guía del departamento antes de continuar.",
-      "linkLabel": "Leer la guía de la Ley de Calles"
+      "title": "¡Atención!",
+      "description": "Uno o más de los cargos son aplicables a la <strong>Sección IV</strong> de la Ley STREETS.<br/>El detenido puede estar sujeto a la cláusula de reincidencia y a un aumento en la incautación de vehículos y suspensión de licencias (de 7 a 28 días).<br/> Referencia: {link}",
+      "linkLabel": "Ley de 2024 para Fortalecer las Regulaciones de Tráfico y Garantizar la Seguridad de Todos los Viajeros (Ley STREETS)"
     }
   },
   "arrestCalculator": {
@@ -873,6 +873,30 @@
         "copiedDescription": "{value} copiado al portapapeles.",
         "linkCopiedTitle": "Enlace copiado",
         "linkCopiedDescription": "El enlace del cálculo se copió al portapapeles."
+      }
+    }
+  },
+  "arrestCalculation": {
+    "page": {
+      "documentTitle": "Cálculo de Arresto",
+      "loadingDescription": "Cargando el cálculo de arresto compartido...",
+      "title": "Cálculo de Arresto",
+      "description": "Un cálculo de arresto compartido.",
+      "error": {
+        "title": "Error al Cargar el Cálculo",
+        "description": "Hubo un problema al procesar el enlace del cálculo de arresto compartido.",
+        "alertTitle": "Error",
+        "missingCharges": "El enlace compartido no contiene información sobre los cargos.",
+        "invalidFormat": "El cargo #{index} tiene un formato inválido. Se esperaban al menos 3 partes, pero se obtuvieron {parts}.",
+        "unknownCharge": "El ID del cargo '{id}' no es un cargo válido en el código penal.",
+        "invalidCategory": "Índice de categoría de droga inválido '{category}' para el cargo '{id}'."
+      },
+      "errors": {
+        "penalCodeFetch": "Error al obtener los datos del código penal."
+      },
+      "empty": {
+        "title": "No se Encontraron Cargos",
+        "description": "No se encontraron cargos válidos en el enlace proporcionado."
       }
     }
   },
