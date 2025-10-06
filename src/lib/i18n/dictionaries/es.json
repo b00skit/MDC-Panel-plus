@@ -135,6 +135,42 @@
       "generic": "Ocurrió un error durante la búsqueda. Por favor, inténtalo de nuevo."
     }
   },
+  "caselaw": {
+    "header": {
+      "title": "Jurisprudencia y Recursos Legales",
+      "description": "Accede rápidamente a documentos legales, aranceles y jurisprudencia importante."
+    },
+    "database": {
+      "title": "Base de Datos de Jurisprudencia",
+      "description": "Busca jurisprudencia relevante.",
+      "searchPlaceholder": "Buscar por nombre de caso o resumen...",
+      "filters": {
+        "all": "Todos",
+        "federal": "Estados Unidos",
+        "local": "San Andreas"
+      },
+      "noResults": "No se encontraron jurisprudencias que coincidan con tus criterios de búsqueda."
+    },
+    "cards": {
+      "summary": "Resumen",
+      "implication": "Implicación para los Oficiales",
+      "viewSource": "Ver Fuente"
+    },
+    "jurisdictions": {
+      "federal": "Federal",
+      "federalCivil": "Federal (Civil)",
+      "localSupreme": "Tribunal Supremo de SA",
+      "localAppeals": "Tribunal de Apelaciones de SA",
+      "localAppealsCivil": "Tribunal de Apelaciones de SA (Civil)",
+      "unknown": "Desconocido"
+    },
+    "toasts": {
+      "copied": {
+        "title": "Copiado al Portapapeles",
+        "description": "El contenido de {title} ha sido copiado."
+      }
+    }
+  },
   "paperworkGenerators": {
     "page": {
       "header": {
@@ -974,30 +1010,18 @@
       "title": "¡Atención!",
       "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido HTML generado está diseñado para funcionar perfectamente en el MDC real. Este informe también ha sido archivado."
     },
-    "reportTitleLabel": "Título del Informe",
+    "formattedReport": "Informe Formateado",
     "buttons": {
-      "copyTitle": "Copiar Título",
+      "mdcRecord": "Abrir Registro MDC",
+      "impound": "Creación Rápida de Incautación",
       "download": "Descargar Informe",
       "downloading": "Preparando Imagen...",
-      "copyPaperwork": "Copiar Documentación"
-    },
-    "error": {
-      "header": {
-        "title": "Error de Envío",
-        "description": "No se encontraron los datos necesarios para generar esta documentación."
-      },
-      "alert": {
-        "title": "Error",
-        "description": "No se pudieron cargar los datos del informe. Por favor, vuelve a la página de generadores e inténtalo de nuevo."
-      }
+      "copy": "Copiar Documentación"
     },
     "toasts": {
-      "copySuccess": {
+      "success": {
         "title": "Éxito",
-        "description": "Contenido de la documentación copiado al portapapeles."
-      },
-      "copyTitleSuccess": {
-        "description": "Título del informe copiado al portapapeles."
+        "description": "Contenido del informe copiado al portapapeles."
       },
       "downloadStart": {
         "title": "Descarga iniciada",
@@ -1005,7 +1029,7 @@
       },
       "downloadFailed": {
         "title": "Descarga fallida",
-        "description": "No se pudo crear una imagen a partir del informe. Por favor, inténtalo de nuevo."
+        "description": "No se pudo crear una imagen a partir de la vista previa. Por favor, inténtalo de nuevo."
       }
     }
   }

@@ -135,6 +135,42 @@
       "generic": "An error occurred while searching. Please try again."
     }
   },
+  "caselaw": {
+    "header": {
+      "title": "Caselaw & Legal Resources",
+      "description": "Quickly access legal documents, schedules, and important caselaw."
+    },
+    "database": {
+      "title": "Caselaw Database",
+      "description": "Search for relevant caselaws.",
+      "searchPlaceholder": "Search by case name or summary...",
+      "filters": {
+        "all": "All",
+        "federal": "United States",
+        "local": "San Andreas"
+      },
+      "noResults": "No caselaws found matching your search criteria."
+    },
+    "cards": {
+      "summary": "Summary",
+      "implication": "Implication for Officers",
+      "viewSource": "View Source"
+    },
+    "jurisdictions": {
+      "federal": "Federal",
+      "federalCivil": "Federal (Civil)",
+      "localSupreme": "SA Supreme Court",
+      "localAppeals": "SA Court of Appeals",
+      "localAppealsCivil": "SA Court of Appeals (Civil)",
+      "unknown": "Unknown"
+    },
+    "toasts": {
+      "copied": {
+        "title": "Copied to Clipboard",
+        "description": "{title} content has been copied."
+      }
+    }
+  },
   "paperworkGenerators": {
     "page": {
       "header": {
@@ -974,30 +1010,18 @@
       "title": "Heads up!",
       "description": "The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC. This report has also been archived."
     },
-    "reportTitleLabel": "Report Title",
+    "formattedReport": "Formatted Report",
     "buttons": {
-      "copyTitle": "Copy Title",
+      "mdcRecord": "Open MDC Record",
+      "impound": "Quick-Create Impound",
       "download": "Download Report",
       "downloading": "Preparing Image...",
-      "copyPaperwork": "Copy Paperwork"
-    },
-    "error": {
-      "header": {
-        "title": "Submission Error",
-        "description": "Could not find the necessary data to generate this paperwork."
-      },
-      "alert": {
-        "title": "Error",
-        "description": "Could not load report data. Please go back to the generators page and try again."
-      }
+      "copy": "Copy Paperwork"
     },
     "toasts": {
-      "copySuccess": {
+      "success": {
         "title": "Success",
-        "description": "Paperwork content copied to clipboard."
-      },
-      "copyTitleSuccess": {
-        "description": "Report title copied to clipboard."
+        "description": "Report content copied to clipboard."
       },
       "downloadStart": {
         "title": "Download started",
