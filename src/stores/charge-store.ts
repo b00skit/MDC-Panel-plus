@@ -20,6 +20,8 @@ export interface Charge {
   bail: any;
   extra?: string;
   drugs?: Record<string, string>;
+  code_enhancement?: string;
+  code_enhancement_count?: number;
 }
 
 export interface PenalCode {
