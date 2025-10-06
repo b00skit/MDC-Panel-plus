@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import FullScreenMessage from '@/components/layout/maintenance-page';
 import configData from '../../../data/config.json';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslations } from '@/i18n/translation-context';
 
 async function clearCaches() {
   try {
@@ -95,6 +96,8 @@ const CacheBuster = ({
 const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const { toast } = useToast();
+  const beta = useTranslations('beta');
+  const actions = useTranslations('common.actions');
   const liveSiteUrl = configData.SITE_URL
     ? configData.SITE_URL.endsWith('/')
       ? configData.SITE_URL
@@ -138,20 +141,20 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
     a.click();
     URL.revokeObjectURL(url);
     toast({
-      title: 'Data Exported',
-      description: 'A file with your data has been downloaded.',
+      title: beta('toastTitle'),
+      description: beta('toastDescription'),
     });
   };
 
   if (isBlocked) {
     return (
       <FullScreenMessage
-        title="Beta Access has Ended"
-        message="This beta version is no longer active. Please use the main site."
+        title={beta('title')}
+        message={beta('message')}
         linkHref={liveSiteUrl}
-        linkText="Go to Live Site"
+        linkText={actions('goToLive')}
         onActionClick={handleExportData}
-        actionText="Export Data"
+        actionText={actions('exportData')}
       />
     );
   }

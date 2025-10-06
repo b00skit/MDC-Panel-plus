@@ -38,6 +38,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '@/components/ui/switch';
+import { useLocale } from '@/i18n/translation-context';
 import { useTheme } from 'next-themes';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -134,6 +135,7 @@ async function clearAllSiteData() {
 
 
 export default function SettingsPage() {
+  const locale = useLocale();
   const { toast } = useToast();
   const { setTheme, theme } = useTheme();
   const { 
@@ -335,8 +337,8 @@ export default function SettingsPage() {
                         </AlertDescription>
                     </Alert>
                     <div className="flex gap-2">
-                         <Button asChild>
-                            <Link href="/settings/advanced-form-parameters">
+                        <Button asChild>
+                            <Link href={`/${locale}/settings/advanced-form-parameters`}>
                                 <Settings2 className="mr-2" /> Go to Advanced Parameters
                             </Link>
                         </Button>
@@ -438,7 +440,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
                 <Button asChild>
-                    <Link href="/settings/advanced-form-parameters">
+                    <Link href={`/${locale}/settings/advanced-form-parameters`}>
                         <Settings2 className="mr-2" /> Go to Advanced Parameters
                     </Link>
                 </Button>

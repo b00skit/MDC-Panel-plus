@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { useLocale } from '@/i18n/translation-context';
 
 const positiveReasons = [
     { id: 'design', label: 'The design is clean and intuitive.' },
@@ -46,6 +47,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
   const [selectedReasons, setSelectedReasons] = React.useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { toast } = useToast();
+  const locale = useLocale();
 
   const handleClose = () => {
     onOpenChange(false);
@@ -164,7 +166,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
         </div>
         <DialogFooter className="sm:justify-between">
             <Button asChild variant="ghost">
-                <Link href="/help" onClick={handleClose}>
+                <Link href={`/${locale}/help`} onClick={handleClose}>
                     <LifeBuoy className="mr-2" /> Help
                 </Link>
             </Button>

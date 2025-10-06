@@ -6,6 +6,7 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/compon
 import { SidebarNav } from './sidebar-nav';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLocale, useTranslations } from '@/i18n/translation-context';
 
 type LayoutProps = {
   children: ReactNode;
@@ -13,6 +14,9 @@ type LayoutProps = {
 };
 
 export function Layout({ children, footer }: LayoutProps) {
+  const t = useTranslations();
+  const locale = useLocale();
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -36,9 +40,9 @@ export function Layout({ children, footer }: LayoutProps) {
           <div className="md:hidden sticky top-0 z-20 border-b border-border/60 bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/75">
             <div className="flex items-center justify-between">
               <SidebarTrigger className="-ml-2" />
-              <Link href="/" className="flex items-baseline gap-1 font-headline text-lg font-semibold">
-                <span>MDC Panel</span>
-                <span className="text-primary">+</span>
+              <Link href={`/${locale}`} className="flex items-baseline gap-1 font-headline text-lg font-semibold">
+                <span>{t('common.brand.name')}</span>
+                <span className="text-primary">{t('common.brand.suffix')}</span>
               </Link>
               <div className="w-9" aria-hidden />
             </div>

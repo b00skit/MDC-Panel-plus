@@ -40,6 +40,7 @@ import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from 'next-themes';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useLocale } from '@/i18n/translation-context';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
@@ -139,6 +140,7 @@ async function clearAllSiteData() {
 export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
   const { toast } = useToast();
   const { setTheme, theme } = useTheme();
+  const locale = useLocale();
   const { 
     officers, 
     updateOfficer, 
@@ -307,7 +309,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
             </CardHeader>
             <CardContent>
                 <Button asChild>
-                    <Link href="/settings/advanced-form-parameters">
+                    <Link href={`/${locale}/settings/advanced-form-parameters`}>
                         <Settings2 className="mr-2" /> Go to Advanced Parameters
                     </Link>
                 </Button>

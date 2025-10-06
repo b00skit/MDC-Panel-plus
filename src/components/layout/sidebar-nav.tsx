@@ -40,6 +40,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import announcementsData from '../../../data/announcements.json';
 import { FeedbackDialog } from '../dashboard/feedback-dialog';
+import { useLocale, useTranslations } from '@/i18n/translation-context';
 
 type SiteConfig = {
   SITE_NAME: string;
@@ -54,6 +55,16 @@ export function SidebarNav() {
   const { state } = useSidebar();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+  const nav = useTranslations('navigation');
+  const tooltip = useTranslations('navigationTooltips');
+  const t = useTranslations();
+  const locale = useLocale();
+  const withLocale = (path: string) => {
+    if (path === '/') {
+      return `/${locale}`;
+    }
+    return `/${locale}${path}`;
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -84,10 +95,12 @@ export function SidebarNav() {
 
 
   const isActive = (path: string) => {
-    return pathname === path || pathname.startsWith(path + '/');
+    const targetPath = withLocale(path);
+    return pathname === targetPath || pathname.startsWith(`${targetPath}/`);
   };
 
-  const siteName = config?.SITE_NAME.replace('+', '') || 'MDC Panel';
+  const siteName =
+    config?.SITE_NAME.replace('+', '') || t('common.brand.name');
 
   return (
     <>
@@ -96,7 +109,7 @@ export function SidebarNav() {
         {state === 'collapsed' ? (
           // Collapsed: logo with trigger underneath
           <div className="flex w-full flex-col items-center gap-2 py-1">
-            <Link href="/" className="flex items-center">
+            <Link href={`/${locale}`} className="flex items-center">
               <Image
                 src={config?.SITE_FAVICON || '/img/logos/MDC-Panel-Favicon.svg'}
                 width={40}
@@ -110,7 +123,7 @@ export function SidebarNav() {
           // Expanded: logo+name on the left, trigger on the right
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <Link href="/" className="flex items-center gap-2">
+              <Link href={`/${locale}`} className="flex items-center gap-2">
                 <Image
                   src={config?.SITE_FAVICON || '/img/logos/MDC-Panel-Favicon.svg'}
                   width={40}
@@ -121,7 +134,7 @@ export function SidebarNav() {
               {state === 'expanded' && (
                 <div className="flex items-baseline gap-1">
                   <span className="text-xl font-semibold font-headline">{siteName}</span>
-                  <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">+</span>
+                  <span className="text-2xl font-bold text-primary drop-shadow-[0_0_3px_hsl(var(--primary)/0.5)]">{t('common.brand.suffix')}</span>
                 </div>
               )}
             </div>
@@ -137,11 +150,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/')}
-              tooltip="Dashboard"
+              tooltip={tooltip('dashboard')}
             >
-              <Link href="/">
+              <Link href={withLocale('/')}>
                 <LayoutGrid />
-                <span>Dashboard</span>
+                <span>{nav('dashboard')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -149,11 +162,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/legal-search')}
-              tooltip="Legal Search"
+              tooltip={tooltip('legalSearch')}
             >
-              <Link href="/legal-search">
+              <Link href={withLocale('/legal-search')}>
                 <Search />
-                <span>Legal Search</span>
+                <span>{nav('legalSearch')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -161,11 +174,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/arrest-calculator')}
-              tooltip="Arrest Calculator"
+              tooltip={tooltip('arrestCalculator')}
             >
-              <Link href="/arrest-calculator">
+              <Link href={withLocale('/arrest-calculator')}>
                 <Gavel />
-                <span>Arrest Calculator</span>
+                <span>{nav('arrestCalculator')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -173,11 +186,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/arrest-report')}
-              tooltip="Arrest Report"
+              tooltip={tooltip('arrestReport')}
             >
-              <Link href="/arrest-report">
+              <Link href={withLocale('/arrest-report')}>
                 <FileText />
-                <span>Arrest Report</span>
+                <span>{nav('arrestReport')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -185,11 +198,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/paperwork-generators')}
-              tooltip="Paperwork Generators"
+              tooltip={tooltip('paperworkGenerators')}
             >
-              <Link href="/paperwork-generators">
+              <Link href={withLocale('/paperwork-generators')}>
                 <Archive />
-                <span>Paperwork Generators</span>
+                <span>{nav('paperworkGenerators')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -197,11 +210,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/simplified-penal-code')}
-              tooltip="Simplified Penal Code"
+              tooltip={tooltip('simplifiedPenalCode')}
             >
-              <Link href="/simplified-penal-code">
+              <Link href={withLocale('/simplified-penal-code')}>
                 <BookOpen />
-                <span>Simplified Penal Code</span>
+                <span>{nav('simplifiedPenalCode')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -209,11 +222,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/caselaw')}
-              tooltip="Caselaw &amp; Legal Resources"
+              tooltip={tooltip('caselaw')}
             >
-              <Link href="/caselaw">
+              <Link href={withLocale('/caselaw')}>
                 <Landmark />
-                <span>Caselaw &amp; Legal Resources</span>
+                <span>{nav('caselaw')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -221,11 +234,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/map')}
-              tooltip="Interactive Map"
+              tooltip={tooltip('map')}
             >
-              <Link href="/map">
+              <Link href={withLocale('/map')}>
                 <Map />
-                <span>Interactive Map</span>
+                <span>{nav('map')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -233,11 +246,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/log-parser')}
-              tooltip="Log Parser"
+              tooltip={tooltip('logParser')}
             >
-              <Link href="/log-parser">
+              <Link href={withLocale('/log-parser')}>
                 <TextSearch />
-                <span>Log Parser</span>
+                <span>{nav('logParser')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -245,11 +258,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/report-archive')}
-              tooltip="Report Archive"
+              tooltip={tooltip('reportArchive')}
             >
-              <Link href="/report-archive">
+              <Link href={withLocale('/report-archive')}>
                 <History />
-                <span>Report Archive</span>
+                <span>{nav('reportArchive')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -263,32 +276,32 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/settings')}
-              tooltip="Settings"
+              tooltip={tooltip('settings')}
             >
-              <Link href="/settings">
+              <Link href={withLocale('/settings')}>
                 <Settings />
-                <span>Settings</span>
+                <span>{nav('settings')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => setIsFeedbackDialogOpen(true)}
-              tooltip="Help &amp; Feedback"
+              tooltip={tooltip('help')}
             >
               <LifeBuoy />
-              <span>Help &amp; Feedback</span>
+              <span>{nav('help')}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               isActive={isActive('/announcements')}
-              tooltip="Announcements"
+              tooltip={tooltip('announcements')}
             >
-              <Link href="/announcements">
+              <Link href={withLocale('/announcements')}>
                 <Bell />
-                <span>Announcements</span>
+                <span>{nav('announcements')}</span>
                 {unreadCount > 0 && (
                     <SidebarMenuBadge className="bg-destructive text-destructive-foreground">{unreadCount}</SidebarMenuBadge>
                 )}
@@ -301,11 +314,11 @@ export function SidebarNav() {
           <SidebarMenuItem>
              <SidebarMenuButton
                 asChild
-                tooltip="Github"
+                tooltip={tooltip('github')}
              >
                 <Link href={config?.URL_GITHUB || '#'} target="_blank">
                     <Github />
-                    <span>Github</span>
+                    <span>{nav('github')}</span>
                 </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

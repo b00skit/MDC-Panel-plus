@@ -103,7 +103,8 @@ async function getConfig() {
     };
 }
 
-export default async function PaperworkGeneratorsPage() {
+export default async function PaperworkGeneratorsPage({ params }: { params: { locale: string } }) {
+  const { locale } = params;
   const [{ globalGenerators, factionGroups }, userForms, { isBuilderEnabled }] = await Promise.all([getPaperworkData(), getUserForms(), getConfig()]);
 
   return (
@@ -115,7 +116,7 @@ export default async function PaperworkGeneratorsPage() {
             />
             {isBuilderEnabled && (
                 <Button asChild>
-                    <Link href="/paperwork-generators/builder">
+                    <Link href={`/${locale}/paperwork-generators/builder`}>
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Create New Form
                     </Link>
