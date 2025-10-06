@@ -37,6 +37,14 @@
             "button_text": "Copy Verbatim Rights",
             "button_action": "copy",
             "button_content": "You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed for you. Do you understand?"
+        },
+        {
+            "id": "streets-act",
+            "title": "STREETS Act 2024",
+            "description": "Access the official STREETS Act 2024",
+            "icon": "TrafficCone",
+            "type": "link",
+            "href": "URL_STREETS"
         }
     ]
 }

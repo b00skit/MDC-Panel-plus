@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useChargeStore, type SelectedCharge } from '@/stores/charge-store';
@@ -25,82 +24,83 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import type { ArrestCalculation, ChargeResult } from '@/lib/arrest-calculator';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StreetsAlert } from '../shared/streets-act-warning';
 import { useScopedI18n } from '@/lib/i18n/client';
 
 /** ---------- Loading UI ---------- */
 function LoadingTableSkeleton() {
-    return (
-      <Card aria-busy="true" aria-live="polite">
-        <CardHeader className="flex flex-row items-center justify-between">
-            <Skeleton className="h-8 w-32" />
-            <div className="flex gap-2">
-                <Skeleton className="h-9 w-44 rounded-md" />
-                <Skeleton className="h-9 w-36 rounded-md" />
-            </div>
-        </CardHeader>
-        <CardContent>
-          <div className="w-full overflow-hidden rounded-lg border">
-            <div className="grid grid-cols-12 gap-4 bg-muted/50 p-3">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <Skeleton key={i} className="h-4 w-full" />
-              ))}
-            </div>
-            <div className="divide-y divide-border">
-              {Array.from({ length: 3 }).map((_, r) => (
-                <div key={r} className="grid grid-cols-12 gap-4 p-3">
-                  {Array.from({ length: 12 }).map((__, c) => (
-                    <Skeleton key={c} className="h-5 w-full" />
-                  ))}
-                </div>
-              ))}
-            </div>
+  return (
+    <Card aria-busy="true" aria-live="polite">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <Skeleton className="h-8 w-32" />
+        <div className="flex gap-2">
+          <Skeleton className="h-9 w-44 rounded-md" />
+          <Skeleton className="h-9 w-36 rounded-md" />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="w-full overflow-hidden rounded-lg border">
+          <div className="grid grid-cols-12 gap-4 bg-muted/50 p-3">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <Skeleton key={i} className="h-4 w-full" />
+            ))}
           </div>
-        </CardContent>
-      </Card>
-    );
-  }
-  
-  function LoadingSummarySkeleton() {
-    return (
-      <Card aria-busy="true">
-        <CardHeader>
-          <Skeleton className="h-8 w-32" />
-        </CardHeader>
-        <CardContent>
-           <div className="w-full overflow-hidden rounded-lg border">
-              <div className="grid grid-cols-8 gap-4 bg-muted/50 p-3">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton key={i} className="h-4 w-full" />
+          <div className="divide-y divide-border">
+            {Array.from({ length: 3 }).map((_, r) => (
+              <div key={r} className="grid grid-cols-12 gap-4 p-3">
+                {Array.from({ length: 12 }).map((__, c) => (
+                  <Skeleton key={c} className="h-5 w-full" />
                 ))}
               </div>
-              <div className="grid grid-cols-8 gap-4 p-3">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                      <Skeleton key={i} className="h-5 w-full" />
-                  ))}
-              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LoadingSummarySkeleton() {
+  return (
+    <Card aria-busy="true">
+      <CardHeader>
+        <Skeleton className="h-8 w-32" />
+      </CardHeader>
+      <CardContent>
+        <div className="w-full overflow-hidden rounded-lg border">
+          <div className="grid grid-cols-8 gap-4 bg-muted/50 p-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="h-4 w-full" />
+            ))}
+          </div>
+          <div className="grid grid-cols-8 gap-4 p-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="h-5 w-full" />
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LoadingCopyablesSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Card key={i}>
+          <CardContent className="p-4 space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-10" />
             </div>
-        </CardContent>
-      </Card>
-    );
-  }
-  
-  function LoadingCopyablesSkeleton() {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-4 space-y-2">
-              <Skeleton className="h-4 w-24" />
-              <div className="flex gap-2">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-10" />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
 /** -------------------------------- */
 
 interface ArrestCalculatorResultsProps {
@@ -146,13 +146,16 @@ export function ArrestCalculatorResults({
     return map;
   }, [t]);
 
-  const translateAdditionName = useCallback((name?: string | null) => {
-    if (!name) {
-      return additionNameMap.get('offender') ?? 'Offender';
-    }
-    const translation = additionNameMap.get(name.toLowerCase());
-    return translation ?? name;
-  }, [additionNameMap]);
+  const translateAdditionName = useCallback(
+    (name?: string | null) => {
+      if (!name) {
+        return additionNameMap.get('offender') ?? 'Offender';
+      }
+      const translation = additionNameMap.get(name.toLowerCase());
+      return translation ?? name;
+    },
+    [additionNameMap],
+  );
 
   const typeLabels = useMemo(
     () => ({
@@ -218,15 +221,9 @@ export function ArrestCalculatorResults({
       const minutes = rounded % 60;
 
       const parts: string[] = [];
-      if (days > 0) {
-        parts.push(formatUnit('days', days));
-      }
-      if (hours > 0) {
-        parts.push(formatUnit('hours', hours));
-      }
-      if (minutes > 0) {
-        parts.push(formatUnit('minutes', minutes));
-      }
+      if (days > 0) parts.push(formatUnit('days', days));
+      if (hours > 0) parts.push(formatUnit('hours', hours));
+      if (minutes > 0) parts.push(formatUnit('minutes', minutes));
 
       const label = parts.join(' ');
       const detailed = t('time.summary', { parts: label, minutes: rounded });
@@ -310,13 +307,7 @@ export function ArrestCalculatorResults({
           </Label>
           <div className="flex items-center gap-2 mt-2">
             <Input id={inputId} value={value} readOnly disabled />
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={handleCopy}
-              aria-label={ariaLabel}
-              title={ariaLabel}
-            >
+            <Button size="icon" variant="outline" onClick={handleCopy} aria-label={ariaLabel} title={ariaLabel}>
               <Clipboard className="h-4 w-4" />
             </Button>
           </div>
@@ -340,7 +331,8 @@ export function ArrestCalculatorResults({
     return content;
   };
 
-  const effectiveParoleStatus = paroleViolatorOverride ?? (report.length > 0 ? reportIsParoleViolator : isParoleViolator);
+  const effectiveParoleStatus =
+    paroleViolatorOverride ?? (report.length > 0 ? reportIsParoleViolator : isParoleViolator);
 
   useEffect(() => {
     fetch('/api/arrest-calculator', {
@@ -348,9 +340,9 @@ export function ArrestCalculatorResults({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ report, isParoleViolator: effectiveParoleStatus }),
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(setData)
-      .catch(err => console.error('Failed to load arrest calculation:', err));
+      .catch((err) => console.error('Failed to load arrest calculation:', err));
   }, [report, effectiveParoleStatus]);
 
   if (!data) {
@@ -363,7 +355,21 @@ export function ArrestCalculatorResults({
     );
   }
 
-  const { calculationResults, extras, totals, bailStatus, minTimeCapped, maxTimeCapped, isCapped, impoundCapped, isImpoundCapped, suspensionCapped, isSuspensionCapped } = data;
+  // NOTE: include Streets eligibility from API while keeping i18n-based formatters defined above.
+  const {
+    calculationResults,
+    extras,
+    totals,
+    bailStatus,
+    minTimeCapped,
+    maxTimeCapped,
+    isCapped,
+    impoundCapped,
+    isImpoundCapped,
+    suspensionCapped,
+    isSuspensionCapped,
+    isStreetsEligible,
+  } = data;
 
   const handleCopyToClipboard = (text: string | number, label?: string) => {
     navigator.clipboard.writeText(text.toString());
@@ -392,13 +398,13 @@ export function ArrestCalculatorResults({
       'Parole Violation': 7,
     };
 
-    const chargeParams = calculationResults.map(result => {
+    const chargeParams = calculationResults.map((result) => {
       const { row, chargeDetails } = result as ChargeResult;
       const additionIndex = additionMapping[row.addition || 'Offender'];
       let chargeStr = `${row.class?.toLowerCase()}${chargeDetails.id}-${row.offense}-${additionIndex}`;
       if (chargeDetails.drugs && row.category) {
         const categoryIndex = Object.keys(chargeDetails.drugs).find(
-          key => chargeDetails.drugs![key] === row.category
+          (key) => chargeDetails.drugs![key] === row.category,
         );
         if (categoryIndex) {
           chargeStr += `-${categoryIndex}`;
@@ -421,9 +427,9 @@ export function ArrestCalculatorResults({
     }
   };
 
-  const hasAnyModifiers = calculationResults.some(r => r.isModified);
+  const hasAnyModifiers = calculationResults.some((r) => r.isModified);
 
-  const charges = calculationResults.map(result => {
+  const charges = calculationResults.map((result) => {
     const {
       row,
       chargeDetails,
@@ -454,7 +460,7 @@ export function ArrestCalculatorResults({
     const additions = appliedAdditions ?? [];
     const additionDisplayNames =
       additions.length > 0
-        ? additions.map(add => translateAdditionName(add.name)).join(' + ')
+        ? additions.map((add) => translateAdditionName(add.name)).join(' + ')
         : translateAdditionName(row.addition || 'Offender');
 
     const typeDisplay = getTypeLabel(chargeDetails.type);
@@ -462,10 +468,10 @@ export function ArrestCalculatorResults({
       chargeDetails.type === 'F'
         ? 'text-red-500'
         : chargeDetails.type === 'M'
-          ? 'text-yellow-500'
-            : chargeDetails.type === 'I'
-              ? 'text-green-500'
-              : '';
+        ? 'text-yellow-500'
+        : chargeDetails.type === 'I'
+        ? 'text-green-500'
+        : '';
 
     const minTime = formatTotalTime(modified.minTime);
     const maxTime = formatTotalTime(modified.maxTime);
@@ -560,11 +566,15 @@ export function ArrestCalculatorResults({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {charges.map(charge => (
+                    {charges.map((charge) => (
                       <TableRow key={charge.key}>
                         <TableCell
                           className={cn('font-medium', clickToCopy && 'cursor-pointer hover:text-primary')}
-                          onClick={clickToCopy ? () => handleCopyToClipboard(charge.title, t('charges.table.title')) : undefined}
+                          onClick={
+                            clickToCopy
+                              ? () => handleCopyToClipboard(charge.title, t('charges.table.title'))
+                              : undefined
+                          }
                           title={clickToCopy ? getCopyTooltip(t('charges.table.title')) : undefined}
                         >
                           {charge.title}
@@ -573,10 +583,12 @@ export function ArrestCalculatorResults({
                           {charge.isModified && charge.additions.length > 0 ? (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className="cursor-help font-bold text-yellow-500">{charge.additionDisplayNames}</span>
+                                <span className="cursor-help font-bold text-yellow-500">
+                                  {charge.additionDisplayNames}
+                                </span>
                               </TooltipTrigger>
                               <TooltipContent className="space-y-2">
-                                {charge.additions.map(addition => (
+                                {charge.additions.map((addition) => (
                                   <div key={addition.name} className="space-y-1">
                                     <p className="font-semibold">{translateAdditionName(addition.name)}</p>
                                     <p>{t('charges.tooltip.sentenceMultiplier', { value: addition.sentence_multiplier })}</p>
@@ -643,7 +655,11 @@ export function ArrestCalculatorResults({
                         </TableCell>
                         <TableCell
                           className={cn(clickToCopy && 'cursor-pointer hover:text-primary')}
-                          onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, t('copyLabels.rawFine')) : undefined}
+                          onClick={
+                            clickToCopy
+                              ? () => handleCopyToClipboard(charge.fine, t('copyLabels.rawFine'))
+                              : undefined
+                          }
                           title={clickToCopy ? getCopyTooltip(t('copyLabels.rawFine')) : undefined}
                           aria-label={clickToCopy ? getCopyAria(t('copyLabels.rawFine')) : undefined}
                         >
@@ -660,15 +676,19 @@ export function ArrestCalculatorResults({
                   </TableBody>
                 </Table>
               </div>
+
+              {/* Mobile cards */}
               <div className="space-y-4 sm:hidden">
-                {charges.map(charge => (
+                {charges.map((charge) => (
                   <div
                     key={charge.key}
                     className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm text-center sm:text-left"
                   >
                     <div
                       className={cn('text-base font-semibold', clickToCopy && 'cursor-pointer hover:text-primary')}
-                      onClick={clickToCopy ? () => handleCopyToClipboard(charge.title, t('charges.table.title')) : undefined}
+                      onClick={
+                        clickToCopy ? () => handleCopyToClipboard(charge.title, t('charges.table.title')) : undefined
+                      }
                     >
                       {charge.title}
                     </div>
@@ -677,7 +697,9 @@ export function ArrestCalculatorResults({
                       {charge.offenseLabel && <span>{charge.offenseLabel}</span>}
                     </div>
                     <div className="mt-3 text-sm text-center sm:text-left">
-                      <p className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.addition')}</p>
+                      <p className="text-xs font-semibold uppercase text-muted-foreground">
+                        {t('charges.table.addition')}
+                      </p>
                       {charge.isModified && charge.additions.length > 0 ? (
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -686,13 +708,13 @@ export function ArrestCalculatorResults({
                             </span>
                           </TooltipTrigger>
                           <TooltipContent className="space-y-2">
-                              {charge.additions.map(addition => (
-                                <div key={addition.name} className="space-y-1">
-                                  <p className="font-semibold">{translateAdditionName(addition.name)}</p>
-                                  <p>{t('charges.tooltip.sentenceMultiplier', { value: addition.sentence_multiplier })}</p>
-                                  <p>{t('charges.tooltip.pointsMultiplier', { value: addition.points_multiplier })}</p>
-                                </div>
-                              ))}
+                            {charge.additions.map((addition) => (
+                              <div key={addition.name} className="space-y-1">
+                                <p className="font-semibold">{translateAdditionName(addition.name)}</p>
+                                <p>{t('charges.tooltip.sentenceMultiplier', { value: addition.sentence_multiplier })}</p>
+                                <p>{t('charges.tooltip.pointsMultiplier', { value: addition.points_multiplier })}</p>
+                              </div>
+                            ))}
                           </TooltipContent>
                         </Tooltip>
                       ) : (
@@ -701,7 +723,9 @@ export function ArrestCalculatorResults({
                     </div>
                     <dl className="mt-3 space-y-3 text-sm">
                       <div>
-                        <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.minTime')}</dt>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.minTime')}
+                        </dt>
                         <dd className="mt-1 flex items-center justify-center gap-1 sm:justify-start">
                           {charge.minTime.label}
                           {charge.isModified && (
@@ -718,7 +742,9 @@ export function ArrestCalculatorResults({
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.maxTime')}</dt>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.maxTime')}
+                        </dt>
                         <dd className="mt-1 flex items-center justify-center gap-1 sm:justify-start">
                           {charge.maxTime.label}
                           {charge.isModified && (
@@ -735,7 +761,9 @@ export function ArrestCalculatorResults({
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.points')}</dt>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.points')}
+                        </dt>
                         <dd className="mt-1 flex items-center justify-center gap-1 sm:justify-start">
                           {charge.pointsDisplay}
                           {charge.isModified && (
@@ -751,35 +779,49 @@ export function ArrestCalculatorResults({
                           )}
                         </dd>
                       </div>
-                        <div>
-                          <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.fine')}</dt>
-                          <dd
-                            className={cn('mt-1', clickToCopy && 'cursor-pointer hover:text-primary')}
-                            onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, t('copyLabels.rawFine')) : undefined}
-                            title={clickToCopy ? getCopyTooltip(t('copyLabels.rawFine')) : undefined}
-                            aria-label={clickToCopy ? getCopyAria(t('copyLabels.rawFine')) : undefined}
-                          >
-                            {charge.fineDisplay}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.impound')}</dt>
-                          <dd className="mt-1">{charge.impoundDisplay}</dd>
-                        </div>
-                        <div>
-                          <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.suspension')}</dt>
-                          <dd className="mt-1">{charge.suspensionDisplay}</dd>
-                        </div>
-                        <div>
-                          <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.autoBail')}</dt>
-                          <dd className="mt-1">
-                            <BailStatusBadge bailInfo={{ auto: charge.bailAuto }} />
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.bail')}</dt>
-                          <dd className="mt-1">{charge.bailCostDisplay}</dd>
-                        </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.fine')}
+                        </dt>
+                        <dd
+                          className={cn('mt-1', clickToCopy && 'cursor-pointer hover:text-primary')}
+                          onClick={
+                            clickToCopy
+                              ? () => handleCopyToClipboard(charge.fine, t('copyLabels.rawFine'))
+                              : undefined
+                          }
+                          title={clickToCopy ? getCopyTooltip(t('copyLabels.rawFine')) : undefined}
+                          aria-label={clickToCopy ? getCopyAria(t('copyLabels.rawFine')) : undefined}
+                        >
+                          {charge.fineDisplay}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.impound')}
+                        </dt>
+                        <dd className="mt-1">{charge.impoundDisplay}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.suspension')}
+                        </dt>
+                        <dd className="mt-1">{charge.suspensionDisplay}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.autoBail')}
+                        </dt>
+                        <dd className="mt-1">
+                          <BailStatusBadge bailInfo={{ auto: charge.bailAuto }} />
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-semibold uppercase text-muted-foreground">
+                          {t('charges.table.bail')}
+                        </dt>
+                        <dd className="mt-1">{charge.bailCostDisplay}</dd>
+                      </div>
                     </dl>
                   </div>
                 ))}
@@ -787,6 +829,8 @@ export function ArrestCalculatorResults({
             </CardContent>
           </Card>
         )}
+
+        {isStreetsEligible && <StreetsAlert />}
 
         {showStipulations && extras && extras.length > 0 && (
           <Card>
@@ -822,7 +866,7 @@ export function ArrestCalculatorResults({
               <CardTitle>{t('summary.title')}</CardTitle>
             </CardHeader>
             <CardContent>
-               {isCapped && (
+              {isCapped && (
                 <Alert variant="warning" className="mb-4">
                   <AlertTriangle className="h-4 w-4" />
                   <AlertTitle>{t('summary.alerts.sentence.title')}</AlertTitle>
@@ -835,24 +879,32 @@ export function ArrestCalculatorResults({
                   </AlertDescription>
                 </Alert>
               )}
-               {isImpoundCapped && (
-                 <Alert variant="warning" className="mb-4">
+              {isImpoundCapped && (
+                <Alert variant="warning" className="mb-4">
                   <AlertTriangle className="h-4 w-4" />
                   <AlertTitle>{t('summary.alerts.impound.title')}</AlertTitle>
                   <AlertDescription>
-                    {t('summary.alerts.impound.description', { maxDays: config.MAX_IMPOUND_DAYS, value: formatDaysOrNone(totals.modified.impound) })}
+                    {t('summary.alerts.impound.description', {
+                      maxDays: config.MAX_IMPOUND_DAYS,
+                      value: formatDaysOrNone(totals.modified.impound),
+                    })}
                   </AlertDescription>
                 </Alert>
               )}
-               {isSuspensionCapped && (
-                 <Alert variant="warning" className="mb-4">
+              {isSuspensionCapped && (
+                <Alert variant="warning" className="mb-4">
                   <AlertTriangle className="h-4 w-4" />
                   <AlertTitle>{t('summary.alerts.suspension.title')}</AlertTitle>
                   <AlertDescription>
-                     {t('summary.alerts.suspension.description', { maxDays: config.MAX_SUSPENSION_DAYS, value: formatDaysOrNone(totals.modified.suspension) })}
+                    {t('summary.alerts.suspension.description', {
+                      maxDays: config.MAX_SUSPENSION_DAYS,
+                      value: formatDaysOrNone(totals.modified.suspension),
+                    })}
                   </AlertDescription>
                 </Alert>
               )}
+
+              {/* Mobile summary */}
               <div className="grid gap-3 sm:hidden">
                 <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
                   <p className="text-xs font-semibold uppercase text-muted-foreground">{t('summary.mobile.minTime')}</p>
@@ -919,85 +971,85 @@ export function ArrestCalculatorResults({
                 </div>
                 <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
                   <p className="text-xs font-semibold uppercase text-muted-foreground">{t('summary.mobile.bailStatus')}</p>
-                  <div className="mt-2 flex justify-center">
-                    {renderOverallBailStatus()}
-                  </div>
+                  <div className="mt-2 flex justify-center">{renderOverallBailStatus()}</div>
                 </div>
                 <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
                   <p className="text-xs font-semibold uppercase text-muted-foreground">{t('summary.mobile.highestBail')}</p>
                   <p className="mt-1 text-sm font-medium">{highestBailDisplay}</p>
                 </div>
               </div>
+
+              {/* Desktop summary */}
               <div className="hidden w-full overflow-x-auto sm:block">
                 <Table className="w-full sm:min-w-[720px]">
                   <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('summary.table.minTime')}</TableHead>
-                    <TableHead>{t('summary.table.maxTime')}</TableHead>
-                    <TableHead>{t('summary.table.points')}</TableHead>
-                    <TableHead>{t('summary.table.fine')}</TableHead>
-                    <TableHead>{t('summary.table.impound')}</TableHead>
-                    <TableHead>{t('summary.table.suspension')}</TableHead>
-                    <TableHead>{t('summary.table.bailStatus')}</TableHead>
-                    <TableHead>{t('summary.table.highestBail')}</TableHead>
-                  </TableRow>
+                    <TableRow>
+                      <TableHead>{t('summary.table.minTime')}</TableHead>
+                      <TableHead>{t('summary.table.maxTime')}</TableHead>
+                      <TableHead>{t('summary.table.points')}</TableHead>
+                      <TableHead>{t('summary.table.fine')}</TableHead>
+                      <TableHead>{t('summary.table.impound')}</TableHead>
+                      <TableHead>{t('summary.table.suspension')}</TableHead>
+                      <TableHead>{t('summary.table.bailStatus')}</TableHead>
+                      <TableHead>{t('summary.table.highestBail')}</TableHead>
+                    </TableRow>
                   </TableHeader>
                   <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        {minTimeCappedDisplay.label}
-                        {hasAnyModifiers && (
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Asterisk className="h-3 w-3 text-yellow-500" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{t('charges.tooltip.originalTime', { value: originalMinDisplay.detailed })}</p>
-                              <p>{t('charges.tooltip.modifiedTime', { value: modifiedMinDisplay.detailed })}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        {maxTimeCappedDisplay.label}
-                        {hasAnyModifiers && (
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Asterisk className="h-3 w-3 text-yellow-500" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{t('charges.tooltip.originalTime', { value: originalMaxDisplay.detailed })}</p>
-                              <p>{t('charges.tooltip.modifiedTime', { value: modifiedMaxDisplay.detailed })}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        {Math.round(totals.modified.points)}
-                        {hasAnyModifiers && (
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Asterisk className="h-3 w-3 text-yellow-500" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{t('charges.tooltip.originalPoints', { value: totals.original.points })}</p>
-                              <p>{t('charges.tooltip.modifiedPoints', { value: Math.round(totals.modified.points) })}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>{totalFineDisplay}</TableCell>
-                    <TableCell>{formatDaysOrNone(impoundCapped)}</TableCell>
-                    <TableCell>{formatDaysOrNone(suspensionCapped)}</TableCell>
-                    <TableCell>{renderOverallBailStatus()}</TableCell>
-                    <TableCell>{highestBailDisplay}</TableCell>
-                  </TableRow>
+                    <TableRow>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          {minTimeCappedDisplay.label}
+                          {hasAnyModifiers && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Asterisk className="h-3 w-3 text-yellow-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t('charges.tooltip.originalTime', { value: originalMinDisplay.detailed })}</p>
+                                <p>{t('charges.tooltip.modifiedTime', { value: modifiedMinDisplay.detailed })}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          {maxTimeCappedDisplay.label}
+                          {hasAnyModifiers && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Asterisk className="h-3 w-3 text-yellow-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t('charges.tooltip.originalTime', { value: originalMaxDisplay.detailed })}</p>
+                                <p>{t('charges.tooltip.modifiedTime', { value: modifiedMaxDisplay.detailed })}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          {Math.round(totals.modified.points)}
+                          {hasAnyModifiers && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Asterisk className="h-3 w-3 text-yellow-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t('charges.tooltip.originalPoints', { value: totals.original.points })}</p>
+                                <p>{t('charges.tooltip.modifiedPoints', { value: Math.round(totals.modified.points) })}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>{totalFineDisplay}</TableCell>
+                      <TableCell>{formatDaysOrNone(impoundCapped)}</TableCell>
+                      <TableCell>{formatDaysOrNone(suspensionCapped)}</TableCell>
+                      <TableCell>{renderOverallBailStatus()}</TableCell>
+                      <TableCell>{highestBailDisplay}</TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </div>
@@ -1010,12 +1062,16 @@ export function ArrestCalculatorResults({
             <CopyableCard
               label={t('copyables.minMinutes')}
               value={Math.round(minTimeCapped)}
-              tooltipContent={hasAnyModifiers ? t('copyables.originalValue', { value: Math.round(totals.original.minTime) }) : undefined}
+              tooltipContent={
+                hasAnyModifiers ? t('copyables.originalValue', { value: Math.round(totals.original.minTime) }) : undefined
+              }
             />
             <CopyableCard
               label={t('copyables.maxMinutes')}
               value={Math.round(maxTimeCapped)}
-              tooltipContent={hasAnyModifiers ? t('copyables.originalValue', { value: Math.round(totals.original.maxTime) }) : undefined}
+              tooltipContent={
+                hasAnyModifiers ? t('copyables.originalValue', { value: Math.round(totals.original.maxTime) }) : undefined
+              }
             />
             <CopyableCard label={t('copyables.totalImpound')} value={Math.round(impoundCapped)} />
             <CopyableCard label={t('copyables.totalSuspension')} value={Math.round(suspensionCapped)} />

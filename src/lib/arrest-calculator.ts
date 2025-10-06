@@ -2,6 +2,7 @@
 import type { SelectedCharge, Charge, Addition, PenalCode } from '@/stores/charge-store';
 import additionsData from '../../data/additions.json';
 import config from '../../data/config.json';
+import { areStreetCharges } from './code-enhancement';
 
 const formatTimeInMinutes = (time: { days: number; hours: number; min: number }) => {
   if (!time) return 0;
@@ -46,6 +47,7 @@ export interface ArrestCalculation {
   isImpoundCapped: boolean;
   suspensionCapped: number;
   isSuspensionCapped: boolean;
+  isStreetsEligible: boolean;
 }
 
 export async function calculateArrest(report: SelectedCharge[], isParoleViolator: boolean): Promise<ArrestCalculation> {
@@ -159,6 +161,7 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
     } as ChargeResult;
   }).filter(Boolean) as ChargeResult[];
 
+  
   const totals = calculationResults.reduce(
     (acc, result) => {
       acc.original.minTime += result.original.minTime;
@@ -218,7 +221,13 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
   const isImpoundCapped = totals.modified.impound > config.MAX_IMPOUND_DAYS;
   const suspensionCapped = Math.min(totals.modified.suspension, config.MAX_SUSPENSION_DAYS);
   const isSuspensionCapped = totals.modified.suspension > config.MAX_SUSPENSION_DAYS;
-
+  const chargesResult = calculationResults.map(
+    (result: ChargeResult) => (result.row)
+  )
+  const chargesResultDetails = calculationResults.map(
+    (result: ChargeResult) => (result.chargeDetails)
+  )
+  const isStreetsEligible = areStreetCharges(chargesResult, chargesResultDetails)
   return {
     calculationResults,
     extras,
@@ -231,5 +240,6 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
     isImpoundCapped,
     suspensionCapped,
     isSuspensionCapped,
+    isStreetsEligible,
   };
 }

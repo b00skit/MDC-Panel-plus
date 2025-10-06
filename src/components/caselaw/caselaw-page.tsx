@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/dashboard/page-header';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Search, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car } from 'lucide-react';
+import { AlertCircle, Search, TrafficCone, BookOpen, Landmark, ShieldCheck, ExternalLink, Copy, Car } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -57,6 +57,7 @@ const ICONS: { [key: string]: React.ReactNode } = {
     Landmark: <Landmark className="w-8 h-8 text-primary" />,
     ShieldCheck: <ShieldCheck className="w-8 h-8 text-primary" />,
     Car: <Car className="w-8 h-8 text-primary" />,
+    TrafficCone: <TrafficCone className='w-8 h-8 text-primary'/>,
 };
 
 const jurisdictionMap: { [key: string]: string } = {
@@ -114,7 +115,7 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
     };
 
     const cardContent = (
-      <Card className="h-full flex flex-col justify-between transition-all duration-300 ease-in-out group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:-translate-y-1">
+      <Card className="h-full flex flex-col flex-start transition-all duration-300 ease-in-out group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:-translate-y-1">
         <CardHeader>
           <div className="flex items-center justify-between">
             {ICONS[resource.icon] || <BookOpen className="w-8 h-8 text-primary" />}
