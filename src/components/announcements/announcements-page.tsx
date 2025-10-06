@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Bell, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 type Announcement = {
     id: number;
@@ -25,6 +26,7 @@ interface AnnouncementsPageProps {
 }
 
 export function AnnouncementsPage({ initialAnnouncements }: AnnouncementsPageProps) {
+    const t = useScopedI18n('announcements');
     const [isClient, setIsClient] = useState(false);
 
     const sortedAnnouncements = useMemo(() => {
@@ -34,19 +36,20 @@ export function AnnouncementsPage({ initialAnnouncements }: AnnouncementsPagePro
     useEffect(() => {
         setIsClient(true);
         if (typeof window !== 'undefined' && sortedAnnouncements.length > 0) {
+            document.title = t('pageTitle');
             const latestId = sortedAnnouncements[0].id;
             localStorage.setItem('last_read_announcement', latestId.toString());
             // This will trigger a re-render in the sidebar nav to update the badge count.
             // A more robust solution might use a shared state or context.
             window.dispatchEvent(new Event('storage'));
         }
-    }, [sortedAnnouncements]);
+    }, [sortedAnnouncements, t]);
 
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
             <PageHeader
-                title="Announcements"
-                description="Stay up-to-date with the latest news and updates."
+                title={t('header.title')}
+                description={t('header.description')}
             />
 
             <div className="space-y-6">
@@ -57,7 +60,7 @@ export function AnnouncementsPage({ initialAnnouncements }: AnnouncementsPagePro
                                 <div>
                                     <CardTitle className="text-2xl font-bold">{announcement.title}</CardTitle>
                                     <CardDescription>
-                                        Posted on {format(new Date(announcement.date), 'PPP')}
+                                        {t('postedOn')} {format(new Date(announcement.date), 'PPP')}
                                     </CardDescription>
                                 </div>
                                 <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary shrink-0">

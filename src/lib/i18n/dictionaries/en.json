@@ -23,6 +23,14 @@
     "announcements": "Announcements",
     "github": "GitHub"
   },
+  "announcements": {
+    "pageTitle": "MDC Panel – Announcements",
+    "header": {
+      "title": "Announcements",
+      "description": "Stay up-to-date with the latest news and updates."
+    },
+    "postedOn": "Posted on"
+  },
   "settings": {
     "pageTitle": "MDC Panel – Settings",
     "header": {
