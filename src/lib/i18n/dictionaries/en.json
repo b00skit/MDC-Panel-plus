@@ -218,155 +218,6 @@
           "selectCategory": "Please select a category for the drug charge \"{charge}\"."
         }
       }
-    },
-    "results": {
-      "additionNames": {
-        "offender": "Offender",
-        "attempt": "Attempt",
-        "accomplice": "Accomplice",
-        "accessory": "Accessory",
-        "conspiracy": "Conspiracy",
-        "solicitation": "Solicitation",
-        "paroleViolation": "Parole Violation"
-      },
-      "types": {
-        "felony": "Felony",
-        "misdemeanor": "Misdemeanor",
-        "infraction": "Infraction",
-        "unknown": "Unknown"
-      },
-      "autoBail": {
-        "na": "N/A",
-        "noBail": "NO BAIL",
-        "auto": "AUTO BAIL",
-        "discretionary": "DISCRETIONARY"
-      },
-      "bailStatus": {
-        "na": "N/A",
-        "notEligible": "NOT ELIGIBLE",
-        "discretionary": "DISCRETIONARY",
-        "eligible": "ELIGIBLE"
-      },
-      "labels": {
-        "yes": "Yes",
-        "no": "No",
-        "notAvailable": "N/A",
-        "yesWithValue": "Yes | {value}"
-      },
-      "currency": "${value}",
-      "time": {
-        "zero": "0 minutes",
-        "summary": "{parts} ({minutes} mins)",
-        "days": {
-          "one": "{count} Day",
-          "other": "{count} Days"
-        },
-        "hours": {
-          "one": "{count} Hour",
-          "other": "{count} Hours"
-        },
-        "minutes": {
-          "one": "{count} Minute",
-          "other": "{count} Minutes"
-        }
-      },
-      "charges": {
-        "cardTitle": "Charges",
-        "copyLink": "Copy Calculation Link",
-        "modify": "Modify Charges",
-        "title": "{prefix} {id}. {charge}",
-        "categorySuffix": "(Category {category})",
-        "offenseSuffix": "(Offense #{offense})",
-        "offenseNumber": "Offense #{offense}",
-        "table": {
-          "title": "Title",
-          "addition": "Addition",
-          "offense": "Offense",
-          "type": "Type",
-          "minTime": "Min Time",
-          "maxTime": "Max Time",
-          "points": "Points",
-          "fine": "Fine",
-          "impound": "Impound",
-          "suspension": "Suspension",
-          "autoBail": "Auto-Bail",
-          "bail": "Bail"
-        },
-        "tooltip": {
-          "sentenceMultiplier": "Sentence Multiplier: {value}x",
-          "pointsMultiplier": "Points Multiplier: {value}x",
-          "originalTime": "Original: {value}",
-          "modifiedTime": "Modified: {value}",
-          "originalPoints": "Original: {value} points",
-          "modifiedPoints": "Modified: {value} points"
-        },
-        "copyTooltip": "Click to copy {field}",
-        "copyAria": "Copy {field}"
-      },
-      "copyLabels": {
-        "rawFine": "Raw fine"
-      },
-      "stipulations": {
-        "title": "Stipulations",
-        "charge": "Charge",
-        "stipulation": "Stipulation"
-      },
-      "summary": {
-        "title": "Summary",
-        "alerts": {
-          "sentence": {
-            "title": "Sentence Capped",
-            "description": "The total sentence time has been capped at {maxDays} days as per Legal Faction Management policy. The original uncapped totals are shown below for reference.",
-            "originalMinLabel": "Original Min Time:",
-            "originalMaxLabel": "Original Max Time:"
-          },
-          "impound": {
-            "title": "Impound Capped",
-            "description": "The total impound time has been capped at {maxDays} days. The original uncapped total was {value}."
-          },
-          "suspension": {
-            "title": "Suspension Capped",
-            "description": "The total suspension time has been capped at {maxDays} days. The original uncapped total was {value}."
-          }
-        },
-        "mobile": {
-          "minTime": "Total Min Time",
-          "maxTime": "Total Max Time",
-          "points": "Total Points",
-          "fine": "Total Fine",
-          "impound": "Total Impound",
-          "suspension": "Total Suspension",
-          "bailStatus": "Bail Status",
-          "highestBail": "Highest Bail Amount"
-        },
-        "table": {
-          "minTime": "Total Min Time",
-          "maxTime": "Total Max Time",
-          "points": "Total Points",
-          "fine": "Total Fine",
-          "impound": "Total Impound",
-          "suspension": "Total Suspension",
-          "bailStatus": "Bail Status",
-          "highestBail": "Highest Bail Amount"
-        }
-      },
-      "copyables": {
-        "toastTitle": "Copied to clipboard!",
-        "toastDescription": "{label} value has been copied.",
-        "minMinutes": "Min Minutes",
-        "maxMinutes": "Max Minutes",
-        "totalImpound": "Total Impound (Days)",
-        "totalSuspension": "Total Suspension (Days)",
-        "bailCost": "Bail Cost",
-        "originalValue": "Original: {value}"
-      },
-      "toasts": {
-        "copiedTitle": "Copied!",
-        "copiedDescription": "Copied '{value}' to clipboard.",
-        "copiedDescriptionWithLabel": "Copied '{label}' ({value}) to clipboard.",
-        "linkCopiedTitle": "Link Copied!",
-        "linkCopiedDescription": "A shareable link to this calculation has been copied."
-      }
     }
   },
   "arrestReport": {
@@ -454,6 +305,155 @@
         "saveDraft": "Save as Draft",
         "submit": "Submit Report"
       }
+    },
+    "advancedForm": {
+      "headers": {
+        "arresteeName": "ARRESTEE NAME (FIRST, MIDDLE, LAST)",
+        "sex": "SEX (M/F/O)",
+        "hair": "HAIR",
+        "eyes": "EYES",
+        "residence": "RESIDENCE",
+        "age": "AGE",
+        "height": "HEIGHT",
+        "descent": "DESCENT",
+        "clothing": "CLOTHING",
+        "oddities": "PERSONAL ODDITIES",
+        "alias": "MONIKER/ALIAS",
+        "gang": "GANG/CLUB",
+        "charges": "CHARGES",
+        "personsWithSubject": "PERSONS WITH SUBJECT",
+        "name": "NAME",
+        "gangMoniker": "GANG/MONIKER",
+        "remove": "REMOVE",
+        "incidentSetting": "INCIDENT SETTING",
+        "date": "DATE",
+        "time": "TIME",
+        "location": "LOCATION",
+        "handlingOfficers": "HANDLING {officer}",
+        "rank": "RANK",
+        "badgeNo": "{badge} NO.",
+        "callsign": "CALLSIGN",
+        "divDetail": "{div}/DETAIL",
+        "modifiers": "ARREST REPORT MODIFIERS"
+      },
+      "placeholders": {
+        "arresteeName": "ARRESTEE NAME",
+        "sex": "M / F / O",
+        "hair": "HAIR COLOR",
+        "eyes": "EYE COLOR",
+        "residence": "ADDRESS, CITY, STATE",
+        "age": "AGE",
+        "height": "HEIGHT",
+        "descent": "DESCENT",
+        "clothing": "DESCRIBE CLOTHING",
+        "oddities": "DESCRIBE PERSONAL ODDITIES",
+        "alias": "MONIKER / ALIAS IF KNOWN",
+        "gang": "GANG / CLUB IF KNOWN",
+        "name": "NAME {index}",
+        "gangMoniker": "GANG / MONIKER / ALIAS IF KNOWN",
+        "date": "DD/MMM/YYYY",
+        "time": "HH:MM (24H)",
+        "district": "Select or type a district",
+        "street": "Select or type a street",
+        "rank": "Select Rank",
+        "officer": "OFFICER {index}",
+        "badgeNo": "{badge} NO.",
+        "callsign": "CALL SIGN",
+        "divDetail": "{div}/DETAIL",
+        "vehicleColor": "VEHICLE COLOR",
+        "vehicleModel": "VEHICLE MODEL",
+        "vehiclePlate": "VEHICLE PLATE",
+        "transportingRank": "TRANSPORTING OFFICER RANK",
+        "transportingName": "TRANSPORTING OFFICER NAME",
+        "dicvsLink": "DICVS Footage Link",
+        "photosLink": "Photographs Link",
+        "cctvLink": "CCTV Footage Link",
+        "thirdPartyLink": "Third Party Footage Link",
+        "bookingRank": "BOOKING OFFICER RANK",
+        "bookingName": "BOOKING OFFICER NAME",
+        "plea": "Select Plea..."
+      },
+      "buttons": {
+        "addPerson": "ADD PERSON",
+        "addOfficer": "ADD {officer}",
+        "submit": "Generate Report Preview"
+      },
+      "unknownCharge": "Unknown Charge",
+      "noChargesSelected": "No charges selected",
+      "modifiers": {
+        "markedUnit": "Marked Unit?",
+        "slicktop": "Slicktop?",
+        "inUniform": "In Uniform?",
+        "undercover": "Undercover?",
+        "inMetroUniform": "In {metro} Uniform?",
+        "inG3Uniform": "In G3 Uniform?",
+        "suspectInVehicle": "Suspect In Vehicle?",
+        "mirandized": "Mirandized?",
+        "understoodRights": "Understood Rights?",
+        "video": "Video?",
+        "photographs": "Photographs?",
+        "cctv": "CCTV?",
+        "thirdPartyVideo": "3rd Party Video?",
+        "transported": "Did You Transport?",
+        "booked": "Did You Book?",
+        "biometricsOnFile": "Biometrics On File?"
+      },
+      "narrative": {
+        "source": {
+          "title": "SOURCE OF ACTIVITY",
+          "placeholder": "Describe the source of the activity..."
+        },
+        "investigation": {
+          "title": "INVESTIGATION",
+          "placeholder": "Describe the investigation..."
+        },
+        "arrest": {
+          "title": "ARREST",
+          "placeholder": "Describe the arrest..."
+        },
+        "photographs": {
+          "title": "PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING",
+          "placeholder": "Describe video or photographic evidence...",
+          "noVideoPlaceholder": "(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))"
+        },
+        "booking": {
+          "title": "BOOKING",
+          "placeholder": "Describe booking details..."
+        },
+        "evidence": {
+          "title": "PHYSICAL EVIDENCE",
+          "placeholder": "Describe physical evidence..."
+        },
+        "court": {
+          "title": "COURT INFORMATION",
+          "placeholder": "Information for the court..."
+        },
+        "additional": {
+          "title": "ADDITIONAL INFORMATION",
+          "placeholder": "Additional information..."
+        }
+      },
+      "pleas": {
+        "guilty": "Guilty",
+        "notGuilty": "Not Guilty",
+        "noContest": "No Contest",
+        "requiredCase": "Required Case"
+      },
+      "evidenceLog": {
+        "logNumber": "EVIDENCE LOG NUMBER",
+        "description": "DESCRIPTION",
+        "quantity": "QUANTITY",
+        "add": "ADD EVIDENCE LOG",
+        "itemDescriptionPlaceholder": "DESCRIPTION OF ITEM {index}"
+      }
+    },
+    "advancedReport": {
+      "department": {
+        "lspd": "LOS SANTOS POLICE DEPARTMENT",
+        "lssd": "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT"
+      },
+      "title": "ARREST REPORT",
+      "officer": "{officer}"
     }
   },
   "arrestCalculation": {

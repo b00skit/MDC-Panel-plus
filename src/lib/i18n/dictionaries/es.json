@@ -236,13 +236,13 @@
         "unknown": "Desconocido"
       },
       "autoBail": {
-        "na": "N/A",
+        "na": "N/D",
         "noBail": "SIN FIANZA",
         "auto": "FIANZA AUTOMÁTICA",
         "discretionary": "DISCRECIONAL"
       },
       "bailStatus": {
-        "na": "N/A",
+        "na": "N/D",
         "notEligible": "NO ELEGIBLE",
         "discretionary": "DISCRECIONAL",
         "eligible": "ELEGIBLE"
@@ -250,7 +250,7 @@
       "labels": {
         "yes": "Sí",
         "no": "No",
-        "notAvailable": "N/A",
+        "notAvailable": "N/D",
         "yesWithValue": "Sí | {value}"
       },
       "currency": "${value}",
@@ -278,18 +278,20 @@
         "categorySuffix": "(Categoría {category})",
         "offenseSuffix": "(Delito #{offense})",
         "offenseNumber": "Delito #{offense}",
+        "copyTooltip": "Copiar {field}",
+        "copyAria": "Copiar {field}",
         "table": {
-          "title": "Título",
+          "title": "Cargo",
           "addition": "Adición",
           "offense": "Delito",
           "type": "Tipo",
-          "minTime": "Tiempo mínimo",
-          "maxTime": "Tiempo máximo",
+          "minTime": "Tiempo Mín.",
+          "maxTime": "Tiempo Máx.",
           "points": "Puntos",
           "fine": "Multa",
           "impound": "Decomiso",
           "suspension": "Suspensión",
-          "autoBail": "Fianza automática",
+          "autoBail": "Fianza Automática",
           "bail": "Fianza"
         },
         "tooltip": {
@@ -299,9 +301,7 @@
           "modifiedTime": "Modificado: {value}",
           "originalPoints": "Original: {value} puntos",
           "modifiedPoints": "Modificado: {value} puntos"
-        },
-        "copyTooltip": "Haz clic para copiar {field}",
-        "copyAria": "Copiar {field}"
+        }
       },
       "copyLabels": {
         "rawFine": "Multa sin formato"
@@ -330,24 +330,24 @@
           }
         },
         "mobile": {
-          "minTime": "Tiempo mínimo total",
-          "maxTime": "Tiempo máximo total",
-          "points": "Puntos totales",
-          "fine": "Multa total",
-          "impound": "Decomiso total",
-          "suspension": "Suspensión total",
-          "bailStatus": "Estado de fianza",
-          "highestBail": "Monto máximo de fianza"
+          "minTime": "Tiempo Mín.",
+          "maxTime": "Tiempo Máx.",
+          "points": "Puntos",
+          "fine": "Multa",
+          "impound": "Decomiso",
+          "suspension": "Suspensión",
+          "bailStatus": "Estado de Fianza",
+          "highestBail": "Fianza Máxima"
         },
         "table": {
-          "minTime": "Tiempo mínimo total",
-          "maxTime": "Tiempo máximo total",
-          "points": "Puntos totales",
-          "fine": "Multa total",
-          "impound": "Decomiso total",
-          "suspension": "Suspensión total",
-          "bailStatus": "Estado de fianza",
-          "highestBail": "Monto máximo de fianza"
+          "minTime": "Tiempo Mín.",
+          "maxTime": "Tiempo Máx.",
+          "points": "Puntos",
+          "fine": "Multa",
+          "impound": "Decomiso",
+          "suspension": "Suspensión",
+          "bailStatus": "Estado de Fianza",
+          "highestBail": "Fianza Máxima"
         }
       },
       "copyables": {
@@ -454,6 +454,155 @@
         "saveDraft": "Guardar Borrador",
         "submit": "Enviar Informe"
       }
+    },
+    "advancedForm": {
+      "headers": {
+        "arresteeName": "NOMBRE DEL DETENIDO (NOMBRE, SEGUNDO NOMBRE, APELLIDO)",
+        "sex": "SEXO (M/F/O)",
+        "hair": "CABELLO",
+        "eyes": "OJOS",
+        "residence": "RESIDENCIA",
+        "age": "EDAD",
+        "height": "ALTURA",
+        "descent": "ASCENDENCIA",
+        "clothing": "VESTIMENTA",
+        "oddities": "PECULIARIDADES PERSONALES",
+        "alias": "APODO/ALIAS",
+        "gang": "PANDILLA/CLUB",
+        "charges": "CARGOS",
+        "personsWithSubject": "PERSONAS CON EL SUJETO",
+        "name": "NOMBRE",
+        "gangMoniker": "PANDILLA/APODO",
+        "remove": "ELIMINAR",
+        "incidentSetting": "ESCENARIO DEL INCIDENTE",
+        "date": "FECHA",
+        "time": "HORA",
+        "location": "UBICACIÓN",
+        "handlingOfficers": "{officer} A CARGO",
+        "rank": "RANGO",
+        "badgeNo": "Nº DE {badge}",
+        "callsign": "INDICATIVO",
+        "divDetail": "{div}/DETALLE",
+        "modifiers": "MODIFICADORES DEL INFORME DE ARRESTO"
+      },
+      "placeholders": {
+        "arresteeName": "NOMBRE DEL DETENIDO",
+        "sex": "M / F / O",
+        "hair": "COLOR DE CABELLO",
+        "eyes": "COLOR DE OJOS",
+        "residence": "DIRECCIÓN, CIUDAD, ESTADO",
+        "age": "EDAD",
+        "height": "ALTURA",
+        "descent": "ASCENDENCIA",
+        "clothing": "DESCRIBIR VESTIMENTA",
+        "oddities": "DESCRIBIR PECULIARIDADES PERSONALES",
+        "alias": "APODO/ALIAS SI SE CONOCE",
+        "gang": "PANDILLA/CLUB SI SE CONOCE",
+        "name": "NOMBRE {index}",
+        "gangMoniker": "PANDILLA/APODO/ALIAS SI SE CONOCE",
+        "date": "DD/MMM/AAAA",
+        "time": "HH:MM (24H)",
+        "district": "Seleccionar o escribir un distrito",
+        "street": "Seleccionar o escribir una calle",
+        "rank": "Seleccionar Rango",
+        "officer": "OFICIAL {index}",
+        "badgeNo": "Nº DE {badge}",
+        "callsign": "INDICATIVO",
+        "divDetail": "{div}/DETALLE",
+        "vehicleColor": "COLOR DEL VEHÍCULO",
+        "vehicleModel": "MODELO DEL VEHÍCULO",
+        "vehiclePlate": "MATRÍCULA DEL VEHÍCULO",
+        "transportingRank": "RANGO DEL OFICIAL DE TRANSPORTE",
+        "transportingName": "NOMBRE DEL OFICIAL DE TRANSPORTE",
+        "dicvsLink": "Enlace del metraje DICVS",
+        "photosLink": "Enlace de las fotografías",
+        "cctvLink": "Enlace del metraje de CCTV",
+        "thirdPartyLink": "Enlace del metraje de terceros",
+        "bookingRank": "RANGO DEL OFICIAL DE FICHAJE",
+        "bookingName": "NOMBRE DEL OFICIAL DE FICHAJE",
+        "plea": "Seleccionar Declaración..."
+      },
+      "buttons": {
+        "addPerson": "AÑADIR PERSONA",
+        "addOfficer": "AÑADIR {officer}",
+        "submit": "Generar Vista Previa del Informe"
+      },
+      "unknownCharge": "Cargo Desconocido",
+      "noChargesSelected": "No se seleccionaron cargos",
+      "modifiers": {
+        "markedUnit": "¿Unidad Rotulada?",
+        "slicktop": "¿Slicktop?",
+        "inUniform": "¿De Uniforme?",
+        "undercover": "¿Encubierto?",
+        "inMetroUniform": "¿Uniforme de {metro}?",
+        "inG3Uniform": "¿Uniforme G3?",
+        "suspectInVehicle": "¿Sospechoso en Vehículo?",
+        "mirandized": "¿Mirandizado?",
+        "understoodRights": "¿Entendió los Derechos?",
+        "video": "¿Video?",
+        "photographs": "¿Fotografías?",
+        "cctv": "¿CCTV?",
+        "thirdPartyVideo": "¿Video de Terceros?",
+        "transported": "¿Transportaste?",
+        "booked": "¿Fichaste?",
+        "biometricsOnFile": "¿Biometría en Archivo?"
+      },
+      "narrative": {
+        "source": {
+          "title": "FUENTE DE LA ACTIVIDAD",
+          "placeholder": "Describe la fuente de la actividad..."
+        },
+        "investigation": {
+          "title": "INVESTIGACIÓN",
+          "placeholder": "Describe la investigación..."
+        },
+        "arrest": {
+          "title": "ARRESTO",
+          "placeholder": "Describe el arresto..."
+        },
+        "photographs": {
+          "title": "FOTOGRAFÍAS, VIDEOS, VIDEO EN EL COCHE (DICV) E IMÁGENES DIGITALES",
+          "placeholder": "Describe las pruebas de video o fotográficas...",
+          "noVideoPlaceholder": "(( Puedes usar esta sección si no tienes una grabación de video de lo que sucedió. Describe lo que la cámara del tablero capturaría. Si tienes un video, selecciona '¿Video?' en los Modificadores del Informe de Arresto. Mentir en esta sección conllevará un castigo OOC. ))"
+        },
+        "booking": {
+          "title": "FICHAJE",
+          "placeholder": "Describe los detalles del fichaje..."
+        },
+        "evidence": {
+          "title": "PRUEBAS FÍSICAS",
+          "placeholder": "Describe las pruebas físicas..."
+        },
+        "court": {
+          "title": "INFORMACIÓN DEL TRIBUNAL",
+          "placeholder": "Información para el tribunal..."
+        },
+        "additional": {
+          "title": "INFORMACIÓN ADICIONAL",
+          "placeholder": "Información adicional..."
+        }
+      },
+      "pleas": {
+        "guilty": "Culpable",
+        "notGuilty": "No Culpable",
+        "noContest": "No Contesto",
+        "requiredCase": "Caso Requerido"
+      },
+      "evidenceLog": {
+        "logNumber": "NÚMERO DE REGISTRO DE PRUEBAS",
+        "description": "DESCRIPCIÓN",
+        "quantity": "CANTIDAD",
+        "add": "AÑADIR REGISTRO DE PRUEBAS",
+        "itemDescriptionPlaceholder": "DESCRIPCIÓN DEL ARTÍCULO {index}"
+      }
+    },
+    "advancedReport": {
+      "department": {
+        "lspd": "DEPARTAMENTO DE POLICÍA DE LOS SANTOS",
+        "lssd": "DEPARTAMENTO DEL SHERIFF DEL CONDADO DE LOS SANTOS"
+      },
+      "title": "INFORME DE ARRESTO",
+      "officer": "{officer}"
     }
   },
   "arrestCalculation": {
@@ -483,7 +632,7 @@
         "accomplice": "Cómplice",
         "accessory": "Encubridor",
         "conspiracy": "Conspiración",
-        "solicitation": "Solicitación",
+        "solicitation": "Instigación",
         "paroleViolation": "Violación de libertad condicional"
       },
       "types": {
@@ -612,15 +761,15 @@
         "bailCost": "Fianza más alta",
         "originalValue": "Valor original: {value}",
         "toastTitle": "Copiado",
-        "toastDescription": "Se copió {label} al portapapeles."
+        "toastDescription": "{label} copiado al portapapeles."
       },
       "copyLabels": {
         "rawFine": "Multa sin formato"
       },
       "toasts": {
         "copiedTitle": "Copiado",
-        "copiedDescriptionWithLabel": "Se copió {label}: {value} al portapapeles.",
-        "copiedDescription": "Se copió {value} al portapapeles.",
+        "copiedDescriptionWithLabel": "{label}: {value} copiado al portapapeles.",
+        "copiedDescription": "{value} copiado al portapapeles.",
         "linkCopiedTitle": "Enlace copiado",
         "linkCopiedDescription": "El enlace del cálculo se copió al portapapeles."
       }
