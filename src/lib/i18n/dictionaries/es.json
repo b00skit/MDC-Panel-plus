@@ -24,7 +24,7 @@
     "github": "GitHub"
   },
   "announcements": {
-    "pageTitle": "MDC Panel – Anuncios",
+    "pageTitle": "Anuncios",
     "header": {
       "title": "Anuncios",
       "description": "Mantente al día con las últimas noticias y actualizaciones."
@@ -32,7 +32,7 @@
     "postedOn": "Publicado el"
   },
   "settings": {
-    "pageTitle": "MDC Panel – Configuración",
+    "pageTitle": "Configuración",
     "header": {
       "title": "Configuración",
       "description": "Administra la configuración y los datos de tu aplicación."
@@ -130,7 +130,7 @@
       "continue": "Continuar"
     },
     "advanced": {
-      "pageTitle": "MDC Panel – Parámetros Avanzados de Formularios",
+      "pageTitle": "Parámetros Avanzados de Formularios",
       "header": {
         "title": "Parámetros Avanzados de Formularios",
         "description": "Gestiona tu alineación de oficiales predefinida para los formularios."
@@ -144,7 +144,7 @@
     }
   },
   "reportArchive": {
-    "documentTitle": "MDC Panel – Archivo de Informes",
+    "documentTitle": "Archivo de Informes",
     "header": {
       "title": "Archivo de Informes",
       "description": "Ve y restaura tus informes de arresto y envíos de generadores de documentos pasados."
@@ -200,7 +200,7 @@
     }
   },
   "logParser": {
-    "pageTitle": "MDC Panel – Analizador de Registros",
+    "pageTitle": "Analizador de Registros",
     "header": {
       "title": "Analizador de Registros",
       "description": "Filtra los registros de chat de GTA:World para aislar interacciones de personajes específicos."
@@ -250,7 +250,7 @@
   },
   "simplifiedPenalCode": {
     "page": {
-      "documentTitle": "MDC Panel – Código Penal Simplificado",
+      "documentTitle": "Código Penal Simplificado",
       "header": {
         "title": "Código Penal Simplificado",
         "description": "Navega y busca en la lista de cargos."
@@ -318,7 +318,7 @@
     }
   },
   "legalSearch": {
-    "pageTitle": "MDC Panel – Búsqueda Legal",
+    "pageTitle": "Búsqueda Legal",
     "header": {
       "title": "Búsqueda Legal",
       "description": "Haz cualquier pregunta y obtén citas del código penal y jurisprudencia en una sola respuesta."
@@ -363,7 +363,7 @@
     }
   },
   "caselaw": {
-    "pageTitle": "MDC Panel – Jurisprudencia y Recursos Legales",
+    "pageTitle": "Jurisprudencia y Recursos Legales",
     "header": {
       "title": "Jurisprudencia y Recursos Legales",
       "description": "Accede rápidamente a documentos legales, aranceles y jurisprudencia importante."
@@ -401,7 +401,7 @@
   },
   "paperworkGenerators": {
     "page": {
-      "documentTitle": "MDC Panel – Generadores de Documentos",
+      "documentTitle": "Generadores de Documentos",
       "header": {
         "title": "Generadores de Documentos",
         "description": "Selecciona una plantilla o utiliza uno de tus formularios guardados."
@@ -420,7 +420,7 @@
       }
     },
     "builder": {
-      "pageTitle": "MDC Panel – Creador de Formularios"
+      "pageTitle": "Creador de Formularios"
     },
     "list": {
       "globalTitle": "Generadores globales",
@@ -428,14 +428,14 @@
     }
   },
   "paperworkSubmit": {
-    "documentTitle": "MDC Panel – Envío de Documentación",
+    "documentTitle": "Envío de Documentación",
     "header": {
       "title": "Envío de Documentación",
       "description": "Revisa la documentación formateada a continuación."
     },
     "alert": {
       "title": "¡Atención!",
-      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectamente donde lo pegues."
+      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectamente donde lo pegues. Este informe también ha sido archivado."
     },
     "reportTitleLabel": "Título del Informe",
     "buttons": {
@@ -525,7 +525,7 @@
     "credits": "Créditos y colaboraciones"
   },
   "about": {
-    "pageTitle": "MDC Panel – Acerca de",
+    "pageTitle": "Acerca de",
     "header": {
       "title": "Acerca de MDC Panel+",
       "description": "Un proyecto creado con pasión para ayudar."
@@ -594,7 +594,7 @@
     }
   },
   "credits": {
-    "pageTitle": "MDC Panel – Créditos y Colaboraciones",
+    "pageTitle": "Créditos y Colaboraciones",
     "header": {
       "title": "Créditos y Colaboraciones",
       "description": "Este proyecto se apoya en el trabajo de gigantes."
@@ -602,10 +602,10 @@
     "intro": "Un enorme agradecimiento a todos los que han contribuido, inspirado o apoyado este proyecto. Muchas ideas y funciones se inspiraron en el trabajo de otros en la comunidad, condensadas aquí en una herramienta unificada."
   },
   "map": {
-    "pageTitle": "MDC Panel – Mapa Interactivo"
+    "pageTitle": "Mapa Interactivo"
   },
   "help": {
-    "pageTitle": "MDC Panel – Ayuda y comentarios",
+    "pageTitle": "Ayuda y comentarios",
     "header": {
       "title": "Centro de ayuda y comentarios",
       "description": "Encuentra respuestas a las preguntas frecuentes y obtén soporte."
@@ -665,7 +665,7 @@
   },
   "arrestCalculator": {
     "page": {
-      "documentTitle": "MDC Panel – Calculadora de Arrestos",
+      "documentTitle": "Calculadora de Arrestos",
       "header": {
         "title": "Calculadora de Arrestos",
         "description": "Calcula sentencias de arresto según los cargos."
@@ -859,7 +859,7 @@
         "maxMinutes": "Minutos máximos",
         "totalImpound": "Días totales de incautación",
         "totalSuspension": "Días totales de suspensión",
-        "bailCost": "Costo de fianza",
+        "bailCost": "Fianza más alta",
         "originalValue": "Valor original: {value}"
       },
       "toasts": {
@@ -873,7 +873,7 @@
   },
   "arrestReport": {
     "page": {
-      "documentTitle": "MDC Panel – Informe de Arresto",
+      "documentTitle": "Informe de Arresto",
       "header": {
         "title": "Informe de Arresto",
         "descriptionWithReport": "Un resumen de los cargos calculados y el formulario de informe.",
@@ -1227,7 +1227,7 @@
             "lspd": "la Estación Mission Row"
           },
           "transportSelf": "Transporté a {suspectName} a {station}.",
-          "transportOther": "{transportingRank} {transportingName} transportó a {suspectName} a {station}.",
+          "transportOther": "{suspectName} fue transportado/a a {station} por {transportingRank} {transportingName}.",
           "searched": "A {suspectName} se le registró frente a un vehículo policial, el cual estaba cubierto por la Videograbadora Digital a Bordo (DICV) del vehículo.",
           "arrestedFor": "{suspectName} fue arrestado/a por {charges}.",
           "aforementionedCharges": "los cargos antes mencionados"
@@ -1266,14 +1266,14 @@
     }
   },
   "arrestSubmit": {
-    "documentTitle": "MDC Panel – Envío de Arresto",
+    "documentTitle": "Envío de Arresto",
     "header": {
       "title": "Envío de Informe de Arresto",
       "description": "Revisa los cargos calculados y el informe de arresto formateado a continuación."
     },
     "alert": {
       "title": "¡Atención!",
-      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido HTML generado está diseñado para funcionar perfectamente en el MDC real. Este informe también ha sido archivado."
+      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectamente donde lo pegues. Este informe también ha sido archivado."
     },
     "formattedReport": "Informe Formateado",
     "buttons": {
@@ -1352,5 +1352,61 @@
       "generate": "Generar",
       "generating": "Generando..."
     }
+  },
+  "changelog": {
+    "pageTitle": "Historial de cambios",
+    "header": {
+      "title": "Historial de cambios",
+      "description": "¡Sigue nuestro viaje! Todas las últimas funciones, mejoras y correcciones."
+    },
+    "stats": {
+      "totalVersions": "Versiones totales",
+      "totalChanges": "Cambios generales",
+      "featuresAdded": "Funciones y adiciones",
+      "bugsFixed": "Errores corregidos"
+    },
+    "whatsNew": {
+      "title": "¿Qué hay de nuevo?",
+      "description": "Una guía rápida para entender nuestros tipos de actualización."
+    },
+    "releaseTypes": {
+      "release": "Funciones principales y lanzamientos estables.",
+      "major": "Nueva funcionalidad significativa.",
+      "minor": "Mejoras y ajustes menores.",
+      "hotfix": "Correcciones de errores urgentes."
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar en el historial de cambios...",
+      "typePlaceholder": "Filtrar por tipo",
+      "all": "Todos los tipos"
+    },
+    "releaseTypeLabels": {
+      "release": "Lanzamiento",
+      "majorupdate": "Actualización mayor",
+      "minorupdate": "Actualización menor",
+      "hotfix": "Corrección"
+    },
+    "itemTypes": {
+      "feature": "🚀 Función",
+      "addition": "✨ Adición",
+      "modification": "🎨 Modificación",
+      "backend": "🔧 Backend",
+      "fix": "🐛 Corrección"
+    },
+    "version": "Versión",
+    "releasedOn": "Lanzado el",
+    "lastUpdatedOn": "Última actualización el",
+    "experimental": {
+      "title": "Funciones experimentales",
+      "description": "Prueba ideas futuras antes de que se vuelvan permanentes. Tus elecciones se guardan localmente.",
+      "enable": "Activar",
+      "disable": "Desactivar",
+      "currentlyEnabled": "Actualmente activado",
+      "currentlyDisabled": "Actualmente desactivado"
+    },
+    "cacheVersion": "Versión de caché",
+    "localStorageVersion": "Versión de almacenamiento local"
   }
 }
+
+    

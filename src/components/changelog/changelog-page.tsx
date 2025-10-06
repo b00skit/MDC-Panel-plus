@@ -31,6 +31,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { motion, useInView, useSpring, useTransform } from 'framer-motion';
 import { useSettingsStore } from '@/stores/settings-store';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 // --- TYPE DEFINITIONS ---
 type ChangelogItem = {
@@ -61,13 +62,7 @@ interface ChangelogPageProps {
 }
 
 // --- STYLING & CONFIGURATION CONSTANTS ---
-const itemTypeDetails = {
-    feature: { icon: PlusCircle, label: '🚀 Feature', color: 'text-emerald-500', bgColor: 'bg-emerald-500/10' },
-    addition: { icon: PlusCircle, label: '✨ Addition', color: 'text-green-500', bgColor: 'bg-green-500/10' },
-    modification: { icon: Pencil, label: '🎨 Modification', color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
-    backend: { icon: Server, label: '🔧 Backend', color: 'text-purple-500', bgColor: 'bg-purple-500/10' },
-    fix: { icon: Wrench, label: '🐛 Fix', color: 'text-orange-500', bgColor: 'bg-orange-500/10' },
-};
+
 const changelogTypeColors = {
     Release: 'bg-green-500/10 text-green-500 border-green-500/50',
     'Major Update': 'bg-blue-500/10 text-blue-500 border-blue-500/50',
@@ -86,12 +81,7 @@ const cardHeaderGradients = {
     'Minor Update': 'bg-gradient-to-r from-yellow-500/10 to-transparent',
     Hotfix: 'bg-gradient-to-r from-red-500/10 to-transparent',
 };
-const releaseTypeInfo = [
-    { type: 'Release', description: 'Major features and stable releases.', icon: '🚀' },
-    { type: 'Major Update', description: 'Significant new functionality.', icon: '✨' },
-    { type: 'Minor Update', description: 'Smaller improvements and tweaks.', icon: '🎨' },
-    { type: 'Hotfix', description: 'Urgent bug fixes.', icon: '🐛' },
-];
+
 const typeOrder = ['feature', 'addition', 'modification', 'backend', 'fix'];
 
 // --- ANIMATION VARIANTS ---
@@ -147,6 +137,22 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
     const [search, setSearch] = useState('');
     const [typeFilter, setTypeFilter] = useState<string>('all');
     const { experimentalFeatures, toggleExperimentalFeature } = useSettingsStore();
+    const t = useScopedI18n('changelog');
+
+    const itemTypeDetails = useMemo(() => ({
+        feature: { icon: PlusCircle, label: t('itemTypes.feature'), color: 'text-emerald-500', bgColor: 'bg-emerald-500/10' },
+        addition: { icon: PlusCircle, label: t('itemTypes.addition'), color: 'text-green-500', bgColor: 'bg-green-500/10' },
+        modification: { icon: Pencil, label: t('itemTypes.modification'), color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
+        backend: { icon: Server, label: t('itemTypes.backend'), color: 'text-purple-500', bgColor: 'bg-purple-500/10' },
+        fix: { icon: Wrench, label: t('itemTypes.fix'), color: 'text-orange-500', bgColor: 'bg-orange-500/10' },
+    }), [t]);
+
+    const releaseTypeInfo = useMemo(() => [
+        { type: 'Release', description: t('releaseTypes.release'), icon: '🚀' },
+        { type: 'Major Update', description: t('releaseTypes.major'), icon: '✨' },
+        { type: 'Minor Update', description: t('releaseTypes.minor'), icon: '🎨' },
+        { type: 'Hotfix', description: t('releaseTypes.hotfix'), icon: '🐛' },
+    ], [t]);
 
     const stats = useMemo(() => {
         const allItems = initialChangelogs.flatMap(log => log.items);
@@ -175,21 +181,21 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
             <PageHeader
-                title="Changelog"
-                description="Follow our journey! All the latest features, improvements, and fixes."
+                title={t('header.title')}
+                description={t('header.description')}
             />
 
             <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <StatCard title="Total Versions" value={stats.totalVersions} icon={GitCommit} />
-                <StatCard title="Overall Changes" value={stats.totalChanges} icon={GitMerge} />
-                <StatCard title="Features & Additions" value={stats.featuresAdded} icon={Rocket} />
-                <StatCard title="Bugs Fixed" value={stats.bugsFixed} icon={Bug} />
+                <StatCard title={t('stats.totalVersions')} value={stats.totalVersions} icon={GitCommit} />
+                <StatCard title={t('stats.totalChanges')} value={stats.totalChanges} icon={GitMerge} />
+                <StatCard title={t('stats.featuresAdded')} value={stats.featuresAdded} icon={Rocket} />
+                <StatCard title={t('stats.bugsFixed')} value={stats.bugsFixed} icon={Bug} />
             </div>
 
             <Card className="mb-8 bg-card/50 backdrop-blur-sm">
                 <CardHeader>
-                    <CardTitle>What's New?</CardTitle>
-                    <CardDescription>A quick guide to understanding our update types.</CardDescription>
+                    <CardTitle>{t('whatsNew.title')}</CardTitle>
+                    <CardDescription>{t('whatsNew.description')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -197,8 +203,8 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                             <li key={info.type} className="flex items-start gap-3">
                                 <div className="text-xl">{info.icon}</div>
                                 <div>
-                                    <Badge variant="outline" className={cn('text-xs font-semibold', changelogTypeColors[info.type])}>
-                                        {info.type}
+                                    <Badge variant="outline" className={cn('text-xs font-semibold', changelogTypeColors[info.type as keyof typeof changelogTypeColors])}>
+                                        {t(`releaseTypeLabels.${info.type.toLowerCase().replace(' ', '')}`)}
                                     </Badge>
                                     <p className="mt-1 text-sm text-muted-foreground">{info.description}</p>
                                 </div>
@@ -211,16 +217,16 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
             <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="relative w-full sm:max-w-xs">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search changelog..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+                    <Input placeholder={t('filters.searchPlaceholder')} value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
                 </div>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="w-full sm:w-[200px]"><SelectValue placeholder="Filter by type" /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-[200px]"><SelectValue placeholder={t('filters.typePlaceholder')} /></SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="Release">Release</SelectItem>
-                        <SelectItem value="Major Update">Major Update</SelectItem>
-                        <SelectItem value="Minor Update">Minor Update</SelectItem>
-                        <SelectItem value="Hotfix">Hotfix</SelectItem>
+                        <SelectItem value="all">{t('filters.all')}</SelectItem>
+                        <SelectItem value="Release">{t('releaseTypeLabels.release')}</SelectItem>
+                        <SelectItem value="Major Update">{t('releaseTypeLabels.majorupdate')}</SelectItem>
+                        <SelectItem value="Minor Update">{t('releaseTypeLabels.minorupdate')}</SelectItem>
+                        <SelectItem value="Hotfix">{t('releaseTypeLabels.hotfix')}</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -240,13 +246,13 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                             <CardHeader className={cn('rounded-t-lg', cardHeaderGradients[changelog.type])}>
                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                     <div>
-                                        <CardTitle className="text-2xl font-bold">Version {changelog.version}</CardTitle>
+                                        <CardTitle className="text-2xl font-bold">{t('version')} {changelog.version}</CardTitle>
                                         <CardDescription className="mt-1">
-                                            {changelog.type === 'Hotfix' ? 'Last Updated on' : 'Released on'}{' '} {format(new Date(changelog.date), 'PPP')}
+                                            {t(changelog.type === 'Hotfix' ? 'lastUpdatedOn' : 'releasedOn')}{' '} {format(new Date(changelog.date), 'PPP')}
                                         </CardDescription>
                                     </div>
                                     <Badge variant="outline" className={cn('text-sm font-semibold', changelogTypeColors[changelog.type])}>
-                                        {changelog.type}
+                                        {t(`releaseTypeLabels.${changelog.type.toLowerCase().replace(' ', '')}`)}
                                     </Badge>
                                 </div>
                             </CardHeader>
@@ -281,10 +287,10 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                         <div className="flex flex-wrap items-center gap-2">
                                             <div className="flex items-center gap-2 text-primary">
                                                 <FlaskConical className="h-5 w-5" />
-                                                <h3 className="text-lg font-semibold">Experimental Features</h3>
+                                                <h3 className="text-lg font-semibold">{t('experimental.title')}</h3>
                                             </div>
                                             <p className="text-sm text-muted-foreground">
-                                                Try upcoming ideas before they become permanent. Your choices are saved locally.
+                                                {t('experimental.description')}
                                             </p>
                                         </div>
                                         <div className="grid gap-4">
@@ -306,7 +312,7 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                                                 onClick={() => toggleExperimentalFeature(feature.variable)}
                                                                 disabled={isEnabled}
                                                             >
-                                                                Enable
+                                                                {t('experimental.enable')}
                                                             </Button>
                                                             <Button
                                                                 type="button"
@@ -314,10 +320,10 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                                                 onClick={() => toggleExperimentalFeature(feature.variable)}
                                                                 disabled={!isEnabled}
                                                             >
-                                                                Disable
+                                                                {t('experimental.disable')}
                                                             </Button>
                                                             <span className="text-xs text-muted-foreground">
-                                                                Currently {isEnabled ? 'enabled' : 'disabled'}
+                                                                {t(isEnabled ? 'experimental.currentlyEnabled' : 'experimental.currentlyDisabled')}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -330,13 +336,13 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
                                     <div className="mt-6 border-t pt-4 space-y-2 text-sm text-muted-foreground">
                                         {changelog.cacheVersion && (
                                             <div className="flex items-center gap-2">
-                                                <span>Cache Version:</span>
+                                                <span>{t('cacheVersion')}:</span>
                                                 <Badge variant="secondary">{changelog.cacheVersion}</Badge>
                                             </div>
                                         )}
                                         {changelog.localStorageVersion && (
                                             <div className="flex items-center gap-2">
-                                                <span>Local Storage Version:</span>
+                                                <span>{t('localStorageVersion')}:</span>
                                                 <Badge variant="secondary">{changelog.localStorageVersion}</Badge>
                                             </div>
                                         )}
@@ -350,3 +356,5 @@ export function ChangelogPage({ initialChangelogs }: ChangelogPageProps) {
         </div>
     );
 }
+
+    

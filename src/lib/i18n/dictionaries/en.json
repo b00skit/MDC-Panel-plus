@@ -24,7 +24,7 @@
     "github": "GitHub"
   },
   "announcements": {
-    "pageTitle": "MDC Panel – Announcements",
+    "pageTitle": "Announcements",
     "header": {
       "title": "Announcements",
       "description": "Stay up-to-date with the latest news and updates."
@@ -32,7 +32,7 @@
     "postedOn": "Posted on"
   },
   "settings": {
-    "pageTitle": "MDC Panel – Settings",
+    "pageTitle": "Settings",
     "header": {
       "title": "Settings",
       "description": "Manage your application settings and data."
@@ -130,7 +130,7 @@
       "continue": "Continue"
     },
     "advanced": {
-      "pageTitle": "MDC Panel – Advanced Form Parameters",
+      "pageTitle": "Advanced Form Parameters",
       "header": {
         "title": "Advanced Form Parameters",
         "description": "Manage your predefined officer lineup for forms."
@@ -144,7 +144,7 @@
     }
   },
   "reportArchive": {
-    "documentTitle": "MDC Panel – Report Archive",
+    "documentTitle": "Report Archive",
     "header": {
       "title": "Report Archive",
       "description": "View and restore your past arrest reports and paperwork generator submissions."
@@ -200,7 +200,7 @@
     }
   },
   "logParser": {
-    "pageTitle": "MDC Panel – Log Parser",
+    "pageTitle": "Log Parser",
     "header": {
       "title": "Log Parser",
       "description": "Filter GTA:World chat logs to isolate specific character interactions."
@@ -250,7 +250,7 @@
   },
   "simplifiedPenalCode": {
     "page": {
-      "documentTitle": "MDC Panel – Simplified Penal Code",
+      "documentTitle": "Simplified Penal Code",
       "header": {
         "title": "Simplified Penal Code",
         "description": "Browse and search through the list of charges."
@@ -318,7 +318,7 @@
     }
   },
   "legalSearch": {
-    "pageTitle": "MDC Panel – Legal Search",
+    "pageTitle": "Legal Search",
     "header": {
       "title": "Legal Search",
       "description": "Ask any questions and get penal code and caselaw citations in a single response."
@@ -363,7 +363,7 @@
     }
   },
   "caselaw": {
-    "pageTitle": "MDC Panel – Caselaw & Legal Resources",
+    "pageTitle": "Caselaw & Legal Resources",
     "header": {
       "title": "Caselaw & Legal Resources",
       "description": "Quickly access legal documents, schedules, and important caselaw."
@@ -401,7 +401,7 @@
   },
   "paperworkGenerators": {
     "page": {
-      "documentTitle": "MDC Panel – Paperwork Generators",
+      "documentTitle": "Paperwork Generators",
       "header": {
         "title": "Paperwork Generators",
         "description": "Select a template or use one of your saved forms."
@@ -420,7 +420,7 @@
       }
     },
     "builder": {
-      "pageTitle": "MDC Panel – Form Builder"
+      "pageTitle": "Form Builder"
     },
     "list": {
       "globalTitle": "Global Generators",
@@ -428,14 +428,14 @@
     }
   },
   "paperworkSubmit": {
-    "documentTitle": "MDC Panel – Paperwork Submission",
+    "documentTitle": "Paperwork Submission",
     "header": {
       "title": "Paperwork Submission",
       "description": "Review the formatted paperwork below."
     },
     "alert": {
       "title": "Heads up!",
-      "description": "The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it."
+      "description": "The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it. This report has also been archived."
     },
     "reportTitleLabel": "Report Title",
     "buttons": {
@@ -525,7 +525,7 @@
     "credits": "Credits and Contributions"
   },
   "about": {
-    "pageTitle": "MDC Panel – About",
+    "pageTitle": "About",
     "header": {
       "title": "About MDC Panel+",
       "description": "A passion project designed to help."
@@ -594,7 +594,7 @@
     }
   },
   "credits": {
-    "pageTitle": "MDC Panel – Credits & Contributions",
+    "pageTitle": "Credits & Contributions",
     "header": {
       "title": "Credits & Contributions",
       "description": "This project stands on the shoulders of giants."
@@ -602,10 +602,10 @@
     "intro": "A huge thank you to everyone who has contributed, inspired, or supported this project. Many ideas and features were inspired by the work of others in the community, condensed here into one unified tool."
   },
   "map": {
-    "pageTitle": "MDC Panel – Interactive Map"
+    "pageTitle": "Interactive Map"
   },
   "help": {
-    "pageTitle": "MDC Panel – Help & Feedback",
+    "pageTitle": "Help & Feedback",
     "header": {
       "title": "Help & Feedback Center",
       "description": "Find answers to common questions and get support."
@@ -665,7 +665,7 @@
   },
   "arrestCalculator": {
     "page": {
-      "documentTitle": "MDC Panel – Arrest Calculator",
+      "documentTitle": "Arrest Calculator",
       "header": {
         "title": "Arrest Calculator",
         "description": "Calculate arrest sentences based on charges."
@@ -873,7 +873,7 @@
   },
   "arrestReport": {
     "page": {
-      "documentTitle": "MDC Panel – Arrest Report",
+      "documentTitle": "Arrest Report",
       "header": {
         "title": "Arrest Report",
         "descriptionWithReport": "A summary of the calculated charges and report form.",
@@ -1227,7 +1227,7 @@
             "lspd": "Mission Row Station"
           },
           "transportSelf": "I transported {suspectName} to {station}.",
-          "transportOther": "{transportingRank} {transportingName} transported {suspectName} to {station}.",
+          "transportOther": "{suspectName} was transported to {station} by {transportingRank} {transportingName}.",
           "searched": "{suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).",
           "arrestedFor": "{suspectName} was arrested for {charges}.",
           "aforementionedCharges": "the aforementioned charges"
@@ -1266,7 +1266,7 @@
     }
   },
   "arrestSubmit": {
-    "documentTitle": "MDC Panel – Arrest Submission",
+    "documentTitle": "Arrest Submission",
     "header": {
       "title": "Arrest Report Submission",
       "description": "Review the calculated charges and the formatted arrest report below."
@@ -1352,5 +1352,61 @@
       "generate": "Generate",
       "generating": "Generating..."
     }
+  },
+  "changelog": {
+    "pageTitle": "Changelog",
+    "header": {
+      "title": "Changelog",
+      "description": "Follow our journey! All the latest features, improvements, and fixes."
+    },
+    "stats": {
+      "totalVersions": "Total Versions",
+      "totalChanges": "Overall Changes",
+      "featuresAdded": "Features & Additions",
+      "bugsFixed": "Bugs Fixed"
+    },
+    "whatsNew": {
+      "title": "What's New?",
+      "description": "A quick guide to understanding our update types."
+    },
+    "releaseTypes": {
+      "release": "Major features and stable releases.",
+      "major": "Significant new functionality.",
+      "minor": "Smaller improvements and tweaks.",
+      "hotfix": "Urgent bug fixes."
+    },
+    "filters": {
+      "searchPlaceholder": "Search changelog...",
+      "typePlaceholder": "Filter by type",
+      "all": "All Types"
+    },
+    "releaseTypeLabels": {
+      "release": "Release",
+      "majorupdate": "Major Update",
+      "minorupdate": "Minor Update",
+      "hotfix": "Hotfix"
+    },
+    "itemTypes": {
+      "feature": "🚀 Feature",
+      "addition": "✨ Addition",
+      "modification": "🎨 Modification",
+      "backend": "🔧 Backend",
+      "fix": "🐛 Fix"
+    },
+    "version": "Version",
+    "releasedOn": "Released on",
+    "lastUpdatedOn": "Last Updated on",
+    "experimental": {
+      "title": "Experimental Features",
+      "description": "Try upcoming ideas before they become permanent. Your choices are saved locally.",
+      "enable": "Enable",
+      "disable": "Disable",
+      "currentlyEnabled": "Currently enabled",
+      "currentlyDisabled": "Currently disabled"
+    },
+    "cacheVersion": "Cache Version",
+    "localStorageVersion": "Local Storage Version"
   }
 }
+
+    
