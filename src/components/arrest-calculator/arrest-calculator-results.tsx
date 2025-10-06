@@ -643,9 +643,9 @@ export function ArrestCalculatorResults({
                         </TableCell>
                         <TableCell
                           className={cn(clickToCopy && 'cursor-pointer hover:text-primary')}
-                          onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, t('charges.copyLabels.rawFine')) : undefined}
-                          title={clickToCopy ? getCopyTooltip(t('charges.copyLabels.rawFine')) : undefined}
-                          aria-label={clickToCopy ? getCopyAria(t('charges.copyLabels.rawFine')) : undefined}
+                          onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, t('copyLabels.rawFine')) : undefined}
+                          title={clickToCopy ? getCopyTooltip(t('copyLabels.rawFine')) : undefined}
+                          aria-label={clickToCopy ? getCopyAria(t('copyLabels.rawFine')) : undefined}
                         >
                           {charge.fineDisplay}
                         </TableCell>
@@ -755,9 +755,9 @@ export function ArrestCalculatorResults({
                           <dt className="text-xs font-semibold uppercase text-muted-foreground">{t('charges.table.fine')}</dt>
                           <dd
                             className={cn('mt-1', clickToCopy && 'cursor-pointer hover:text-primary')}
-                            onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, t('charges.copyLabels.rawFine')) : undefined}
-                            title={clickToCopy ? getCopyTooltip(t('charges.copyLabels.rawFine')) : undefined}
-                            aria-label={clickToCopy ? getCopyAria(t('charges.copyLabels.rawFine')) : undefined}
+                            onClick={clickToCopy ? () => handleCopyToClipboard(charge.fine, t('copyLabels.rawFine')) : undefined}
+                            title={clickToCopy ? getCopyTooltip(t('copyLabels.rawFine')) : undefined}
+                            aria-label={clickToCopy ? getCopyAria(t('copyLabels.rawFine')) : undefined}
                           >
                             {charge.fineDisplay}
                           </dd>

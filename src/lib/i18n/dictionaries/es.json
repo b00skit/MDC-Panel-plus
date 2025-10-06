@@ -455,5 +455,26 @@
         "submit": "Enviar Informe"
       }
     }
+  },
+  "arrestCalculation": {
+    "page": {
+      "documentTitle": "MDC Panel – Shared Calculation",
+      "title": "Cálculo de arresto compartido",
+      "description": "Este es un cálculo compartido desde la Calculadora de Arrestos.",
+      "loadingDescription": "Cargando cálculo de arresto compartido...",
+      "error": {
+        "title": "Error de cálculo",
+        "description": "Hubo un error al procesar el cálculo compartido.",
+        "alertTitle": "No se pueden analizar los cargos",
+        "missingCharges": "No se proporcionaron cargos en la URL.",
+        "invalidFormat": "El cargo #{index} tiene un formato no válido. Se esperaban al menos 3 partes, pero se obtuvieron {parts}.",
+        "unknownCharge": "El ID de cargo '{id}' no es un cargo válido en el código penal.",
+        "invalidCategory": "El índice de categoría '{category}' para el ID de cargo '{id}' no es válido."
+      },
+      "empty": {
+        "title": "No se encontraron cargos",
+        "description": "No se pudieron analizar cargos válidos desde la URL."
+      }
+    }
   }
 }

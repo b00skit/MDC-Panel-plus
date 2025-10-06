@@ -455,5 +455,26 @@
         "submit": "Submit Report"
       }
     }
+  },
+  "arrestCalculation": {
+    "page": {
+      "documentTitle": "MDC Panel – Shared Calculation",
+      "title": "Shared Arrest Calculation",
+      "description": "This is a shared calculation from the Arrest Calculator.",
+      "loadingDescription": "Loading shared arrest calculation...",
+      "error": {
+        "title": "Calculation Error",
+        "description": "There was an error processing the shared calculation.",
+        "alertTitle": "Unable to Parse Charges",
+        "missingCharges": "No charges were provided in the URL.",
+        "invalidFormat": "Charge #{index} has an invalid format. Expected at least 3 parts, but got {parts}.",
+        "unknownCharge": "Charge ID '{id}' is not a valid charge in the penal code.",
+        "invalidCategory": "Category index '{category}' for charge ID '{id}' is not valid."
+      },
+      "empty": {
+        "title": "No Charges Found",
+        "description": "No valid charges could be parsed from the URL."
+      }
+    }
   }
 }

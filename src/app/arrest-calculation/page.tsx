@@ -44,7 +44,7 @@ function ArrestCalculationContent() {
 
     const chargeStrings = searchParams.getAll('c');
     if (chargeStrings.length === 0) {
-        setError(t('errors.missingCharges'));
+        setError(t('error.missingCharges'));
         return { charges: [] as SelectedCharge[], paroleFromAdditions: false };
     }
 
@@ -57,7 +57,7 @@ function ArrestCalculationContent() {
 
         const parts = chargeStr.split('-');
         if (parts.length < 3) {
-            setError(t('errors.invalidFormat', { index: index + 1, parts: parts.length }));
+            setError(t('error.invalidFormat', { index: index + 1, parts: parts.length }));
             parsingError = true;
             return;
         }
@@ -73,7 +73,7 @@ function ArrestCalculationContent() {
         const chargeDetails = Object.values(penalCode).find(c => c.id === chargeId);
 
         if (!chargeDetails) {
-            setError(t('errors.unknownCharge', { id: chargeId }));
+            setError(t('error.unknownCharge', { id: chargeId }));
             parsingError = true;
             return;
         }
@@ -96,7 +96,7 @@ function ArrestCalculationContent() {
         if (categoryIndex && chargeDetails.drugs) {
             selectedCharge.category = chargeDetails.drugs[categoryIndex] || null;
              if (!selectedCharge.category) {
-                setError(t('errors.invalidCategory', { category: categoryIndex, id: chargeId }));
+                setError(t('error.invalidCategory', { category: categoryIndex, id: chargeId }));
                 parsingError = true;
                 return;
             }
@@ -126,13 +126,13 @@ function ArrestCalculationContent() {
         })
         .catch((err) => {
           console.error('Failed to fetch penal code:', err);
-          setError(t('errors.penalCodeFetch'));
+          setError('errors.penalCodeFetch');
           setLoading(false);
         });
     } else {
         setLoading(false);
     }
-  }, [penalCode, setPenalCode, t]);
+  }, [penalCode, setPenalCode]);
 
   useEffect(() => {
     const paroleValue = paroleViolatorOverride || false;
