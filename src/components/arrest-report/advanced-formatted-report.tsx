@@ -1,5 +1,6 @@
 
 'use client';
+import { useI18n } from '@/lib/i18n/client';
 
 interface AdvancedFormattedReportProps {
     formData: any;
@@ -7,6 +8,7 @@ interface AdvancedFormattedReportProps {
 }
 
 export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormattedReportProps) {
+    const { t } = useI18n();
     const { arrestee, persons, incident, officers, narrative } = formData;
     const isLSSD = officers && officers[0]?.department === "Los Santos County Sheriff's Department";
     
@@ -74,17 +76,17 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
             <thead>
                 <tr>
                     <th colSpan={5} style={reportHeaderStyle}>
-                        {isLSSD ? "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT" : "LOS SANTOS POLICE DEPARTMENT"}<br />
-                        ARREST REPORT
+                        {isLSSD ? t('arrestReport.advancedReport.department.lssd') : t('arrestReport.advancedReport.department.lspd')}<br />
+                        {t('arrestReport.advancedReport.title')}
                     </th>
                 </tr>
             </thead>
             <tbody>
                     <tr>
-                        <th colSpan={2} style={headerCellStyle}>ARRESTEE NAME (FIRST, MIDDLE, LAST)</th>
-                        <th style={headerCellStyle}>SEX (M/F/O)</th>
-                        <th style={headerCellStyle}>HAIR</th>
-                        <th style={headerCellStyle}>EYES</th>
+                        <th colSpan={2} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.arresteeName')}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.sex')}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.hair')}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.eyes')}</th>
                     </tr>
                     <tr>
                         <td colSpan={2} style={cellStyle}>{arrestee.name || 'N/A'}</td>
@@ -93,10 +95,10 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                         <td style={cellStyle}>{arrestee.eyes || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th colSpan={2} style={headerCellStyle}>RESIDENCE</th>
-                        <th style={headerCellStyle}>AGE</th>
-                        <th style={headerCellStyle}>HEIGHT</th>
-                        <th style={headerCellStyle}>DESCENT</th>
+                        <th colSpan={2} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.residence')}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.age')}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.height')}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.descent')}</th>
                     </tr>
                     <tr>
                         <td colSpan={2} style={cellStyle}>{arrestee.residence || 'N/A'}</td>
@@ -105,26 +107,26 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                         <td style={cellStyle}>{arrestee.descent || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th colSpan={3} style={headerCellStyle}>CLOTHING</th>
-                        <th colSpan={2} style={headerCellStyle}>PERSONAL ODDITIES</th>
+                        <th colSpan={3} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.clothing')}</th>
+                        <th colSpan={2} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.oddities')}</th>
                     </tr>
                     <tr>
                         <td colSpan={3} style={cellStyle}>{arrestee.clothing || 'N/A'}</td>
                         <td colSpan={2} style={cellStyle}>{arrestee.oddities || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th colSpan={3} style={headerCellStyle}>MONIKER / ALIAS</th>
-                        <th colSpan={2} style={headerCellStyle}>GANG / CLUB</th>
+                        <th colSpan={3} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.alias')}</th>
+                        <th colSpan={2} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.gang')}</th>
                     </tr>
                     <tr>
                         <td colSpan={3} style={cellStyle}>{arrestee.alias || 'N/A'}</td>
                         <td colSpan={2} style={cellStyle}>{arrestee.gang || 'N/A'}</td>
                     </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>PERSONS WITH SUBJECT</th></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.headers.personsWithSubject')}</th></tr>
                     <tr>
-                        <th colSpan={2} style={headerCellStyle}>NAME (FIRST, MIDDLE, LAST)</th>
-                        <th style={headerCellStyle}>SEX (M/F/O)</th>
-                        <th colSpan={2} style={headerCellStyle}>GANG / MONIKER</th>
+                        <th colSpan={2} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.name')}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.sex')}</th>
+                        <th colSpan={2} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.gangMoniker')}</th>
                     </tr>
                     {persons && persons.map((person: any, index: number) => (
                         <tr key={index}>
@@ -134,9 +136,9 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                         </tr>
                     ))}
                      <tr>
-                        <th style={sectionHeaderStyle}>DATE</th>
-                        <th style={sectionHeaderStyle}>TIME</th>
-                        <th colSpan={3} style={{ ...sectionHeaderStyle, textTransform: 'uppercase' }}>LOCATION</th>
+                        <th style={sectionHeaderStyle}>{t('arrestReport.advancedForm.headers.date')}</th>
+                        <th style={sectionHeaderStyle}>{t('arrestReport.advancedForm.headers.time')}</th>
+                        <th colSpan={3} style={{ ...sectionHeaderStyle, textTransform: 'uppercase' }}>{t('arrestReport.advancedForm.headers.location')}</th>
                     </tr>
                     <tr>
                         <td style={cellStyle}>{incident.date || 'N/A'}</td>
@@ -144,10 +146,10 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                         <td colSpan={3} style={cellStyle}>{incident.locationStreet || 'N/A'}</td>
                     </tr>
                     <tr>
-                        <th style={headerCellStyle}>{isLSSD ? 'DEPUTY' : 'OFFICER'}</th>
-                        <th style={headerCellStyle}>{isLSSD ? "BADGE NO." : "SERIAL NO."}</th>
-                        <th style={headerCellStyle}>CALLSIGN</th>
-                        <th colSpan={2} style={headerCellStyle}>{isLSSD ? "UNIT/DETAIL" : "DIV/DETAIL"}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedReport.officer', { officer: isLSSD ? 'DEPUTY' : 'OFFICER' })}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.badgeNo', { badge: isLSSD ? "BADGE" : "SERIAL" })}</th>
+                        <th style={headerCellStyle}>{t('arrestReport.advancedForm.headers.callsign')}</th>
+                        <th colSpan={2} style={headerCellStyle}>{t('arrestReport.advancedForm.headers.divDetail', { div: isLSSD ? "UNIT" : "DIV" })}</th>
                     </tr>
                     {officers && officers.map((officer: any, index: number) => (
                          <tr key={index}>
@@ -157,38 +159,22 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
                             <td colSpan={2} style={cellStyle}>{officer.divDetail || 'N/A'}</td>
                         </tr>
                     ))}
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>SOURCE OF ACTIVITY</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.source)}</td>
-                    </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>INVESTIGATION</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.investigation)}</td>
-                    </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>ARREST</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.arrest)}</td>
-                    </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), AND DIGITAL IMAGING</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.photographs)}</td>
-                    </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>BOOKING</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.booking)}</td>
-                    </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>PHYSICAL EVIDENCE</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.evidence)}</td>
-                    </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>COURT INFORMATION</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.court)}</td>
-                    </tr>
-                    <tr><th colSpan={5} style={sectionHeaderStyle}>ADDITIONAL</th></tr>
-                    <tr>
-                        <td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.additional)}</td>
-                    </tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.source.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.source)}</td></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.investigation.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.investigation)}</td></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.arrest.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.arrest)}</td></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.photographs.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.photographs)}</td></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.booking.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.booking)}</td></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.evidence.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.evidence)}</td></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.court.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.court)}</td></tr>
+                    <tr><th colSpan={5} style={sectionHeaderStyle}>{t('arrestReport.advancedForm.narrative.additional.title')}</th></tr>
+                    <tr><td colSpan={5} style={{...cellStyle, whiteSpace: 'pre-wrap' }}>{renderWithBreaks(narrative.additional)}</td></tr>
             </tbody>
         </table>
     );

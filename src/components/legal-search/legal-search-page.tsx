@@ -20,6 +20,7 @@ import {
   Scale,
   User,
 } from 'lucide-react';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 interface UserMessage {
   id: string;
@@ -42,12 +43,6 @@ const typeClasses: Record<string, string> = {
   I: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30',
 };
 
-const typeLabels: Record<string, string> = {
-  F: 'Felony',
-  M: 'Misdemeanor',
-  I: 'Infraction',
-};
-
 const getTypeBadge = (type: string) =>
   cn(
     'rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide',
@@ -59,6 +54,13 @@ export function LegalSearchPage() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useScopedI18n('legalSearch');
+
+  const typeLabels: Record<string, string> = {
+    F: t('chargeTypes.felony'),
+    M: t('chargeTypes.misdemeanor'),
+    I: t('chargeTypes.infraction'),
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -91,11 +93,11 @@ export function LegalSearchPage() {
       console.error(err);
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
       if (errorMessage.includes('503') || errorMessage.toLowerCase().includes('overloaded')) {
-          setError('The model is currently overloaded. Please try your search again in a moment.');
+          setError(t('errors.overloaded'));
           setInput(query); // Restore the user's query
           setMessages(prev => prev.slice(0, -1)); // Remove the user message from the chat
       } else {
-          setError('An error occurred while searching. Please try again.');
+          setError(t('errors.generic'));
       }
     } finally {
       setIsLoading(false);
@@ -107,16 +109,15 @@ export function LegalSearchPage() {
   return (
     <div className="container mx-auto py-8 space-y-6">
       <PageHeader
-        title="Legal Search"
-        description="Ask any questions and get penal code and caselaw citations in a single response."
+        title={t('header.title')}
+        description={t('header.description')}
       />
 
       <Alert>
         <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Accuracy Notice</AlertTitle>
+        <AlertTitle>{t('accuracyNotice.title')}</AlertTitle>
         <AlertDescription>
-          This assistant can make mistakes. Always confirm the cited penal code and caselaw before acting on the
-          information provided.
+         {t('accuracyNotice.description')}
         </AlertDescription>
       </Alert>
 
@@ -130,15 +131,14 @@ export function LegalSearchPage() {
                     <Bot className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <h3 className="font-semibold">Legal Search Assistant</h3>
+                    <h3 className="font-semibold">{t('intro.title')}</h3>
                     <p className="text-muted-foreground">
-                      Describe a situation or ask about a statute. I will provide a short explanation and cite relevant penal
-                      code charges or caselaw so you can dig deeper instantly.
+                      {t('intro.description')}
                     </p>
                     <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
-                      <li>Find matching San Andreas Penal Code charges.</li>
-                      <li>Surface local caselaw summaries and implications.</li>
-                      <li>Link out to similar Oyez cases for further reading.</li>
+                      <li>{t('intro.bullets.penalCode')}</li>
+                      <li>{t('intro.bullets.caselaw')}</li>
+                      <li>{t('intro.bullets.oyez')}</li>
                     </ul>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ export function LegalSearchPage() {
                     <div className="flex-1 space-y-4">
                       <div>
                         <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                          Explanation
+                          {t('results.explanation')}
                         </p>
                         <p className="text-base leading-relaxed whitespace-pre-wrap">{result.explanation}</p>
                       </div>
@@ -178,7 +178,7 @@ export function LegalSearchPage() {
                         <section className="space-y-3">
                           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase">
                             <Scale className="h-4 w-4" />
-                            Penal Code Citations
+                            {t('results.penalCode')}
                           </div>
                           {result.penal_code_results.length > 0 ? (
                             <div className="space-y-3">
@@ -202,7 +202,7 @@ export function LegalSearchPage() {
                             </div>
                           ) : (
                             <p className="text-sm text-muted-foreground italic">
-                              No penal code charges were identified for this query.
+                              {t('results.noPenalCode')}
                             </p>
                           )}
                         </section>
@@ -210,7 +210,7 @@ export function LegalSearchPage() {
                         <section className="space-y-3">
                           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase">
                             <Landmark className="h-4 w-4" />
-                            Caselaw Citations
+                            {t('results.caselaw')}
                           </div>
                           {result.caselaw_result ? (
                             <div className="border rounded-lg p-4 bg-background shadow-sm space-y-2">
@@ -224,17 +224,17 @@ export function LegalSearchPage() {
                               </div>
                               <div className="space-y-2 text-sm text-muted-foreground">
                                 <p>
-                                  <span className="font-medium text-foreground">Summary:</span> {result.caselaw_result.summary}
+                                  <span className="font-medium text-foreground">{t('results.summary')}:</span> {result.caselaw_result.summary}
                                 </p>
                                 <p>
-                                  <span className="font-medium text-foreground">Implication:</span>{' '}
+                                  <span className="font-medium text-foreground">{t('results.implication')}:</span>{' '}
                                   {result.caselaw_result.implication}
                                 </p>
                               </div>
                             </div>
                           ) : (
                             <p className="text-sm text-muted-foreground italic">
-                              No local caselaw directly matched this question.
+                              {t('results.noCaselaw')}
                             </p>
                           )}
                         </section>
@@ -243,7 +243,7 @@ export function LegalSearchPage() {
                           <section className="space-y-3">
                             <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase">
                               <ExternalLink className="h-4 w-4" />
-                              Oyez References
+                              {t('results.oyez')}
                             </div>
                             <ul className="space-y-2 text-sm">
                               {result.oyez_cases.map((oyezCase) => (
@@ -286,13 +286,13 @@ export function LegalSearchPage() {
               <Input
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
-                placeholder="Ask about a charge, caselaw, or legal scenario..."
+                placeholder={t('inputPlaceholder')}
                 className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 disabled={isLoading}
               />
             </div>
             <Button type="submit" disabled={isLoading || !input.trim()}>
-              {isLoading ? 'Searching…' : 'Search'}
+              {isLoading ? t('buttons.searching') : t('buttons.search')}
             </Button>
           </form>
         </CardFooter>
@@ -301,7 +301,7 @@ export function LegalSearchPage() {
       {error && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Unable to search</AlertTitle>
+          <AlertTitle>{t('errors.title')}</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

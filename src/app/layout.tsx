@@ -10,6 +10,7 @@ import { Layout } from '@/components/layout/layout';
 import { ClientLayout } from '@/components/layout/client-layout';
 import { Matomo } from '@/components/matomo';
 import { Suspense } from 'react';
+import { getTranslations } from '@/lib/i18n/server';
 
 type SiteConfig = {
   SITE_LIVE: boolean;
@@ -140,6 +141,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { locale, t, dictionary } = await getTranslations();
   const file = await fs.readFile(
     path.join(process.cwd(), 'data/config.json'),
     'utf8'
@@ -148,7 +150,7 @@ export default async function RootLayout({
 
   if (!config.SITE_LIVE) {
     return (
-      <html lang="en" suppressHydrationWarning>
+      <html lang={locale} suppressHydrationWarning>
         <ExtraHead />
         <body className="font-body antialiased">
           <ThemeProvider
@@ -158,8 +160,8 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <FullScreenMessage
-              title="Under Maintenance"
-              message="We are currently performing scheduled maintenance. We should be back online shortly."
+              title={t('maintenance.title')}
+              message={t('maintenance.message')}
             />
           </ThemeProvider>
         </body>
@@ -168,7 +170,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <ExtraHead />
       <body className="font-body antialiased">
         <ThemeProvider
@@ -183,6 +185,8 @@ export default async function RootLayout({
           <ClientLayout
             cacheVersion={config.CACHE_VERSION}
             localStorageVersion={config.LOCAL_STORAGE_VERSION}
+            locale={locale}
+            messages={dictionary}
           >
             <Layout footer={<Footer />}>{children}</Layout>
             <Toaster />

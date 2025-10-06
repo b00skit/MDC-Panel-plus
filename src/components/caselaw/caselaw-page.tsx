@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 import { FeedbackDialog } from '@/components/dashboard/feedback-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useI18n, useScopedI18n } from '@/lib/i18n/client';
 
 type Resource = {
     id: string;
@@ -60,11 +61,11 @@ const ICONS: { [key: string]: React.ReactNode } = {
 };
 
 const jurisdictionMap: { [key: string]: string } = {
-    'federal': 'Federal',
-    'federal-civil': 'Federal (Civil)',
-    'local-supreme': 'SA Supreme Court',
-    'local-appeals': 'SA Court of Appeals',
-    'local-appeals-civil': 'SA Court of Appeals (Civil)',
+    'federal': 'jurisdictions.federal',
+    'federal-civil': 'jurisdictions.federalCivil',
+    'local-supreme': 'jurisdictions.localSupreme',
+    'local-appeals': 'jurisdictions.localAppeals',
+    'local-appeals-civil': 'jurisdictions.localAppealsCivil',
 };
 
 
@@ -101,13 +102,14 @@ const SimpleMarkdownParser = (text: string) => {
 
 const ResourceCard = ({ resource, config }: { resource: Resource, config: Config | null }) => {
     const { toast } = useToast();
+    const t = useScopedI18n('caselaw');
 
     const handleCopy = () => {
         if (resource.button_content) {
             navigator.clipboard.writeText(resource.button_content);
             toast({
-                title: "Copied to Clipboard",
-                description: `${resource.title} content has been copied.`,
+                title: t('toasts.copied.title'),
+                description: t('toasts.copied.description', { title: resource.title }),
             });
         }
     };
@@ -173,6 +175,8 @@ const ResourceCard = ({ resource, config }: { resource: Resource, config: Config
 
 const CaselawCard = ({ caselaw }: { caselaw: Caselaw }) => {
     const isFederal = caselaw.jurisdiction.startsWith('federal');
+    const t = useScopedI18n('caselaw');
+    const jurisdictionLabel = t(jurisdictionMap[caselaw.jurisdiction] || 'jurisdictions.unknown');
 
     return (
         <Card>
@@ -180,24 +184,24 @@ const CaselawCard = ({ caselaw }: { caselaw: Caselaw }) => {
                 <div className="flex justify-between items-start gap-4">
                     <CardTitle className="pr-2">{caselaw.case} ({caselaw.year})</CardTitle>
                     <Badge variant={isFederal ? 'default' : 'secondary'} className="text-right whitespace-nowrap">
-                        {jurisdictionMap[caselaw.jurisdiction] || 'Unknown'}
+                        {jurisdictionLabel}
                     </Badge>
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div>
-                    <h4 className="font-semibold text-muted-foreground">Summary</h4>
+                    <h4 className="font-semibold text-muted-foreground">{t('cards.summary')}</h4>
                     <p>{caselaw.summary}</p>
                 </div>
                 <div>
-                    <h4 className="font-semibold text-muted-foreground">Implication for Officers</h4>
+                    <h4 className="font-semibold text-muted-foreground">{t('cards.implication')}</h4>
                     <p>{caselaw.implication}</p>
                 </div>
                 {caselaw.source && (
                     <div>
                         <Button variant="link" asChild className="p-0 h-auto">
                             <a href={caselaw.source} target='_blank' rel="noopener noreferrer">
-                                View Source <ExternalLink className="ml-2 h-4 w-4" />
+                                {t('cards.viewSource')} <ExternalLink className="ml-2 h-4 w-4" />
                             </a>
                         </Button>
                     </div>
@@ -235,6 +239,7 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
     const [searchTerm, setSearchTerm] = useState('');
     const [jurisdictionFilter, setJurisdictionFilter] = useState<'all' | 'federal' | 'local'>('all');
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+    const t = useScopedI18n('caselaw');
 
     const filteredCaselaws = useMemo(() => {
         if (!caselaws) return [];
@@ -256,8 +261,8 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
             <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
 
             <PageHeader
-                title="Caselaw & Legal Resources"
-                description="Quickly access legal documents, schedules, and important caselaw."
+                title={t('header.title')}
+                description={t('header.description')}
             />
             
             {loading ? <SkeletonGrid count={3} CardComponent={Card} /> :
@@ -268,13 +273,13 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
             
 
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">Caselaw Database</h2>
-                <p className="text-muted-foreground">Search for relevant caselaws.</p>
+                <h2 className="text-2xl font-bold tracking-tight">{t('database.title')}</h2>
+                <p className="text-muted-foreground">{t('database.description')}</p>
                 <div className="relative my-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                         type="search"
-                        placeholder="Search by case name or summary..."
+                        placeholder={t('database.searchPlaceholder')}
                         className="w-full pl-10"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -282,9 +287,9 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
                     />
                 </div>
                  <div className="flex gap-2">
-                    <Button variant={jurisdictionFilter === 'all' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('all')}>All</Button>
-                    <Button variant={jurisdictionFilter === 'federal' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('federal')}>United States</Button>
-                    <Button variant={jurisdictionFilter === 'local' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('local')}>San Andreas</Button>
+                    <Button variant={jurisdictionFilter === 'all' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('all')}>{t('database.filters.all')}</Button>
+                    <Button variant={jurisdictionFilter === 'federal' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('federal')}>{t('database.filters.federal')}</Button>
+                    <Button variant={jurisdictionFilter === 'local' ? 'default' : 'outline'} onClick={() => setJurisdictionFilter('local')}>{t('database.filters.local')}</Button>
                  </div>
             </div>
 
@@ -294,7 +299,7 @@ export function CaselawPage({ initialResources, initialCaselaws, initialConfig }
                      filteredCaselaws.map(law => <CaselawCard key={law.id} caselaw={law} />)
                  ) : (
                      <div className="text-center text-muted-foreground py-16">
-                         <p>No caselaws found matching your search criteria.</p>
+                         <p>{t('database.noResults')}</p>
                      </div>
                  )}
              </div>

@@ -3,8 +3,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import Link from 'next/link';
 import { PageHeader } from '@/components/dashboard/page-header';
-import { ModuleCard } from '@/components/dashboard/module-card';
-import { FileSearch, Puzzle, PlusCircle, Pencil, Play, Trash2 } from 'lucide-react';
+import { PlusCircle, Pencil, Play, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { PaperworkGeneratorsList } from '@/components/paperwork-generators/paperwork-generators-list';
 import { Separator } from '@/components/ui/separator';
 import type { Metadata } from 'next';
+import { getTranslations } from '@/lib/i18n/server';
 
 async function getPaperworkData() {
     const baseDir = path.join(process.cwd(), 'data/paperwork-generators');
@@ -104,20 +104,25 @@ async function getConfig() {
 }
 
 export default async function PaperworkGeneratorsPage() {
-  const [{ globalGenerators, factionGroups }, userForms, { isBuilderEnabled }] = await Promise.all([getPaperworkData(), getUserForms(), getConfig()]);
+  const [{ globalGenerators, factionGroups }, userForms, { isBuilderEnabled }, { t }] = await Promise.all([
+    getPaperworkData(),
+    getUserForms(),
+    getConfig(),
+    getTranslations('paperworkGenerators'),
+  ]);
 
   return (
       <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
          <div className="flex justify-between items-center">
              <PageHeader
-                title="Paperwork Generators"
-                description="Select a template or use one of your saved forms."
+                title={t('page.header.title')}
+                description={t('page.header.description')}
             />
             {isBuilderEnabled && (
                 <Button asChild>
                     <Link href="/paperwork-generators/builder">
                         <PlusCircle className="mr-2 h-4 w-4" />
-                        Create New Form
+                        {t('page.builderButton')}
                     </Link>
                 </Button>
             )}
@@ -130,17 +135,17 @@ export default async function PaperworkGeneratorsPage() {
                 <Separator />
                 <Card>
                     <CardHeader>
-                        <CardTitle>Your Custom Forms</CardTitle>
+                        <CardTitle>{t('page.customForms.title')}</CardTitle>
                     </CardHeader>
                     <CardContent className="px-0 pb-0 pt-4">
                         {userForms.length > 0 ? (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead>Last Modified</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+                                        <TableHead>{t('page.customForms.table.title')}</TableHead>
+                                        <TableHead>{t('page.customForms.table.description')}</TableHead>
+                                        <TableHead>{t('page.customForms.table.lastModified')}</TableHead>
+                                        <TableHead className="text-right">{t('page.customForms.table.actions')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -153,7 +158,10 @@ export default async function PaperworkGeneratorsPage() {
                                             <TableCell>{form.lastModified}</TableCell>
                                             <TableCell className="text-right">
                                                 <Button variant="ghost" size="icon" asChild>
-                                                    <Link href={`/paperwork-generators/form?type=user&id=${form.id}`} title="Use Form">
+                                                    <Link
+                                                        href={`/paperwork-generators/form?type=user&id=${form.id}`}
+                                                        title={t('page.customForms.table.useForm')}
+                                                    >
                                                         <Play className="h-4 w-4" />
                                                     </Link>
                                                 </Button>
@@ -169,7 +177,7 @@ export default async function PaperworkGeneratorsPage() {
                                 </TableBody>
                             </Table>
                         ): (
-                            <p className="text-muted-foreground">You haven't created any forms yet. Click "Create New Form" to get started.</p>
+                            <p className="text-muted-foreground">{t('page.customForms.empty')}</p>
                         )}
                     </CardContent>
                 </Card>

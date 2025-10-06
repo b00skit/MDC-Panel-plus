@@ -1,10 +1,13 @@
 
-'use client';
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import FullScreenMessage from '@/components/layout/maintenance-page';
 import configData from '../../../data/config.json';
 import { useToast } from '@/hooks/use-toast';
+import { I18nProvider, useScopedI18n } from '@/lib/i18n/client';
+import type { Locale } from '@/lib/i18n/config';
+import type { Dictionary } from '@/lib/i18n/dictionaries';
 
 async function clearCaches() {
   try {
@@ -95,6 +98,7 @@ const CacheBuster = ({
 const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const { toast } = useToast();
+  const t = useScopedI18n('clientLayout');
   const liveSiteUrl = configData.SITE_URL
     ? configData.SITE_URL.endsWith('/')
       ? configData.SITE_URL
@@ -138,20 +142,20 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
     a.click();
     URL.revokeObjectURL(url);
     toast({
-      title: 'Data Exported',
-      description: 'A file with your data has been downloaded.',
+      title: t('toast.exportedTitle'),
+      description: t('toast.exportedDescription'),
     });
   };
 
   if (isBlocked) {
     return (
       <FullScreenMessage
-        title="Beta Access has Ended"
-        message="This beta version is no longer active. Please use the main site."
+        title={t('betaEndedTitle')}
+        message={t('betaEndedMessage')}
         linkHref={liveSiteUrl}
-        linkText="Go to Live Site"
+        linkText={t('betaLiveSite')}
         onActionClick={handleExportData}
-        actionText="Export Data"
+        actionText={t('exportData')}
       />
     );
   }
@@ -159,22 +163,28 @@ const BetaRedirect = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+type ClientLayoutProps = {
+  children: React.ReactNode;
+  cacheVersion?: string;
+  localStorageVersion?: string;
+  locale: Locale;
+  messages: Dictionary;
+};
+
 export function ClientLayout({
   children,
   cacheVersion,
   localStorageVersion,
-}: Readonly<{
-  children: React.ReactNode;
-  cacheVersion?: string;
-  localStorageVersion?: string;
-}>) {
+  locale,
+  messages,
+}: Readonly<ClientLayoutProps>) {
   return (
-    <>
+    <I18nProvider locale={locale} messages={messages}>
       <CacheBuster
         cacheVersion={cacheVersion}
         localStorageVersion={localStorageVersion}
       />
       <BetaRedirect>{children}</BetaRedirect>
-    </>
+    </I18nProvider>
   );
 }

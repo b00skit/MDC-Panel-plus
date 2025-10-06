@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Trash2, Plus } from 'lucide-react';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 export type Modifier = {
     name: string;
@@ -60,6 +61,7 @@ export function TextareaWithPreset({
     const { watch, setValue, getValues, trigger, register } = useFormContext();
     const [localValue, setLocalValue] = useState(getValues(`${basePath}.narrative`) || '');
     const isInitialMount = useRef(true);
+    const t = useScopedI18n('shared.textareaWithPreset');
 
     const isPresetEnabled = watch(`${basePath}.isPreset`);
     const isUserModified = watch(`${basePath}.userModified`);
@@ -128,7 +130,7 @@ export function TextareaWithPreset({
                 onCheckedChange={handleTogglePreset}
                 disabled={isUserModified}
             />
-            <Label htmlFor={`preset-${basePath}`} className="text-sm font-medium">Enable Preset?</Label>
+            <Label htmlFor={`preset-${basePath}`} className="text-sm font-medium">{t('enablePreset')}</Label>
         </div>
     );
 
@@ -141,7 +143,7 @@ export function TextareaWithPreset({
                         <Tooltip>
                             <TooltipTrigger asChild>{CheckboxWithLabel}</TooltipTrigger>
                             <TooltipContent>
-                                <p>Clear the textarea to re-enable presets.</p>
+                                <p>{t('clearToReenable')}</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -206,6 +208,7 @@ export function TextareaWithPreset({
 
 export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string; groupConfig: any }) => {
     const { control, register, formState: { errors }, getValues, trigger } = useFormContext();
+    const t = useScopedI18n('shared.textareaWithPreset');
     const isInvalid = (fieldName: string, required?: boolean) => {
         const parts = fieldName.split('.');
         let error: any = errors;
@@ -244,7 +247,7 @@ export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string
     const groupInvalid = isInvalid(basePath, groupConfig.required);
 
     if (groupConfig.fields?.some((f: any) => f.type === 'textarea-with-preset')) {
-        return <p className="text-red-500">textarea-with-preset cannot be used inside an input group.</p>;
+        return <p className="text-red-500">{t('textareaInGroupError')}</p>;
     }
 
     const renderField = (field: any, path: string) => {
@@ -296,7 +299,7 @@ export const ModifierInputGroup = ({ basePath, groupConfig }: { basePath: string
                         )
                     }
                 >
-                    <Plus className="mr-2 h-4 w-4" /> Add {groupConfig.label}
+                    <Plus className="mr-2 h-4 w-4" /> {t('addEntry', { label: groupConfig.label })}
                 </Button>
             </CardContent>
         </Card>

@@ -19,20 +19,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
-
-const positiveReasons = [
-    { id: 'design', label: 'The design is clean and intuitive.' },
-    { id: 'performance', label: 'The application is fast and responsive.' },
-    { id: 'feature', label: 'I really like a specific feature.' },
-    { id: 'helpful', label: 'This tool is very helpful for my tasks.' },
-];
-
-const negativeReasons = [
-    { id: 'bug', label: 'I encountered a technical bug or error.' },
-    { id: 'slow', label: 'The application feels slow or laggy.' },
-    { id: 'confusing', label: 'I find the layout or a feature confusing.' },
-    { id: 'missing', label: 'A feature I need is missing.' },
-];
+import { useScopedI18n } from '@/lib/i18n/client';
 
 interface FeedbackDialogProps {
   open: boolean;
@@ -46,6 +33,21 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
   const [selectedReasons, setSelectedReasons] = React.useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { toast } = useToast();
+  const t = useScopedI18n('feedbackDialog');
+
+  const positiveReasons = [
+      { id: 'design', label: t('reasons.positive.design') },
+      { id: 'performance', label: t('reasons.positive.performance') },
+      { id: 'feature', label: t('reasons.positive.feature') },
+      { id: 'helpful', label: t('reasons.positive.helpful') },
+  ];
+  
+  const negativeReasons = [
+      { id: 'bug', label: t('reasons.negative.bug') },
+      { id: 'slow', label: t('reasons.negative.slow') },
+      { id: 'confusing', label: t('reasons.negative.confusing') },
+      { id: 'missing', label: t('reasons.negative.missing') },
+  ];
 
   const handleClose = () => {
     onOpenChange(false);
@@ -67,7 +69,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
 
   const handleSubmit = async () => {
     if (!feedbackType) {
-        toast({ title: 'Please select a feedback type (thumbs up or down).', variant: 'destructive' });
+        toast({ title: t('toasts.selectType'), variant: 'destructive' });
         return;
     }
     
@@ -89,11 +91,11 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
             throw new Error('Failed to submit feedback.');
         }
         
-        toast({ title: 'Thank you!', description: 'Your feedback has been submitted successfully.' });
+        toast({ title: t('toasts.success.title'), description: t('toasts.success.description') });
         handleClose();
 
     } catch (error) {
-        toast({ title: 'Error', description: 'Could not submit feedback. Please try again.', variant: 'destructive' });
+        toast({ title: t('toasts.error.title'), description: t('toasts.error.description'), variant: 'destructive' });
     } finally {
         setIsSubmitting(false);
     }
@@ -105,9 +107,9 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Share Your Feedback</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
           <DialogDescription>
-            Let me know what you think. Your feedback helps me improve.
+            {t('description')}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -133,7 +135,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
            {feedbackType && (
              <div className="space-y-4 animate-in fade-in-50 duration-500">
                 <div>
-                    <Label>What's on your mind?</Label>
+                    <Label>{t('reasons.title')}</Label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                         {reasons.map(reason => (
                             <div key={reason.id} className="flex items-center space-x-2">
@@ -149,11 +151,11 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
 
                 <div>
                     <Label htmlFor="feedback-text">
-                        Do you have any additional thoughts? (Optional)
+                        {t('additionalThoughts')}
                     </Label>
                     <Textarea
                         id="feedback-text"
-                        placeholder="Tell us more..."
+                        placeholder={t('additionalThoughtsPlaceholder')}
                         value={feedbackText}
                         onChange={(e) => setFeedbackText(e.target.value)}
                         className="mt-2"
@@ -165,13 +167,13 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
         <DialogFooter className="sm:justify-between">
             <Button asChild variant="ghost">
                 <Link href="/help" onClick={handleClose}>
-                    <LifeBuoy className="mr-2" /> Help
+                    <LifeBuoy className="mr-2" /> {t('help')}
                 </Link>
             </Button>
             <div className="flex gap-2">
-                <Button variant="outline" onClick={handleClose}>Cancel</Button>
+                <Button variant="outline" onClick={handleClose}>{t('cancel')}</Button>
                 <Button onClick={handleSubmit} disabled={!feedbackType || isSubmitting}>
-                    {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+                    {isSubmitting ? t('submitting') : t('submit')}
                 </Button>
             </div>
         </DialogFooter>

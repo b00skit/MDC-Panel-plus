@@ -45,9 +45,19 @@ interface HelpPageProps {
     initialResources: Resource[];
     initialFaqs: Faq[];
     initialConfig: Config;
+    translations: {
+        headerTitle: string;
+        headerDescription: string;
+        faqTitle: string;
+        faqPlaceholder: string;
+        faqEmpty: string;
+        ctaTitle: string;
+        ctaDescription: string;
+        ctaButton: string;
+    };
 }
 
-export function HelpPage({ initialResources, initialFaqs, initialConfig }: HelpPageProps) {
+export function HelpPage({ initialResources, initialFaqs, initialConfig, translations }: HelpPageProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
@@ -74,8 +84,8 @@ export function HelpPage({ initialResources, initialFaqs, initialConfig }: HelpP
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
              <FeedbackDialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen} />
              <PageHeader
-                title="Help & Feedback Center"
-                description="Find answers to common questions and get support."
+                title={translations.headerTitle}
+                description={translations.headerDescription}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -112,18 +122,19 @@ export function HelpPage({ initialResources, initialFaqs, initialConfig }: HelpP
             </div>
 
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">Frequently Asked Questions</h2>
+                <h2 className="text-2xl font-bold tracking-tight">{translations.faqTitle}</h2>
                 <div className="relative my-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                         type="search"
-                        placeholder="Search questions..."
+                        placeholder={translations.faqPlaceholder}
                         className="w-full pl-10"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        aria-label={translations.faqPlaceholder}
                     />
                 </div>
-                
+
                  <Accordion type="single" collapsible className="w-full">
                     {filteredFaqs.map(faq => (
                          <AccordionItem key={faq.id} value={faq.id}>
@@ -135,15 +146,15 @@ export function HelpPage({ initialResources, initialFaqs, initialConfig }: HelpP
                     ))}
                 </Accordion>
                 {filteredFaqs.length === 0 && (
-                    <p className="text-center text-muted-foreground py-8">No questions found matching your search.</p>
+                    <p className="text-center text-muted-foreground py-8">{translations.faqEmpty}</p>
                 )}
             </div>
 
             <Card className="text-center p-6">
-                <CardTitle>Can't find what you're looking for?</CardTitle>
-                <CardDescription className="mt-2 mb-4">I'm always happy to collect feedback.</CardDescription>
+                <CardTitle>{translations.ctaTitle}</CardTitle>
+                <CardDescription className="mt-2 mb-4">{translations.ctaDescription}</CardDescription>
                 <Button onClick={() => setIsFeedbackDialogOpen(true)}>
-                    <MessageSquare className="mr-2" /> Submit Feedback
+                    <MessageSquare className="mr-2" /> {translations.ctaButton}
                 </Button>
             </Card>
         </div>

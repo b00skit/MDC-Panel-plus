@@ -10,51 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { FeedbackDialog } from './feedback-dialog';
-
-const modules: ModuleCardProps[] = [
-  {
-    title: "Arrest Calculator",
-    description: "Calculate arrest sentences based on charges.",
-    icon: <Gavel className="w-8 h-8 text-primary" />,
-    href: "/arrest-calculator",
-    dataAiHint: "calculator gavel"
-  },
-  {
-    title: "Arrest Report",
-    description: "Create and manage arrest reports.",
-    icon: <FileText className="w-8 h-8 text-primary" />,
-    href: "/arrest-report",
-    dataAiHint: "report document"
-  },
-   {
-    title: "Paperwork Generators",
-    description: "Generate different types of paperwork.",
-    icon: <Archive className="w-8 h-8 text-primary" />,
-    href: "/paperwork-generators",
-    dataAiHint: "document generator"
-  },
-  {
-    title: "Simplified Penal Code",
-    description: "Browse a simplified version of the penal code.",
-    icon: <BookOpen className="w-8 h-8 text-primary" />,
-    href: "/simplified-penal-code",
-    dataAiHint: "law book"
-  },
-  {
-    title: "Caselaw & Legal Resources",
-    description: "Access caselaw and other legal resources.",
-    icon: <Landmark className="w-8 h-8 text-primary" />,
-    href: "/caselaw",
-    dataAiHint: "court building"
-  },
-  {
-    title: "Settings",
-    description: "Manage your application settings and data.",
-    icon: <Settings className="w-8 h-8 text-primary" />,
-    href: "/settings",
-    dataAiHint: "settings gear"
-  },
-];
+import { useScopedI18n } from '@/lib/i18n/client';
 
 const ICONS: { [key: string]: React.ReactNode } = {
     Info: <Info className="h-4 w-4" />,
@@ -98,6 +54,53 @@ export function DashboardPage({ notice }: DashboardPageProps) {
   const [loading, setLoading] = useState(true);
   const [isNoticeVisible, setIsNoticeVisible] = useState(false);
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+  const tModules = useScopedI18n('dashboard.modules');
+  const tHeader = useScopedI18n('dashboard.header');
+
+  const modules: ModuleCardProps[] = [
+    {
+      title: tModules('arrestCalculator.title'),
+      description: tModules('arrestCalculator.description'),
+      icon: <Gavel className="w-8 h-8 text-primary" />,
+      href: "/arrest-calculator",
+      dataAiHint: "calculator gavel"
+    },
+    {
+      title: tModules('arrestReport.title'),
+      description: tModules('arrestReport.description'),
+      icon: <FileText className="w-8 h-8 text-primary" />,
+      href: "/arrest-report",
+      dataAiHint: "report document"
+    },
+    {
+      title: tModules('paperworkGenerators.title'),
+      description: tModules('paperworkGenerators.description'),
+      icon: <Archive className="w-8 h-8 text-primary" />,
+      href: "/paperwork-generators",
+      dataAiHint: "document generator"
+    },
+    {
+      title: tModules('penalCode.title'),
+      description: tModules('penalCode.description'),
+      icon: <BookOpen className="w-8 h-8 text-primary" />,
+      href: "/simplified-penal-code",
+      dataAiHint: "law book"
+    },
+    {
+      title: tModules('caselaw.title'),
+      description: tModules('caselaw.description'),
+      icon: <Landmark className="w-8 h-8 text-primary" />,
+      href: "/caselaw",
+      dataAiHint: "court building"
+    },
+    {
+      title: tModules('settings.title'),
+      description: tModules('settings.description'),
+      icon: <Settings className="w-8 h-8 text-primary" />,
+      href: "/settings",
+      dataAiHint: "settings gear"
+    },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -170,8 +173,8 @@ export function DashboardPage({ notice }: DashboardPageProps) {
        )}
 
       <PageHeader
-        title="Dashboard"
-        description="Welcome to MDC Panel+. Here are your available tools."
+        title={tHeader('title')}
+        description={tHeader('description')}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {loading
