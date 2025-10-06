@@ -291,7 +291,7 @@
           "fine": "Multa",
           "impound": "Decomiso",
           "suspension": "Suspensión",
-          "autoBail": "Fianza Automática",
+          "autoBail": "Fianza automática",
           "bail": "Fianza"
         },
         "tooltip": {
@@ -315,39 +315,39 @@
         "title": "Resumen",
         "alerts": {
           "sentence": {
-            "title": "Condena limitada",
-            "description": "El tiempo total de condena se ha limitado a {maxDays} días según la política de la Administración de Facciones Legales. A continuación se muestran las cifras sin límite como referencia.",
-            "originalMinLabel": "Tiempo mínimo original:",
-            "originalMaxLabel": "Tiempo máximo original:"
+            "title": "Sentencia limitada",
+            "description": "La sentencia total supera el máximo de {maxDays} días. El tiempo mostrado se ha limitado.",
+            "originalMinLabel": "Mínimo original:",
+            "originalMaxLabel": "Máximo original:"
           },
           "impound": {
             "title": "Decomiso limitado",
-            "description": "El tiempo total de decomiso se ha limitado a {maxDays} días. El total sin límite era {value}."
+            "description": "La duración total del decomiso supera el máximo de {maxDays} días. Valor mostrado: {value}."
           },
           "suspension": {
             "title": "Suspensión limitada",
-            "description": "El tiempo total de suspensión se ha limitado a {maxDays} días. El total sin límite era {value}."
+            "description": "La duración total de la suspensión supera el máximo de {maxDays} días. Valor mostrado: {value}."
           }
         },
         "mobile": {
-          "minTime": "Tiempo Mín.",
-          "maxTime": "Tiempo Máx.",
+          "minTime": "Tiempo mínimo",
+          "maxTime": "Tiempo máximo",
           "points": "Puntos",
           "fine": "Multa",
-          "impound": "Decomiso",
+          "impound": "Incautación",
           "suspension": "Suspensión",
-          "bailStatus": "Estado de Fianza",
-          "highestBail": "Fianza Máxima"
+          "bailStatus": "Estado de fianza",
+          "highestBail": "Fianza más alta"
         },
         "table": {
-          "minTime": "Tiempo Mín.",
-          "maxTime": "Tiempo Máx.",
+          "minTime": "Tiempo mínimo",
+          "maxTime": "Tiempo máximo",
           "points": "Puntos",
           "fine": "Multa",
-          "impound": "Decomiso",
+          "impound": "Incautación",
           "suspension": "Suspensión",
-          "bailStatus": "Estado de Fianza",
-          "highestBail": "Fianza Máxima"
+          "bailStatus": "Estado de fianza",
+          "highestBail": "Fianza más alta"
         }
       },
       "copyables": {
@@ -355,10 +355,10 @@
         "toastDescription": "Se ha copiado el valor de {label}.",
         "minMinutes": "Minutos mínimos",
         "maxMinutes": "Minutos máximos",
-        "totalImpound": "Decomiso total (días)",
-        "totalSuspension": "Suspensión total (días)",
+        "totalImpound": "Días totales de incautación",
+        "totalSuspension": "Días totales de suspensión",
         "bailCost": "Costo de fianza",
-        "originalValue": "Original: {value}"
+        "originalValue": "Valor original: {value}"
       },
       "toasts": {
         "copiedTitle": "¡Copiado!",
@@ -709,6 +709,9 @@
           "modifiedPoints": "Puntos modificados: {value}"
         }
       },
+      "copyLabels": {
+        "rawFine": "Multa sin formato"
+      },
       "stipulations": {
         "title": "Estipulaciones",
         "charge": "Cargo",
@@ -754,17 +757,14 @@
         }
       },
       "copyables": {
+        "toastTitle": "Copiado",
+        "toastDescription": "{label} copiado al portapapeles.",
         "minMinutes": "Minutos mínimos",
         "maxMinutes": "Minutos máximos",
         "totalImpound": "Días totales de incautación",
         "totalSuspension": "Días totales de suspensión",
-        "bailCost": "Fianza más alta",
-        "originalValue": "Valor original: {value}",
-        "toastTitle": "Copiado",
-        "toastDescription": "{label} copiado al portapapeles."
-      },
-      "copyLabels": {
-        "rawFine": "Multa sin formato"
+        "bailCost": "Costo de fianza",
+        "originalValue": "Valor original: {value}"
       },
       "toasts": {
         "copiedTitle": "Copiado",

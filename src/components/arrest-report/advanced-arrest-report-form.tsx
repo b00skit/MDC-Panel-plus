@@ -790,7 +790,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
 
                 <NarrativeSection title={t('arrestReport.advancedForm.narrative.arrest.title')} presetName="arrest" isChecked={!!watchedFields.presets?.arrest} isUserModified={!!watchedFields.userModified?.arrest} onToggle={() => handlePresetToggle('arrest')}>
                     {!watchedFields.modifiers?.didYouTransport && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                             <Input placeholder={t('arrestReport.advancedForm.placeholders.transportingRank')} {...register('narrative.transportingRank')} />
                             <Input placeholder={t('arrestReport.advancedForm.placeholders.transportingName')} {...register('narrative.transportingName')} />
                         </div>
