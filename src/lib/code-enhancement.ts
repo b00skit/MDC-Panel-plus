@@ -19,7 +19,7 @@ function isStreetCharge(charge: Charge | null) {
 function hasEnoughCount(charge: SelectedCharge, chargeDetails: Charge | null) {
     return (!(chargeDetails?.code_enhancement_count)
         || (charge?.offense
-            && Number(charge.offense) > chargeDetails.code_enhancement_count)
+            && Number(charge.offense) >= chargeDetails.code_enhancement_count)
     )
 }
 
