@@ -431,19 +431,19 @@
         },
         "evaded": {
           "label": "Evaded",
-          "text": "When attempting to detain {suspect}, they fled within the a vehicle leading to a pursuit by the department."
+          "text": "When attempting to detain {{suspect}}, they fled in a vehicle leading to a pursuit by the department."
         },
         "resistedArrest": {
           "label": "Resisted Arrest",
-          "text": "When attempting to apprehend {suspect}, the suspect physically resisted detainment and attempted to flee from the peace officers involved in the arrest."
+          "text": "When attempting to apprehend {{suspect}}, the suspect physically resisted detainment and attempted to flee from the peace officers involved in the arrest."
         },
         "searched": {
           "label": "Searched",
-          "text": "{suspect} was positioned in front of a department vehicle's dashcam and searched in accordance to the legal requirements as well as department's policy as well as the training I've undergone, the following items have been found in the posession of the suspect:"
+          "text": "{{suspect}} was positioned in front of a department vehicle's dashcam and searched in accordance to the legal requirements as well as department's policy as well as the training I've undergone, the following items have been found in the posession of the suspect:"
         },
         "booking": {
           "label": "Booking",
-          "text": "I transported {suspect} to the nearest department's station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training."
+          "text": "I transported {{suspect}} to the nearest department's station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training."
         }
       },
       "narrative": {
@@ -531,7 +531,7 @@
         "cardTitle": "Charges",
         "copyLink": "Copy calculation link",
         "modify": "Modify charges",
-        "title": "{prefix}-{id} – {charge}",
+        "title": "{prefix} {id}. {charge}",
         "categorySuffix": "(Category: {category})",
         "offenseSuffix": "(Offense {offense})",
         "offenseNumber": "Offense #{offense}",

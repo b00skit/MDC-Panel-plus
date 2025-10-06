@@ -431,19 +431,19 @@
         },
         "evaded": {
           "label": "Evadió",
-          "text": "Al intentar detener a {suspect}, huyó en el vehículo, lo que condujo a una persecución por parte del departamento."
+          "text": "Al intentar detener a {{suspect}}, huyó en el vehículo, lo que condujo a una persecución por parte del departamento."
         },
         "resistedArrest": {
           "label": "Se resistió al Arresto",
-          "text": "Al intentar aprehender a {suspect}, el sospechoso se resistió físicamente a la detención e intentó huir de los oficiales de paz involucrados en el arresto."
+          "text": "Al intentar aprehender a {{suspect}}, el sospechoso se resistió físicamente a la detención e intentó huir de los oficiales de paz involucrados en el arresto."
         },
         "searched": {
           "label": "Registrado",
-          "text": "{suspect} fue posicionado frente a la cámara del tablero de un vehículo del departamento y registrado de acuerdo con los requisitos legales, así como con la política del departamento y el entrenamiento que he recibido. Se encontraron los siguientes artículos en posesión del sospechoso:"
+          "text": "{{suspect}} fue posicionado frente a la cámara del tablero de un vehículo del departamento y registrado de acuerdo con los requisitos legales, así como con la política del departamento y el entrenamiento que he recibido. Se encontraron los siguientes artículos en posesión del sospechoso:"
         },
         "booking": {
           "label": "Fichaje",
-          "text": "Transporté a {suspect} a la estación del departamento más cercana, donde lo fiché por los cargos mencionados en este informe de acuerdo con todas las directrices departamentales, requisitos estatales y entrenamiento."
+          "text": "Transporté a {{suspect}} a la estación del departamento más cercana, donde lo fiché por los cargos mencionados en este informe de acuerdo con todas las directrices departamentales, requisitos estatales y entrenamiento."
         }
       },
       "narrative": {
@@ -531,7 +531,7 @@
         "cardTitle": "Cargos",
         "copyLink": "Copiar enlace del cálculo",
         "modify": "Modificar cargos",
-        "title": "{prefix}-{id} – {charge}",
+        "title": "{prefix} {id}. {charge}",
         "categorySuffix": "(Categoría: {category})",
         "offenseSuffix": "(Delito {offense})",
         "offenseNumber": "Delito #{offense}",
