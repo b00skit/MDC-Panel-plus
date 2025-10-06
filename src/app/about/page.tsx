@@ -19,9 +19,12 @@ import { cn } from '@/lib/utils';
 import { getTranslations } from '@/lib/i18n/server';
 import { getDictionaryValue } from '@/lib/i18n/utils';
 
-export const metadata: Metadata = {
-  title: 'About',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations();
+  return {
+    title: t('about.pageTitle'),
+  };
+}
 
 async function getConfig() {
     const configPath = path.join(process.cwd(), 'data/config.json');

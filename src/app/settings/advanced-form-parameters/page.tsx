@@ -20,6 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useOfficerStore, Officer } from '@/stores/officer-store';
 import { User, IdCard, ShieldEllipsis as ShieldIcon, Plus, Trash2, BookUser } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useI18n, useScopedI18n } from '@/lib/i18n/client';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -37,6 +38,12 @@ export default function AdvancedFormParametersPage() {
         swapOfficer,
     } = useOfficerStore();
     const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
+    const { t: tRoot } = useI18n();
+    const t = useScopedI18n('settings');
+
+    useEffect(() => {
+        document.title = tRoot('settings.advanced.pageTitle');
+    }, [tRoot]);
 
     useEffect(() => {
         setPredefinedOfficers();
@@ -59,29 +66,29 @@ export default function AdvancedFormParametersPage() {
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
             <PageHeader
-                title="Advanced Form Parameters"
-                description="Manage your predefined officer lineup for forms."
+                title={t('advanced.header.title')}
+                description={t('advanced.header.description')}
             />
              <div className="grid gap-8 mt-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Predefined Officer Setup</CardTitle>
+                        <CardTitle>{t('advanced.setup.title')}</CardTitle>
                         <CardDescription>
-                            Define a list of officers you frequently patrol with. This lineup will be automatically loaded into new reports.
+                            {t('advanced.setup.description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {predefinedOfficers.map((officer, index) => (
                             <div key={officer.id} className="p-4 border rounded-lg space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <Label className="text-lg font-medium">Officer {index + 1}</Label>
+                                    <Label className="text-lg font-medium">{t('advanced.setup.officer', { index: index + 1 })}</Label>
                                     <Button variant="ghost" size="icon" onClick={() => removePredefinedOfficer(officer.id)}>
                                         <Trash2 className="h-4 w-4 text-red-500" />
                                     </Button>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <Label htmlFor={`predef-name-${officer.id}`}>Full Name</Label>
+                                        <Label htmlFor={`predef-name-${officer.id}`}>{t('defaultOfficer.fields.fullName')}</Label>
                                         <div className="relative flex items-center">
                                             <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                             <Input
@@ -93,7 +100,7 @@ export default function AdvancedFormParametersPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor={`predef-rank-${officer.id}`}>Rank & Department</Label>
+                                        <Label htmlFor={`predef-rank-${officer.id}`}>{t('defaultOfficer.fields.rankAndDept')}</Label>
                                         <div className="relative flex items-center">
                                             <ShieldIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                             <Select
@@ -104,7 +111,7 @@ export default function AdvancedFormParametersPage() {
                                                 }}
                                             >
                                                 <SelectTrigger id={`predef-rank-${officer.id}`} className="pl-9">
-                                                    <SelectValue placeholder="Select Rank" />
+                                                    <SelectValue placeholder={t('defaultOfficer.fields.rankPlaceholder')} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {Object.entries(deptRanks).map(([dept, ranks]) => (
@@ -120,7 +127,7 @@ export default function AdvancedFormParametersPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor={`predef-badge-${officer.id}`}>Badge Number</Label>
+                                        <Label htmlFor={`predef-badge-${officer.id}`}>{t('defaultOfficer.fields.badgeNo')}</Label>
                                         <div className="relative flex items-center">
                                             <IdCard className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                             <Input
@@ -132,7 +139,7 @@ export default function AdvancedFormParametersPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor={`predef-detail-${officer.id}`}>Division / Detail</Label>
+                                        <Label htmlFor={`predef-detail-${officer.id}`}>{t('defaultOfficer.fields.divDetail')}</Label>
                                         <div className="relative flex items-center">
                                             <BookUser className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                             <Input
@@ -166,13 +173,13 @@ export default function AdvancedFormParametersPage() {
                             </div>
                         ))}
                         <Button variant="outline" onClick={addPredefinedOfficer}>
-                            <Plus className="mr-2 h-4 w-4" /> Add Officer
+                            <Plus className="mr-2 h-4 w-4" /> {t('advanced.setup.addOfficerButton')}
                         </Button>
                     </CardContent>
                 </Card>
 
                  <div className="flex justify-end">
-                    <Button onClick={handleSave}>Save Changes</Button>
+                    <Button onClick={handleSave}>{t('buttons.save')}</Button>
                 </div>
             </div>
         </div>

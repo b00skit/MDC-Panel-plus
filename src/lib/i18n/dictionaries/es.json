@@ -128,6 +128,19 @@
       "save": "Guardar Todos los Cambios",
       "cancel": "Cancelar",
       "continue": "Continuar"
+    },
+    "advanced": {
+      "pageTitle": "MDC Panel – Parámetros Avanzados de Formularios",
+      "header": {
+        "title": "Parámetros Avanzados de Formularios",
+        "description": "Gestiona tu alineación de oficiales predefinida para los formularios."
+      },
+      "setup": {
+        "title": "Configuración de Oficial Predefinido",
+        "description": "Define una lista de oficiales con los que patrullas con frecuencia. Esta alineación se cargará automáticamente en los nuevos informes.",
+        "officer": "Oficial {index}",
+        "addOfficerButton": "Añadir Oficial"
+      }
     }
   },
   "reportArchive": {
@@ -187,6 +200,7 @@
     }
   },
   "logParser": {
+    "pageTitle": "MDC Panel – Analizador de Registros",
     "header": {
       "title": "Analizador de Registros",
       "description": "Filtra los registros de chat de GTA:World para aislar interacciones de personajes específicos."
@@ -236,6 +250,7 @@
   },
   "simplifiedPenalCode": {
     "page": {
+      "documentTitle": "MDC Panel – Código Penal Simplificado",
       "header": {
         "title": "Código Penal Simplificado",
         "description": "Navega y busca en la lista de cargos."
@@ -303,6 +318,7 @@
     }
   },
   "legalSearch": {
+    "pageTitle": "MDC Panel – Búsqueda Legal",
     "header": {
       "title": "Búsqueda Legal",
       "description": "Haz cualquier pregunta y obtén citas del código penal y jurisprudencia en una sola respuesta."
@@ -347,6 +363,7 @@
     }
   },
   "caselaw": {
+    "pageTitle": "MDC Panel – Jurisprudencia y Recursos Legales",
     "header": {
       "title": "Jurisprudencia y Recursos Legales",
       "description": "Accede rápidamente a documentos legales, aranceles y jurisprudencia importante."
@@ -384,6 +401,7 @@
   },
   "paperworkGenerators": {
     "page": {
+      "documentTitle": "MDC Panel – Generadores de Documentos",
       "header": {
         "title": "Generadores de Documentos",
         "description": "Selecciona una plantilla o utiliza uno de tus formularios guardados."
@@ -400,6 +418,9 @@
         },
         "empty": "Aún no has creado ningún formulario. Haz clic en \"Crear nuevo formulario\" para comenzar."
       }
+    },
+    "builder": {
+      "pageTitle": "MDC Panel – Creador de Formularios"
     },
     "list": {
       "globalTitle": "Generadores globales",
@@ -504,7 +525,7 @@
     "credits": "Créditos y colaboraciones"
   },
   "about": {
-    "pageTitle": "Acerca de",
+    "pageTitle": "MDC Panel – Acerca de",
     "header": {
       "title": "Acerca de MDC Panel+",
       "description": "Un proyecto creado con pasión para ayudar."
@@ -572,8 +593,19 @@
       "description": "El encargado actual es {maintainer}. Si tienes preguntas, encuentras un error o tienes alguna sugerencia, ponte en contacto por Discord o utiliza el formulario de comentarios disponible en el sitio."
     }
   },
+  "credits": {
+    "pageTitle": "MDC Panel – Créditos y Colaboraciones",
+    "header": {
+      "title": "Créditos y Colaboraciones",
+      "description": "Este proyecto se apoya en el trabajo de gigantes."
+    },
+    "intro": "Un enorme agradecimiento a todos los que han contribuido, inspirado o apoyado este proyecto. Muchas ideas y funciones se inspiraron en el trabajo de otros en la comunidad, condensadas aquí en una herramienta unificada."
+  },
+  "map": {
+    "pageTitle": "MDC Panel – Mapa Interactivo"
+  },
   "help": {
-    "pageTitle": "Ayuda y comentarios",
+    "pageTitle": "MDC Panel – Ayuda y comentarios",
     "header": {
       "title": "Centro de ayuda y comentarios",
       "description": "Encuentra respuestas a las preguntas frecuentes y obtén soporte."
@@ -976,6 +1008,28 @@
           "bailStatus": "ESTADO DE LA FIANZA",
           "bailAmount": "MONTO DE LA FIANZA"
         }
+      },
+      "types": {
+        "felony": "Delito Grave",
+        "misdemeanor": "Delito Menor",
+        "infraction": "Infracción",
+        "unknown": "Desconocido"
+      },
+      "time": {
+        "zero": "0 minutos",
+        "days": {
+          "one": "{count} Día",
+          "other": "{count} Días"
+        },
+        "hours": {
+          "one": "{count} Hora",
+          "other": "{count} Horas"
+        },
+        "minutes": {
+          "one": "{count} Minuto",
+          "other": "{count} Minutos"
+        },
+        "summary": "{parts} ({minutes} min en total)"
       }
     },
     "advancedReport": {
@@ -1080,28 +1134,37 @@
       },
       "narrative": {
         "source": {
-          "title": "FUENTE DE LA ACTIVIDAD"
+          "title": "FUENTE DE LA ACTIVIDAD",
+          "placeholder": "Describe el contacto o la observación inicial..."
         },
         "investigation": {
-          "title": "INVESTIGACIÓN"
+          "title": "INVESTIGACIÓN",
+          "placeholder": "Describe tu investigación..."
         },
         "arrest": {
-          "title": "ARRESTO"
+          "title": "ARRESTO",
+          "placeholder": "Describe el procedimiento del arresto..."
         },
         "photographs": {
-          "title": "FOTOGRAFÍAS, VIDEOS, VIDEO EN EL COCHE (DICV) E IMÁGENES DIGITALES"
+          "title": "FOTOGRAFÍAS, VIDEOS, VIDEO EN EL COCHE (DICV) E IMÁGENES DIGITALES",
+          "placeholder": "Proporciona enlaces a cualquier prueba...",
+          "noVideoPlaceholder": "No había pruebas de video o fotográficas disponibles."
         },
         "booking": {
-          "title": "FICHAJE"
+          "title": "FICHAJE",
+          "placeholder": "Describe el procedimiento de fichaje..."
         },
         "evidence": {
-          "title": "PRUEBAS FÍSICAS"
+          "title": "PRUEBAS FÍSICAS",
+          "placeholder": "Enumera cualquier prueba física recopilada..."
         },
         "court": {
-          "title": "INFORMACIÓN DEL TRIBUNAL"
+          "title": "INFORMACIÓN DEL TRIBUNAL",
+          "placeholder": "Añade cualquier información relevante para el tribunal..."
         },
         "additional": {
-          "title": "INFORMACIÓN ADICIONAL"
+          "title": "INFORMACIÓN ADICIONAL",
+          "placeholder": "Cualquier información adicional..."
         },
         "enablePreset": "¿Habilitar Predefinido?",
         "clearToReenable": "Vacía el área de texto para volver a habilitar los predefinidos."

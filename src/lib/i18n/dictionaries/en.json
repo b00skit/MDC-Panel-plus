@@ -128,6 +128,19 @@
       "save": "Save All Changes",
       "cancel": "Cancel",
       "continue": "Continue"
+    },
+    "advanced": {
+      "pageTitle": "MDC Panel – Advanced Form Parameters",
+      "header": {
+        "title": "Advanced Form Parameters",
+        "description": "Manage your predefined officer lineup for forms."
+      },
+      "setup": {
+        "title": "Predefined Officer Setup",
+        "description": "Define a list of officers you frequently patrol with. This lineup will be automatically loaded into new reports.",
+        "officer": "Officer {index}",
+        "addOfficerButton": "Add Officer"
+      }
     }
   },
   "reportArchive": {
@@ -187,6 +200,7 @@
     }
   },
   "logParser": {
+    "pageTitle": "MDC Panel – Log Parser",
     "header": {
       "title": "Log Parser",
       "description": "Filter GTA:World chat logs to isolate specific character interactions."
@@ -236,6 +250,7 @@
   },
   "simplifiedPenalCode": {
     "page": {
+      "documentTitle": "MDC Panel – Simplified Penal Code",
       "header": {
         "title": "Simplified Penal Code",
         "description": "Browse and search through the list of charges."
@@ -303,6 +318,7 @@
     }
   },
   "legalSearch": {
+    "pageTitle": "MDC Panel – Legal Search",
     "header": {
       "title": "Legal Search",
       "description": "Ask any questions and get penal code and caselaw citations in a single response."
@@ -347,6 +363,7 @@
     }
   },
   "caselaw": {
+    "pageTitle": "MDC Panel – Caselaw & Legal Resources",
     "header": {
       "title": "Caselaw & Legal Resources",
       "description": "Quickly access legal documents, schedules, and important caselaw."
@@ -384,6 +401,7 @@
   },
   "paperworkGenerators": {
     "page": {
+      "documentTitle": "MDC Panel – Paperwork Generators",
       "header": {
         "title": "Paperwork Generators",
         "description": "Select a template or use one of your saved forms."
@@ -400,6 +418,9 @@
         },
         "empty": "You haven't created any forms yet. Click \"Create New Form\" to get started."
       }
+    },
+    "builder": {
+      "pageTitle": "MDC Panel – Form Builder"
     },
     "list": {
       "globalTitle": "Global Generators",
@@ -504,7 +525,7 @@
     "credits": "Credits and Contributions"
   },
   "about": {
-    "pageTitle": "About",
+    "pageTitle": "MDC Panel – About",
     "header": {
       "title": "About MDC Panel+",
       "description": "A passion project designed to help."
@@ -572,8 +593,19 @@
       "description": "The current maintainer is {maintainer}. If you have any questions, find a bug, or have a suggestion, please feel free to reach out via Discord or use the feedback form available on the site."
     }
   },
+  "credits": {
+    "pageTitle": "MDC Panel – Credits & Contributions",
+    "header": {
+      "title": "Credits & Contributions",
+      "description": "This project stands on the shoulders of giants."
+    },
+    "intro": "A huge thank you to everyone who has contributed, inspired, or supported this project. Many ideas and features were inspired by the work of others in the community, condensed here into one unified tool."
+  },
+  "map": {
+    "pageTitle": "MDC Panel – Interactive Map"
+  },
   "help": {
-    "pageTitle": "Help & Feedback",
+    "pageTitle": "MDC Panel – Help & Feedback",
     "header": {
       "title": "Help & Feedback Center",
       "description": "Find answers to common questions and get support."
@@ -738,7 +770,7 @@
           "one": "{count} Minute",
           "other": "{count} Minutes"
         },
-        "summary": "{parts} ({minutes} mins)"
+        "summary": "{parts} ({minutes} mins total)"
       },
       "charges": {
         "cardTitle": "Charges",
@@ -976,6 +1008,28 @@
           "bailStatus": "BAIL STATUS",
           "bailAmount": "BAIL AMOUNT"
         }
+      },
+      "types": {
+        "felony": "Felony",
+        "misdemeanor": "Misdemeanor",
+        "infraction": "Infraction",
+        "unknown": "Unknown"
+      },
+      "time": {
+        "zero": "0 minutes",
+        "days": {
+          "one": "{count} Day",
+          "other": "{count} Days"
+        },
+        "hours": {
+          "one": "{count} Hour",
+          "other": "{count} Hours"
+        },
+        "minutes": {
+          "one": "{count} Minute",
+          "other": "{count} Minutes"
+        },
+        "summary": "{parts} ({minutes} mins total)"
       }
     },
     "advancedReport": {
@@ -1080,28 +1134,37 @@
       },
       "narrative": {
         "source": {
-          "title": "SOURCE OF ACTIVITY"
+          "title": "SOURCE OF ACTIVITY",
+          "placeholder": "Describe the initial contact or observation..."
         },
         "investigation": {
-          "title": "INVESTIGATION"
+          "title": "INVESTIGATION",
+          "placeholder": "Describe your investigation..."
         },
         "arrest": {
-          "title": "ARREST"
+          "title": "ARREST",
+          "placeholder": "Describe the arrest procedure..."
         },
         "photographs": {
-          "title": "PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING"
+          "title": "PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING",
+          "placeholder": "Provide links to any evidence...",
+          "noVideoPlaceholder": "No video or photographic evidence was available."
         },
         "booking": {
-          "title": "BOOKING"
+          "title": "BOOKING",
+          "placeholder": "Describe the booking procedure..."
         },
         "evidence": {
-          "title": "PHYSICAL EVIDENCE"
+          "title": "PHYSICAL EVIDENCE",
+          "placeholder": "List any physical evidence collected..."
         },
         "court": {
-          "title": "COURT INFORMATION"
+          "title": "COURT INFORMATION",
+          "placeholder": "Add any information relevant to the court..."
         },
         "additional": {
-          "title": "ADDITIONAL INFORMATION"
+          "title": "ADDITIONAL INFORMATION",
+          "placeholder": "Any additional information..."
         },
         "enablePreset": "Enable Preset?",
         "clearToReenable": "Clear the textarea to re-enable presets."
@@ -1210,7 +1273,7 @@
     },
     "alert": {
       "title": "Heads up!",
-      "description": "The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC. This report has also been archived."
+      "description": "The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it. This report has also been archived."
     },
     "formattedReport": "Formatted Report",
     "buttons": {
