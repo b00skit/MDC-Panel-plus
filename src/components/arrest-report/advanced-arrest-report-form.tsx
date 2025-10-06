@@ -47,6 +47,9 @@ interface DeptRanks {
   [department: string]: string[];
 }
 
+type PleaKey = 'guilty' | 'notGuilty' | 'noContest' | 'requiredCase';
+const PLEA_KEYS: PleaKey[] = ['guilty', 'notGuilty', 'noContest', 'requiredCase'];
+
 export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     const router = useRouter();
     const { t, locale } = useI18n();
@@ -130,6 +133,29 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     };
     
     // Auto-population from modifiers
+    const parsePleaKey = useCallback((value?: string): PleaKey => {
+        const baseMap: Record<string, PleaKey> = {
+            guilty: 'guilty',
+            'not guilty': 'notGuilty',
+            'no contest': 'noContest',
+            'required case': 'requiredCase',
+        };
+
+        PLEA_KEYS.forEach((key) => {
+            const translated = t(`arrestReport.advancedForm.pleas.${key}`).toLowerCase();
+            baseMap[translated] = key;
+        });
+
+        if (!value) return 'guilty';
+
+        if (PLEA_KEYS.includes(value as PleaKey)) {
+            return value as PleaKey;
+        }
+
+        const normalized = value.trim().toLowerCase();
+        return baseMap[normalized] ?? 'guilty';
+    }, [t]);
+
     useEffect(() => {
         const officers = watchedFields.officers;
         const primaryOfficer = officers?.[0];
@@ -244,6 +270,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         watchedFields.presets?.source,
         watchedFields.userModified?.source,
         locale,
+        t,
         setValue,
     ]);
 
@@ -284,6 +311,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         watchedFields.narrative?.vehiclePlate,
         watchedFields.presets?.investigation,
         watchedFields.userModified?.investigation,
+        t,
         setValue,
     ]);
 
@@ -357,6 +385,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         penalCode,
         watchedFields.presets?.arrest,
         watchedFields.userModified?.arrest,
+        t,
         setValue,
     ]);
 
@@ -406,6 +435,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         watchedFields.narrative?.thirdPartyLink,
         watchedFields.presets?.photographs,
         watchedFields.userModified?.photographs,
+        t,
         setValue,
     ]);
     
@@ -472,6 +502,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         penalCode,
         watchedFields.presets?.booking,
         watchedFields.userModified?.booking,
+        t,
         setValue,
     ]);
     
@@ -502,7 +533,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             }
         });
         setValue('narrative.evidence', evidenceLines.join('\n').trim());
-    }, [isLSSD, JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, setValue]);
+    }, [isLSSD, JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, t, setValue]);
 
     useEffect(() => {
         if (!watchedFields.presets?.court) return;
@@ -538,14 +569,15 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             });
         }
         setValue('narrative.court', courtLines.join('\n'));
-    }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, watchedFields.userModified?.court, setValue]);
+    }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, watchedFields.userModified?.court, t, setValue]);
 
 
     useEffect(() => {
         if (!watchedFields.presets?.additional) return;
         if (watchedFields.userModified?.additional) return;
         const suspectName = watchedFields.arrestee?.name || '';
-        const plea = watchedFields.narrative?.plea || t('arrestReport.advancedForm.pleas.guilty');
+        const pleaKey = parsePleaKey(watchedFields.narrative?.plea);
+        const plea = t(`arrestReport.advancedForm.pleas.${pleaKey}`);
         const additionalText = t('arrestReport.advancedForm.presets.additional.plea', {
             suspectName,
             plea,
@@ -556,8 +588,18 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         watchedFields.narrative?.plea,
         watchedFields.presets?.additional,
         watchedFields.userModified?.additional,
-        setValue
+        setValue,
+        parsePleaKey,
+        t,
     ]);
+
+    useEffect(() => {
+        if (!watchedFields.narrative?.plea) return;
+        const parsedPlea = parsePleaKey(watchedFields.narrative?.plea);
+        if (watchedFields.narrative?.plea !== parsedPlea) {
+            setValue('narrative.plea', parsedPlea);
+        }
+    }, [watchedFields.narrative?.plea, parsePleaKey, setValue]);
 
     const handlePresetToggle = (presetName: keyof FormState['presets']) => {
         const isEnabled = !getValues(`presets.${presetName}`);
@@ -978,14 +1020,14 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 </NarrativeSection>
 
                  <NarrativeSection title={t('arrestReport.advancedForm.narrative.additional.title')} presetName="additional" isChecked={!!watchedFields.presets?.additional} isUserModified={!!watchedFields.userModified?.additional} onToggle={() => handlePresetToggle('additional')}>
-                     <Controller name="narrative.plea" control={control} render={({ field }) => (
-                        <Select onValueChange={field.onChange} value={field.value}>
+                    <Controller name="narrative.plea" control={control} render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value ? parsePleaKey(field.value) : undefined}>
                             <SelectTrigger className="mb-2"><SelectValue placeholder={t('arrestReport.advancedForm.placeholders.plea')} /></SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Guilty">{t('arrestReport.advancedForm.pleas.guilty')}</SelectItem>
-                                <SelectItem value="Not Guilty">{t('arrestReport.advancedForm.pleas.notGuilty')}</SelectItem>
-                                <SelectItem value="No Contest">{t('arrestReport.advancedForm.pleas.noContest')}</SelectItem>
-                                <SelectItem value="Required Case">{t('arrestReport.advancedForm.pleas.requiredCase')}</SelectItem>
+                                <SelectItem value="guilty">{t('arrestReport.advancedForm.pleas.guilty')}</SelectItem>
+                                <SelectItem value="notGuilty">{t('arrestReport.advancedForm.pleas.notGuilty')}</SelectItem>
+                                <SelectItem value="noContest">{t('arrestReport.advancedForm.pleas.noContest')}</SelectItem>
+                                <SelectItem value="requiredCase">{t('arrestReport.advancedForm.pleas.requiredCase')}</SelectItem>
                             </SelectContent>
                         </Select>
                     )} />

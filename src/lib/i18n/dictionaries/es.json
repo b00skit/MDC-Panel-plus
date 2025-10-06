@@ -580,8 +580,8 @@
           "title": "INFORMACIÓN ADICIONAL",
           "placeholder": "Información adicional..."
         },
-        "enablePreset": "Enable Preset?",
-        "clearToReenable": "Clear the textarea to re-enable presets."
+        "enablePreset": "¿Habilitar preajuste?",
+        "clearToReenable": "Vacía el área de texto para volver a habilitar los preajustes."
       },
       "pleas": {
         "guilty": "Culpable",
@@ -598,83 +598,83 @@
       },
       "presets": {
         "source": {
-          "partnerDetail": "{rank} {name} (#{badge}), assigned to {divDetail}",
-          "withPartners": "On {date}, I, {rank} {name} (#{badge}), assigned to {divDetail}, partnered with {partners}, were deployed under Unit {callsign}.",
-          "singleOfficer": "On {date}, I, {rank} {name} (#{badge}), assigned to {divDetail}, was deployed under Unit {callsign}.",
-          "vehicleMarkedSlicktop": "I was driving a marked black and white slicktop.",
-          "vehicleMarkedLightbar": "I was driving a marked black and white with a rooftop light bar.",
-          "vehicleUnmarked": "I was driving an unmarked vehicle.",
-          "uniformWithBadge": "I was wearing my department-issued {uniform} uniform and was openly displaying my badge of office on my uniform.",
-          "patrolUniform": "I was wearing my department-issued patrol uniform and was openly displaying my badge of office on my uniform.",
-          "plainClothes": "I was wearing plain clothes.",
-          "plainClothesBadge": "I was wearing plain clothes and was openly displaying my badge.",
+          "partnerDetail": "{rank} {name} (#{badge}), asignado/a a {divDetail}",
+          "withPartners": "El {date}, yo, {rank} {name} (#{badge}), asignado/a a {divDetail}, junto con {partners}, fuimos desplegados como la Unidad {callsign}.",
+          "singleOfficer": "El {date}, yo, {rank} {name} (#{badge}), asignado/a a {divDetail}, fui desplegado/a como la Unidad {callsign}.",
+          "vehicleMarkedSlicktop": "Conducía una patrulla rotulada en blanco y negro tipo slicktop.",
+          "vehicleMarkedLightbar": "Conducía una patrulla rotulada en blanco y negro con barra de luces en el techo.",
+          "vehicleUnmarked": "Conducía un vehículo sin rotular.",
+          "uniformWithBadge": "Vestía mi uniforme {uniform} emitido por el departamento y mostraba visiblemente mi placa en el uniforme.",
+          "patrolUniform": "Vestía mi uniforme de patrulla emitido por el departamento y mostraba visiblemente mi placa en el uniforme.",
+          "plainClothes": "Vestía ropa de paisano.",
+          "plainClothesBadge": "Vestía ropa de paisano y mostraba visiblemente mi placa.",
           "uniforms": {
             "g3": {
-              "lspd": "metropolitan G3",
-              "lssd": "SEB G3"
+              "lspd": "G3 metropolitano",
+              "lssd": "G3 de SEB"
             },
             "bdu": {
-              "lspd": "metropolitan BDU",
-              "lssd": "SEB BDU"
+              "lspd": "BDU metropolitano",
+              "lssd": "BDU de SEB"
             }
           }
         },
         "investigation": {
-          "vehicleObserved": "At approximately {time} hours, I was driving on {street} when I observed a {color} {model}, {plate}.",
-          "onPatrol": "At approximately {time} hours, I was driving on {street}.",
-          "plateKnown": "with {plate} plates",
-          "plateUnknown": "with no plates"
+          "vehicleObserved": "Aproximadamente a las {time} horas, conducía por {street} cuando observé un {model} de color {color}, {plate}.",
+          "onPatrol": "Aproximadamente a las {time} horas, conducía por {street}.",
+          "plateKnown": "con placas {plate}",
+          "plateUnknown": "sin placas"
         },
         "arrest": {
-          "defaultSuspect": "the suspect",
+          "defaultSuspect": "el sospechoso",
           "notebooks": {
-            "lssd": "Sheriff's Reference Book",
-            "lspd": "Field Officer’s Notebook"
+            "lssd": "Manual de Referencia del Sheriff",
+            "lspd": "Cuaderno de Campo del Oficial"
           },
           "responses": {
-            "affirmative": "affirmatively",
-            "negative": "negatively"
+            "affirmative": "afirmativamente",
+            "negative": "negativamente"
           },
-          "miranda": "I admonished {suspectName} utilizing my {notebookType}, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n{suspectName} responded {understood}.",
+          "miranda": "Admonesté a {suspectName} utilizando mi {notebookType}, leyendo lo siguiente textualmente:\n\"Tiene derecho a permanecer en silencio. Cualquier cosa que diga podrá ser usada en su contra en un tribunal. Tiene derecho a la presencia de un abogado durante cualquier interrogatorio. Si no puede pagar un abogado, se le asignará uno sin costo alguno antes de cualquier interrogatorio, si así lo desea. ¿Entiende?\"\n{suspectName} respondió {understood}.",
           "stations": {
-            "lssd": "the nearest booking station",
-            "lspd": "Mission Row Station"
+            "lssd": "la estación de fichaje más cercana",
+            "lspd": "la Estación Mission Row"
           },
-          "transportSelf": "I transported {suspectName} to {station}.",
-          "transportOther": "{transportingRank} {transportingName} transported {suspectName} to {station}.",
-          "searched": "{suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).",
-          "arrestedFor": "{suspectName} was arrested for {charges}.",
-          "aforementionedCharges": "the aforementioned charges"
+          "transportSelf": "Transporté a {suspectName} a {station}.",
+          "transportOther": "{transportingRank} {transportingName} transportó a {suspectName} a {station}.",
+          "searched": "A {suspectName} se le registró frente a un vehículo policial, el cual estaba cubierto por la Videograbadora Digital a Bordo (DICV) del vehículo.",
+          "arrestedFor": "{suspectName} fue arrestado/a por {charges}.",
+          "aforementionedCharges": "los cargos antes mencionados"
         },
         "photographs": {
-          "dicv": "My Digital In-Car Video (DICV) was activated during this investigation - {link}",
-          "photos": "I took photographs using my Department-issued cell phone - {link}",
-          "cctv": "I obtained closed-circuit television (CCTV) footage - {link}",
-          "thirdParty": "I obtained third party video footage - {link}"
+          "dicv": "Activé mi Videograbadora Digital a Bordo (DICV) durante esta investigación - {link}",
+          "photos": "Tomé fotografías con mi teléfono móvil emitido por el Departamento - {link}",
+          "cctv": "Obtuve metraje de circuito cerrado de televisión (CCTV) - {link}",
+          "thirdParty": "Obtuve metraje de video de terceros - {link}"
         },
         "booking": {
-          "bookerSelf": "I",
+          "bookerSelf": "Yo",
           "bookerOther": "{rank} {name}",
-          "biometricsOnFile": "{suspectName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.",
-          "booked": "{booker} booked {suspectName} on all of the charges listed under the ARREST sub-heading.",
-          "fingerprints": "During booking, {booker} took 10 fingerprint samples from {suspectName} and entered them into the Automated Fingerprint Identification System (AFIS).",
-          "dna": "As {suspectName} was booked on a felony charge, {booker} took a Bode SecurSwab 2 Deoxyribonucleic acid (DNA) profile from him.",
-          "codis": "{booker} submitted this profile to the Combined DNA Index System (CODIS)."
+          "biometricsOnFile": "Los datos biométricos completos de {suspectName}, incluidas huellas dactilares y ADN, ya estaban archivados, lo que agilizó el proceso de fichaje.",
+          "booked": "{booker} fichó a {suspectName} por todos los cargos enumerados en el apartado ARRESTO.",
+          "fingerprints": "Durante el fichaje, {booker} tomó 10 muestras de huellas dactilares de {suspectName} y las ingresó en el Sistema Automatizado de Identificación de Huellas (AFIS).",
+          "dna": "Como {suspectName} fue fichado/a por un cargo grave, {booker} tomó un perfil de ácido desoxirribonucleico (ADN) con un Bode SecurSwab 2.",
+          "codis": "{booker} ingresó este perfil en el Sistema Combinado de Índices de ADN (CODIS)."
         },
         "evidence": {
           "propertyRoom": {
-            "lssd": "the booking station's property room",
-            "lspd": "the Mission Row Station property room"
+            "lssd": "la sala de evidencias de la estación de fichaje",
+            "lspd": "la sala de evidencias de la Estación Mission Row"
           },
-          "booked": "I booked all evidence into {propertyRoom}.",
-          "item": "Item {index} - {logNumber} - {description} (x{quantity})"
+          "booked": "Ingresé todas las evidencias en {propertyRoom}.",
+          "item": "Artículo {index} - {logNumber} - {description} (x{quantity})"
         },
         "court": {
-          "primary": "I, {rank} {name} #{badge}, can testify to the contents of this report.",
-          "additional": "{rank} {name} #{badge} can also testify to the contents of this report."
+          "primary": "Yo, {rank} {name} #{badge}, puedo testificar sobre el contenido de este informe.",
+          "additional": "{rank} {name} #{badge} también puede testificar sobre el contenido de este informe."
         },
         "additional": {
-          "plea": "(( {suspectName} pled {plea}. ))"
+          "plea": "(( {suspectName} se declaró {plea}. ))"
         }
       }
     },
