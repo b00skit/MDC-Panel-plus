@@ -159,5 +159,171 @@
       "description": "Siempre estoy abierto a recibir comentarios.",
       "button": "Enviar comentario"
     }
+  },
+  "arrestCalculation": {
+    "page": {
+      "title": "Cálculo de arresto",
+      "description": "Mostrando el cálculo basado en el enlace proporcionado.",
+      "loadingDescription": "Cargando detalles del cálculo...",
+      "error": {
+        "title": "Error en el cálculo de arresto",
+        "description": "No se pudo procesar la solicitud.",
+        "alertTitle": "Error"
+      },
+      "empty": {
+        "title": "No hay cargos para mostrar",
+        "description": "No hay cargos para mostrar. Puede deberse a un error en el enlace o a datos faltantes."
+      },
+      "errors": {
+        "missingCharges": "No se proporcionaron cargos en la URL.",
+        "invalidFormat": "Formato de cargo no válido para el parámetro #{index}. Se esperaban al menos 3 partes, se recibieron {parts}.",
+        "unknownCharge": "No se encontró el cargo con ID \"{id}\".",
+        "invalidCategory": "Índice de categoría \"{category}\" no válido para el cargo de drogas \"{id}\".",
+        "penalCodeFetch": "No se pudieron cargar los datos del código penal."
+      },
+      "documentTitle": "MDC Panel – Cálculo de arresto"
+    },
+    "results": {
+      "additionNames": {
+        "offender": "Autor",
+        "attempt": "Tentativa",
+        "accomplice": "Cómplice",
+        "accessory": "Accesorio",
+        "conspiracy": "Conspiración",
+        "solicitation": "Instigación",
+        "paroleViolation": "Violación de libertad condicional"
+      },
+      "types": {
+        "felony": "Delito grave",
+        "misdemeanor": "Delito menor",
+        "infraction": "Infracción",
+        "unknown": "Desconocido"
+      },
+      "autoBail": {
+        "na": "N/A",
+        "noBail": "SIN FIANZA",
+        "auto": "FIANZA AUTOMÁTICA",
+        "discretionary": "DISCRECIONAL"
+      },
+      "bailStatus": {
+        "na": "N/A",
+        "notEligible": "NO ELEGIBLE",
+        "discretionary": "DISCRECIONAL",
+        "eligible": "ELEGIBLE"
+      },
+      "labels": {
+        "yes": "Sí",
+        "no": "No",
+        "notAvailable": "N/A",
+        "yesWithValue": "Sí | {value}"
+      },
+      "currency": "${value}",
+      "time": {
+        "zero": "0 minutos",
+        "summary": "{parts} ({minutes} min)",
+        "days": {
+          "one": "{count} día",
+          "other": "{count} días"
+        },
+        "hours": {
+          "one": "{count} hora",
+          "other": "{count} horas"
+        },
+        "minutes": {
+          "one": "{count} minuto",
+          "other": "{count} minutos"
+        }
+      },
+      "charges": {
+        "cardTitle": "Cargos",
+        "copyLink": "Copiar enlace del cálculo",
+        "modify": "Modificar cargos",
+        "title": "{prefix} {id}. {charge}",
+        "categorySuffix": "(Categoría {category})",
+        "offenseSuffix": "(Delito #{offense})",
+        "offenseNumber": "Delito #{offense}",
+        "table": {
+          "title": "Título",
+          "addition": "Adición",
+          "offense": "Delito",
+          "type": "Tipo",
+          "minTime": "Tiempo mínimo",
+          "maxTime": "Tiempo máximo",
+          "points": "Puntos",
+          "fine": "Multa",
+          "impound": "Decomiso",
+          "suspension": "Suspensión",
+          "autoBail": "Fianza automática",
+          "bail": "Fianza"
+        },
+        "tooltip": {
+          "sentenceMultiplier": "Multiplicador de condena: {value}x",
+          "pointsMultiplier": "Multiplicador de puntos: {value}x",
+          "originalTime": "Original: {value}",
+          "modifiedTime": "Modificado: {value}",
+          "originalPoints": "Original: {value} puntos",
+          "modifiedPoints": "Modificado: {value} puntos"
+        },
+        "copyTooltip": "Haz clic para copiar {field}",
+        "copyAria": "Copiar {field}"
+      },
+      "copyLabels": {
+        "rawFine": "Multa sin formato"
+      },
+      "stipulations": {
+        "title": "Estipulaciones",
+        "charge": "Cargo",
+        "stipulation": "Estipulación"
+      },
+      "summary": {
+        "title": "Resumen",
+        "alerts": {
+          "sentence": {
+            "title": "Condena limitada",
+            "description": "El tiempo total de condena se ha limitado a {maxDays} días según la política de la Administración de Facciones Legales. A continuación se muestran las cifras sin límite como referencia.",
+            "originalMinLabel": "Tiempo mínimo original:",
+            "originalMaxLabel": "Tiempo máximo original:"
+          },
+          "impound": {
+            "title": "Decomiso limitado",
+            "description": "El tiempo total de decomiso se ha limitado a {maxDays} días. El total sin límite era {value}."
+          },
+          "suspension": {
+            "title": "Suspensión limitada",
+            "description": "El tiempo total de suspensión se ha limitado a {maxDays} días. El total sin límite era {value}."
+          }
+        },
+        "mobile": {
+          "minTime": "Tiempo mínimo total",
+          "maxTime": "Tiempo máximo total",
+          "points": "Puntos totales",
+          "fine": "Multa total",
+          "impound": "Decomiso total",
+          "suspension": "Suspensión total",
+          "bailStatus": "Estado de fianza",
+          "highestBail": "Monto máximo de fianza"
+        },
+        "table": {
+          "minTime": "Tiempo mínimo total",
+          "maxTime": "Tiempo máximo total",
+          "points": "Puntos totales",
+          "fine": "Multa total",
+          "impound": "Decomiso total",
+          "suspension": "Suspensión total",
+          "bailStatus": "Estado de fianza",
+          "highestBail": "Monto máximo de fianza"
+        }
+      },
+      "copyables": {
+        "toastTitle": "¡Copiado al portapapeles!",
+        "toastDescription": "Se ha copiado el valor de {label}.",
+        "minMinutes": "Minutos mínimos",
+        "maxMinutes": "Minutos máximos",
+        "totalImpound": "Decomiso total (días)",
+        "totalSuspension": "Suspensión total (días)",
+        "bailCost": "Costo de fianza",
+        "originalValue": "Original: {value}"
+      }
+    }
   }
 }

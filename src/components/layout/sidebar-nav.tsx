@@ -25,7 +25,6 @@ import {
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import { useScopedI18n } from '@/lib/i18n/client';
-import { LanguageSwitcher } from './language-switcher';
 
 import {
   SidebarHeader,
@@ -293,29 +292,25 @@ export function SidebarNav() {
                 <Bell />
                 <span>{tNav('announcements')}</span>
                 {unreadCount > 0 && (
-                    <SidebarMenuBadge className="bg-destructive text-destructive-foreground">{unreadCount}</SidebarMenuBadge>
+                  <SidebarMenuBadge className="bg-destructive text-destructive-foreground">
+                    {unreadCount}
+                  </SidebarMenuBadge>
                 )}
-                 {state === 'collapsed' && unreadCount > 0 && (
-                    <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-destructive" />
+                {state === 'collapsed' && unreadCount > 0 && (
+                  <div className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
                 )}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-             <SidebarMenuButton
-                asChild
-                tooltip={tNav('github')}
-             >
-                <Link href={config?.URL_GITHUB || '#'} target="_blank">
-                    <Github />
-                    <span>{tNav('github')}</span>
-                </Link>
+            <SidebarMenuButton asChild tooltip={tNav('github')}>
+              <Link href={config?.URL_GITHUB || '#'} target="_blank">
+                <Github />
+                <span>{tNav('github')}</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <div className="mt-3">
-          <LanguageSwitcher />
-        </div>
       </SidebarFooter>
     </>
   );

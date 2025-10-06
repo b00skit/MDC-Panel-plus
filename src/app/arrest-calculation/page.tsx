@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import configData from '../../../data/config.json';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 const additionMapping: { [key: string]: string } = {
   '1': 'Offender',
@@ -32,17 +33,18 @@ function ArrestCalculationContent() {
   const { penalCode, setPenalCode, setParoleViolator, setReportParoleViolator } = useChargeStore();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const t = useScopedI18n('arrestCalculation.page');
 
   useEffect(() => {
-    document.title = 'MDC Panel – Arrest Calculation';
-  }, []);
+    document.title = t('documentTitle');
+  }, [t]);
 
   const parsedData = useMemo(() => {
     if (!penalCode) return { charges: [] as SelectedCharge[], paroleFromAdditions: false };
 
     const chargeStrings = searchParams.getAll('c');
     if (chargeStrings.length === 0) {
-        setError("No charges provided in the URL.");
+        setError(t('errors.missingCharges'));
         return { charges: [] as SelectedCharge[], paroleFromAdditions: false };
     }
 
@@ -55,7 +57,7 @@ function ArrestCalculationContent() {
 
         const parts = chargeStr.split('-');
         if (parts.length < 3) {
-            setError(`Invalid charge format for parameter #${index + 1}. Expected at least 3 parts, received ${parts.length}.`);
+            setError(t('errors.invalidFormat', { index: index + 1, parts: parts.length }));
             parsingError = true;
             return;
         }
@@ -71,7 +73,7 @@ function ArrestCalculationContent() {
         const chargeDetails = Object.values(penalCode).find(c => c.id === chargeId);
 
         if (!chargeDetails) {
-            setError(`Charge with ID "${chargeId}" not found.`);
+            setError(t('errors.unknownCharge', { id: chargeId }));
             parsingError = true;
             return;
         }
@@ -94,7 +96,7 @@ function ArrestCalculationContent() {
         if (categoryIndex && chargeDetails.drugs) {
             selectedCharge.category = chargeDetails.drugs[categoryIndex] || null;
              if (!selectedCharge.category) {
-                setError(`Invalid category index "${categoryIndex}" for drug charge "${chargeId}".`);
+                setError(t('errors.invalidCategory', { category: categoryIndex, id: chargeId }));
                 parsingError = true;
                 return;
             }
@@ -105,7 +107,7 @@ function ArrestCalculationContent() {
     if (parsingError) return { charges: [] as SelectedCharge[], paroleFromAdditions: false };
     return { charges, paroleFromAdditions };
 
-  }, [searchParams, penalCode, setError]);
+  }, [searchParams, penalCode, setError, t]);
 
   const parsedCharges = parsedData.charges;
   const paroleFromAdditions = parsedData.paroleFromAdditions;
@@ -124,13 +126,13 @@ function ArrestCalculationContent() {
         })
         .catch((err) => {
           console.error('Failed to fetch penal code:', err);
-          setError('Could not load penal code data.');
+          setError(t('errors.penalCodeFetch'));
           setLoading(false);
         });
     } else {
         setLoading(false);
     }
-  }, [penalCode, setPenalCode]);
+  }, [penalCode, setPenalCode, t]);
 
   useEffect(() => {
     const paroleValue = paroleViolatorOverride || false;
@@ -141,7 +143,7 @@ function ArrestCalculationContent() {
   if (loading) {
     return (
         <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-            <PageHeader title="Arrest Calculation" description="Loading calculation details..." />
+            <PageHeader title={t('title')} description={t('loadingDescription')} />
             <Skeleton className="h-64 w-full" />
         </div>
     );
@@ -150,10 +152,10 @@ function ArrestCalculationContent() {
   if (error) {
     return (
          <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-            <PageHeader title="Arrest Calculation Error" description="Could not process the request." />
+            <PageHeader title={t('error.title')} description={t('error.description')} />
             <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>{t('error.alertTitle')}</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
             </Alert>
         </div>
@@ -162,7 +164,7 @@ function ArrestCalculationContent() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-        <PageHeader title="Arrest Calculation" description="Displaying calculation based on the provided link." />
+        <PageHeader title={t('title')} description={t('description')} />
         {penalCode && parsedCharges.length > 0 ? (
             <ArrestCalculatorResults
                 report={parsedCharges}
@@ -176,9 +178,9 @@ function ArrestCalculationContent() {
         ) : (
             <Alert variant="secondary">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>No Charges to Display</AlertTitle>
+                <AlertTitle>{t('empty.title')}</AlertTitle>
                 <AlertDescription>
-                   There are no charges to display. This might be due to an error in the link or missing data.
+                   {t('empty.description')}
                 </AlertDescription>
             </Alert>
         )}
