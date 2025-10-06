@@ -16,6 +16,14 @@ const getType = (type: string | undefined, t: (key: string) => string) => {
     }
 };
 
+const toCamelCase = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
+        index === 0 ? word.toLowerCase() : word.toUpperCase()
+      )
+      .replace(/\s+/g, '');
+
 const formatTotalTime = (totalMinutes: number, t: (key: string, values?: any) => string) => {
     if (totalMinutes === 0) return t('time.zero');
     totalMinutes = Math.round(totalMinutes);
@@ -23,10 +31,13 @@ const formatTotalTime = (totalMinutes: number, t: (key: string, values?: any) =>
     const hours = Math.floor((totalMinutes % 1440) / 60);
     const minutes = totalMinutes % 60;
 
+    const formatUnit = (unit: 'days' | 'hours' | 'minutes', count: number) =>
+        t(`time.${unit}.${count === 1 ? 'one' : 'other'}`, { count });
+
     const parts = [] as string[];
-    if(days > 0) parts.push(t('time.days', { count: days }));
-    if(hours > 0) parts.push(t('time.hours', { count: hours }));
-    if(minutes > 0) parts.push(t('time.minutes', { count: minutes }));
+    if (days > 0) parts.push(formatUnit('days', days));
+    if (hours > 0) parts.push(formatUnit('hours', hours));
+    if (minutes > 0) parts.push(formatUnit('minutes', minutes));
 
     return t('time.summary', { parts: parts.join(' '), minutes: totalMinutes });
 };
@@ -65,8 +76,9 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
     }, [report, reportIsParoleViolator]);
 
     const getAdditionName = (name: string) => {
-        const key = name.toLowerCase().replace(/ /g, '');
-        return tShared(`additionNames.${key}` as any) || name;
+        const normalizedKey = name.toLowerCase().replace(/ /g, '');
+        const translationKey = normalizedKey === 'paroleviolation' ? 'paroleViolation' : normalizedKey;
+        return tShared(`additionNames.${translationKey}` as any) || name;
     }
 
     return (
@@ -211,7 +223,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                                         <p style={{ margin: 0 }}><strong>{t('sections.summary.maxSentence')}:</strong> {calculation ? formatTotalTime(calculation.maxTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
                                         <p style={{ margin: 0 }}><strong>{t('sections.summary.totalFine')}:</strong> ${calculation ? calculation.totals.fine.toLocaleString() : 'N/A'}</p>
                                         <p style={{ margin: 0 }}><strong>{t('sections.summary.points')}:</strong> {calculation ? Math.round(calculation.totals.modified.points) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.bailStatus')}:</strong> {calculation ? tShared(`bailStatus.${calculation.bailStatus.toLowerCase().replace(/ /g, '')}` as any) : 'N/A'}</p>
+                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.bailStatus')}:</strong> {calculation ? tShared(`bailStatus.${toCamelCase(calculation.bailStatus)}` as any) : 'N/A'}</p>
                                         <p style={{ margin: 0 }}><strong>{t('sections.summary.bailAmount')}:</strong> ${calculation ? calculation.totals.highestBail.toLocaleString() : 'N/A'}</p>
                                     </td>
                                 </tr>

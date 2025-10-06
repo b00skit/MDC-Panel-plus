@@ -620,7 +620,7 @@
         "accessory": "Encubridor",
         "conspiracy": "Conspiración",
         "solicitation": "Instigación",
-        "paroleviolation": "Violación de libertad condicional"
+        "paroleViolation": "Violación de libertad condicional"
       },
       "types": {
         "felony": "Delito grave",
@@ -636,7 +636,7 @@
       },
       "bailStatus": {
         "na": "N/D",
-        "noteligible": "No elegible",
+        "notEligible": "No elegible",
         "discretionary": "Discrecional",
         "eligible": "Elegible"
       },
@@ -649,9 +649,18 @@
       "currency": "${value}",
       "time": {
         "zero": "0 minutos",
-        "days": "{count, plural, one {# día} other {# días}}",
-        "hours": "{count, plural, one {# hora} other {# horas}}",
-        "minutes": "{count, plural, one {# minuto} other {# minutos}}",
+        "days": {
+          "one": "{count} día",
+          "other": "{count} días"
+        },
+        "hours": {
+          "one": "{count} hora",
+          "other": "{count} horas"
+        },
+        "minutes": {
+          "one": "{count} minuto",
+          "other": "{count} minutos"
+        },
         "summary": "{parts} ({minutes} min en total)"
       },
       "charges": {

@@ -620,7 +620,7 @@
         "accessory": "Accessory",
         "conspiracy": "Conspiracy",
         "solicitation": "Solicitation",
-        "paroleviolation": "Parole Violation"
+        "paroleViolation": "Parole Violation"
       },
       "types": {
         "felony": "Felony",
@@ -636,7 +636,7 @@
       },
       "bailStatus": {
         "na": "N/A",
-        "noteligible": "Not Eligible",
+        "notEligible": "Not Eligible",
         "discretionary": "Discretionary",
         "eligible": "Eligible"
       },
@@ -649,9 +649,18 @@
       "currency": "${value}",
       "time": {
         "zero": "0 minutes",
-        "days": "{count, plural, one {# Day} other {# Days}}",
-        "hours": "{count, plural, one {# Hour} other {# Hours}}",
-        "minutes": "{count, plural, one {# Minute} other {# Minutes}}",
+        "days": {
+          "one": "{count} Day",
+          "other": "{count} Days"
+        },
+        "hours": {
+          "one": "{count} Hour",
+          "other": "{count} Hours"
+        },
+        "minutes": {
+          "one": "{count} Minute",
+          "other": "{count} Minutes"
+        },
         "summary": "{parts} ({minutes} mins)"
       },
       "charges": {
