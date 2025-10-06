@@ -23,6 +23,50 @@
     "announcements": "Announcements",
     "github": "GitHub"
   },
+  "legalSearch": {
+    "header": {
+      "title": "Legal Search",
+      "description": "Ask any questions and get penal code and caselaw citations in a single response."
+    },
+    "accuracyNotice": {
+      "title": "Accuracy Notice",
+      "description": "This assistant can make mistakes. Always confirm the cited penal code and caselaw before acting on the information provided."
+    },
+    "intro": {
+      "title": "Legal Search Assistant",
+      "description": "Describe a situation or ask about a statute. I will provide a short explanation and cite relevant penal code charges or caselaw so you can dig deeper instantly.",
+      "bullets": {
+        "penalCode": "Find matching San Andreas Penal Code charges.",
+        "caselaw": "Surface local caselaw summaries and implications.",
+        "oyez": "Link out to similar Oyez cases for further reading."
+      }
+    },
+    "chargeTypes": {
+      "felony": "Felony",
+      "misdemeanor": "Misdemeanor",
+      "infraction": "Infraction"
+    },
+    "results": {
+      "explanation": "Explanation",
+      "penalCode": "Penal Code Citations",
+      "caselaw": "Caselaw Citations",
+      "oyez": "Oyez References",
+      "noPenalCode": "No penal code charges were identified for this query.",
+      "noCaselaw": "No local caselaw directly matched this question.",
+      "summary": "Summary",
+      "implication": "Implication"
+    },
+    "inputPlaceholder": "Ask about a charge, caselaw, or legal scenario...",
+    "buttons": {
+      "search": "Search",
+      "searching": "Searching..."
+    },
+    "errors": {
+      "title": "Unable to search",
+      "overloaded": "The model is currently overloaded. Please try your search again in a moment.",
+      "generic": "An error occurred while searching. Please try again."
+    }
+  },
   "paperworkGenerators": {
     "page": {
       "header": {
@@ -329,6 +373,155 @@
           "selectCategory": "Please select a category for the drug charge \"{charge}\"."
         }
       }
+    },
+    "results": {
+      "additionNames": {
+        "offender": "Offender",
+        "attempt": "Attempt",
+        "accomplice": "Accomplice",
+        "accessory": "Accessory",
+        "conspiracy": "Conspiracy",
+        "solicitation": "Solicitation",
+        "paroleViolation": "Parole Violation"
+      },
+      "types": {
+        "felony": "Felony",
+        "misdemeanor": "Misdemeanor",
+        "infraction": "Infraction",
+        "unknown": "Unknown"
+      },
+      "autoBail": {
+        "na": "N/A",
+        "noBail": "No Bail",
+        "auto": "Auto Bail",
+        "discretionary": "Discretionary"
+      },
+      "bailStatus": {
+        "na": "N/A",
+        "notEligible": "Not Eligible",
+        "discretionary": "Discretionary",
+        "eligible": "Eligible"
+      },
+      "labels": {
+        "yes": "Yes",
+        "no": "No",
+        "notAvailable": "N/A",
+        "yesWithValue": "Yes ({value})"
+      },
+      "currency": "${value}",
+      "time": {
+        "zero": "0 minutes",
+        "days": {
+          "one": "{count} Day",
+          "other": "{count} Days"
+        },
+        "hours": {
+          "one": "{count} Hour",
+          "other": "{count} Hours"
+        },
+        "minutes": {
+          "one": "{count} Minute",
+          "other": "{count} Minutes"
+        },
+        "summary": "{parts} ({minutes} mins)"
+      },
+      "charges": {
+        "cardTitle": "Charges",
+        "copyLink": "Copy calculation link",
+        "modify": "Modify charges",
+        "title": "{prefix} {id}. {charge}",
+        "categorySuffix": "(Category: {category})",
+        "offenseSuffix": "(Offense {offense})",
+        "offenseNumber": "Offense #{offense}",
+        "copyTooltip": "Copy {field} to clipboard",
+        "copyAria": "Copy {field} to clipboard",
+        "table": {
+          "title": "Charge",
+          "addition": "Addition",
+          "offense": "Offense",
+          "type": "Type",
+          "minTime": "Min Time",
+          "maxTime": "Max Time",
+          "points": "Points",
+          "fine": "Fine",
+          "impound": "Impound",
+          "suspension": "Suspension",
+          "autoBail": "Auto Bail",
+          "bail": "Bail"
+        },
+        "tooltip": {
+          "sentenceMultiplier": "Sentence multiplier: x{value}",
+          "pointsMultiplier": "Points multiplier: x{value}",
+          "originalTime": "Original time: {value}",
+          "modifiedTime": "Modified time: {value}",
+          "originalPoints": "Original points: {value}",
+          "modifiedPoints": "Modified points: {value}"
+        }
+      },
+      "copyLabels": {
+        "rawFine": "Raw Fine"
+      },
+      "stipulations": {
+        "title": "Stipulations",
+        "charge": "Charge",
+        "stipulation": "Stipulation"
+      },
+      "summary": {
+        "title": "Summary",
+        "alerts": {
+          "sentence": {
+            "title": "Sentence capped",
+            "description": "The total sentence exceeds the maximum of {maxDays} days. The displayed time has been capped.",
+            "originalMinLabel": "Original Min:",
+            "originalMaxLabel": "Original Max:"
+          },
+          "impound": {
+            "title": "Impound capped",
+            "description": "The total impound duration exceeds the maximum of {maxDays} days. Displayed value: {value}."
+          },
+          "suspension": {
+            "title": "Suspension capped",
+            "description": "The total suspension duration exceeds the maximum of {maxDays} days. Displayed value: {value}."
+          }
+        },
+        "mobile": {
+          "minTime": "Min Time",
+          "maxTime": "Max Time",
+          "points": "Points",
+          "fine": "Fine",
+          "impound": "Impound",
+          "suspension": "Suspension",
+          "bailStatus": "Bail Status",
+          "highestBail": "Highest Bail"
+        },
+        "table": {
+          "minTime": "Min Time",
+          "maxTime": "Max Time",
+          "points": "Points",
+          "fine": "Fine",
+          "impound": "Impound",
+          "suspension": "Suspension",
+          "bailStatus": "Bail Status",
+          "highestBail": "Highest Bail"
+        }
+      },
+      "copyables": {
+        "minMinutes": "Minimum minutes",
+        "maxMinutes": "Maximum minutes",
+        "totalImpound": "Total impound days",
+        "totalSuspension": "Total suspension days",
+        "bailCost": "Highest bail",
+        "originalValue": "Original value: {value}",
+        "toastTitle": "Copied",
+        "toastDescription": "{label} copied to clipboard."
+      },
+      "toasts": {
+        "copiedTitle": "Copied",
+        "copiedDescriptionWithLabel": "{label}: {value} copied to clipboard.",
+        "copiedDescription": "{value} copied to clipboard.",
+        "linkCopiedTitle": "Link copied",
+        "linkCopiedDescription": "Calculation link copied to clipboard."
+      }
     }
   },
   "arrestReport": {
@@ -537,12 +730,12 @@
         "vehiclePlate": "VEHICLE PLATE",
         "transportingRank": "TRANSPORTING OFFICER RANK",
         "transportingName": "TRANSPORTING OFFICER NAME",
+        "bookingRank": "BOOKING OFFICER RANK",
+        "bookingName": "BOOKING OFFICER NAME",
         "dicvsLink": "DICVS Footage Link",
         "photosLink": "Photographs Link",
         "cctvLink": "CCTV Footage Link",
         "thirdPartyLink": "Third Party Footage Link",
-        "bookingRank": "BOOKING OFFICER RANK",
-        "bookingName": "BOOKING OFFICER NAME",
         "plea": "Select Plea..."
       },
       "buttons": {
@@ -700,176 +893,6 @@
         "additional": {
           "plea": "(( {suspectName} pled {plea}. ))"
         }
-      }
-    }
-  },
-  "arrestCalculation": {
-    "page": {
-      "documentTitle": "MDC Panel – Shared Calculation",
-      "title": "Shared Arrest Calculation",
-      "description": "This is a shared calculation from the Arrest Calculator.",
-      "loadingDescription": "Loading shared arrest calculation...",
-      "error": {
-        "title": "Calculation Error",
-        "description": "There was an error processing the shared calculation.",
-        "alertTitle": "Unable to Parse Charges",
-        "missingCharges": "No charges were provided in the URL.",
-        "invalidFormat": "Charge #{index} has an invalid format. Expected at least 3 parts, but got {parts}.",
-        "unknownCharge": "Charge ID '{id}' is not a valid charge in the penal code.",
-        "invalidCategory": "Category index '{category}' for charge ID '{id}' is not valid."
-      },
-      "empty": {
-        "title": "No Charges Found",
-        "description": "No valid charges could be parsed from the URL."
-      }
-    },
-    "results": {
-      "additionNames": {
-        "offender": "Offender",
-        "attempt": "Attempt",
-        "accomplice": "Accomplice",
-        "accessory": "Accessory",
-        "conspiracy": "Conspiracy",
-        "solicitation": "Solicitation",
-        "paroleViolation": "Parole Violation"
-      },
-      "types": {
-        "felony": "Felony",
-        "misdemeanor": "Misdemeanor",
-        "infraction": "Infraction",
-        "unknown": "Unknown"
-      },
-      "autoBail": {
-        "na": "N/A",
-        "noBail": "No Bail",
-        "auto": "Auto Bail",
-        "discretionary": "Discretionary"
-      },
-      "bailStatus": {
-        "na": "N/A",
-        "notEligible": "Not Eligible",
-        "discretionary": "Discretionary",
-        "eligible": "Eligible"
-      },
-      "labels": {
-        "yes": "Yes",
-        "no": "No",
-        "notAvailable": "N/A",
-        "yesWithValue": "Yes ({value})"
-      },
-      "currency": "${value}",
-      "time": {
-        "zero": "0 minutes",
-        "days": {
-          "one": "{count} Day",
-          "other": "{count} Days"
-        },
-        "hours": {
-          "one": "{count} Hour",
-          "other": "{count} Hours"
-        },
-        "minutes": {
-          "one": "{count} Minute",
-          "other": "{count} Minutes"
-        },
-        "summary": "{parts} ({minutes} mins)"
-      },
-      "charges": {
-        "cardTitle": "Charges",
-        "copyLink": "Copy calculation link",
-        "modify": "Modify charges",
-        "title": "{prefix} {id}. {charge}",
-        "categorySuffix": "(Category: {category})",
-        "offenseSuffix": "(Offense {offense})",
-        "offenseNumber": "Offense #{offense}",
-        "copyTooltip": "Copy {field} to clipboard",
-        "copyAria": "Copy {field} to clipboard",
-        "table": {
-          "title": "Charge",
-          "addition": "Addition",
-          "offense": "Offense",
-          "type": "Type",
-          "minTime": "Min Time",
-          "maxTime": "Max Time",
-          "points": "Points",
-          "fine": "Fine",
-          "impound": "Impound",
-          "suspension": "Suspension",
-          "autoBail": "Auto Bail",
-          "bail": "Bail"
-        },
-        "tooltip": {
-          "sentenceMultiplier": "Sentence multiplier: x{value}",
-          "pointsMultiplier": "Points multiplier: x{value}",
-          "originalTime": "Original time: {value}",
-          "modifiedTime": "Modified time: {value}",
-          "originalPoints": "Original points: {value}",
-          "modifiedPoints": "Modified points: {value}"
-        }
-      },
-      "copyLabels": {
-        "rawFine": "Raw Fine"
-      },
-      "stipulations": {
-        "title": "Stipulations",
-        "charge": "Charge",
-        "stipulation": "Stipulation"
-      },
-      "summary": {
-        "title": "Summary",
-        "alerts": {
-          "sentence": {
-            "title": "Sentence capped",
-            "description": "The total sentence exceeds the maximum of {maxDays} days. The displayed time has been capped.",
-            "originalMinLabel": "Original Min:",
-            "originalMaxLabel": "Original Max:"
-          },
-          "impound": {
-            "title": "Impound capped",
-            "description": "The total impound duration exceeds the maximum of {maxDays} days. Displayed value: {value}."
-          },
-          "suspension": {
-            "title": "Suspension capped",
-            "description": "The total suspension duration exceeds the maximum of {maxDays} days. Displayed value: {value}."
-          }
-        },
-        "mobile": {
-          "minTime": "Min Time",
-          "maxTime": "Max Time",
-          "points": "Points",
-          "fine": "Fine",
-          "impound": "Impound",
-          "suspension": "Suspension",
-          "bailStatus": "Bail Status",
-          "highestBail": "Highest Bail"
-        },
-        "table": {
-          "minTime": "Min Time",
-          "maxTime": "Max Time",
-          "points": "Points",
-          "fine": "Fine",
-          "impound": "Impound",
-          "suspension": "Suspension",
-          "bailStatus": "Bail Status",
-          "highestBail": "Highest Bail"
-        }
-      },
-      "copyables": {
-        "minMinutes": "Minimum minutes",
-        "maxMinutes": "Maximum minutes",
-        "totalImpound": "Total impound days",
-        "totalSuspension": "Total suspension days",
-        "bailCost": "Highest bail",
-        "originalValue": "Original value: {value}",
-        "toastTitle": "Copied",
-        "toastDescription": "{label} copied to clipboard."
-      },
-      "toasts": {
-        "copiedTitle": "Copied",
-        "copiedDescriptionWithLabel": "{label}: {value} copied to clipboard.",
-        "copiedDescription": "{value} copied to clipboard.",
-        "linkCopiedTitle": "Link copied",
-        "linkCopiedDescription": "Calculation link copied to clipboard."
       }
     }
   },
