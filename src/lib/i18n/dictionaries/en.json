@@ -23,6 +23,30 @@
     "announcements": "Announcements",
     "github": "GitHub"
   },
+  "paperworkGenerators": {
+    "page": {
+      "header": {
+        "title": "Paperwork Generators",
+        "description": "Select a template or use one of your saved forms."
+      },
+      "builderButton": "Create New Form",
+      "customForms": {
+        "title": "Your Custom Forms",
+        "table": {
+          "title": "Title",
+          "description": "Description",
+          "lastModified": "Last Modified",
+          "actions": "Actions",
+          "useForm": "Use Form"
+        },
+        "empty": "You haven't created any forms yet. Click \"Create New Form\" to get started."
+      }
+    },
+    "list": {
+      "globalTitle": "Global Generators",
+      "empty": "No paperwork generators available."
+    }
+  },
   "maintenance": {
     "title": "Under Maintenance",
     "message": "We are currently performing scheduled maintenance. We should be back online shortly."

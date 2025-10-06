@@ -23,6 +23,30 @@
     "announcements": "Anuncios",
     "github": "GitHub"
   },
+  "paperworkGenerators": {
+    "page": {
+      "header": {
+        "title": "Generadores de Documentos",
+        "description": "Selecciona una plantilla o utiliza uno de tus formularios guardados."
+      },
+      "builderButton": "Crear nuevo formulario",
+      "customForms": {
+        "title": "Tus formularios personalizados",
+        "table": {
+          "title": "Título",
+          "description": "Descripción",
+          "lastModified": "Última modificación",
+          "actions": "Acciones",
+          "useForm": "Usar formulario"
+        },
+        "empty": "Aún no has creado ningún formulario. Haz clic en \"Crear nuevo formulario\" para comenzar."
+      }
+    },
+    "list": {
+      "globalTitle": "Generadores globales",
+      "empty": "No hay generadores de documentos disponibles."
+    }
+  },
   "maintenance": {
     "title": "En mantenimiento",
     "message": "Estamos realizando tareas de mantenimiento programadas. Volveremos en línea en breve."
