@@ -42,6 +42,7 @@ import { Separator } from '../ui/separator';
 import { useBasicReportModifiersStore } from '@/stores/basic-report-modifiers-store';
 import { Checkbox } from '../ui/checkbox';
 import { areStreetCharges } from '@/lib/code-enhancement';
+import { StreetsAlert } from '../shared/streets-act-warning';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -504,17 +505,7 @@ export function ArrestCalculatorPage() {
           );
         })}
 
-        {showStreetsActWarning && (
-          <Alert variant="warning" className="mt-4">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Heads up!</AlertTitle>
-            <AlertDescription>
-              One or more of the charges are applicable to <strong>Section IV</strong> of the STREETS Act.<br/>
-              The arrestee may be subject to the repeat offender clause and increased vehicle seizures and license suspenses (from 7 to 28 days).<br/> 
-              Reference: <a href={configData.URL_STREETS} target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-700">Strengthen Traffic Regulations to Ensure Every Traveler's Safety Act 2024 (STREETS Act)</a>
-            </AlertDescription>
-          </Alert>
-        )}
+        {showStreetsActWarning && StreetsAlert()}
         
         {showDrugChargeWarning && (
             <Alert variant="warning" className="mt-4">
