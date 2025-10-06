@@ -178,13 +178,12 @@ export function ArrestCalculatorPage() {
     });
   }, [charges, getChargeDetails]);
 
-  const showStreetsActWarning = useMemo(() => (
-    areStreetCharges(
-      charges,
-      charges.map(
-        (charge: SelectedCharge) => getChargeDetails(charge.chargeId)
-      ))
-  ), [charges])
+  const showStreetsActWarning = useMemo(() => {
+    const chargesDetails = charges.map(
+      (charge: SelectedCharge) => getChargeDetails(charge.chargeId)
+    )
+    return areStreetCharges(charges, chargesDetails);
+  }, [charges])
   
   const handleChargeSelect = (chargeRow: SelectedCharge, chargeId: string) => {
     if (!penalCode) return;
