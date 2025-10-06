@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -8,11 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Trash2, Copy, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Alert } from '../ui/alert';
-import { retriever } from 'genkit/plugin';
-import { boolean } from 'zod';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 export function LogParserPage() {
   const [characterNames, setCharacterNames] = useState<string[]>(['']);
@@ -27,6 +26,7 @@ export function LogParserPage() {
   });
   const outputRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+  const t = useScopedI18n('logParser');
 
   const handleAddCharacter = () => {
     setCharacterNames([...characterNames, '']);
@@ -53,8 +53,8 @@ export function LogParserPage() {
 
     if (names.length === 0) {
         toast({
-            title: 'Missing Character Name',
-            description: 'Please enter at least one character name to filter the logs.',
+            title: t('toasts.missingName.title'),
+            description: t('toasts.missingName.description'),
             variant: 'destructive',
         });
         return;
@@ -85,43 +85,43 @@ export function LogParserPage() {
 
     setOutputText(filtered.join('\n'));
     toast({
-        title: 'Logs Parsed',
-        description: 'The chat log has been filtered based on your selections.',
+        title: t('toasts.success.title'),
+        description: t('toasts.success.description'),
     });
   };
 
   const copyOutput = () => {
     if (!outputText) {
-        toast({ title: 'Nothing to Copy', description: 'The output is empty.', variant: 'destructive' });
+        toast({ title: t('toasts.nothingToCopy.title'), description: t('toasts.nothingToCopy.description'), variant: 'destructive' });
         return;
     }
     navigator.clipboard.writeText(outputText);
-    toast({ title: 'Copied!', description: 'The filtered output has been copied to your clipboard.' });
+    toast({ title: t('toasts.copied.title'), description: t('toasts.copied.description') });
   };
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <PageHeader
-        title="Log Parser"
-        description="Filter GTA:World chat logs to isolate specific character interactions."
+        title={t('header.title')}
+        description={t('header.description')}
       />
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Configuration</CardTitle>
+            <CardTitle>{t('configuration.title')}</CardTitle>
             <CardDescription>
-                Enter the character names and select the filtering options.
+                {t('configuration.description')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-                <Label>Character Names</Label>
+                <Label>{t('configuration.characterNamesLabel')}</Label>
                 <div className="space-y-2">
                 {characterNames.map((name, index) => (
                     <div key={index} className="flex items-center gap-2">
                     <Input
                         type="text"
-                        placeholder={`Character Name ${index + 1}`}
+                        placeholder={t('configuration.characterNamePlaceholder', { index: index + 1 })}
                         value={name}
                         onChange={(e) => handleCharacterNameChange(index, e.target.value)}
                     />
@@ -134,17 +134,17 @@ export function LogParserPage() {
                 ))}
                 </div>
                 <Button variant="outline" size="sm" className="mt-2" onClick={handleAddCharacter}>
-                    <Plus className="mr-2 h-4 w-4" /> Add Character
+                    <Plus className="mr-2 h-4 w-4" /> {t('configuration.addCharacterButton')}
                 </Button>
             </div>
 
             <div>
-                <Label>Filtering Options</Label>
+                <Label>{t('configuration.filteringOptionsLabel')}</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-2">
                   {Object.entries(options).map((entry) => entry[1]).map( (value: {isChecked: any, text: any}) => (
                     <div key={value.text} className="flex items-center space-x-2">
                       <Checkbox id={value.text} checked={value.isChecked} onCheckedChange={() => handleOptionChange(value.text)}/>
-                      <Label htmlFor={value.text} className='text-sm font-normal cursor pointer'>{value.text.replace(/([A-Z])/g, ' $1').replace(/^./, (str:any) => str.toUpperCase())}</Label>
+                      <Label htmlFor={value.text} className='text-sm font-normal cursor pointer'>{t(`configuration.options.${value.text}`)}</Label>
                     </div>
                   ))}
                 </div>
@@ -154,34 +154,34 @@ export function LogParserPage() {
 
         <Card>
             <CardHeader>
-                <CardTitle>Input & Output</CardTitle>
+                <CardTitle>{t('io.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                  <div>
-                    <Label htmlFor="input-text">Raw Chat Log</Label>
+                    <Label htmlFor="input-text">{t('io.rawLogLabel')}</Label>
                     <Textarea
                         id="input-text"
-                        placeholder="Paste your chat log here..."
+                        placeholder={t('io.rawLogPlaceholder')}
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
                         className="h-48 font-mono text-xs"
                     />
                 </div>
                  <div>
-                    <Label htmlFor="output-text">Filtered Output</Label>
+                    <Label htmlFor="output-text">{t('io.filteredOutputLabel')}</Label>
                     <Textarea
                         id="output-text"
                         ref={outputRef}
                         readOnly
                         value={outputText}
-                        placeholder="Filtered logs will appear here..."
+                        placeholder={t('io.filteredOutputPlaceholder')}
                         className="h-48 font-mono text-xs"
                     />
                 </div>
                 <div className="flex gap-2">
-                    <Button onClick={parseText}>Parse Logs</Button>
+                    <Button onClick={parseText}>{t('io.parseButton')}</Button>
                     <Button variant="secondary" onClick={copyOutput}>
-                        <Copy className="mr-2 h-4 w-4" /> Copy Output
+                        <Copy className="mr-2 h-4 w-4" /> {t('io.copyButton')}
                     </Button>
                 </div>
             </CardContent>

@@ -23,6 +23,54 @@
     "announcements": "Anuncios",
     "github": "GitHub"
   },
+  "logParser": {
+    "header": {
+      "title": "Analizador de Registros",
+      "description": "Filtra los registros de chat de GTA:World para aislar interacciones de personajes específicos."
+    },
+    "configuration": {
+      "title": "Configuración",
+      "description": "Ingresa los nombres de los personajes y selecciona las opciones de filtrado.",
+      "characterNamesLabel": "Nombres de los Personajes",
+      "characterNamePlaceholder": "Nombre del Personaje {index}",
+      "addCharacterButton": "Añadir Personaje",
+      "filteringOptionsLabel": "Opciones de Filtrado",
+      "options": {
+        "includeTimestamps": "Incluir Marcas de Tiempo",
+        "includeEmotes": "Incluir Emoticonos",
+        "includeRadio": "Incluir Radio",
+        "includeAme": "Incluir /ame",
+        "includeDo": "Incluir /do"
+      }
+    },
+    "io": {
+      "title": "Entrada y Salida",
+      "rawLogLabel": "Registro de Chat sin Procesar",
+      "rawLogPlaceholder": "Pega aquí tu registro de chat...",
+      "filteredOutputLabel": "Salida Filtrada",
+      "filteredOutputPlaceholder": "Los registros filtrados aparecerán aquí...",
+      "parseButton": "Analizar Registros",
+      "copyButton": "Copiar Salida"
+    },
+    "toasts": {
+      "missingName": {
+        "title": "Falta el Nombre del Personaje",
+        "description": "Por favor, ingresa al menos un nombre de personaje para filtrar los registros."
+      },
+      "success": {
+        "title": "Registros Analizados",
+        "description": "El registro de chat ha sido filtrado según tus selecciones."
+      },
+      "nothingToCopy": {
+        "title": "Nada que Copiar",
+        "description": "La salida está vacía."
+      },
+      "copied": {
+        "title": "¡Copiado!",
+        "description": "La salida filtrada ha sido copiada a tu portapapeles."
+      }
+    }
+  },
   "simplifiedPenalCode": {
     "page": {
       "header": {

@@ -23,6 +23,54 @@
     "announcements": "Announcements",
     "github": "GitHub"
   },
+  "logParser": {
+    "header": {
+      "title": "Log Parser",
+      "description": "Filter GTA:World chat logs to isolate specific character interactions."
+    },
+    "configuration": {
+      "title": "Configuration",
+      "description": "Enter the character names and select the filtering options.",
+      "characterNamesLabel": "Character Names",
+      "characterNamePlaceholder": "Character Name {index}",
+      "addCharacterButton": "Add Character",
+      "filteringOptionsLabel": "Filtering Options",
+      "options": {
+        "includeTimestamps": "Include Timestamps",
+        "includeEmotes": "Include Emotes",
+        "includeRadio": "Include Radio",
+        "includeAme": "Include /ame",
+        "includeDo": "Include /do"
+      }
+    },
+    "io": {
+      "title": "Input & Output",
+      "rawLogLabel": "Raw Chat Log",
+      "rawLogPlaceholder": "Paste your chat log here...",
+      "filteredOutputLabel": "Filtered Output",
+      "filteredOutputPlaceholder": "Filtered logs will appear here...",
+      "parseButton": "Parse Logs",
+      "copyButton": "Copy Output"
+    },
+    "toasts": {
+      "missingName": {
+        "title": "Missing Character Name",
+        "description": "Please enter at least one character name to filter the logs."
+      },
+      "success": {
+        "title": "Logs Parsed",
+        "description": "The chat log has been filtered based on your selections."
+      },
+      "nothingToCopy": {
+        "title": "Nothing to Copy",
+        "description": "The output is empty."
+      },
+      "copied": {
+        "title": "Copied!",
+        "description": "The filtered output has been copied to your clipboard."
+      }
+    }
+  },
   "simplifiedPenalCode": {
     "page": {
       "header": {
