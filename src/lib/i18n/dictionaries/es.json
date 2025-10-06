@@ -1,3 +1,4 @@
+
 {
   "common": {
     "language": {
@@ -367,7 +368,92 @@
         "linkCopiedDescription": "Se ha copiado un enlace compartible a este cálculo."
       }
     }
+  },
+  "arrestReport": {
+    "page": {
+      "documentTitle": "MDC Panel – Informe de Arresto",
+      "header": {
+        "title": "Informe de Arresto",
+        "descriptionWithReport": "Un resumen de los cargos calculados y el formulario de informe.",
+        "descriptionNew": "Crear un nuevo informe de arresto."
+      },
+      "disclaimer": {
+        "title": "Descargo de responsabilidad",
+        "description": "Esta herramienta es para ayudarte con tu documentación. La calidad de tu redacción es tu responsabilidad. Se espera que proporciones información veraz y detallada."
+      },
+      "enableAdvanced": "Habilitar Informe Avanzado",
+      "noCharges": {
+        "title": "No hay Cargos Seleccionados",
+        "description": "Debes seleccionar los cargos en la Calculadora de Arrestos antes de poder crear un informe.",
+        "button": "Ir a la Calculadora de Arrestos"
+      }
+    },
+    "form": {
+      "sections": {
+        "location": {
+          "title": "Detalles de Ubicación"
+        },
+        "arrest": {
+          "title": "Sección de Arresto"
+        },
+        "evidence": {
+          "title": "Sección de Pruebas"
+        }
+      },
+      "fields": {
+        "suspectName": {
+          "label": "Nombre Completo del Sospechoso",
+          "placeholder": "Nombre Apellido"
+        },
+        "narrative": {
+          "label": "Narrativa del Arresto",
+          "placeholder": "Narrativa del Arresto",
+          "description": "Describe los eventos que llevaron al arresto en primera persona y en orden cronológico, asegúrate de explicar la causa probable de cada uno de los cargos y del arresto."
+        },
+        "supportingEvidence": {
+          "label": "Pruebas de Apoyo",
+          "placeholder": "Videos, Fotografías, Enlaces, Grabaciones de Audio / Transcripciones, Declaraciones de Testigos y Testimonios",
+          "description": "Proporciona pruebas de apoyo para complementar el informe de arresto."
+        },
+        "dashcam": {
+          "label": "Cámara del Tablero",
+          "placeholder": "La cámara del tablero captura imágenes de audio y video que muestran...",
+          "description": {
+            "main": "Interpreta lo que la cámara del tablero captura O proporciona enlaces de Streamable/YouTube.",
+            "warning": "(( Mentir en esta sección conllevará un castigo OOC ))"
+          }
+        }
+      },
+      "modifiers": {
+        "callOfService": {
+          "label": "Llamada de Servicio",
+          "text": "recibí una llamada de servicio #"
+        },
+        "evaded": {
+          "label": "Evadió",
+          "text": "Al intentar detener a {suspect}, huyó en el vehículo, lo que condujo a una persecución por parte del departamento."
+        },
+        "resistedArrest": {
+          "label": "Se resistió al Arresto",
+          "text": "Al intentar aprehender a {suspect}, el sospechoso se resistió físicamente a la detención e intentó huir de los oficiales de paz involucrados en el arresto."
+        },
+        "searched": {
+          "label": "Registrado",
+          "text": "{suspect} fue posicionado frente a la cámara del tablero de un vehículo del departamento y registrado de acuerdo con los requisitos legales, así como con la política del departamento y el entrenamiento que he recibido. Se encontraron los siguientes artículos en posesión del sospechoso:"
+        },
+        "booking": {
+          "label": "Fichaje",
+          "text": "Transporté a {suspect} a la estación del departamento más cercana, donde lo fiché por los cargos mencionados en este informe de acuerdo con todas las directrices departamentales, requisitos estatales y entrenamiento."
+        }
+      },
+      "narrative": {
+        "base": "En la fecha {date}, yo, {rank} {name} (#{badge}) del {department}, mientras estaba bajo el indicativo {callsign}, realicé un arresto a {suspect}. Aproximadamente a las {time} horas, estaba conduciendo por {street} cuando "
+      },
+      "buttons": {
+        "generateAi": "Generar Narrativa con IA",
+        "saveDraft": "Guardar Borrador",
+        "submit": "Enviar Informe"
+      }
+    }
   }
 }
-
-    
