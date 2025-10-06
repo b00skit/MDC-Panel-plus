@@ -161,6 +161,48 @@
       "button": "Submit Feedback"
     }
   },
+  "shared": {
+    "generalSection": {
+      "title": "General Section",
+      "date": "Date",
+      "datePlaceholder": "DD/MMM/YYYY",
+      "time": "Time",
+      "timePlaceholder": "HH:MM",
+      "callSign": "Call Sign",
+      "callSignPlaceholder": "CALL SIGN",
+      "callSignComboboxPlaceholder": "Select or type callsign..."
+    },
+    "locationDetails": {
+      "district": "District",
+      "districtPlaceholder": "Select or type a district",
+      "searchDistricts": "Search districts...",
+      "noDistrictsFound": "No districts found.",
+      "street": "Street Name",
+      "streetPlaceholder": "Select or type a street",
+      "searchStreets": "Search streets...",
+      "noStreetsFound": "No streets found."
+    },
+    "officerSection": {
+      "title": "Officer Section",
+      "addOfficer": "Add Officer",
+      "fullName": "Full Name",
+      "rank": "Rank",
+      "selectRank": "Select Rank",
+      "badgeNo": "Badge No.",
+      "unitDetail": "Unit / Detail",
+      "policyNotice": {
+        "title": "Policy Notice",
+        "description": "LSPD policy requires the use of the advanced arrest report format.",
+        "button": "Switch to Advanced"
+      }
+    },
+    "textareaWithPreset": {
+      "enablePreset": "Enable Preset?",
+      "clearToReenable": "Clear the textarea to re-enable presets.",
+      "textareaInGroupError": "textarea-with-preset cannot be used inside an input group.",
+      "addEntry": "Add {label}"
+    }
+  },
   "arrestCalculator": {
     "page": {
       "documentTitle": "MDC Panel – Arrest Calculator",
@@ -358,6 +400,14 @@
           "bailAmount": "BAIL AMOUNT"
         }
       }
+    },
+    "advancedReport": {
+      "department": {
+        "lspd": "LOS SANTOS POLICE DEPARTMENT",
+        "lssd": "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT"
+      },
+      "title": "ARREST REPORT",
+      "officer": "{officer}"
     },
     "advancedForm": {
       "headers": {
@@ -582,14 +632,6 @@
           "plea": "(( {suspectName} pled {plea}. ))"
         }
       }
-    },
-    "advancedReport": {
-      "department": {
-        "lspd": "LOS SANTOS POLICE DEPARTMENT",
-        "lssd": "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT"
-      },
-      "title": "ARREST REPORT",
-      "officer": "{officer}"
     }
   },
   "arrestCalculation": {

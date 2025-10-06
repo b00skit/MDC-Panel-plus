@@ -161,6 +161,48 @@
       "button": "Enviar comentario"
     }
   },
+  "shared": {
+    "generalSection": {
+      "title": "Sección General",
+      "date": "Fecha",
+      "datePlaceholder": "DD/MMM/AAAA",
+      "time": "Hora",
+      "timePlaceholder": "HH:MM",
+      "callSign": "Indicativo",
+      "callSignPlaceholder": "INDICATIVO",
+      "callSignComboboxPlaceholder": "Seleccionar o escribir indicativo..."
+    },
+    "locationDetails": {
+      "district": "Distrito",
+      "districtPlaceholder": "Seleccionar o escribir un distrito",
+      "searchDistricts": "Buscar distritos...",
+      "noDistrictsFound": "No se encontraron distritos.",
+      "street": "Nombre de la Calle",
+      "streetPlaceholder": "Seleccionar o escribir una calle",
+      "searchStreets": "Buscar calles...",
+      "noStreetsFound": "No se encontraron calles."
+    },
+    "officerSection": {
+      "title": "Sección de Oficiales",
+      "addOfficer": "Añadir Oficial",
+      "fullName": "Nombre Completo",
+      "rank": "Rango",
+      "selectRank": "Seleccionar Rango",
+      "badgeNo": "Nº de Placa",
+      "unitDetail": "Unidad / Detalle",
+      "policyNotice": {
+        "title": "Aviso de Política",
+        "description": "La política del LSPD requiere el uso del formato de informe de arresto avanzado.",
+        "button": "Cambiar a Avanzado"
+      }
+    },
+    "textareaWithPreset": {
+      "enablePreset": "¿Habilitar Predefinido?",
+      "clearToReenable": "Borra el área de texto para volver a habilitar los predefinidos.",
+      "textareaInGroupError": "textarea-with-preset no se puede usar dentro de un grupo de entrada.",
+      "addEntry": "Añadir {label}"
+    }
+  },
   "arrestCalculator": {
     "page": {
       "documentTitle": "MDC Panel – Calculadora de Arrestos",
@@ -359,6 +401,14 @@
         }
       }
     },
+    "advancedReport": {
+      "department": {
+        "lspd": "DEPARTAMENTO DE POLICÍA DE LOS SANTOS",
+        "lssd": "DEPARTAMENTO DEL SHERIFF DEL CONDADO DE LOS SANTOS"
+      },
+      "title": "INFORME DE ARRESTO",
+      "officer": "{officer}"
+    },
     "advancedForm": {
       "headers": {
         "arresteeName": "NOMBRE DEL DETENIDO (NOMBRE, SEGUNDO NOMBRE, APELLIDO)",
@@ -485,8 +535,8 @@
           "title": "INFORMACIÓN ADICIONAL",
           "placeholder": "Información adicional..."
         },
-        "enablePreset": "¿Habilitar preajuste?",
-        "clearToReenable": "Vacía el área de texto para volver a habilitar los preajustes."
+        "enablePreset": "¿Habilitar Predefinido?",
+        "clearToReenable": "Vacía el área de texto para volver a habilitar los predefinidos."
       },
       "pleas": {
         "guilty": "Culpable",
@@ -582,14 +632,6 @@
           "plea": "(( {suspectName} se declaró {plea}. ))"
         }
       }
-    },
-    "advancedReport": {
-      "department": {
-        "lspd": "DEPARTAMENTO DE POLICÍA DE LOS SANTOS",
-        "lssd": "DEPARTAMENTO DEL SHERIFF DEL CONDADO DE LOS SANTOS"
-      },
-      "title": "INFORME DE ARRESTO",
-      "officer": "{officer}"
     }
   },
   "arrestCalculation": {

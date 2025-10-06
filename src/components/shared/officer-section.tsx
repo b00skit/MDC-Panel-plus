@@ -26,6 +26,7 @@ import { useOfficerStore, Officer } from '@/stores/officer-store';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 interface DeptRanks {
   [department: string]: string[];
@@ -37,12 +38,14 @@ const FormSection = ({
   children,
   onAdd,
   showAddButton,
+  buttonText
 }: {
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
   onAdd: () => void;
   showAddButton: boolean;
+  buttonText: string;
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -52,7 +55,7 @@ const FormSection = ({
        </div>
        {showAddButton && (
             <Button variant="outline" size="sm" onClick={onAdd} type="button">
-                <Plus className="mr-2 h-4 w-4" /> Add Officer
+                <Plus className="mr-2 h-4 w-4" /> {buttonText}
             </Button>
        )}
     </CardHeader>
@@ -151,6 +154,7 @@ export function OfficerSection({
   } = useOfficerStore();
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const { toggleAdvanced } = useAdvancedReportStore();
+  const t = useScopedI18n('shared.officerSection');
 
   const showLspdWarning = isArrestReport && officers.some(o => o.department === 'Los Santos Police Department');
 
@@ -188,14 +192,14 @@ export function OfficerSection({
   };
 
   return (
-    <FormSection title="Officer Section" icon={<User className="h-6 w-6" />} onAdd={addOfficer} showAddButton={isMultiOfficer}>
+    <FormSection title={t('title')} icon={<User className="h-6 w-6" />} onAdd={addOfficer} showAddButton={isMultiOfficer} buttonText={t('addOfficer')}>
       <div className="space-y-6">
         {officers.map((officer, index) => (
           <div key={officer.id} className="p-4 border rounded-lg space-y-4">
             <div className={cn('grid grid-cols-1 gap-6 items-end', gridColsClass[totalColumns])}>
                 <div className="md:col-span-3">
                     <InputField
-                        label="Full Name"
+                        label={t('fullName')}
                         id={`officer-name-${officer.id}`}
                         placeholder="John Doe"
                         icon={<User className="h-4 w-4 text-muted-foreground" />}
@@ -206,9 +210,9 @@ export function OfficerSection({
                 </div>
                 <div className="md:col-span-3">
                     <SelectField
-                        label="Rank"
+                        label={t('rank')}
                         id={`rank-${officer.id}`}
-                        placeholder="Select Rank"
+                        placeholder={t('selectRank')}
                         icon={<IdCard className="h-4 w-4 text-muted-foreground" />}
                         value={officer.department && officer.rank ? `${officer.department}__${officer.rank}` : ''}
                         onValueChange={(value) => {
@@ -230,7 +234,7 @@ export function OfficerSection({
                 {showBadgeNumber && (
                   <div className="md:col-span-2">
                       <InputField
-                          label="Badge No."
+                          label={t('badgeNo')}
                           id={`badge-${officer.id}`}
                           placeholder="12345"
                           icon={<ShieldIcon className="h-4 w-4 text-muted-foreground" />}
@@ -243,7 +247,7 @@ export function OfficerSection({
                  {showDivDetail && (
                      <div className="md:col-span-3">
                         <InputField
-                            label="Unit / Detail"
+                            label={t('unitDetail')}
                             id={`div-detail-${officer.id}`}
                             placeholder="e.g. Mission Row"
                             icon={<BookUser className="h-4 w-4 text-muted-foreground" />}
@@ -285,11 +289,11 @@ export function OfficerSection({
          {showLspdWarning && (
             <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Policy Notice</AlertTitle>
+                <AlertTitle>{t('policyNotice.title')}</AlertTitle>
                 <AlertDescription className="flex justify-between items-center">
-                    <span>LSPD policy requires the use of the advanced arrest report format.</span>
+                    <span>{t('policyNotice.description')}</span>
                     <Button variant="outline" size="sm" onClick={toggleAdvanced}>
-                        Switch to Advanced
+                        {t('policyNotice.button')}
                     </Button>
                 </AlertDescription>
             </Alert>
