@@ -1,0 +1,163 @@
+{
+  "common": {
+    "language": {
+      "label": "Idioma",
+      "english": "Inglés",
+      "spanish": "Español"
+    }
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "legalSearch": "Búsqueda Legal",
+    "arrestCalculator": "Calculadora de Arrestos",
+    "arrestReport": "Informe de Arresto",
+    "paperworkGenerators": "Generadores de Formularios",
+    "simplifiedPenalCode": "Código Penal Simplificado",
+    "caselaw": "Jurisprudencia y Recursos",
+    "map": "Mapa Interactivo",
+    "logParser": "Analizador de Registros",
+    "reportArchive": "Archivo de Informes",
+    "settings": "Configuración",
+    "help": "Ayuda y Comentarios",
+    "announcements": "Anuncios",
+    "github": "GitHub"
+  },
+  "maintenance": {
+    "title": "En mantenimiento",
+    "message": "Estamos realizando tareas de mantenimiento programadas. Volveremos en línea en breve."
+  },
+  "clientLayout": {
+    "betaEndedTitle": "El acceso beta ha finalizado",
+    "betaEndedMessage": "Esta versión beta ya no está activa. Utiliza el sitio principal.",
+    "betaLiveSite": "Ir al sitio en vivo",
+    "exportData": "Exportar datos",
+    "toast": {
+      "exportedTitle": "Datos exportados",
+      "exportedDescription": "Se descargó un archivo con tu información."
+    }
+  },
+  "dashboard": {
+    "header": {
+      "title": "Panel",
+      "description": "Bienvenido a MDC Panel+. Estas son las herramientas disponibles."
+    },
+    "modules": {
+      "arrestCalculator": {
+        "title": "Calculadora de Arrestos",
+        "description": "Calcula sentencias de arresto según los cargos."
+      },
+      "arrestReport": {
+        "title": "Informe de Arresto",
+        "description": "Crea y gestiona informes de arresto."
+      },
+      "paperworkGenerators": {
+        "title": "Generadores de Formularios",
+        "description": "Genera distintos tipos de documentación."
+      },
+      "penalCode": {
+        "title": "Código Penal Simplificado",
+        "description": "Consulta una versión simplificada del código penal."
+      },
+      "caselaw": {
+        "title": "Jurisprudencia y Recursos",
+        "description": "Accede a jurisprudencia y otros recursos legales."
+      },
+      "settings": {
+        "title": "Configuración",
+        "description": "Administra la configuración y los datos de la aplicación."
+      }
+    }
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "version": "Versión",
+    "about": "Página de información",
+    "credits": "Créditos y colaboraciones"
+  },
+  "about": {
+    "pageTitle": "Acerca de",
+    "header": {
+      "title": "Acerca de MDC Panel+",
+      "description": "Un proyecto creado con pasión para ayudar."
+    },
+    "overview": {
+      "title": "¿De qué se trata todo esto?",
+      "paragraphs": [
+        "¡Hola! Soy un desarrollador independiente que creó esta herramienta con el deseo genuino de apoyar a los agentes de nuestra comunidad de rol. Mi objetivo era sencillo: hacer que el papeleo y la recopilación de recursos fueran un poco más fáciles y eficientes.",
+        "Este proyecto es un trabajo hecho con cariño para agilizar las tareas diarias y ofrecer un centro unificado con herramientas esenciales para LEO. Ya sea que estés calculando una sentencia, redactando un informe o consultando jurisprudencia, espero que este panel haga tu experiencia más fluida."
+      ]
+    },
+    "tech": {
+      "title": "Detalles técnicos",
+      "description": "Un breve vistazo bajo el capó.",
+      "cards": {
+        "openSource": {
+          "title": "Código abierto",
+          "description": "Todo el proyecto es de código abierto. Puedes ver el código, sugerir cambios o incluso contribuir tú mismo en {link}.",
+          "linkLabel": "repositorio de GitHub"
+        },
+        "ai": {
+          "title": "Desarrollo asistido por IA",
+          "description": "Para acelerar el desarrollo y explorar prácticas modernas, esta aplicación se construyó con la ayuda de IA, específicamente Firebase Studio de Google."
+        }
+      },
+      "table": {
+        "siteVersion": {
+          "label": "Versión del sitio",
+          "tooltip": "La versión pública actual de la aplicación."
+        },
+        "cacheVersion": {
+          "label": "Versión de caché",
+          "tooltip": "Controla la caché del navegador; cambia en actualizaciones importantes para forzar la descarga de nuevos recursos."
+        },
+        "localStorageVersion": {
+          "label": "Versión de almacenamiento local",
+          "tooltip": "Controla los datos locales; cambia en actualizaciones importantes para limpiar configuraciones obsoletas."
+        },
+        "cdn": {
+          "label": "CDN",
+          "tooltip": "La URL base desde la que se sirven los recursos estáticos como los códigos penales."
+        },
+        "github": {
+          "label": "Repositorio de GitHub",
+          "tooltip": "El código fuente público de este proyecto."
+        },
+        "discord": {
+          "label": "Comunidad de Discord",
+          "tooltip": "El servidor oficial de comunidad y soporte."
+        },
+        "notSet": "Sin definir"
+      }
+    },
+    "support": {
+      "title": "Apoyo y donaciones",
+      "description": "Agradezco tu apoyo, pero compartamos el reconocimiento.",
+      "intro": "Aunque agradezco cualquier intención de donar, primero te invito a apoyar a las plataformas y personas que hicieron posible este proyecto. Considera donar a {gtaWorld} por mantener viva a la comunidad, o al creador original del MDC Panel, {founder}, cuya base sirvió como punto de partida.",
+      "buttons": {
+        "supportFounder": "Apoyar al creador",
+        "donate": "Donar en Ko-fi"
+      }
+    },
+    "contact": {
+      "title": "Contacto y comentarios",
+      "description": "El encargado actual es {maintainer}. Si tienes preguntas, encuentras un error o tienes alguna sugerencia, ponte en contacto por Discord o utiliza el formulario de comentarios disponible en el sitio."
+    }
+  },
+  "help": {
+    "pageTitle": "Ayuda y comentarios",
+    "header": {
+      "title": "Centro de ayuda y comentarios",
+      "description": "Encuentra respuestas a las preguntas frecuentes y obtén soporte."
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "searchPlaceholder": "Buscar preguntas...",
+      "empty": "No se encontraron preguntas que coincidan con tu búsqueda."
+    },
+    "cta": {
+      "title": "¿No encuentras lo que buscas?",
+      "description": "Siempre estoy abierto a recibir comentarios.",
+      "button": "Enviar comentario"
+    }
+  }
+}

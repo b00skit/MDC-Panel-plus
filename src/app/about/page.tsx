@@ -16,6 +16,8 @@ import {
 } from '@/components/ui/tooltip';
 import type { Metadata } from 'next';
 import { cn } from '@/lib/utils';
+import { getTranslations } from '@/lib/i18n/server';
+import { getDictionaryValue } from '@/lib/i18n/utils';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -28,57 +30,67 @@ async function getConfig() {
 }
 
 const techInfo = [
-    { key: 'SITE_VERSION', label: 'Site Version', tooltip: 'The current public version of the application.' },
-    { key: 'CACHE_VERSION', label: 'Cache Version', tooltip: 'Controls browser cache; changes on major updates to force-fetch new assets.' },
-    { key: 'LOCAL_STORAGE_VERSION', label: 'Local Storage Version', tooltip: 'Controls local data; changes on major updates to clear outdated settings.' },
-    { key: 'CONTENT_DELIVERY_NETWORK', label: 'CDN', tooltip: 'The base URL from which static assets like penal codes are served.' },
-    { key: 'URL_GITHUB', label: 'GitHub Repository', tooltip: 'The public source code for this project.' },
-    { key: 'URL_DISCORD', label: 'Discord Community', tooltip: 'The official community and support server.' },
+    { key: 'SITE_VERSION', translationKey: 'siteVersion' },
+    { key: 'CACHE_VERSION', translationKey: 'cacheVersion' },
+    { key: 'LOCAL_STORAGE_VERSION', translationKey: 'localStorageVersion' },
+    { key: 'CONTENT_DELIVERY_NETWORK', translationKey: 'cdn' },
+    { key: 'URL_GITHUB', translationKey: 'github' },
+    { key: 'URL_DISCORD', translationKey: 'discord' },
 ];
 
 export default async function AboutPage() {
     const config = await getConfig();
+    const { t, dictionary } = await getTranslations();
+    const overviewParagraphs = (getDictionaryValue(dictionary, 'about.overview.paragraphs') as string[]) || [];
+    const openSourceDescription = t('about.tech.cards.openSource.description', {
+        link: `<a href="${config.URL_GITHUB}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${t('about.tech.cards.openSource.linkLabel')}</a>`
+    });
+    const supportIntro = t('about.support.intro', {
+        gtaWorld: `<a href="https://gta.world/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">GTA:World</a>`,
+        founder: `<strong>CXDezign</strong>`,
+    });
+    const contactDescription = t('about.contact.description', {
+        maintainer: `<strong>${config.SITE_DISCORD_CONTACT}</strong>`,
+    });
+    const renderHtml = (content: string) => ({ __html: content });
 
   return (
       <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-8">
         <PageHeader
-          title="About MDC Panel+"
-          description="A passion project designed to help."
+          title={t('about.header.title')}
+          description={t('about.header.description')}
         />
 
         <Card>
             <CardHeader>
-                <CardTitle>What's this all about?</CardTitle>
+                <CardTitle>{t('about.overview.title')}</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-lg dark:prose-invert max-w-none">
-                <p>
-                    Hello! I'm a solo developer who created this tool out of a genuine desire to assist our roleplay community's law enforcement officers. My goal was simple: make the paperwork and resource-gathering aspects of the job a little easier and more efficient.
-                </p>
-                <p>
-                    This project is a labor of love, built to streamline daily tasks and provide a centralized hub for essential LEO tools. Whether you're calculating a sentence, writing a report, or looking up a piece of caselaw, I hope this panel makes your experience smoother.
-                </p>
+                {overviewParagraphs.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                ))}
             </CardContent>
         </Card>
 
         <Card>
             <CardHeader>
-                <CardTitle>Technical Tidbits</CardTitle>
-                 <CardDescription>A brief look under the hood.</CardDescription>
+                <CardTitle>{t('about.tech.title')}</CardTitle>
+                 <CardDescription>{t('about.tech.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                  <div className="grid md:grid-cols-2 gap-6">
-                     <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-4">
                         <Code className="h-8 w-8 text-primary mt-1 flex-shrink-0"/>
                         <div>
-                            <h3 className="font-semibold">Open Source</h3>
-                            <p className="text-muted-foreground">This entire project is open-source. You can view the code, suggest changes, or even contribute yourself over at the <a href={config.URL_GITHUB} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub repository</a>.</p>
+                            <h3 className="font-semibold">{t('about.tech.cards.openSource.title')}</h3>
+                            <p className="text-muted-foreground" dangerouslySetInnerHTML={renderHtml(openSourceDescription)} />
                         </div>
                     </div>
                      <div className="flex items-start gap-4">
                         <Bot className="h-8 w-8 text-primary mt-1 flex-shrink-0"/>
                         <div>
-                            <h3 className="font-semibold">AI-Assisted Development</h3>
-                            <p className="text-muted-foreground">To accelerate development and explore modern coding practices, this application was built with the assistance of AI, specifically Google's Firebase Studio.</p>
+                            <h3 className="font-semibold">{t('about.tech.cards.ai.title')}</h3>
+                            <p className="text-muted-foreground">{t('about.tech.cards.ai.description')}</p>
                         </div>
                     </div>
                 </div>
@@ -86,17 +98,17 @@ export default async function AboutPage() {
                     <TooltipProvider>
                         <Table>
                             <TableBody>
-                                {techInfo.map(({ key, label, tooltip }) => (
+                                {techInfo.map(({ key, translationKey }) => (
                                     <TableRow key={key}>
                                         <TableCell className="font-medium">
                                             <div className="flex items-center gap-2">
-                                                <span>{label}</span>
+                                                <span>{t(`about.tech.table.${translationKey}.label`)}</span>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                                                     </TooltipTrigger>
                                                     <TooltipContent>
-                                                        <p>{tooltip}</p>
+                                                        <p>{t(`about.tech.table.${translationKey}.tooltip`)}</p>
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </div>
@@ -109,7 +121,7 @@ export default async function AboutPage() {
                                                     && 'text-green-600 border-green-600/50 bg-green-500/10'
                                                 )}
                                             >
-                                                {config[key] || 'Not Set'}
+                                                {config[key] || t('about.tech.table.notSet')}
                                             </Badge>
                                         </TableCell>
                                     </TableRow>
@@ -123,22 +135,20 @@ export default async function AboutPage() {
 
         <Card>
             <CardHeader>
-                <CardTitle>Support & Donations</CardTitle>
-                 <CardDescription>Your support is appreciated, but let's share the love.</CardDescription>
+                <CardTitle>{t('about.support.title')}</CardTitle>
+                 <CardDescription>{t('about.support.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                    While I truly appreciate any thought of a donation, I'd first encourage you to support the platforms and people who made this project possible. Please consider donating to <a href="https://gta.world/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GTA:World</a> for keeping our community running, or to the original creator of the MDC Panel, <strong>CXDezign</strong>, whose foundation I built upon.
-                </p>
+                <p className="text-muted-foreground" dangerouslySetInnerHTML={renderHtml(supportIntro)} />
                 <div className="flex flex-wrap gap-4">
                      <Button asChild variant="outline">
                         <Link href={config.URL_FOUNDER} target="_blank" rel="noopener noreferrer">
-                           <HandHeart className="mr-2" /> Support the Founder
+                           <HandHeart className="mr-2" /> {t('about.support.buttons.supportFounder')}
                         </Link>
                     </Button>
                      <Button asChild>
                         <Link href={config.URL_KOFI} target="_blank" rel="noopener noreferrer">
-                           <Heart className="mr-2" /> Donate to me on Ko-fi
+                           <Heart className="mr-2" /> {t('about.support.buttons.donate')}
                         </Link>
                     </Button>
                 </div>
@@ -147,12 +157,10 @@ export default async function AboutPage() {
 
         <Card>
             <CardHeader>
-                <CardTitle>Contact & Feedback</CardTitle>
+                <CardTitle>{t('about.contact.title')}</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-muted-foreground">
-                    The current maintainer is <strong>{config.SITE_DISCORD_CONTACT}</strong>. If you have any questions, find a bug, or have a suggestion, please feel free to reach out via Discord or use the feedback form available on the site.
-                </p>
+                <p className="text-muted-foreground" dangerouslySetInnerHTML={renderHtml(contactDescription)} />
             </CardContent>
         </Card>
       </div>

@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
+import { useScopedI18n } from '@/lib/i18n/client';
+import { LanguageSwitcher } from './language-switcher';
 
 import {
   SidebarHeader,
@@ -54,6 +56,7 @@ export function SidebarNav() {
   const { state } = useSidebar();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+  const tNav = useScopedI18n('navigation');
 
   useEffect(() => {
     setMounted(true);
@@ -137,11 +140,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/')}
-              tooltip="Dashboard"
+              tooltip={tNav('dashboard')}
             >
               <Link href="/">
                 <LayoutGrid />
-                <span>Dashboard</span>
+                <span>{tNav('dashboard')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -149,11 +152,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/legal-search')}
-              tooltip="Legal Search"
+              tooltip={tNav('legalSearch')}
             >
               <Link href="/legal-search">
                 <Search />
-                <span>Legal Search</span>
+                <span>{tNav('legalSearch')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -161,11 +164,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/arrest-calculator')}
-              tooltip="Arrest Calculator"
+              tooltip={tNav('arrestCalculator')}
             >
               <Link href="/arrest-calculator">
                 <Gavel />
-                <span>Arrest Calculator</span>
+                <span>{tNav('arrestCalculator')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -173,11 +176,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/arrest-report')}
-              tooltip="Arrest Report"
+              tooltip={tNav('arrestReport')}
             >
               <Link href="/arrest-report">
                 <FileText />
-                <span>Arrest Report</span>
+                <span>{tNav('arrestReport')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -185,11 +188,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/paperwork-generators')}
-              tooltip="Paperwork Generators"
+              tooltip={tNav('paperworkGenerators')}
             >
               <Link href="/paperwork-generators">
                 <Archive />
-                <span>Paperwork Generators</span>
+                <span>{tNav('paperworkGenerators')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -197,11 +200,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/simplified-penal-code')}
-              tooltip="Simplified Penal Code"
+              tooltip={tNav('simplifiedPenalCode')}
             >
               <Link href="/simplified-penal-code">
                 <BookOpen />
-                <span>Simplified Penal Code</span>
+                <span>{tNav('simplifiedPenalCode')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -209,11 +212,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/caselaw')}
-              tooltip="Caselaw &amp; Legal Resources"
+              tooltip={tNav('caselaw')}
             >
               <Link href="/caselaw">
                 <Landmark />
-                <span>Caselaw &amp; Legal Resources</span>
+                <span>{tNav('caselaw')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -221,11 +224,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/map')}
-              tooltip="Interactive Map"
+              tooltip={tNav('map')}
             >
               <Link href="/map">
                 <Map />
-                <span>Interactive Map</span>
+                <span>{tNav('map')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -233,11 +236,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/log-parser')}
-              tooltip="Log Parser"
+              tooltip={tNav('logParser')}
             >
               <Link href="/log-parser">
                 <TextSearch />
-                <span>Log Parser</span>
+                <span>{tNav('logParser')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -245,11 +248,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/report-archive')}
-              tooltip="Report Archive"
+              tooltip={tNav('reportArchive')}
             >
               <Link href="/report-archive">
                 <History />
-                <span>Report Archive</span>
+                <span>{tNav('reportArchive')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -263,32 +266,32 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive('/settings')}
-              tooltip="Settings"
+              tooltip={tNav('settings')}
             >
               <Link href="/settings">
                 <Settings />
-                <span>Settings</span>
+                <span>{tNav('settings')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => setIsFeedbackDialogOpen(true)}
-              tooltip="Help &amp; Feedback"
+              tooltip={tNav('help')}
             >
               <LifeBuoy />
-              <span>Help &amp; Feedback</span>
+              <span>{tNav('help')}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               isActive={isActive('/announcements')}
-              tooltip="Announcements"
+              tooltip={tNav('announcements')}
             >
               <Link href="/announcements">
                 <Bell />
-                <span>Announcements</span>
+                <span>{tNav('announcements')}</span>
                 {unreadCount > 0 && (
                     <SidebarMenuBadge className="bg-destructive text-destructive-foreground">{unreadCount}</SidebarMenuBadge>
                 )}
@@ -301,15 +304,18 @@ export function SidebarNav() {
           <SidebarMenuItem>
              <SidebarMenuButton
                 asChild
-                tooltip="Github"
+                tooltip={tNav('github')}
              >
                 <Link href={config?.URL_GITHUB || '#'} target="_blank">
                     <Github />
-                    <span>Github</span>
+                    <span>{tNav('github')}</span>
                 </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <div className="mt-3">
+          <LanguageSwitcher />
+        </div>
       </SidebarFooter>
     </>
   );

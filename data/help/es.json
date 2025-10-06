@@ -1,0 +1,52 @@
+{
+  "resources": [
+    {
+      "id": "discord",
+      "title": "Únete a nuestro Discord",
+      "description": "Recibe soporte en vivo, comparte comentarios y conéctate con la comunidad.",
+      "icon": "Discord",
+      "href": "URL_DISCORD"
+    },
+    {
+      "id": "feedback",
+      "title": "Enviar comentario",
+      "description": "¿Tienes una idea o sugerencia? Cuéntanos cómo podemos mejorar.",
+      "icon": "MessageSquare",
+      "action": "open_feedback_dialog"
+    },
+    {
+      "id": "changelog",
+      "title": "Ver registro de cambios",
+      "description": "Consulta las actualizaciones recientes, nuevas funciones y correcciones.",
+      "icon": "GitCommit",
+      "href": "/changelog"
+    }
+  ],
+  "faq": [
+    {
+      "id": "q1",
+      "question": "¿Cómo agrego mi información de oficial?",
+      "answer": "Puedes configurar tu información predeterminada de oficial, incluyendo nombre, rango, departamento y número de placa, en la página de **Configuración**. Esa información se completará automáticamente en todos los formularios correspondientes."
+    },
+    {
+      "id": "q2",
+      "question": "¿Puedo usar esto para mi departamento?",
+      "answer": "¡Sí! MDC Panel+ está diseñado para ser independiente del departamento. Aunque algunas funciones avanzadas están orientadas a departamentos específicos (como el informe de arresto avanzado), las herramientas principales como la Calculadora de Arrestos, el Código Penal Simplificado y la mayoría de los generadores de formularios están disponibles para todos. Puedes activar o desactivar formularios específicos en la página de **Configuración**."
+    },
+    {
+      "id": "q3",
+      "question": "Mis cargos desaparecieron después de actualizar la página. ¿Por qué?",
+      "answer": "Los cargos que agregas a la Calculadora de Arrestos se almacenan en la **sesión** de tu navegador. Esto significa que solo se conservan durante la sesión actual y se borran cuando cierras la pestaña o el navegador. Es intencional para comenzar cada arresto con un estado limpio. Si necesitas guardar un informe en progreso, usa el botón 'Guardar como borrador'."
+    },
+    {
+      "id": "q4",
+      "question": "¿Cuál es la diferencia entre el informe de arresto básico y el avanzado?",
+      "answer": "El **Informe de Arresto Básico** es un formato simplificado y universal adecuado para cualquier departamento. El **Informe de Arresto Avanzado** es un formato más detallado inspirado en reportes de admisión reales e incluye plantillas narrativas dinámicas. Actualmente está orientado al Departamento de Policía de Los Santos y al Departamento del Sheriff del Condado de Los Santos."
+    },
+    {
+      "id": "q5",
+      "question": "¿Dónde se almacenan mis informes enviados?",
+      "answer": "Los informes de arresto enviados se guardan automáticamente en tu **Archivo de Informes**. Puedes acceder a ellos, verlos y restaurarlos en cualquier momento desde esa página. Estos datos se almacenan localmente en tu navegador, por lo que permanecerán entre sesiones."
+    }
+  ]
+}

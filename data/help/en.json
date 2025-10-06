@@ -1,0 +1,52 @@
+{
+  "resources": [
+    {
+      "id": "discord",
+      "title": "Join our Discord",
+      "description": "Get live support, share feedback, and connect with the community.",
+      "icon": "Discord",
+      "href": "URL_DISCORD"
+    },
+    {
+      "id": "feedback",
+      "title": "Send Feedback",
+      "description": "Have an idea or a suggestion? Let us know how we can improve.",
+      "icon": "MessageSquare",
+      "action": "open_feedback_dialog"
+    },
+    {
+      "id": "changelog",
+      "title": "View Changelog",
+      "description": "See the latest updates, new features, and bug fixes.",
+      "icon": "GitCommit",
+      "href": "/changelog"
+    }
+  ],
+  "faq": [
+    {
+      "id": "q1",
+      "question": "How do I add my officer information?",
+      "answer": "You can set your default officer information, including name, rank, department, and badge number, on the **Settings** page. This information will be automatically pre-filled in all relevant paperwork."
+    },
+    {
+      "id": "q2",
+      "question": "Can I use this for my department?",
+      "answer": "Yes! The MDC Panel+ is designed to be department-agnostic. While some advanced features are tailored for specific departments (like the advanced arrest report), the core tools like the Arrest Calculator, Simplified Penal Code, and most Paperwork Generators are available for everyone. You can toggle the visibility of faction-specific forms in the **Settings** page."
+    },
+    {
+      "id": "q3",
+      "question": "My charges disappeared after I refreshed the page. Why?",
+      "answer": "The charges you add to the Arrest Calculator are stored in your browser's **session storage**. This means they are only kept for your current browsing session and will be cleared when you close the tab or browser. This is intentional to ensure a clean slate for each new arrest scenario. If you need to save a report-in-progress, use the 'Save as Draft' button."
+    },
+    {
+      "id": "q4",
+      "question": "What is the difference between the Basic and Advanced Arrest Report?",
+      "answer": "The **Basic Arrest Report** is a simplified, universal format suitable for any department. The **Advanced Arrest Report** is a more detailed format modeled after realistic booking reports and includes dynamic narrative presets. It is currently tailored for the Los Santos Police Department and Los Santos County Sheriff's Department."
+    },
+    {
+      "id": "q5",
+      "question": "Where are my submitted reports stored?",
+      "answer": "Submitted arrest reports are automatically saved to your **Report Archive**. You can access, view, and restore them at any time from the Report Archive page. This data is stored locally in your browser, so it will persist between sessions."
+    }
+  ]
+}

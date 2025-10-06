@@ -1,0 +1,163 @@
+{
+  "common": {
+    "language": {
+      "label": "Language",
+      "english": "English",
+      "spanish": "Spanish"
+    }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "legalSearch": "Legal Search",
+    "arrestCalculator": "Arrest Calculator",
+    "arrestReport": "Arrest Report",
+    "paperworkGenerators": "Paperwork Generators",
+    "simplifiedPenalCode": "Simplified Penal Code",
+    "caselaw": "Caselaw & Legal Resources",
+    "map": "Interactive Map",
+    "logParser": "Log Parser",
+    "reportArchive": "Report Archive",
+    "settings": "Settings",
+    "help": "Help & Feedback",
+    "announcements": "Announcements",
+    "github": "GitHub"
+  },
+  "maintenance": {
+    "title": "Under Maintenance",
+    "message": "We are currently performing scheduled maintenance. We should be back online shortly."
+  },
+  "clientLayout": {
+    "betaEndedTitle": "Beta Access has Ended",
+    "betaEndedMessage": "This beta version is no longer active. Please use the main site.",
+    "betaLiveSite": "Go to Live Site",
+    "exportData": "Export Data",
+    "toast": {
+      "exportedTitle": "Data Exported",
+      "exportedDescription": "A file with your data has been downloaded."
+    }
+  },
+  "dashboard": {
+    "header": {
+      "title": "Dashboard",
+      "description": "Welcome to MDC Panel+. Here are your available tools."
+    },
+    "modules": {
+      "arrestCalculator": {
+        "title": "Arrest Calculator",
+        "description": "Calculate arrest sentences based on charges."
+      },
+      "arrestReport": {
+        "title": "Arrest Report",
+        "description": "Create and manage arrest reports."
+      },
+      "paperworkGenerators": {
+        "title": "Paperwork Generators",
+        "description": "Generate different types of paperwork."
+      },
+      "penalCode": {
+        "title": "Simplified Penal Code",
+        "description": "Browse a simplified version of the penal code."
+      },
+      "caselaw": {
+        "title": "Caselaw & Legal Resources",
+        "description": "Access caselaw and other legal resources."
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Manage your application settings and data."
+      }
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "version": "Version",
+    "about": "About Page",
+    "credits": "Credits and Contributions"
+  },
+  "about": {
+    "pageTitle": "About",
+    "header": {
+      "title": "About MDC Panel+",
+      "description": "A passion project designed to help."
+    },
+    "overview": {
+      "title": "What's this all about?",
+      "paragraphs": [
+        "Hello! I'm a solo developer who created this tool out of a genuine desire to assist our roleplay community's law enforcement officers. My goal was simple: make the paperwork and resource-gathering aspects of the job a little easier and more efficient.",
+        "This project is a labor of love, built to streamline daily tasks and provide a centralized hub for essential LEO tools. Whether you're calculating a sentence, writing a report, or looking up a piece of caselaw, I hope this panel makes your experience smoother."
+      ]
+    },
+    "tech": {
+      "title": "Technical Tidbits",
+      "description": "A brief look under the hood.",
+      "cards": {
+        "openSource": {
+          "title": "Open Source",
+          "description": "This entire project is open-source. You can view the code, suggest changes, or even contribute yourself over at the {link}.",
+          "linkLabel": "GitHub repository"
+        },
+        "ai": {
+          "title": "AI-Assisted Development",
+          "description": "To accelerate development and explore modern coding practices, this application was built with the assistance of AI, specifically Google's Firebase Studio."
+        }
+      },
+      "table": {
+        "siteVersion": {
+          "label": "Site Version",
+          "tooltip": "The current public version of the application."
+        },
+        "cacheVersion": {
+          "label": "Cache Version",
+          "tooltip": "Controls browser cache; changes on major updates to force-fetch new assets."
+        },
+        "localStorageVersion": {
+          "label": "Local Storage Version",
+          "tooltip": "Controls local data; changes on major updates to clear outdated settings."
+        },
+        "cdn": {
+          "label": "CDN",
+          "tooltip": "The base URL from which static assets like penal codes are served."
+        },
+        "github": {
+          "label": "GitHub Repository",
+          "tooltip": "The public source code for this project."
+        },
+        "discord": {
+          "label": "Discord Community",
+          "tooltip": "The official community and support server."
+        },
+        "notSet": "Not Set"
+      }
+    },
+    "support": {
+      "title": "Support & Donations",
+      "description": "Your support is appreciated, but let's share the love.",
+      "intro": "While I truly appreciate any thought of a donation, I'd first encourage you to support the platforms and people who made this project possible. Please consider donating to {gtaWorld} for keeping our community running, or to the original creator of the MDC Panel, {founder}, whose foundation I built upon.",
+      "buttons": {
+        "supportFounder": "Support the Founder",
+        "donate": "Donate to me on Ko-fi"
+      }
+    },
+    "contact": {
+      "title": "Contact & Feedback",
+      "description": "The current maintainer is {maintainer}. If you have any questions, find a bug, or have a suggestion, please feel free to reach out via Discord or use the feedback form available on the site."
+    }
+  },
+  "help": {
+    "pageTitle": "Help & Feedback",
+    "header": {
+      "title": "Help & Feedback Center",
+      "description": "Find answers to common questions and get support."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "searchPlaceholder": "Search questions...",
+      "empty": "No questions found matching your search."
+    },
+    "cta": {
+      "title": "Can't find what you're looking for?",
+      "description": "I'm always happy to collect feedback.",
+      "button": "Submit Feedback"
+    }
+  }
+}
