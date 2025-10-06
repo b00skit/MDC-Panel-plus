@@ -1,3 +1,4 @@
+
 {
   "common": {
     "language": {
@@ -305,6 +306,59 @@
         "submit": "Submit Report"
       }
     },
+    "basicReport": {
+      "title": "Arrest Report",
+      "sections": {
+        "general": {
+          "title": "1. GENERAL INFORMATION",
+          "date": "A. DATE",
+          "time": "B. TIME (24HR)",
+          "callsign": "C. CALLSIGN"
+        },
+        "officers": {
+          "title": "2. OFFICER(S) INFORMATION",
+          "officerName": "A. OFFICER {number} NAME",
+          "rank": "B. RANK",
+          "badge": "C. BADGE"
+        },
+        "suspect": {
+          "title": "3. SUSPECT INFORMATION",
+          "fullName": "A. FULL NAME"
+        },
+        "location": {
+          "title": "4. LOCATION OF ARREST",
+          "district": "A. DISTRICT",
+          "street": "B. STREET"
+        },
+        "charges": {
+          "title": "5. CHARGES",
+          "headers": {
+            "description": "CHARGE DESCRIPTION",
+            "type": "TYPE",
+            "class": "CLASS",
+            "offense": "OFFENCE",
+            "addition": "ADDITION"
+          }
+        },
+        "narrative": {
+          "title": "6. NARRATIVE"
+        },
+        "evidence": {
+          "title": "7. EVIDENCE",
+          "supporting": "A. SUPPORTING EVIDENCE",
+          "dashcam": "B. DASHCAM FOOTAGE"
+        },
+        "summary": {
+          "title": "(( 8. SENTENCING & AUTO-BAIL SUMMARY ))",
+          "minSentence": "MINIMUM SENTENCE",
+          "maxSentence": "MAXIMUM SENTENCE",
+          "totalFine": "TOTAL FINE",
+          "points": "POINTS",
+          "bailStatus": "BAIL STATUS",
+          "bailAmount": "BAIL AMOUNT"
+        }
+      }
+    },
     "advancedForm": {
       "headers": {
         "arresteeName": "ARRESTEE NAME (FIRST, MIDDLE, LAST)",
@@ -566,7 +620,7 @@
         "accessory": "Accessory",
         "conspiracy": "Conspiracy",
         "solicitation": "Solicitation",
-        "paroleViolation": "Parole Violation"
+        "paroleviolation": "Parole Violation"
       },
       "types": {
         "felony": "Felony",
@@ -582,7 +636,7 @@
       },
       "bailStatus": {
         "na": "N/A",
-        "notEligible": "Not Eligible",
+        "noteligible": "Not Eligible",
         "discretionary": "Discretionary",
         "eligible": "Eligible"
       },
@@ -595,19 +649,10 @@
       "currency": "${value}",
       "time": {
         "zero": "0 minutes",
-        "days": {
-          "one": "{count} day",
-          "other": "{count} days"
-        },
-        "hours": {
-          "one": "{count} hour",
-          "other": "{count} hours"
-        },
-        "minutes": {
-          "one": "{count} minute",
-          "other": "{count} minutes"
-        },
-        "summary": "{parts} ({minutes} minutes total)"
+        "days": "Day(s)",
+        "hours": "Hour(s)",
+        "minutes": "Minute(s)",
+        "summary": "{parts} ({minutes} mins)"
       },
       "charges": {
         "cardTitle": "Charges",
@@ -641,6 +686,9 @@
           "originalPoints": "Original points: {value}",
           "modifiedPoints": "Modified points: {value}"
         }
+      },
+      "copyLabels": {
+        "rawFine": "Raw Fine"
       },
       "stipulations": {
         "title": "Stipulations",
@@ -695,9 +743,6 @@
         "originalValue": "Original value: {value}",
         "toastTitle": "Copied",
         "toastDescription": "{label} copied to clipboard."
-      },
-      "copyLabels": {
-        "rawFine": "Raw Fine"
       },
       "toasts": {
         "copiedTitle": "Copied",

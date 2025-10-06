@@ -1,3 +1,4 @@
+
 {
   "common": {
     "language": {
@@ -217,155 +218,6 @@
           "selectCategory": "Por favor, selecciona una categoría para el cargo de drogas \"{charge}\"."
         }
       }
-    },
-    "results": {
-      "additionNames": {
-        "offender": "Autor",
-        "attempt": "Tentativa",
-        "accomplice": "Cómplice",
-        "accessory": "Accesorio",
-        "conspiracy": "Conspiración",
-        "solicitation": "Instigación",
-        "paroleViolation": "Violación de libertad condicional"
-      },
-      "types": {
-        "felony": "Delito grave",
-        "misdemeanor": "Delito menor",
-        "infraction": "Infracción",
-        "unknown": "Desconocido"
-      },
-      "autoBail": {
-        "na": "N/D",
-        "noBail": "SIN FIANZA",
-        "auto": "FIANZA AUTOMÁTICA",
-        "discretionary": "DISCRECIONAL"
-      },
-      "bailStatus": {
-        "na": "N/D",
-        "notEligible": "NO ELEGIBLE",
-        "discretionary": "DISCRECIONAL",
-        "eligible": "ELEGIBLE"
-      },
-      "labels": {
-        "yes": "Sí",
-        "no": "No",
-        "notAvailable": "N/D",
-        "yesWithValue": "Sí | {value}"
-      },
-      "currency": "${value}",
-      "time": {
-        "zero": "0 minutos",
-        "summary": "{parts} ({minutes} min)",
-        "days": {
-          "one": "{count} día",
-          "other": "{count} días"
-        },
-        "hours": {
-          "one": "{count} hora",
-          "other": "{count} horas"
-        },
-        "minutes": {
-          "one": "{count} minuto",
-          "other": "{count} minutos"
-        }
-      },
-      "charges": {
-        "cardTitle": "Cargos",
-        "copyLink": "Copiar enlace del cálculo",
-        "modify": "Modificar cargos",
-        "title": "{prefix} {id}. {charge}",
-        "categorySuffix": "(Categoría {category})",
-        "offenseSuffix": "(Delito #{offense})",
-        "offenseNumber": "Delito #{offense}",
-        "copyTooltip": "Copiar {field}",
-        "copyAria": "Copiar {field}",
-        "table": {
-          "title": "Cargo",
-          "addition": "Adición",
-          "offense": "Delito",
-          "type": "Tipo",
-          "minTime": "Tiempo Mín.",
-          "maxTime": "Tiempo Máx.",
-          "points": "Puntos",
-          "fine": "Multa",
-          "impound": "Decomiso",
-          "suspension": "Suspensión",
-          "autoBail": "Fianza automática",
-          "bail": "Fianza"
-        },
-        "tooltip": {
-          "sentenceMultiplier": "Multiplicador de condena: {value}x",
-          "pointsMultiplier": "Multiplicador de puntos: {value}x",
-          "originalTime": "Original: {value}",
-          "modifiedTime": "Modificado: {value}",
-          "originalPoints": "Original: {value} puntos",
-          "modifiedPoints": "Modificado: {value} puntos"
-        }
-      },
-      "copyLabels": {
-        "rawFine": "Multa sin formato"
-      },
-      "stipulations": {
-        "title": "Estipulaciones",
-        "charge": "Cargo",
-        "stipulation": "Estipulación"
-      },
-      "summary": {
-        "title": "Resumen",
-        "alerts": {
-          "sentence": {
-            "title": "Sentencia limitada",
-            "description": "La sentencia total supera el máximo de {maxDays} días. El tiempo mostrado se ha limitado.",
-            "originalMinLabel": "Mínimo original:",
-            "originalMaxLabel": "Máximo original:"
-          },
-          "impound": {
-            "title": "Decomiso limitado",
-            "description": "La duración total del decomiso supera el máximo de {maxDays} días. Valor mostrado: {value}."
-          },
-          "suspension": {
-            "title": "Suspensión limitada",
-            "description": "La duración total de la suspensión supera el máximo de {maxDays} días. Valor mostrado: {value}."
-          }
-        },
-        "mobile": {
-          "minTime": "Tiempo mínimo",
-          "maxTime": "Tiempo máximo",
-          "points": "Puntos",
-          "fine": "Multa",
-          "impound": "Incautación",
-          "suspension": "Suspensión",
-          "bailStatus": "Estado de fianza",
-          "highestBail": "Fianza más alta"
-        },
-        "table": {
-          "minTime": "Tiempo mínimo",
-          "maxTime": "Tiempo máximo",
-          "points": "Puntos",
-          "fine": "Multa",
-          "impound": "Incautación",
-          "suspension": "Suspensión",
-          "bailStatus": "Estado de fianza",
-          "highestBail": "Fianza más alta"
-        }
-      },
-      "copyables": {
-        "toastTitle": "¡Copiado al portapapeles!",
-        "toastDescription": "Se ha copiado el valor de {label}.",
-        "minMinutes": "Minutos mínimos",
-        "maxMinutes": "Minutos máximos",
-        "totalImpound": "Días totales de incautación",
-        "totalSuspension": "Días totales de suspensión",
-        "bailCost": "Costo de fianza",
-        "originalValue": "Valor original: {value}"
-      },
-      "toasts": {
-        "copiedTitle": "¡Copiado!",
-        "copiedDescription": "Se copió '{value}' al portapapeles.",
-        "copiedDescriptionWithLabel": "Se copió '{label}' ({value}) al portapapeles.",
-        "linkCopiedTitle": "¡Enlace copiado!",
-        "linkCopiedDescription": "Se ha copiado un enlace compartible a este cálculo."
-      }
     }
   },
   "arrestReport": {
@@ -452,6 +304,59 @@
         "generateAi": "Generar Narrativa con IA",
         "saveDraft": "Guardar Borrador",
         "submit": "Enviar Informe"
+      }
+    },
+    "basicReport": {
+      "title": "Informe de Arresto",
+      "sections": {
+        "general": {
+          "title": "1. INFORMACIÓN GENERAL",
+          "date": "A. FECHA",
+          "time": "B. HORA (24H)",
+          "callsign": "C. INDICATIVO"
+        },
+        "officers": {
+          "title": "2. INFORMACIÓN DEL(OS) OFICIAL(ES)",
+          "officerName": "A. NOMBRE DEL OFICIAL {number}",
+          "rank": "B. RANGO",
+          "badge": "C. PLACA"
+        },
+        "suspect": {
+          "title": "3. INFORMACIÓN DEL SOSPECHOSO",
+          "fullName": "A. NOMBRE COMPLETO"
+        },
+        "location": {
+          "title": "4. LUGAR DEL ARRESTO",
+          "district": "A. DISTRITO",
+          "street": "B. CALLE"
+        },
+        "charges": {
+          "title": "5. CARGOS",
+          "headers": {
+            "description": "DESCRIPCIÓN DEL CARGO",
+            "type": "TIPO",
+            "class": "CLASE",
+            "offense": "DELITO",
+            "addition": "ADICIÓN"
+          }
+        },
+        "narrative": {
+          "title": "6. NARRATIVA"
+        },
+        "evidence": {
+          "title": "7. PRUEBAS",
+          "supporting": "A. PRUEBAS DE APOYO",
+          "dashcam": "B. GRABACIÓN DE LA CÁMARA DEL TABLERO"
+        },
+        "summary": {
+          "title": "(( 8. RESUMEN DE SENTENCIA Y FIANZA AUTOMÁTICA ))",
+          "minSentence": "SENTENCIA MÍNIMA",
+          "maxSentence": "SENTENCIA MÁXIMA",
+          "totalFine": "MULTA TOTAL",
+          "points": "PUNTOS",
+          "bailStatus": "ESTADO DE LA FIANZA",
+          "bailAmount": "MONTO DE LA FIANZA"
+        }
       }
     },
     "advancedForm": {
@@ -715,7 +620,7 @@
         "accessory": "Encubridor",
         "conspiracy": "Conspiración",
         "solicitation": "Instigación",
-        "paroleViolation": "Violación de libertad condicional"
+        "paroleviolation": "Violación de libertad condicional"
       },
       "types": {
         "felony": "Delito grave",
@@ -731,7 +636,7 @@
       },
       "bailStatus": {
         "na": "N/D",
-        "notEligible": "No elegible",
+        "noteligible": "No elegible",
         "discretionary": "Discrecional",
         "eligible": "Elegible"
       },
@@ -744,19 +649,10 @@
       "currency": "${value}",
       "time": {
         "zero": "0 minutos",
-        "days": {
-          "one": "{count} día",
-          "other": "{count} días"
-        },
-        "hours": {
-          "one": "{count} hora",
-          "other": "{count} horas"
-        },
-        "minutes": {
-          "one": "{count} minuto",
-          "other": "{count} minutos"
-        },
-        "summary": "{parts} ({minutes} minutos en total)"
+        "days": "{count, plural, one {# día} other {# días}}",
+        "hours": "{count, plural, one {# hora} other {# horas}}",
+        "minutes": "{count, plural, one {# minuto} other {# minutos}}",
+        "summary": "{parts} ({minutes} min en total)"
       },
       "charges": {
         "cardTitle": "Cargos",
