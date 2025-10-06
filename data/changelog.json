@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.5.0.01",
+            "type": "Hotfix",
+            "date": "2025-10-06",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Calculator:</b> Fixed some undefined language strings in the Arrest Calculation."
+                }
+            ]
+        },
+        {
             "version": "3.5.0",
             "type": "Major Update",
             "date": "2025-10-06",
