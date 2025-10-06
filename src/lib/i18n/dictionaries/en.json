@@ -23,6 +23,105 @@
     "announcements": "Announcements",
     "github": "GitHub"
   },
+  "settings": {
+    "pageTitle": "MDC Panel – Settings",
+    "header": {
+      "title": "Settings",
+      "description": "Manage your application settings and data."
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize the look and feel of the application.",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "defaultOfficer": {
+      "title": "Default Officer Information",
+      "description": "Set the default officer details that will be pre-filled in new arrest reports.",
+      "predefinedActive": {
+        "title": "Predefined Lineup Active",
+        "description": "Your officer information is currently managed by a predefined lineup.",
+        "alert": "To manage your officer list, please go to the Advanced Form Parameters page. You can reset to a single default officer setup below.",
+        "goToAdvanced": "Go to Advanced Parameters",
+        "reset": "Reset to Default"
+      },
+      "fields": {
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
+        "rankAndDept": "Rank & Department",
+        "rankPlaceholder": "Select Rank",
+        "badgeNo": "Badge Number",
+        "badgePlaceholder": "12345",
+        "divDetail": "Division / Detail",
+        "divDetailPlaceholder": "e.g. Mission Row"
+      }
+    },
+    "advancedParams": {
+      "title": "Advanced Form Parameters",
+      "description": "Configure advanced form options, such as setting a default officer lineup.",
+      "button": "Go to Advanced Parameters"
+    },
+    "predefinedCallsigns": {
+      "title": "Predefined Callsigns",
+      "description": "Manage a list of callsigns to quickly select from in forms.",
+      "placeholder": "Callsign #{index}",
+      "addButton": "Add Callsign"
+    },
+    "altCharacters": {
+      "title": "Alternative Characters",
+      "description": "Manage up to 3 alternative characters for quick selection in reports.",
+      "character": "Character {index}",
+      "addButton": "Add Character"
+    },
+    "formVisibility": {
+      "title": "Form Visibility",
+      "description": "Control which faction-specific forms are visible on the Paperwork Generators page.",
+      "noGroups": "No toggleable faction form groups found."
+    },
+    "privacy": {
+      "title": "Privacy Settings",
+      "description": "Manage how your data is used.",
+      "analyticsLabel": "Anonymous Analytics",
+      "analyticsDescription": "Help improve the application by sharing anonymous usage data."
+    },
+    "experimental": {
+      "title": "Experimental Features",
+      "description": "Opt-in to try new features that are still in development. These may be unstable.",
+      "aiReportsLabel": "AI Arrest Reports",
+      "aiReportsDescription": "Shows AI features on the Basic Arrest Report, which can help with writing arrest reports for anyone who pled guilty."
+    },
+    "dataManagement": {
+      "title": "Data Management",
+      "description": "Permanently delete all your stored data, including saved reports, charges, and default settings. This action cannot be undone.",
+      "exportButton": "Export Data",
+      "importButton": "Import Data",
+      "clearButton": "Clear All Site Data",
+      "clearDialog": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will permanently delete all your application data from your browser's storage."
+      }
+    },
+    "toasts": {
+      "settingsSaved": "Settings Saved",
+      "settingsSavedDesc": "Your settings have been updated.",
+      "dataCleared": "Data Cleared",
+      "dataClearedDesc": "All local and session data has been successfully cleared.",
+      "clearError": "Error",
+      "clearErrorDesc": "Could not clear all site data. Check the console for details.",
+      "dataExported": "Data Exported",
+      "dataExportedDesc": "A file with your data has been downloaded.",
+      "dataImported": "Data Imported",
+      "dataImportedDesc": "Local storage data has been imported.",
+      "importFailed": "Import Failed",
+      "importFailedDesc": "Could not import data. Please ensure the file is valid."
+    },
+    "buttons": {
+      "save": "Save All Changes",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    }
+  },
   "reportArchive": {
     "documentTitle": "MDC Panel – Report Archive",
     "header": {

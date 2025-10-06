@@ -23,6 +23,105 @@
     "announcements": "Anuncios",
     "github": "GitHub"
   },
+  "settings": {
+    "pageTitle": "MDC Panel – Configuración",
+    "header": {
+      "title": "Configuración",
+      "description": "Administra la configuración y los datos de tu aplicación."
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "description": "Personaliza el aspecto y la sensación de la aplicación.",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "defaultOfficer": {
+      "title": "Información del Oficial por Defecto",
+      "description": "Establece los detalles del oficial por defecto que se autocompletarán en los nuevos informes de arresto.",
+      "predefinedActive": {
+        "title": "Alineación predefinida activa",
+        "description": "La información de tu oficial se gestiona actualmente mediante una alineación predefinida.",
+        "alert": "Para administrar tu lista de oficiales, ve a la página de Parámetros Avanzados de Formularios. Puedes restablecer a una configuración de oficial único por defecto a continuación.",
+        "goToAdvanced": "Ir a Parámetros Avanzados",
+        "reset": "Restablecer a por defecto"
+      },
+      "fields": {
+        "fullName": "Nombre Completo",
+        "fullNamePlaceholder": "John Doe",
+        "rankAndDept": "Rango y Departamento",
+        "rankPlaceholder": "Seleccionar Rango",
+        "badgeNo": "Número de Placa",
+        "badgePlaceholder": "12345",
+        "divDetail": "División / Detalle",
+        "divDetailPlaceholder": "ej. Mission Row"
+      }
+    },
+    "advancedParams": {
+      "title": "Parámetros Avanzados de Formularios",
+      "description": "Configura opciones avanzadas de formularios, como establecer una alineación de oficiales por defecto.",
+      "button": "Ir a Parámetros Avanzados"
+    },
+    "predefinedCallsigns": {
+      "title": "Indicativos Predefinidos",
+      "description": "Gestiona una lista de indicativos para seleccionarlos rápidamente en los formularios.",
+      "placeholder": "Indicativo #{index}",
+      "addButton": "Añadir Indicativo"
+    },
+    "altCharacters": {
+      "title": "Personajes Alternativos",
+      "description": "Gestiona hasta 3 personajes alternativos para una selección rápida en los informes.",
+      "character": "Personaje {index}",
+      "addButton": "Añadir Personaje"
+    },
+    "formVisibility": {
+      "title": "Visibilidad de Formularios",
+      "description": "Controla qué formularios específicos de facción son visibles en la página de Generadores de Formularios.",
+      "noGroups": "No se encontraron grupos de formularios de facción que se puedan activar/desactivar."
+    },
+    "privacy": {
+      "title": "Configuración de Privacidad",
+      "description": "Gestiona cómo se usan tus datos.",
+      "analyticsLabel": "Analíticas Anónimas",
+      "analyticsDescription": "Ayuda a mejorar la aplicación compartiendo datos de uso anónimos."
+    },
+    "experimental": {
+      "title": "Funciones Experimentales",
+      "description": "Activa para probar nuevas funciones que aún están en desarrollo. Pueden ser inestables.",
+      "aiReportsLabel": "Informes de Arresto con IA",
+      "aiReportsDescription": "Muestra funciones de IA en el Informe de Arresto Básico, que pueden ayudar a redactar informes para quienes se declaran culpables."
+    },
+    "dataManagement": {
+      "title": "Gestión de Datos",
+      "description": "Elimina permanentemente todos tus datos almacenados, incluidos informes guardados, cargos y configuraciones predeterminadas. Esta acción no se puede deshacer.",
+      "exportButton": "Exportar Datos",
+      "importButton": "Importar Datos",
+      "clearButton": "Limpiar Todos los Datos del Sitio",
+      "clearDialog": {
+        "title": "¿Estás absolutamente seguro?",
+        "description": "Esta acción no se puede deshacer. Esto eliminará permanentemente todos los datos de tu aplicación del almacenamiento de tu navegador."
+      }
+    },
+    "toasts": {
+      "settingsSaved": "Configuración Guardada",
+      "settingsSavedDesc": "Tu configuración ha sido actualizada.",
+      "dataCleared": "Datos Limpiados",
+      "dataClearedDesc": "Todos los datos locales y de sesión se han limpiado correctamente.",
+      "clearError": "Error",
+      "clearErrorDesc": "No se pudieron limpiar todos los datos del sitio. Revisa la consola para más detalles.",
+      "dataExported": "Datos Exportados",
+      "dataExportedDesc": "Se ha descargado un archivo con tus datos.",
+      "dataImported": "Datos Importados",
+      "dataImportedDesc": "Los datos de almacenamiento local se han importado.",
+      "importFailed": "Importación Fallida",
+      "importFailedDesc": "No se pudieron importar los datos. Asegúrate de que el archivo sea válido."
+    },
+    "buttons": {
+      "save": "Guardar Todos los Cambios",
+      "cancel": "Cancelar",
+      "continue": "Continuar"
+    }
+  },
   "reportArchive": {
     "documentTitle": "MDC Panel – Archivo de Informes",
     "header": {
