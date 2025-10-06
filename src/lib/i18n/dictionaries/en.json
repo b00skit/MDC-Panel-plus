@@ -1234,5 +1234,60 @@
         "description": "Could not create an image from the paperwork preview. Please try again."
       }
     }
+  },
+  "feedbackDialog": {
+    "title": "Share Your Feedback",
+    "description": "Let me know what you think. Your feedback helps me improve.",
+    "reasons": {
+      "title": "What's on your mind?",
+      "positive": {
+        "design": "The design is clean and intuitive.",
+        "performance": "The application is fast and responsive.",
+        "feature": "I really like a specific feature.",
+        "helpful": "This tool is very helpful for my tasks."
+      },
+      "negative": {
+        "bug": "I encountered a technical bug or error.",
+        "slow": "The application feels slow or laggy.",
+        "confusing": "I find the layout or a feature confusing.",
+        "missing": "A feature I need is missing."
+      }
+    },
+    "additionalThoughts": "Do you have any additional thoughts? (Optional)",
+    "additionalThoughtsPlaceholder": "Tell us more...",
+    "help": "Help",
+    "cancel": "Cancel",
+    "submit": "Submit Feedback",
+    "submitting": "Submitting...",
+    "toasts": {
+      "selectType": "Please select a feedback type (thumbs up or down).",
+      "success": {
+        "title": "Thank you!",
+        "description": "Your feedback has been submitted successfully."
+      },
+      "error": {
+        "title": "Error",
+        "description": "Could not submit feedback. Please try again."
+      }
+    }
+  },
+  "aiDialog": {
+    "title": "Generate Narrative with AI",
+    "description": "Paste your logs to generate a report narrative.",
+    "disclaimer": {
+      "title": "Important Disclaimer",
+      "description": "The usage of AI is heavily discouraged and in the majority of cases disallowed, you should check with your department's policies as well as any standing LFM directives before utilizing AI to write arrest reports. This is meant as a tool and not as an outright replacement. The authenticity of the narrative is your responsibility."
+    },
+    "logsLabel": "Your Logs",
+    "logsPlaceholder": "Paste your raw, unedited logs here...",
+    "error": {
+      "title": "Error",
+      "generic": "An error occurred while generating the narrative. Please try again."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "generate": "Generate",
+      "generating": "Generating..."
+    }
   }
 }

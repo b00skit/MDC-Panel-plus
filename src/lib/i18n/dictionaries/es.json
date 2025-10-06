@@ -1027,10 +1027,10 @@
         "descent": "ASCENDENCIA",
         "clothing": "DESCRIBIR VESTIMENTA",
         "oddities": "DESCRIBIR PECULIARIDADES PERSONALES",
-        "alias": "APODO/ALIAS SI SE CONOCE",
-        "gang": "PANDILLA/CLUB SI SE CONOCE",
+        "alias": "APODO / ALIAS SI SE CONOCE",
+        "gang": "PANDILLA / CLUB SI SE CONOCE",
         "name": "NOMBRE {index}",
-        "gangMoniker": "PANDILLA/APODO/ALIAS SI SE CONOCE",
+        "gangMoniker": "PANDILLA / APODO / ALIAS SI SE CONOCE",
         "date": "DD/MMM/AAAA",
         "time": "HH:MM (24H)",
         "district": "Seleccionar o escribir un distrito",
@@ -1233,6 +1233,61 @@
         "title": "Descarga fallida",
         "description": "No se pudo crear una imagen a partir de la vista previa. Por favor, inténtalo de nuevo."
       }
+    }
+  },
+  "feedbackDialog": {
+    "title": "Comparte tus Comentarios",
+    "description": "Déjame saber lo que piensas. Tus comentarios me ayudan a mejorar.",
+    "reasons": {
+      "title": "¿En qué estás pensando?",
+      "positive": {
+        "design": "El diseño es limpio e intuitivo.",
+        "performance": "La aplicación es rápida y receptiva.",
+        "feature": "Me gusta mucho una característica específica.",
+        "helpful": "Esta herramienta es muy útil para mis tareas."
+      },
+      "negative": {
+        "bug": "Encontré un error técnico.",
+        "slow": "La aplicación se siente lenta o con lag.",
+        "confusing": "Encuentro confuso el diseño o una característica.",
+        "missing": "Falta una característica que necesito."
+      }
+    },
+    "additionalThoughts": "¿Tienes alguna otra idea? (Opcional)",
+    "additionalThoughtsPlaceholder": "Cuéntanos más...",
+    "help": "Ayuda",
+    "cancel": "Cancelar",
+    "submit": "Enviar Comentarios",
+    "submitting": "Enviando...",
+    "toasts": {
+      "selectType": "Por favor, selecciona un tipo de comentario (pulgar arriba o abajo).",
+      "success": {
+        "title": "¡Gracias!",
+        "description": "Tus comentarios se han enviado correctamente."
+      },
+      "error": {
+        "title": "Error",
+        "description": "No se pudieron enviar los comentarios. Por favor, inténtalo de nuevo."
+      }
+    }
+  },
+  "aiDialog": {
+    "title": "Generar Narrativa con IA",
+    "description": "Pega tus registros para generar una narrativa para el informe.",
+    "disclaimer": {
+      "title": "Descargo de Responsabilidad Importante",
+      "description": "El uso de IA está muy desaconsejado y en la mayoría de los casos no está permitido. Debes consultar las políticas de tu departamento, así como cualquier directiva vigente de LFM, antes de utilizar la IA para redactar informes de arresto. Esto está pensado como una herramienta y no como un reemplazo total. La autenticidad de la narrativa es tu responsabilidad."
+    },
+    "logsLabel": "Tus Registros",
+    "logsPlaceholder": "Pega aquí tus registros sin editar...",
+    "error": {
+      "title": "Error",
+      "generic": "Ocurrió un error al generar la narrativa. Por favor, inténtalo de nuevo."
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "generate": "Generar",
+      "generating": "Generando..."
     }
   }
 }
