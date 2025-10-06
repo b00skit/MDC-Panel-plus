@@ -23,6 +23,74 @@
     "announcements": "Anuncios",
     "github": "GitHub"
   },
+  "simplifiedPenalCode": {
+    "page": {
+      "header": {
+        "title": "Código Penal Simplificado",
+        "description": "Navega y busca en la lista de cargos."
+      },
+      "searchPlaceholder": "Buscar por ID, nombre, definición o estipulación...",
+      "filters": {
+        "all": "Todos",
+        "felonies": "Delitos Graves",
+        "misdemeanors": "Delitos Menores",
+        "infractions": "Infracciones"
+      },
+      "error": {
+        "title": "Error al Cargar los Datos",
+        "fetchFailed": "Error al obtener los datos del código penal"
+      },
+      "noResults": "No se encontraron cargos que coincidan con tus criterios de búsqueda."
+    },
+    "chargeCard": {
+      "types": {
+        "felony": "Delito Grave",
+        "misdemeanor": "Delito Menor",
+        "infraction": "Infracción",
+        "other": "Otro"
+      },
+      "drugRelated": "Relacionado con Drogas",
+      "details": {
+        "classes": "Clases",
+        "offenses": "Delitos",
+        "points": "Puntos",
+        "fine": "Multa",
+        "minSentence": "Sentencia Mínima (Culpable)",
+        "maxSentence": "Sentencia Máxima (No Contesto)",
+        "bail": "Fianza",
+        "varies": "Varía",
+        "variesByCategory": "Varía por Categoría"
+      },
+      "stipulations": {
+        "title": "Estipulaciones",
+        "note": "Nota"
+      },
+      "drugCategories": {
+        "title": "Categorías de Drogas y Estipulaciones",
+        "minTime": "Tiempo Mínimo",
+        "fine": "Multa"
+      },
+      "time": {
+        "days": {
+          "one": "Día",
+          "other": "Días"
+        },
+        "hours": {
+          "one": "Hora",
+          "other": "Horas"
+        },
+        "minutes": {
+          "one": "Minuto",
+          "other": "Minutos"
+        }
+      },
+      "bail": {
+        "noBail": "Sin Fianza",
+        "discretionary": "Discrecional",
+        "autoBail": "Fianza Automática"
+      }
+    }
+  },
   "legalSearch": {
     "header": {
       "title": "Búsqueda Legal",
@@ -733,8 +801,8 @@
         "bookingRank": "RANGO DEL OFICIAL DE FICHAJE",
         "bookingName": "NOMBRE DEL OFICIAL DE FICHAJE",
         "dicvsLink": "Enlace del metraje DICVS",
-        "photosLink": "Enlace de las fotografías",
         "cctvLink": "Enlace del metraje de CCTV",
+        "photosLink": "Enlace de las fotografías",
         "thirdPartyLink": "Enlace del metraje de terceros",
         "plea": "Seleccionar Declaración..."
       },
@@ -906,18 +974,30 @@
       "title": "¡Atención!",
       "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido HTML generado está diseñado para funcionar perfectamente en el MDC real. Este informe también ha sido archivado."
     },
-    "formattedReport": "Informe Formateado",
+    "reportTitleLabel": "Título del Informe",
     "buttons": {
-      "mdcRecord": "Abrir Registro MDC",
-      "impound": "Crear Informe de Incautación Rápido",
+      "copyTitle": "Copiar Título",
       "download": "Descargar Informe",
       "downloading": "Preparando Imagen...",
-      "copy": "Copiar Documentación"
+      "copyPaperwork": "Copiar Documentación"
+    },
+    "error": {
+      "header": {
+        "title": "Error de Envío",
+        "description": "No se encontraron los datos necesarios para generar esta documentación."
+      },
+      "alert": {
+        "title": "Error",
+        "description": "No se pudieron cargar los datos del informe. Por favor, vuelve a la página de generadores e inténtalo de nuevo."
+      }
     },
     "toasts": {
-      "success": {
+      "copySuccess": {
         "title": "Éxito",
         "description": "Contenido de la documentación copiado al portapapeles."
+      },
+      "copyTitleSuccess": {
+        "description": "Título del informe copiado al portapapeles."
       },
       "downloadStart": {
         "title": "Descarga iniciada",

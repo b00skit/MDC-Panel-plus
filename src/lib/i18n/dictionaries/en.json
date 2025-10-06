@@ -23,6 +23,74 @@
     "announcements": "Announcements",
     "github": "GitHub"
   },
+  "simplifiedPenalCode": {
+    "page": {
+      "header": {
+        "title": "Simplified Penal Code",
+        "description": "Browse and search through the list of charges."
+      },
+      "searchPlaceholder": "Search by ID, name, definition, or stipulation...",
+      "filters": {
+        "all": "All",
+        "felonies": "Felonies",
+        "misdemeanors": "Misdemeanors",
+        "infractions": "Infractions"
+      },
+      "error": {
+        "title": "Failed to Load Data",
+        "fetchFailed": "Failed to fetch penal code data"
+      },
+      "noResults": "No charges found matching your search criteria."
+    },
+    "chargeCard": {
+      "types": {
+        "felony": "Felony",
+        "misdemeanor": "Misdemeanor",
+        "infraction": "Infraction",
+        "other": "Other"
+      },
+      "drugRelated": "Drug Related",
+      "details": {
+        "classes": "Classes",
+        "offenses": "Offenses",
+        "points": "Points",
+        "fine": "Fine",
+        "minSentence": "Min Sentence (Guilty)",
+        "maxSentence": "Max Sentence (No Contest)",
+        "bail": "Bail",
+        "varies": "Varies",
+        "variesByCategory": "Varies by Category"
+      },
+      "stipulations": {
+        "title": "Stipulations",
+        "note": "Note"
+      },
+      "drugCategories": {
+        "title": "Drug Categories & Stipulations",
+        "minTime": "Min Time",
+        "fine": "Fine"
+      },
+      "time": {
+        "days": {
+          "one": "Day",
+          "other": "Days"
+        },
+        "hours": {
+          "one": "Hour",
+          "other": "Hours"
+        },
+        "minutes": {
+          "one": "Minute",
+          "other": "Minutes"
+        }
+      },
+      "bail": {
+        "noBail": "No Bail",
+        "discretionary": "Discretionary",
+        "autoBail": "Auto Bail"
+      }
+    }
+  },
   "legalSearch": {
     "header": {
       "title": "Legal Search",
@@ -733,8 +801,8 @@
         "bookingRank": "BOOKING OFFICER RANK",
         "bookingName": "BOOKING OFFICER NAME",
         "dicvsLink": "DICVS Footage Link",
-        "photosLink": "Photographs Link",
         "cctvLink": "CCTV Footage Link",
+        "photosLink": "Photographs Link",
         "thirdPartyLink": "Third Party Footage Link",
         "plea": "Select Plea..."
       },
@@ -906,18 +974,30 @@
       "title": "Heads up!",
       "description": "The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC. This report has also been archived."
     },
-    "formattedReport": "Formatted Report",
+    "reportTitleLabel": "Report Title",
     "buttons": {
-      "mdcRecord": "Open MDC Record",
-      "impound": "Quick-Create Impound Report",
+      "copyTitle": "Copy Title",
       "download": "Download Report",
       "downloading": "Preparing Image...",
-      "copy": "Copy Paperwork"
+      "copyPaperwork": "Copy Paperwork"
+    },
+    "error": {
+      "header": {
+        "title": "Submission Error",
+        "description": "Could not find the necessary data to generate this paperwork."
+      },
+      "alert": {
+        "title": "Error",
+        "description": "Could not load report data. Please go back to the generators page and try again."
+      }
     },
     "toasts": {
-      "success": {
+      "copySuccess": {
         "title": "Success",
         "description": "Paperwork content copied to clipboard."
+      },
+      "copyTitleSuccess": {
+        "description": "Report title copied to clipboard."
       },
       "downloadStart": {
         "title": "Download started",
@@ -925,7 +1005,7 @@
       },
       "downloadFailed": {
         "title": "Download failed",
-        "description": "Could not create an image from the report. Please try again."
+        "description": "Could not create an image from the paperwork preview. Please try again."
       }
     }
   }
