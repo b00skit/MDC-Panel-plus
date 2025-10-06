@@ -34,6 +34,7 @@ import React from 'react';
 import { useSettingsStore } from '@/stores/settings-store';
 import { BasicArrestReportAIDialog } from './basic-arrest-report-ai-dialog';
 import { useChargeStore } from '@/stores/charge-store';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 /* --------------------------------- Layout -------------------------------- */
 
@@ -167,6 +168,7 @@ type ArrestReportFormHandle = {
 
 export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function ArrestReportForm(_, ref) {
   const router = useRouter();
+  const t = useScopedI18n('arrestReport.form');
   const { experimentalFeatures } = useSettingsStore();
   const showAiFeature = experimentalFeatures.includes('ai_arrest_reports');
   const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
@@ -231,30 +233,29 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
 
   const arrestReportModifiers: Modifier[] = useMemo(
     () => [
-      { name: 'callOfService', label: 'Call of Service', text: 'received a call of service #' },
+      { name: 'callOfService', label: t('modifiers.callOfService.label'), text: t('modifiers.callOfService.text') },
       {
         name: 'evaded',
-        label: 'Evaded',
-        text: 'When attempting to detain {{suspect}}, they fled within the a vehicle leading to a pursuit by the department.',
+        label: t('modifiers.evaded.label'),
+        text: t('modifiers.evaded.text'),
       },
       {
         name: 'resistedArrest',
-        label: 'Resisted Arrest',
-        text: 'When attempting to apprehend {{suspect}}, the suspect physically resisted detainment and attempted to flee from the peace officers involved in the arrest.',
+        label: t('modifiers.resistedArrest.label'),
+        text: t('modifiers.resistedArrest.text'),
       },
       {
         name: 'searched',
-        label: 'Searched',
-        text: '{{suspect}} was positioned in front of a department vehicle\'s dashcam and searched in accordance to the legal requirements as well as department\'s policy as well as the training I\'ve undergone, the following items have been found in the posession of the suspect:',
+        label: t('modifiers.searched.label'),
+        text: t('modifiers.searched.text'),
       },
       {
         name: 'booking',
-        label: 'Booking',
-        text:
-          "I transported {{suspect}} to the nearest department's station, where I booked them for the charges mentioned within this report according to all outlined departmental guidelines, state requirements and training.",
+        label: t('modifiers.booking.label'),
+        text: t('modifiers.booking.text'),
       },
     ],
-    []
+    [t]
   );
 
   const narrativeText = useMemo(() => {
@@ -277,8 +278,8 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
         badge: primaryOfficer?.badgeNumber || '',
         department: primaryOfficer?.department || '',
     };
-
-    let baseText = `On the ${data.date}, I ${data.rank} ${data.name} (#${data.badge}) of the ${data.department} while under the callsign ${data.callsign} conducted an arrest on ${data.suspect}. At approximately ${data.time} hours, I was driving on ${data.street} when I `;
+    
+    let baseText = t('narrative.base', data);
 
     const modifierOrder: (keyof typeof allWatchedFields.narrative.modifiers)[] = ['callOfService', 'evaded', 'resistedArrest', 'searched', 'booking'];
     let firstModifierAdded = false;
@@ -311,7 +312,8 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
     arrestReportModifiers,
     getValues,
     userModified.narrative,
-    formData.arrest?.suspectName
+    formData.arrest?.suspectName,
+    t
 ]);
 
   const isInvalid = (fieldName: string) => {
@@ -403,7 +405,7 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
         <GeneralSection />
         <OfficerSection isArrestReport={true} showBadgeNumber={true} />
 
-        <FormSection title="Location Details" icon={<MapPin className="h-6 w-6" />}>
+        <FormSection title={t('sections.location.title')} icon={<MapPin className="h-6 w-6" />}>
           <LocationDetails
             districtFieldName="location.district"
             streetFieldName="location.street"
@@ -411,13 +413,13 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
           />
         </FormSection>
 
-        <FormSection title="Arrest Section" icon={<FileText className="h-6 w-6" />}>
+        <FormSection title={t('sections.arrest.title')} icon={<FileText className="h-6 w-6" />}>
           <div className="space-y-6">
             <InputField
-              label="Suspect's Full Name"
+              label={t('fields.suspectName.label')}
               id="suspect-name"
               name="arrest.suspectName"
-              placeholder="Firstname Lastname"
+              placeholder={t('fields.suspectName.placeholder')}
               icon={<User className="h-4 w-4 text-muted-foreground" />}
               onBlur={(e) => setFormField('arrest', 'suspectName', e.target.value)}
               isInvalid={isInvalid('arrest.suspectName')}
@@ -428,12 +430,11 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
               control={control}
               render={() => (
                 <TextareaWithPreset
-                  label="Arrest Narrative"
-                  placeholder="Arrest Narrative"
+                  label={t('fields.narrative.label')}
+                  placeholder={t('fields.narrative.placeholder')}
                   description={
                     <span className="text-red-500">
-                      Describe the events leading up to the arrest in first person and in chronological order, ensure you
-                      explain your probable cause of each of the charges and the arrest.
+                      {t('fields.narrative.description')}
                     </span>
                   }
                   basePath="narrative"
@@ -454,37 +455,37 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
                 <div className="flex justify-start">
                     <Button type="button" variant="outline" onClick={() => setIsAiDialogOpen(true)}>
                         <Sparkles className="mr-2 h-4 w-4" />
-                        Generate Narrative with AI
+                        {t('buttons.generateAi')}
                     </Button>
                 </div>
             )}
           </div>
         </FormSection>
 
-        <FormSection title="Evidence Section" icon={<Paperclip className="h-6 w-6" />}>
+        <FormSection title={t('sections.evidence.title')} icon={<Paperclip className="h-6 w-6" />}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <TextareaField
-              label="Supporting Evidence"
+              label={t('fields.supportingEvidence.label')}
               id="supporting-evidence"
               name="evidence.supporting"
-              placeholder="Videos, Photographs, Links, Audio Recordings / Transcripts, Witness Statements & Testimony"
+              placeholder={t('fields.supportingEvidence.placeholder')}
               icon={<Paperclip className="h-4 w-4 text-muted-foreground" />}
-              description="Provide supporting evidence to aid the arrest report."
+              description={t('fields.supportingEvidence.description')}
               className="min-h-[150px]"
               onBlur={(e) => setFormField('evidence', 'supporting', e.target.value)}
               /* NOT mandatory */
             />
             <TextareaField
-              label="Dashboard Camera"
+              label={t('fields.dashcam.label')}
               id="dashcam"
               name="evidence.dashcam"
-              placeholder="The dashboard camera captures audio and video footage showcasing..."
+              placeholder={t('fields.dashcam.placeholder')}
               icon={<Video className="h-4 w-4 text-muted-foreground" />}
               description={
                 <span>
-                  Roleplay what the dashboard camera captures OR provide Streamable/YouTube links.
+                  {t('fields.dashcam.description.main')}
                   <br />
-                  <span className="text-red-500">(( Lying in this section will lead to OOC punishment ))</span>
+                  <span className="text-red-500">{t('fields.dashcam.description.warning')}</span>
                 </span>
               }
               className="min-h-[150px]"
@@ -497,9 +498,9 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
 
         <div className="flex justify-end gap-4">
           <Button variant="outline" type="button" onClick={saveDraft}>
-            Save as Draft
+            {t('buttons.saveDraft')}
           </Button>
-          <Button type="submit">Submit Report</Button>
+          <Button type="submit">{t('buttons.submit')}</Button>
         </div>
       </form>
     </FormProvider>

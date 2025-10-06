@@ -41,13 +41,18 @@ import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
 import { EvidenceLog, NarrativeSection } from './narrative-sections';
 import configData from '../../../data/config.json';
+import { useI18n } from '@/lib/i18n/client';
 
 interface DeptRanks {
   [department: string]: string[];
 }
 
+type PleaKey = 'guilty' | 'notGuilty' | 'noContest' | 'requiredCase';
+const PLEA_KEYS: PleaKey[] = ['guilty', 'notGuilty', 'noContest', 'requiredCase'];
+
 export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     const router = useRouter();
+    const { t, locale } = useI18n();
     // Session state for the current report
     const { formData: sessionFormData, setFields: setSessionFields } = useAdvancedReportStore();
     // Persistent state for user preferences
@@ -128,6 +133,29 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     };
     
     // Auto-population from modifiers
+    const parsePleaKey = useCallback((value?: string): PleaKey => {
+        const baseMap: Record<string, PleaKey> = {
+            guilty: 'guilty',
+            'not guilty': 'notGuilty',
+            'no contest': 'noContest',
+            'required case': 'requiredCase',
+        };
+
+        PLEA_KEYS.forEach((key) => {
+            const translated = t(`arrestReport.advancedForm.pleas.${key}`).toLowerCase();
+            baseMap[translated] = key;
+        });
+
+        if (!value) return 'guilty';
+
+        if (PLEA_KEYS.includes(value as PleaKey)) {
+            return value as PleaKey;
+        }
+
+        const normalized = value.trim().toLowerCase();
+        return baseMap[normalized] ?? 'guilty';
+    }, [t]);
+
     useEffect(() => {
         const officers = watchedFields.officers;
         const primaryOfficer = officers?.[0];
@@ -142,94 +170,138 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         const divDetail = primaryOfficer.divDetail || '';
         const callsign = primaryOfficer.callSign || '';
 
-        let sourceText = '';
+        const sourceParts: string[] = [];
 
         if (officers && officers.length > 1) {
-            const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail); // Filter out empty partners
+            const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail);
             if (partners.length > 0) {
-                const partnerDetails = partners.map(p => `${p.rank || ''} ${p.name || ''} (#${p.badgeNumber || ''}), assigned to ${p.divDetail || ''}`);
-
-                let partnerStr = '';
-                if (partnerDetails.length === 1) {
-                    partnerStr = partnerDetails[0];
-                } else if (partnerDetails.length > 1) {
-                    const lastPartner = partnerDetails.pop();
-                    partnerStr = partnerDetails.join(', ') + ', and ' + lastPartner;
-                }
-
-                sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, partnered with ${partnerStr}, were deployed under Unit ${callsign}. `;
-
+                const partnerDetails = partners.map(p =>
+                    t('arrestReport.advancedForm.presets.source.partnerDetail', {
+                        rank: p.rank || '',
+                        name: p.name || '',
+                        badge: p.badgeNumber || '',
+                        divDetail: p.divDetail || '',
+                    })
+                );
+                const partnerFormatter = new Intl.ListFormat(locale, { style: 'long', type: 'conjunction' });
+                const partnerStr = partnerFormatter.format(partnerDetails);
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.withPartners', {
+                        date,
+                        rank,
+                        name,
+                        badge,
+                        divDetail,
+                        partners: partnerStr,
+                        callsign,
+                    })
+                );
             } else {
-                 // Fallback for case where there are officer rows but they are empty
-                sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.singleOfficer', {
+                        date,
+                        rank,
+                        name,
+                        badge,
+                        divDetail,
+                        callsign,
+                    })
+                );
             }
         } else {
-            sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+            sourceParts.push(
+                t('arrestReport.advancedForm.presets.source.singleOfficer', {
+                    date,
+                    rank,
+                    name,
+                    badge,
+                    divDetail,
+                    callsign,
+                })
+            );
         }
-        
-        // Vehicle part
+
         if (watchedFields.modifiers?.markedUnit) {
-            if (watchedFields.modifiers?.slicktop) {
-                sourceText += 'I was driving a marked black and white slicktop. ';
-            } else {
-                sourceText += 'I was driving a marked black and white with a rooftop light bar. ';
-            }
+            sourceParts.push(
+                watchedFields.modifiers?.slicktop
+                    ? t('arrestReport.advancedForm.presets.source.vehicleMarkedSlicktop')
+                    : t('arrestReport.advancedForm.presets.source.vehicleMarkedLightbar')
+            );
         } else {
-            sourceText += 'I was driving an unmarked vehicle. ';
+            sourceParts.push(t('arrestReport.advancedForm.presets.source.vehicleUnmarked'));
         }
 
-        // Uniform part
         if (watchedFields.modifiers?.inUniform) {
-             if (watchedFields.modifiers?.inG3Uniform) {
-                const uniformType = isLSSD ? "SEB G3" : "metropolitan G3";
-                sourceText += `I was wearing my department-issued ${uniformType} uniform and was openly displaying my badge of office on my uniform.`;
+            if (watchedFields.modifiers?.inG3Uniform) {
+                const uniformType = isLSSD
+                    ? t('arrestReport.advancedForm.presets.source.uniforms.g3.lssd')
+                    : t('arrestReport.advancedForm.presets.source.uniforms.g3.lspd');
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.uniformWithBadge', { uniform: uniformType })
+                );
             } else if (watchedFields.modifiers?.inMetroUniform) {
-                const uniformType = isLSSD ? "SEB BDU" : "metropolitan BDU";
-                sourceText += `I was wearing my department-issued ${uniformType} uniform and was openly displaying my badge of office on my uniform.`;
+                const uniformType = isLSSD
+                    ? t('arrestReport.advancedForm.presets.source.uniforms.bdu.lssd')
+                    : t('arrestReport.advancedForm.presets.source.uniforms.bdu.lspd');
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.uniformWithBadge', { uniform: uniformType })
+                );
             } else {
-                sourceText += 'I was wearing my department-issued patrol uniform and was openly displaying my badge of office on my uniform.';
+                sourceParts.push(t('arrestReport.advancedForm.presets.source.patrolUniform'));
             }
+        } else if (watchedFields.modifiers?.undercover) {
+            sourceParts.push(t('arrestReport.advancedForm.presets.source.plainClothes'));
         } else {
-            if (watchedFields.modifiers?.undercover) {
-                 sourceText += 'I was wearing plain clothes.';
-            } else {
-                 sourceText += 'I was wearing plain clothes and was openly displaying my badge.';
-            }
+            sourceParts.push(t('arrestReport.advancedForm.presets.source.plainClothesBadge'));
         }
-        
-        setValue('narrative.source', sourceText.trim());
+
+        setValue('narrative.source', sourceParts.filter(Boolean).join(' '));
 
     }, [
         isLSSD,
-        watchedFields.modifiers?.markedUnit, 
-        watchedFields.modifiers?.slicktop, 
-        watchedFields.modifiers?.inUniform, 
-        watchedFields.modifiers?.undercover, 
-        watchedFields.modifiers?.inMetroUniform, 
-        watchedFields.modifiers?.inG3Uniform, 
+        watchedFields.modifiers?.markedUnit,
+        watchedFields.modifiers?.slicktop,
+        watchedFields.modifiers?.inUniform,
+        watchedFields.modifiers?.undercover,
+        watchedFields.modifiers?.inMetroUniform,
+        watchedFields.modifiers?.inG3Uniform,
         watchedFields.incident?.date,
         JSON.stringify(watchedFields.officers),
         watchedFields.presets?.source,
         watchedFields.userModified?.source,
+        locale,
+        t,
         setValue,
     ]);
 
     useEffect(() => {
         if (!watchedFields.presets?.investigation) return;
         if (watchedFields.userModified?.investigation) return;
-        let investigationText = '';
         const time = watchedFields.incident?.time || '';
         const street = watchedFields.incident?.locationStreet || '';
+
+        let investigationText = '';
 
         if(watchedFields.modifiers?.wasSuspectInVehicle) {
             const color = watchedFields.narrative?.vehicleColor || '';
             const model = watchedFields.narrative?.vehicleModel || '';
-            const plate = watchedFields.narrative?.vehiclePlate ? `with ${watchedFields.narrative.vehiclePlate} plates` : 'with no plates';
-            investigationText = `At approximately ${time} hours, I was driving on ${street} when I observed a ${color} ${model}, ${plate}.`;
+            const plate = watchedFields.narrative?.vehiclePlate
+                ? t('arrestReport.advancedForm.presets.investigation.plateKnown', { plate: watchedFields.narrative.vehiclePlate })
+                : t('arrestReport.advancedForm.presets.investigation.plateUnknown');
+            investigationText = t('arrestReport.advancedForm.presets.investigation.vehicleObserved', {
+                time,
+                street,
+                color,
+                model,
+                plate,
+            });
         } else {
-            investigationText = `At approximately ${time} hours, I was driving on ${street}`;
+            investigationText = t('arrestReport.advancedForm.presets.investigation.onPatrol', {
+                time,
+                street,
+            });
         }
-        setValue('narrative.investigation', investigationText);
+        setValue('narrative.investigation', investigationText.trim());
     }, [
         watchedFields.modifiers?.wasSuspectInVehicle,
         watchedFields.incident?.time,
@@ -239,42 +311,71 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         watchedFields.narrative?.vehiclePlate,
         watchedFields.presets?.investigation,
         watchedFields.userModified?.investigation,
+        t,
         setValue,
     ]);
 
-     useEffect(() => {
+    useEffect(() => {
         if (!watchedFields.presets?.arrest) return;
         if (watchedFields.userModified?.arrest) return;
-        let arrestText = '';
-        const suspectName = watchedFields.arrestee?.name || 'the suspect';
+        const arrestParts: string[] = [];
+        const suspectName = watchedFields.arrestee?.name || t('arrestReport.advancedForm.presets.arrest.defaultSuspect');
         if (watchedFields.modifiers?.wasSuspectMirandized) {
-            const notebookType = isLSSD ? "Sheriff's Reference Book" : "Field Officer’s Notebook";
-            const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
-            arrestText += `I admonished ${suspectName} utilizing my ${notebookType}, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
+            const notebookType = isLSSD
+                ? t('arrestReport.advancedForm.presets.arrest.notebooks.lssd')
+                : t('arrestReport.advancedForm.presets.arrest.notebooks.lspd');
+            const understood = watchedFields.modifiers?.didSuspectUnderstandRights
+                ? t('arrestReport.advancedForm.presets.arrest.responses.affirmative')
+                : t('arrestReport.advancedForm.presets.arrest.responses.negative');
+            arrestParts.push(
+                t('arrestReport.advancedForm.presets.arrest.miranda', {
+                    suspectName,
+                    notebookType,
+                    understood,
+                })
+            );
         }
 
         const transportingRank = watchedFields.narrative?.transportingRank || '';
         const transportingName = watchedFields.narrative?.transportingName || '';
-        
-        const station = isLSSD ? "the nearest booking station" : "Mission Row Station";
+
+        const station = isLSSD
+            ? t('arrestReport.advancedForm.presets.arrest.stations.lssd')
+            : t('arrestReport.advancedForm.presets.arrest.stations.lspd');
         if (watchedFields.modifiers?.didYouTransport) {
-            arrestText += `\nI transported ${suspectName} to ${station}.`;
+            arrestParts.push(t('arrestReport.advancedForm.presets.arrest.transportSelf', { suspectName, station }));
         } else {
-            arrestText += `\n${transportingRank} ${transportingName} transported ${suspectName} to ${station}.`;
+            arrestParts.push(
+                t('arrestReport.advancedForm.presets.arrest.transportOther', {
+                    suspectName,
+                    station,
+                    transportingRank,
+                    transportingName,
+                })
+            );
         }
 
-        const chargesList = charges.map(c => {
-            const details = penalCode?.[c.chargeId!];
-            return details ? `${details.type}${c.class} ${details.id}. ${details.charge}` : 'an unknown charge';
-        }).join(', ');
+        const chargesList = charges
+            .map(c => {
+                const details = penalCode?.[c.chargeId!];
+                return details
+                    ? `${details.type}${c.class} ${details.id}. ${details.charge}`
+                    : t('arrestReport.advancedForm.unknownCharge');
+            })
+            .join(', ');
 
-        arrestText += `\n${suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).`;
-        arrestText += `\n${suspectName} was arrested for ${chargesList || 'the aforementioned charges'}.`;
+        arrestParts.push(t('arrestReport.advancedForm.presets.arrest.searched', { suspectName }));
+        arrestParts.push(
+            t('arrestReport.advancedForm.presets.arrest.arrestedFor', {
+                suspectName,
+                charges: chargesList || t('arrestReport.advancedForm.presets.arrest.aforementionedCharges'),
+            })
+        );
 
-        setValue('narrative.arrest', arrestText.trim() || '');
+        setValue('narrative.arrest', arrestParts.filter(Boolean).join('\n').trim());
     }, [
         isLSSD,
-        watchedFields.modifiers?.wasSuspectMirandized, 
+        watchedFields.modifiers?.wasSuspectMirandized,
         watchedFields.modifiers?.didSuspectUnderstandRights,
         watchedFields.modifiers?.didYouTransport,
         watchedFields.arrestee?.name,
@@ -284,28 +385,45 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         penalCode,
         watchedFields.presets?.arrest,
         watchedFields.userModified?.arrest,
+        t,
         setValue,
     ]);
 
     useEffect(() => {
         if (!watchedFields.presets?.photographs) return;
         if (watchedFields.userModified?.photographs) return;
-        
-        let photosText = '';
+
+        const photoLines: string[] = [];
         if (watchedFields.modifiers?.doYouHaveAVideo) {
-            photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${watchedFields.narrative?.dicvsLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.dicv', {
+                    link: watchedFields.narrative?.dicvsLink || '',
+                })
+            );
         }
         if (watchedFields.modifiers?.didYouTakePhotographs) {
-            photosText += `I took photographs using my Department-issued cell phone - ${watchedFields.narrative?.photosLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.photos', {
+                    link: watchedFields.narrative?.photosLink || '',
+                })
+            );
         }
         if (watchedFields.modifiers?.didYouObtainCctvFootage) {
-            photosText += `I obtained closed-circuit television (CCTV) footage - ${watchedFields.narrative?.cctvLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.cctv', {
+                    link: watchedFields.narrative?.cctvLink || '',
+                })
+            );
         }
         if (watchedFields.modifiers?.thirdPartyVideoFootage) {
-            photosText += `I obtained third party video footage - ${watchedFields.narrative?.thirdPartyLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.thirdParty', {
+                    link: watchedFields.narrative?.thirdPartyLink || '',
+                })
+            );
         }
 
-        setValue('narrative.photographs', photosText.trim());
+        setValue('narrative.photographs', photoLines.join('\n').trim());
     }, [
         watchedFields.modifiers?.doYouHaveAVideo,
         watchedFields.modifiers?.didYouTakePhotographs,
@@ -317,32 +435,62 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         watchedFields.narrative?.thirdPartyLink,
         watchedFields.presets?.photographs,
         watchedFields.userModified?.photographs,
+        t,
         setValue,
     ]);
     
     useEffect(() => {
         if (!watchedFields.presets?.booking) return;
         if (watchedFields.userModified?.booking) return;
-        let bookingText = '';
-        const suspectName = watchedFields.arrestee?.name || 'the suspect';
+        const suspectName = watchedFields.arrestee?.name || t('arrestReport.advancedForm.presets.arrest.defaultSuspect');
         const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
 
         const bookingRank = watchedFields.narrative?.bookingRank || '';
         const bookingName = watchedFields.narrative?.bookingName || '';
 
-        const booker = watchedFields.modifiers?.didYouBook ? 'I' : `${bookingRank} ${bookingName}`;
+        const booker = watchedFields.modifiers?.didYouBook
+            ? t('arrestReport.advancedForm.presets.booking.bookerSelf')
+            : t('arrestReport.advancedForm.presets.booking.bookerOther', {
+                  rank: bookingRank,
+                  name: bookingName,
+              });
+
+        const bookingLines: string[] = [];
 
         if (watchedFields.modifiers?.biometricsAlreadyOnFile) {
-            bookingText = `${suspectName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
+            bookingLines.push(
+                t('arrestReport.advancedForm.presets.booking.biometricsOnFile', {
+                    suspectName,
+                })
+            );
         } else {
-            bookingText += `${booker} booked ${suspectName} on all of the charges listed under the ARREST sub-heading.\n`;
-            bookingText += `During booking, ${booker} took 10 fingerprint samples from ${suspectName} and entered them into the Automated Fingerprint Identification System (AFIS).\n`;
+            bookingLines.push(
+                t('arrestReport.advancedForm.presets.booking.booked', {
+                    booker,
+                    suspectName,
+                })
+            );
+            bookingLines.push(
+                t('arrestReport.advancedForm.presets.booking.fingerprints', {
+                    booker,
+                    suspectName,
+                })
+            );
             if (isFelony) {
-                bookingText += `As ${suspectName} was booked on a felony charge, ${booker} took a Bode SecurSwab 2 Deoxyribonucleic acid (DNA) profile from him.\n`;
-                bookingText += `${booker} submitted this profile to the Combined DNA Index System (CODIS).`;
+                bookingLines.push(
+                    t('arrestReport.advancedForm.presets.booking.dna', {
+                        booker,
+                        suspectName,
+                    })
+                );
+                bookingLines.push(
+                    t('arrestReport.advancedForm.presets.booking.codis', {
+                        booker,
+                    })
+                );
             }
         }
-        setValue('narrative.booking', bookingText.trim());
+        setValue('narrative.booking', bookingLines.join('\n').trim());
 
     }, [
         watchedFields.modifiers?.didYouBook,
@@ -354,64 +502,104 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         penalCode,
         watchedFields.presets?.booking,
         watchedFields.userModified?.booking,
+        t,
         setValue,
     ]);
     
     useEffect(() => {
         if (!watchedFields.presets?.evidence) return;
         if (watchedFields.userModified?.evidence) return;
-        
-        const propertyRoom = isLSSD ? "the booking station's property room" : "the Mission Row Station property room";
-        let evidenceText = `I booked all evidence into ${propertyRoom}.\n`;
+
+        const propertyRoom = isLSSD
+            ? t('arrestReport.advancedForm.presets.evidence.propertyRoom.lssd')
+            : t('arrestReport.advancedForm.presets.evidence.propertyRoom.lspd');
+        const evidenceLines = [
+            t('arrestReport.advancedForm.presets.evidence.booked', {
+                propertyRoom,
+            }),
+        ];
 
         const evidenceLogs = watchedFields.evidenceLogs || [];
         evidenceLogs.forEach((log, index) => {
             if(log.logNumber || log.description || log.quantity) {
-                 evidenceText += `Item ${index + 1} - ${log.logNumber || ''} - ${log.description || ''} (x${log.quantity || ''})\n`;
+                evidenceLines.push(
+                    t('arrestReport.advancedForm.presets.evidence.item', {
+                        index: index + 1,
+                        logNumber: log.logNumber || '',
+                        description: log.description || '',
+                        quantity: log.quantity || '',
+                    })
+                );
             }
         });
-        setValue('narrative.evidence', evidenceText.trim());
-    }, [isLSSD, JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, setValue]);
+        setValue('narrative.evidence', evidenceLines.join('\n').trim());
+    }, [isLSSD, JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, t, setValue]);
 
     useEffect(() => {
         if (!watchedFields.presets?.court) return;
         if (watchedFields.userModified?.court) return;
         const officers = watchedFields.officers || [];
         const primaryOfficer = officers[0];
-        let courtText = '';
+        const courtLines: string[] = [];
 
         if(primaryOfficer) {
             const rank = primaryOfficer.rank || '';
             const name = primaryOfficer.name || '';
             const badge = primaryOfficer.badgeNumber || '';
-            courtText = `I, ${rank} ${name} #${badge}, can testify to the contents of this report.`;
+            courtLines.push(
+                t('arrestReport.advancedForm.presets.court.primary', {
+                    rank,
+                    name,
+                    badge,
+                })
+            );
         }
 
         if (officers.length > 1) {
             officers.slice(1).forEach(officer => {
                 if(officer.name && officer.rank && officer.badgeNumber) {
-                    courtText += `\n${officer.rank} ${officer.name} #${officer.badgeNumber} can also testify to the contents of this report.`;
+                    courtLines.push(
+                        t('arrestReport.advancedForm.presets.court.additional', {
+                            rank: officer.rank,
+                            name: officer.name,
+                            badge: officer.badgeNumber,
+                        })
+                    );
                 }
             });
         }
-        setValue('narrative.court', courtText);
-    }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, watchedFields.userModified?.court, setValue]);
+        setValue('narrative.court', courtLines.join('\n'));
+    }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, watchedFields.userModified?.court, t, setValue]);
 
 
     useEffect(() => {
         if (!watchedFields.presets?.additional) return;
         if (watchedFields.userModified?.additional) return;
         const suspectName = watchedFields.arrestee?.name || '';
-        const plea = watchedFields.narrative?.plea || 'Guilty';
-        const additionalText = `(( ${suspectName} pled ${plea}. ))`;
+        const pleaKey = parsePleaKey(watchedFields.narrative?.plea);
+        const plea = t(`arrestReport.advancedForm.pleas.${pleaKey}`);
+        const additionalText = t('arrestReport.advancedForm.presets.additional.plea', {
+            suspectName,
+            plea,
+        });
         setValue('narrative.additional', additionalText);
     }, [
         watchedFields.arrestee?.name,
         watchedFields.narrative?.plea,
         watchedFields.presets?.additional,
         watchedFields.userModified?.additional,
-        setValue
+        setValue,
+        parsePleaKey,
+        t,
     ]);
+
+    useEffect(() => {
+        if (!watchedFields.narrative?.plea) return;
+        const parsedPlea = parsePleaKey(watchedFields.narrative?.plea);
+        if (watchedFields.narrative?.plea !== parsedPlea) {
+            setValue('narrative.plea', parsedPlea);
+        }
+    }, [watchedFields.narrative?.plea, parsePleaKey, setValue]);
 
     const handlePresetToggle = (presetName: keyof FormState['presets']) => {
         const isEnabled = !getValues(`presets.${presetName}`);
@@ -556,258 +744,161 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 </colgroup>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="bg-secondary" colSpan={2}>
-                    ARRESTEE NAME (FIRST, MIDDLE, LAST)
-                  </TableHead>
-                  <TableHead className="bg-secondary">SEX (M/F/O)</TableHead>
-                  <TableHead className="bg-secondary">HAIR</TableHead>
-                  <TableHead className="bg-secondary">EYES</TableHead>
+                  <TableHead className="bg-secondary" colSpan={2}>{t('arrestReport.advancedForm.headers.arresteeName')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.sex')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.hair')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.eyes')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell colSpan={2}>
-                    <Input placeholder="ARRESTEE NAME" {...register("arrestee.name")} />
-                  </TableCell>
-                  <TableCell>
-                    <Input placeholder="M / F / O" maxLength={1} {...register("arrestee.sex")} />
-                  </TableCell>
-                  <TableCell>
-                    <Input placeholder="HAIR COLOR" {...register("arrestee.hair")} />
-                  </TableCell>
-                  <TableCell>
-                    <Input placeholder="EYE COLOR" {...register("arrestee.eyes")} />
-                  </TableCell>
+                  <TableCell colSpan={2}><Input placeholder={t('arrestReport.advancedForm.placeholders.arresteeName')} {...register("arrestee.name")} /></TableCell>
+                  <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.sex')} maxLength={1} {...register("arrestee.sex")} /></TableCell>
+                  <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.hair')} {...register("arrestee.hair")} /></TableCell>
+                  <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.eyes')} {...register("arrestee.eyes")} /></TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead className="bg-secondary" colSpan={2}>
-                    RESIDENCE
-                  </TableHead>
-                  <TableHead className="bg-secondary">AGE</TableHead>
-                  <TableHead className="bg-secondary">HEIGHT</TableHead>
-                  <TableHead className="bg-secondary">DESCENT</TableHead>
+                  <TableHead className="bg-secondary" colSpan={2}>{t('arrestReport.advancedForm.headers.residence')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.age')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.height')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.descent')}</TableHead>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={2}>
-                    <Input placeholder="ADDRESS, CITY, STATE" {...register("arrestee.residence")} />
-                  </TableCell>
-                  <TableCell>
-                    <Input placeholder="AGE" type="number" {...register("arrestee.age")} />
-                  </TableCell>
-                  <TableCell>
-                    <Input placeholder="HEIGHT" {...register("arrestee.height")} />
-                  </TableCell>
-                  <TableCell>
-                    <Input placeholder="DESCENT" {...register("arrestee.descent")} />
-                  </TableCell>
+                  <TableCell colSpan={2}><Input placeholder={t('arrestReport.advancedForm.placeholders.residence')} {...register("arrestee.residence")} /></TableCell>
+                  <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.age')} type="number" {...register("arrestee.age")} /></TableCell>
+                  <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.height')} {...register("arrestee.height")} /></TableCell>
+                  <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.descent')} {...register("arrestee.descent")} /></TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead className="bg-secondary" colSpan={3}>
-                    CLOTHING
-                  </TableHead>
-                  <TableHead className="bg-secondary" colSpan={2}>
-                    PERSONAL ODDITIES
-                  </TableHead>
+                  <TableHead className="bg-secondary" colSpan={3}>{t('arrestReport.advancedForm.headers.clothing')}</TableHead>
+                  <TableHead className="bg-secondary" colSpan={2}>{t('arrestReport.advancedForm.headers.oddities')}</TableHead>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={3}>
-                    <Input placeholder="DESCRIBE CLOTHING" {...register("arrestee.clothing")} />
-                  </TableCell>
-                  <TableCell colSpan={2}>
-                    <Input placeholder="DESCRIBE PERSONAL ODDITIES" {...register("arrestee.oddities")} />
-                  </TableCell>
+                  <TableCell colSpan={3}><Input placeholder={t('arrestReport.advancedForm.placeholders.clothing')} {...register("arrestee.clothing")} /></TableCell>
+                  <TableCell colSpan={2}><Input placeholder={t('arrestReport.advancedForm.placeholders.oddities')} {...register("arrestee.oddities")} /></TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead className="bg-secondary" colSpan={3}>
-                    MONIKER/ALIAS
-                  </TableHead>
-                  <TableHead className="bg-secondary" colSpan={2}>
-                    GANG/CLUB
-                  </TableHead>
+                  <TableHead className="bg-secondary" colSpan={3}>{t('arrestReport.advancedForm.headers.alias')}</TableHead>
+                  <TableHead className="bg-secondary" colSpan={2}>{t('arrestReport.advancedForm.headers.gang')}</TableHead>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={3}>
-                    <Input placeholder="MONIKER / ALIAS IF KNOWN" {...register("arrestee.alias")} />
-                  </TableCell>
-                  <TableCell colSpan={2}>
-                    <Input placeholder="GANG / CLUB IF KNOWN" {...register("arrestee.gang")} />
-                  </TableCell>
+                  <TableCell colSpan={3}><Input placeholder={t('arrestReport.advancedForm.placeholders.alias')} {...register("arrestee.alias")} /></TableCell>
+                  <TableCell colSpan={2}><Input placeholder={t('arrestReport.advancedForm.placeholders.gang')} {...register("arrestee.gang")} /></TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead className="bg-secondary" colSpan={5}>
-                    CHARGES
-                  </TableHead>
+                  <TableHead className="bg-secondary" colSpan={5}>{t('arrestReport.advancedForm.headers.charges')}</TableHead>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
-                    <Textarea
-                        readOnly
-                        className="bg-muted min-h-[auto]"
-                        value={
-                            charges
-                            .map((c) => {
-                                const details = penalCode?.[c.chargeId!];
-                                if (!details) return 'Unknown Charge';
-                                const typePrefix = `${details.type}${c.class}`;
-                                return `${typePrefix} ${details.id}. ${details.charge}`;
-                            })
-                            .join('\n') || 'No charges selected'
-                        }
-                        rows={charges.length || 1}
-                    />
+                    <Textarea readOnly className="bg-muted min-h-[auto]" value={charges.map(c => {
+                        const details = penalCode?.[c.chargeId!];
+                        if (!details) return t('arrestReport.advancedForm.unknownCharge');
+                        return `${details.type}${c.class} ${details.id}. ${details.charge}`;
+                    }).join('\n') || t('arrestReport.advancedForm.noChargesSelected')} rows={charges.length || 1} />
                   </TableCell>
                 </TableRow>
                 <TableRow className="h-3" />
                 <TableRow>
-                  <TableHead className="bg-secondary h-12" colSpan={5}>
-                    PERSONS WITH SUBJECT
-                  </TableHead>
+                  <TableHead className="bg-secondary h-12" colSpan={5}>{t('arrestReport.advancedForm.headers.personsWithSubject')}</TableHead>
                 </TableRow>
                 <TableRow>
-                  <TableHead className="bg-secondary">NAME</TableHead>
-                  <TableHead className="bg-secondary">SEX (M/F/O)</TableHead>
-                  <TableHead className="bg-secondary" colSpan={2}>
-                    GANG/MONIKER
-                  </TableHead>
-                  <TableHead className="bg-secondary">REMOVE</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.name')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.sex')}</TableHead>
+                  <TableHead className="bg-secondary" colSpan={2}>{t('arrestReport.advancedForm.headers.gangMoniker')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.remove')}</TableHead>
                 </TableRow>
                  {personFields.map((field, index) => (
                     <TableRow key={field.id}>
-                        <TableCell><Input placeholder={`NAME ${index + 1}`} {...register(`persons.${index}.name`)} /></TableCell>
-                        <TableCell><Input placeholder="M / F / O" {...register(`persons.${index}.sex`)} maxLength={1}/></TableCell>
-                        <TableCell colSpan={2}><Input placeholder="GANG / MONIKER / ALIAS IF KNOWN" {...register(`persons.${index}.gang`)} /></TableCell>
+                        <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.name', { index: index + 1 })} {...register(`persons.${index}.name`)} /></TableCell>
+                        <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.sex')} {...register(`persons.${index}.sex`)} maxLength={1}/></TableCell>
+                        <TableCell colSpan={2}><Input placeholder={t('arrestReport.advancedForm.placeholders.gangMoniker')} {...register(`persons.${index}.gang`)} /></TableCell>
                         <TableCell><Button variant="destructive" className="w-full" type="button" onClick={() => removePersonField(index)}><Trash2 className="h-4 w-4" /></Button></TableCell>
                     </TableRow>
                  ))}
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
                     <Button className="w-full" type="button" onClick={() => appendPerson({ name: '', sex: '', gang: '' })}>
-                      <CirclePlus className="mr-2 h-4 w-4" /> ADD PERSON
+                      <CirclePlus className="mr-2 h-4 w-4" /> {t('arrestReport.advancedForm.buttons.addPerson')}
                     </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow className="h-3" />
                 <TableRow>
-                  <TableHead className="bg-secondary h-12" colSpan={5}>
-                    INCIDENT SETTING
-                  </TableHead>
+                  <TableHead className="bg-secondary h-12" colSpan={5}>{t('arrestReport.advancedForm.headers.incidentSetting')}</TableHead>
                 </TableRow>
                 <TableRow>
-                  <TableHead className="bg-secondary">DATE</TableHead>
-                  <TableHead className="bg-secondary">TIME</TableHead>
-                  <TableHead className="bg-secondary" colSpan={3}>
-                    LOCATION
-                  </TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.date')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.time')}</TableHead>
+                  <TableHead className="bg-secondary" colSpan={3}>{t('arrestReport.advancedForm.headers.location')}</TableHead>
                 </TableRow>
                 <TableRow>
                     <TableCell colSpan={1}>
                         <div className="relative flex items-center">
                             <Calendar className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="DD/MMM/YYYY" className="pl-9" {...register("incident.date")} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.date')} className="pl-9" {...register("incident.date")} />
                         </div>
                     </TableCell>
                     <TableCell colSpan={1}>
                         <div className="relative flex items-center">
                             <Clock className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="HH:MM (24H)" className="pl-9" {...register("incident.time")} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.time')} className="pl-9" {...register("incident.time")} />
                         </div>
                     </TableCell>
                   <TableCell colSpan={3}>
                      <div className="flex gap-2">
-                        <Controller
-                            control={control}
-                            name="incident.locationDistrict"
-                            render={({ field }) => (
-                                <Combobox
-                                    options={locations.districts}
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    placeholder="Select or type a district"
-                                />
-                            )}
-                        />
-                         <Controller
-                            control={control}
-                            name="incident.locationStreet"
-                            render={({ field }) => (
-                                <Combobox
-                                    options={locations.streets}
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    placeholder="Select or type a street"
-                                />
-                            )}
-                        />
+                        <Controller control={control} name="incident.locationDistrict" render={({ field }) => (
+                            <Combobox options={locations.districts} value={field.value} onChange={field.onChange} placeholder={t('arrestReport.advancedForm.placeholders.district')} />
+                        )} />
+                         <Controller control={control} name="incident.locationStreet" render={({ field }) => (
+                            <Combobox options={locations.streets} value={field.value} onChange={field.onChange} placeholder={t('arrestReport.advancedForm.placeholders.street')} />
+                        )} />
                     </div>
                   </TableCell>
                 </TableRow>
                 <TableRow className="h-3" />
                 <TableRow>
-                  <TableHead className="bg-secondary h-12" colSpan={5}>
-                    HANDLING {isLSSD ? 'DEPUTIES' : 'OFFICER(S)'}
-                  </TableHead>
+                  <TableHead className="bg-secondary h-12" colSpan={5}>{t('arrestReport.advancedForm.headers.handlingOfficers', { officer: isLSSD ? 'Deputies' : 'Officer(s)'})}</TableHead>
                 </TableRow>
                 <TableRow>
-                  <TableHead className="bg-secondary">RANK</TableHead>
-                  <TableHead className="bg-secondary">NAME</TableHead>
-                  <TableHead className="bg-secondary">{isLSSD ? 'BADGE NO.' : 'SERIAL NO.'}</TableHead>
-                  <TableHead className="bg-secondary">CALLSIGN</TableHead>
-                  <TableHead className="bg-secondary">{isLSSD ? 'UNIT/DETAIL' : 'DIV/DETAIL'}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.rank')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.name')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.badgeNo', { badge: isLSSD ? 'Badge' : 'Serial' })}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.callsign')}</TableHead>
+                  <TableHead className="bg-secondary">{t('arrestReport.advancedForm.headers.divDetail', { div: isLSSD ? 'Unit' : 'Div' })}</TableHead>
                 </TableRow>
                 {officerFields.map((field, index) => (
                     <React.Fragment key={field.id}>
                     <TableRow>
                         <TableCell>
-                            <Controller
-                                control={control}
-                                name={`officers.${index}.rank`}
-                                render={({ field }) => (
-                                    <Select
-                                        onValueChange={(value) => handleRankChange(index, value)}
-                                        value={field.value && getValues(`officers.${index}.department`) ? `${getValues(`officers.${index}.department`)}__${field.value}`: ''}
-                                    >
-                                        <SelectTrigger><SelectValue placeholder="Select Rank" /></SelectTrigger>
-                                        <SelectContent>
-                                            {Object.entries(deptRanks).map(([dept, ranks]) => (
-                                                <SelectGroup key={dept}>
-                                                    <SelectLabel>{dept}</SelectLabel>
-                                                    {ranks.map(rank => <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>)}
-                                                </SelectGroup>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                            />
+                            <Controller control={control} name={`officers.${index}.rank`} render={({ field }) => (
+                                <Select onValueChange={(value) => handleRankChange(index, value)} value={field.value && getValues(`officers.${index}.department`) ? `${getValues(`officers.${index}.department`)}__${field.value}`: ''}>
+                                    <SelectTrigger><SelectValue placeholder={t('arrestReport.advancedForm.placeholders.rank')} /></SelectTrigger>
+                                    <SelectContent>
+                                        {Object.entries(deptRanks).map(([dept, ranks]) => (
+                                            <SelectGroup key={dept}>
+                                                <SelectLabel>{dept}</SelectLabel>
+                                                {ranks.map(rank => <SelectItem key={`${dept}-${rank}`} value={`${dept}__${rank}`}>{rank}</SelectItem>)}
+                                            </SelectGroup>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )} />
                         </TableCell>
-                        <TableCell><Input placeholder={`OFFICER ${index + 1}`} {...register(`officers.${index}.name`)} /></TableCell>
-                        <TableCell><Input placeholder={isLSSD ? 'BADGE NO.' : 'SERIAL NO.'} type="number" {...register(`officers.${index}.badgeNumber`)} /></TableCell>
+                        <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.officer', { index: index + 1 })} {...register(`officers.${index}.name`)} /></TableCell>
+                        <TableCell><Input placeholder={t('arrestReport.advancedForm.placeholders.badgeNo', { badge: isLSSD ? 'Badge' : 'Serial' })} type="number" {...register(`officers.${index}.badgeNumber`)} /></TableCell>
                         <TableCell>
-                            <Controller
-                                name={`officers.${index}.callSign`}
-                                control={control}
-                                render={({ field: { onChange, value } }) => (
-                                    <div className="relative flex items-center">
-                                        {predefinedCallsigns.length > 0 ? (
-                                            <Combobox
-                                                options={predefinedCallsigns.map(c => c.value)}
-                                                value={value || ''}
-                                                onChange={onChange}
-                                                placeholder="Select or type..."
-                                                className="w-full"
-                                            />
-                                        ) : (
-                                            <Input
-                                                placeholder="CALL SIGN"
-                                                value={value || ''}
-                                                onChange={(e) => onChange(e.target.value)}
-                                            />
-                                        )}
-                                    </div>
-                                )}
-                            />
+                            <Controller name={`officers.${index}.callSign`} control={control} render={({ field: { onChange, value } }) => (
+                                <div className="relative flex items-center">
+                                    {predefinedCallsigns.length > 0 ? (
+                                        <Combobox options={predefinedCallsigns.map(c => c.value)} value={value || ''} onChange={onChange} placeholder={t('arrestReport.advancedForm.placeholders.callsign')} className="w-full" />
+                                    ) : (
+                                        <Input placeholder={t('arrestReport.advancedForm.placeholders.callsign')} value={value || ''} onChange={(e) => onChange(e.target.value)} />
+                                    )}
+                                </div>
+                            )} />
                         </TableCell>
                         <TableCell className="flex items-center gap-1">
-                          <Input placeholder={isLSSD ? 'UNIT/DETAIL' : 'DIV/DETAIL'} {...register(`officers.${index}.divDetail`)} />
+                          <Input placeholder={t('arrestReport.advancedForm.placeholders.divDetail', { div: isLSSD ? 'Unit' : 'Div' })} {...register(`officers.${index}.divDetail`)} />
                            {index > 0 && <Button variant="ghost" size="icon" type="button" onClick={() => removeOfficerField(index)}><Trash2 className="h-4 w-4 text-red-500" /></Button>}
                         </TableCell>
                     </TableRow>
@@ -821,12 +912,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                                         const isSelected = currentOfficer.badgeNumber === altChar.badgeNumber;
                                         return (
                                             !isSelected && (
-                                                <Badge 
-                                                    key={altChar.id}
-                                                    variant="outline"
-                                                    className="cursor-pointer hover:bg-accent"
-                                                    onClick={() => handlePillClick(0, altChar)}
-                                                >
+                                                <Badge key={altChar.id} variant="outline" className="cursor-pointer hover:bg-accent" onClick={() => handlePillClick(0, altChar)}>
                                                     {altChar.name}
                                                 </Badge>
                                             )
@@ -842,208 +928,110 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 <TableRow>
                   <TableCell colSpan={5} className="p-2">
                     <Button className="w-full" type="button" onClick={onAddOfficerClick}>
-                      <CirclePlus className="mr-2 h-4 w-4" /> ADD {isLSSD ? 'DEPUTY' : 'OFFICER'}
+                      <CirclePlus className="mr-2 h-4 w-4" /> {t('arrestReport.advancedForm.buttons.addOfficer', { officer: isLSSD ? 'Deputy' : 'Officer' })}
                     </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow className="h-3" />
                 <TableRow>
-                  <TableHead className="bg-secondary" colSpan={5}>
-                    ARREST REPORT MODIFIERS
-                  </TableHead>
+                  <TableHead className="bg-secondary" colSpan={5}>{t('arrestReport.advancedForm.headers.modifiers')}</TableHead>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={5} className="bg-muted p-1">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-2 p-2">
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.markedUnit" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="markedUnit" />} /><Label htmlFor="markedUnit">Marked Unit?</Label></div>
-                        {watchedFields.modifiers?.markedUnit && <div className="flex items-center space-x-2"><Controller name="modifiers.slicktop" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="slicktop" />} /><Label htmlFor="slicktop">Slicktop?</Label></div>}
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.inUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inUniform" />} /><Label htmlFor="inUniform">In Uniform?</Label></div>
-                        {!watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.undercover" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="undercover" />} /><Label htmlFor="undercover">Undercover?</Label></div>}
-                        {watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inMetroUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inMetroUniform" />} /><Label htmlFor="inMetroUniform">{isLSSD ? 'In SEB Uniform?' : 'In Metro Uniform?'}</Label></div>}
-                        {watchedFields.modifiers?.inMetroUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inG3Uniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inG3Uniform" />} /><Label htmlFor="inG3Uniform">In G3 Uniform?</Label></div>}
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectInVehicle" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectInVehicle" />} /><Label htmlFor="wasSuspectInVehicle">Suspect In Vehicle?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectMirandized" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectMirandized" />} /><Label htmlFor="wasSuspectMirandized">Mirandized?</Label></div>
-                        {watchedFields.modifiers?.wasSuspectMirandized && <div className="flex items-center space-x-2"><Controller name="modifiers.didSuspectUnderstandRights" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didSuspectUnderstandRights" />} /><Label htmlFor="didSuspectUnderstandRights">Understood Rights?</Label></div>}
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.doYouHaveAVideo" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="doYouHaveAVideo" />} /><Label htmlFor="doYouHaveAVideo">Video?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouTakePhotographs" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouTakePhotographs" />} /><Label htmlFor="didYouTakePhotographs">Photographs?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouObtainCctvFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouObtainCctvFootage" />} /><Label htmlFor="didYouObtainCctvFootage">CCTV?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.thirdPartyVideoFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="thirdPartyVideoFootage" />} /><Label htmlFor="thirdPartyVideoFootage">3rd Party Video?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouTransport" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouTransport" />} /><Label htmlFor="didYouTransport">Did You Transport?</Label></div>
-                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouBook" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouBook" />} /><Label htmlFor="didYouBook">Did You Book?</Label></div>
-                        {watchedFields.modifiers?.didYouBook && <div className="flex items-center space-x-2"><Controller name="modifiers.biometricsAlreadyOnFile" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="biometricsAlreadyOnFile" />} /><Label htmlFor="biometricsAlreadyOnFile">Biometrics On File?</Label></div>}
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.markedUnit" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="markedUnit" />} /><Label htmlFor="markedUnit">{t('arrestReport.advancedForm.modifiers.markedUnit')}</Label></div>
+                        {watchedFields.modifiers?.markedUnit && <div className="flex items-center space-x-2"><Controller name="modifiers.slicktop" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="slicktop" />} /><Label htmlFor="slicktop">{t('arrestReport.advancedForm.modifiers.slicktop')}</Label></div>}
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.inUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inUniform" />} /><Label htmlFor="inUniform">{t('arrestReport.advancedForm.modifiers.inUniform')}</Label></div>
+                        {!watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.undercover" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="undercover" />} /><Label htmlFor="undercover">{t('arrestReport.advancedForm.modifiers.undercover')}</Label></div>}
+                        {watchedFields.modifiers?.inUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inMetroUniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inMetroUniform" />} /><Label htmlFor="inMetroUniform">{t('arrestReport.advancedForm.modifiers.inMetroUniform', { metro: isLSSD ? 'SEB' : 'Metro' })}</Label></div>}
+                        {watchedFields.modifiers?.inMetroUniform && <div className="flex items-center space-x-2"><Controller name="modifiers.inG3Uniform" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="inG3Uniform" />} /><Label htmlFor="inG3Uniform">{t('arrestReport.advancedForm.modifiers.inG3Uniform')}</Label></div>}
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectInVehicle" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectInVehicle" />} /><Label htmlFor="wasSuspectInVehicle">{t('arrestReport.advancedForm.modifiers.suspectInVehicle')}</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.wasSuspectMirandized" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="wasSuspectMirandized" />} /><Label htmlFor="wasSuspectMirandized">{t('arrestReport.advancedForm.modifiers.mirandized')}</Label></div>
+                        {watchedFields.modifiers?.wasSuspectMirandized && <div className="flex items-center space-x-2"><Controller name="modifiers.didSuspectUnderstandRights" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didSuspectUnderstandRights" />} /><Label htmlFor="didSuspectUnderstandRights">{t('arrestReport.advancedForm.modifiers.understoodRights')}</Label></div>}
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.doYouHaveAVideo" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="doYouHaveAVideo" />} /><Label htmlFor="doYouHaveAVideo">{t('arrestReport.advancedForm.modifiers.video')}</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouTakePhotographs" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouTakePhotographs" />} /><Label htmlFor="didYouTakePhotographs">{t('arrestReport.advancedForm.modifiers.photographs')}</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouObtainCctvFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouObtainCctvFootage" />} /><Label htmlFor="didYouObtainCctvFootage">{t('arrestReport.advancedForm.modifiers.cctv')}</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.thirdPartyVideoFootage" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="thirdPartyVideoFootage" />} /><Label htmlFor="thirdPartyVideoFootage">{t('arrestReport.advancedForm.modifiers.thirdPartyVideo')}</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouTransport" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouTransport" />} /><Label htmlFor="didYouTransport">{t('arrestReport.advancedForm.modifiers.transported')}</Label></div>
+                        <div className="flex items-center space-x-2"><Controller name="modifiers.didYouBook" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="didYouBook" />} /><Label htmlFor="didYouBook">{t('arrestReport.advancedForm.modifiers.booked')}</Label></div>
+                        {watchedFields.modifiers?.didYouBook && <div className="flex items-center space-x-2"><Controller name="modifiers.biometricsAlreadyOnFile" control={control} render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} id="biometricsAlreadyOnFile" />} /><Label htmlFor="biometricsAlreadyOnFile">{t('arrestReport.advancedForm.modifiers.biometricsOnFile')}</Label></div>}
                     </div>
                   </TableCell>
                 </TableRow>
                 
-                <NarrativeSection
-                    title="SOURCE OF ACTIVITY"
-                    presetName="source"
-                    isChecked={!!watchedFields.presets?.source}
-                    isUserModified={!!watchedFields.userModified?.source}
-                    onToggle={() => handlePresetToggle('source')}
-                >
-                    <Textarea
-                        value={watchedFields.narrative?.source}
-                        onChange={(e) => handleTextareaChange(e, 'source')}
-                        placeholder="Describe the source of the activity..."
-                        rows={3}
-                    />
+                <NarrativeSection title={t('arrestReport.advancedForm.narrative.source.title')} presetName="source" isChecked={!!watchedFields.presets?.source} isUserModified={!!watchedFields.userModified?.source} onToggle={() => handlePresetToggle('source')} >
+                    <Textarea value={watchedFields.narrative?.source} onChange={(e) => handleTextareaChange(e, 'source')} placeholder={t('arrestReport.advancedForm.narrative.source.placeholder')} rows={3} />
                 </NarrativeSection>
 
-                <NarrativeSection
-                    title="INVESTIGATION"
-                    presetName="investigation"
-                    isChecked={!!watchedFields.presets?.investigation}
-                    isUserModified={!!watchedFields.userModified?.investigation}
-                    onToggle={() => handlePresetToggle('investigation')}
-                >
+                <NarrativeSection title={t('arrestReport.advancedForm.narrative.investigation.title')} presetName="investigation" isChecked={!!watchedFields.presets?.investigation} isUserModified={!!watchedFields.userModified?.investigation} onToggle={() => handlePresetToggle('investigation')}>
                     {watchedFields.modifiers?.wasSuspectInVehicle &&
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mb-2">
-                            <Input placeholder="VEHICLE COLOR" {...register('narrative.vehicleColor')} />
-                            <Input placeholder="VEHICLE MODEL" {...register('narrative.vehicleModel')} />
-                            <Input placeholder="VEHICLE PLATE" {...register('narrative.vehiclePlate')} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.vehicleColor')} {...register('narrative.vehicleColor')} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.vehicleModel')} {...register('narrative.vehicleModel')} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.vehiclePlate')} {...register('narrative.vehiclePlate')} />
                         </div>
                     }
-                    <Textarea
-                        value={watchedFields.narrative?.investigation}
-                        onChange={(e) => handleTextareaChange(e, 'investigation')}
-                        placeholder="Describe the investigation..."
-                        rows={3}
-                    />
+                    <Textarea value={watchedFields.narrative?.investigation} onChange={(e) => handleTextareaChange(e, 'investigation')} placeholder={t('arrestReport.advancedForm.narrative.investigation.placeholder')} rows={3} />
                 </NarrativeSection>
 
-                <NarrativeSection
-                    title="ARREST"
-                    presetName="arrest"
-                    isChecked={!!watchedFields.presets?.arrest}
-                    isUserModified={!!watchedFields.userModified?.arrest}
-                    onToggle={() => handlePresetToggle('arrest')}
-                >
+                <NarrativeSection title={t('arrestReport.advancedForm.narrative.arrest.title')} presetName="arrest" isChecked={!!watchedFields.presets?.arrest} isUserModified={!!watchedFields.userModified?.arrest} onToggle={() => handlePresetToggle('arrest')}>
                     {!watchedFields.modifiers?.didYouTransport && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
-                            <Input placeholder="TRANSPORTING OFFICER RANK" {...register('narrative.transportingRank')} />
-                            <Input placeholder="TRANSPORTING OFFICER NAME" {...register('narrative.transportingName')} />
+                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.transportingRank')} {...register('narrative.transportingRank')} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.transportingName')} {...register('narrative.transportingName')} />
                         </div>
                     )}
-                    <Textarea
-                        value={watchedFields.narrative?.arrest}
-                        onChange={(e) => handleTextareaChange(e, 'arrest')}
-                        placeholder="Describe the arrest..."
-                        rows={3}
-                    />
+                    <Textarea value={watchedFields.narrative?.arrest} onChange={(e) => handleTextareaChange(e, 'arrest')} placeholder={t('arrestReport.advancedForm.narrative.arrest.placeholder')} rows={3} />
                 </NarrativeSection>
                 
-                <NarrativeSection
-                    title="PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING"
-                    presetName="photographs"
-                    isChecked={!!watchedFields.presets?.photographs}
-                    isUserModified={!!watchedFields.userModified?.photographs}
-                    onToggle={() => handlePresetToggle('photographs')}
-                >
+                <NarrativeSection title={t('arrestReport.advancedForm.narrative.photographs.title')} presetName="photographs" isChecked={!!watchedFields.presets?.photographs} isUserModified={!!watchedFields.userModified?.photographs} onToggle={() => handlePresetToggle('photographs')}>
                     {watchedFields.modifiers?.doYouHaveAVideo || watchedFields.modifiers?.didYouTakePhotographs || watchedFields.modifiers?.didYouObtainCctvFootage || watchedFields.modifiers?.thirdPartyVideoFootage ? (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
-                             {watchedFields.modifiers.doYouHaveAVideo && <Input placeholder="DICVS Footage Link" {...register('narrative.dicvsLink')} />}
-                             {watchedFields.modifiers.didYouTakePhotographs && <Input placeholder="Photographs Link" {...register('narrative.photosLink')} />}
-                             {watchedFields.modifiers.didYouObtainCctvFootage && <Input placeholder="CCTV Footage Link" {...register('narrative.cctvLink')} />}
-                             {watchedFields.modifiers.thirdPartyVideoFootage && <Input placeholder="Third Party Footage Link" {...register('narrative.thirdPartyLink')} />}
+                             {watchedFields.modifiers.doYouHaveAVideo && <Input placeholder={t('arrestReport.advancedForm.placeholders.dicvsLink')} {...register('narrative.dicvsLink')} />}
+                             {watchedFields.modifiers.didYouTakePhotographs && <Input placeholder={t('arrestReport.advancedForm.placeholders.photosLink')} {...register('narrative.photosLink')} />}
+                             {watchedFields.modifiers.didYouObtainCctvFootage && <Input placeholder={t('arrestReport.advancedForm.placeholders.cctvLink')} {...register('narrative.cctvLink')} />}
+                             {watchedFields.modifiers.thirdPartyVideoFootage && <Input placeholder={t('arrestReport.advancedForm.placeholders.thirdPartyLink')} {...register('narrative.thirdPartyLink')} />}
                         </div>
-                        <Textarea
-                            value={watchedFields.narrative?.photographs}
-                            onChange={(e) => handleTextareaChange(e, 'photographs')}
-                            placeholder="Describe video or photographic evidence..."
-                            rows={3}
-                        />
+                        <Textarea value={watchedFields.narrative?.photographs} onChange={(e) => handleTextareaChange(e, 'photographs')} placeholder={t('arrestReport.advancedForm.narrative.photographs.placeholder')} rows={3} />
                     </>
                      ) : (
-                        <Textarea value={watchedFields.narrative?.photographs} onChange={(e) => handleTextareaChange(e, 'photographs')} placeholder="(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Do You Have A Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))" rows={3} />
+                        <Textarea value={watchedFields.narrative?.photographs} onChange={(e) => handleTextareaChange(e, 'photographs')} placeholder={t('arrestReport.advancedForm.narrative.photographs.noVideoPlaceholder')} rows={3} />
                      )}
                 </NarrativeSection>
 
-                <NarrativeSection
-                    title="BOOKING"
-                    presetName="booking"
-                    isChecked={!!watchedFields.presets?.booking}
-                    isUserModified={!!watchedFields.userModified?.booking}
-                    onToggle={() => handlePresetToggle('booking')}
-                >
+                <NarrativeSection title={t('arrestReport.advancedForm.narrative.booking.title')} presetName="booking" isChecked={!!watchedFields.presets?.booking} isUserModified={!!watchedFields.userModified?.booking} onToggle={() => handlePresetToggle('booking')}>
                     {!watchedFields.modifiers?.didYouBook && (
                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
-                            <Input placeholder="BOOKING OFFICER RANK" {...register('narrative.bookingRank')} />
-                            <Input placeholder="BOOKING OFFICER NAME" {...register('narrative.bookingName')} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.bookingRank')} {...register('narrative.bookingRank')} />
+                            <Input placeholder={t('arrestReport.advancedForm.placeholders.bookingName')} {...register('narrative.bookingName')} />
                         </div>
                     )}
-                    <Textarea
-                        value={watchedFields.narrative?.booking}
-                        onChange={(e) => handleTextareaChange(e, 'booking')}
-                        placeholder="Describe booking details..."
-                        rows={3}
-                    />
+                    <Textarea value={watchedFields.narrative?.booking} onChange={(e) => handleTextareaChange(e, 'booking')} placeholder={t('arrestReport.advancedForm.narrative.booking.placeholder')} rows={3} />
                 </NarrativeSection>
                 
-                 <NarrativeSection
-                    title="PHYSICAL EVIDENCE"
-                    presetName="evidence"
-                    isChecked={!!watchedFields.presets?.evidence}
-                    isUserModified={!!watchedFields.userModified?.evidence}
-                    onToggle={() => handlePresetToggle('evidence')}
-                 >
-                    <Table>
-                        <EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} onKeyUp={saveForm} />
-                    </Table>
-                    <Textarea
-                        value={watchedFields.narrative?.evidence}
-                        onChange={(e) => handleTextareaChange(e, 'evidence')}
-                        placeholder="Describe physical evidence..."
-                        rows={3}
-                    />
+                 <NarrativeSection title={t('arrestReport.advancedForm.narrative.evidence.title')} presetName="evidence" isChecked={!!watchedFields.presets?.evidence} isUserModified={!!watchedFields.userModified?.evidence} onToggle={() => handlePresetToggle('evidence')}>
+                    <Table><EvidenceLog control={control} register={register} fields={evidenceLogFields} onRemove={removeEvidenceLogField} onAdd={() => appendEvidenceLog({ logNumber: '', description: '', quantity: '1'})} onKeyUp={saveForm} /></Table>
+                    <Textarea value={watchedFields.narrative?.evidence} onChange={(e) => handleTextareaChange(e, 'evidence')} placeholder={t('arrestReport.advancedForm.narrative.evidence.placeholder')} rows={3} />
                 </NarrativeSection>
 
-                <NarrativeSection
-                    title="COURT INFORMATION"
-                    presetName="court"
-                    isChecked={!!watchedFields.presets?.court}
-                    isUserModified={!!watchedFields.userModified?.court}
-                    onToggle={() => handlePresetToggle('court')}
-                >
-                    <Textarea
-                        value={watchedFields.narrative?.court}
-                        onChange={(e) => handleTextareaChange(e, 'court')}
-                        placeholder="Information for the court..."
-                        rows={3}
-                    />
+                <NarrativeSection title={t('arrestReport.advancedForm.narrative.court.title')} presetName="court" isChecked={!!watchedFields.presets?.court} isUserModified={!!watchedFields.userModified?.court} onToggle={() => handlePresetToggle('court')}>
+                    <Textarea value={watchedFields.narrative?.court} onChange={(e) => handleTextareaChange(e, 'court')} placeholder={t('arrestReport.advancedForm.narrative.court.placeholder')} rows={3} />
                 </NarrativeSection>
 
-                 <NarrativeSection
-                    title="ADDITIONAL INFORMATION"
-                    presetName="additional"
-                    isChecked={!!watchedFields.presets?.additional}
-                    isUserModified={!!watchedFields.userModified?.additional}
-                    onToggle={() => handlePresetToggle('additional')}
-                 >
-                     <Controller
-                        name="narrative.plea"
-                        control={control}
-                        render={({ field }) => (
-                            <Select onValueChange={field.onChange} value={field.value}>
-                                <SelectTrigger className="mb-2">
-                                    <SelectValue placeholder="Select Plea..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Guilty">Guilty</SelectItem>
-                                    <SelectItem value="Not Guilty">Not Guilty</SelectItem>
-                                    <SelectItem value="No Contest">No Contest</SelectItem>
-                                    <SelectItem value="Required Case">Required Case</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        )}
-                        />
-                    <Textarea
-                        value={watchedFields.narrative?.additional}
-                        onChange={(e) => handleTextareaChange(e, 'additional')}
-                        placeholder="Additional information..."
-                        rows={3}
-                    />
+                 <NarrativeSection title={t('arrestReport.advancedForm.narrative.additional.title')} presetName="additional" isChecked={!!watchedFields.presets?.additional} isUserModified={!!watchedFields.userModified?.additional} onToggle={() => handlePresetToggle('additional')}>
+                    <Controller name="narrative.plea" control={control} render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value ? parsePleaKey(field.value) : undefined}>
+                            <SelectTrigger className="mb-2"><SelectValue placeholder={t('arrestReport.advancedForm.placeholders.plea')} /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="guilty">{t('arrestReport.advancedForm.pleas.guilty')}</SelectItem>
+                                <SelectItem value="notGuilty">{t('arrestReport.advancedForm.pleas.notGuilty')}</SelectItem>
+                                <SelectItem value="noContest">{t('arrestReport.advancedForm.pleas.noContest')}</SelectItem>
+                                <SelectItem value="requiredCase">{t('arrestReport.advancedForm.pleas.requiredCase')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )} />
+                    <Textarea value={watchedFields.narrative?.additional} onChange={(e) => handleTextareaChange(e, 'additional')} placeholder={t('arrestReport.advancedForm.narrative.additional.placeholder')} rows={3} />
                 </NarrativeSection>
               </TableBody>
             </Table>
@@ -1051,7 +1039,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         </CardContent>
       </Card>
       <div className="flex justify-end mt-4">
-        <Button type="submit">Generate Report Preview</Button>
+        <Button type="submit">{t('arrestReport.advancedForm.buttons.submit')}</Button>
       </div>
     </form>
   );

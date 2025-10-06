@@ -14,6 +14,7 @@ import { ConditionalVariable } from '@/stores/paperwork-builder-store';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { registerHelpers } from '@/lib/utils'
+import { useScopedI18n, useI18n } from '@/lib/i18n/client';
 
 const GeneratedFormattedReport = ({
     innerRef,
@@ -164,6 +165,8 @@ const GeneratedFormattedReport = ({
 function PaperworkSubmitContent() {
     const { formData, generatorId, generatorType, groupId, lastFormValues } = usePaperworkStore();
     const { archiveReport } = useArchiveStore();
+    const { t } = useI18n();
+    const tPage = useScopedI18n('paperworkSubmit');
 
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
@@ -176,7 +179,8 @@ function PaperworkSubmitContent() {
 
     useEffect(() => {
       setIsClient(true);
-    }, []);
+      document.title = t('paperworkSubmit.documentTitle');
+    }, [t]);
 
     useEffect(() => {
         setHasArchived(false);
@@ -220,8 +224,8 @@ function PaperworkSubmitContent() {
         if (reportRef.current?.firstChild) {
           navigator.clipboard.writeText((reportRef.current.firstChild as HTMLElement).innerHTML);
           toast({
-            title: "Success",
-            description: "Paperwork content copied to clipboard.",
+            title: tPage('toasts.copySuccess.title'),
+            description: tPage('toasts.copySuccess.description'),
             variant: "default",
           })
         }
@@ -230,8 +234,8 @@ function PaperworkSubmitContent() {
     const handleCopyTitle = () => {
         navigator.clipboard.writeText(reportTitle);
         toast({
-          title: "Success",
-          description: "Report title copied to clipboard.",
+            title: tPage('toasts.copySuccess.title'),
+            description: tPage('toasts.copyTitleSuccess.description'),
         })
     };
 
@@ -257,14 +261,14 @@ function PaperworkSubmitContent() {
             link.click();
 
             toast({
-                title: 'Download started',
-                description: 'Your paperwork image is being downloaded.',
+                title: tPage('toasts.downloadStart.title'),
+                description: tPage('toasts.downloadStart.description'),
             });
         } catch (error) {
             console.error('Failed to download paperwork image:', error);
             toast({
-                title: 'Download failed',
-                description: 'Could not create an image from the paperwork preview. Please try again.',
+                title: tPage('toasts.downloadFailed.title'),
+                description: tPage('toasts.downloadFailed.description'),
                 variant: 'destructive',
             });
         } finally {
@@ -288,14 +292,12 @@ function PaperworkSubmitContent() {
         return (
             <div className="container mx-auto p-4 md:p-6 lg:p-8">
                  <PageHeader
-                    title="Submission Error"
-                    description="Could not find the necessary data to generate this paperwork."
+                    title={tPage('error.header.title')}
+                    description={tPage('error.header.description')}
                 />
                 <Alert variant="destructive">
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        Could not load report data. Please go back to the generators page and try again.
-                    </AlertDescription>
+                    <AlertTitle>{tPage('error.alert.title')}</AlertTitle>
+                    <AlertDescription>{tPage('error.alert.description')}</AlertDescription>
                 </Alert>
             </div>
         )
@@ -304,26 +306,24 @@ function PaperworkSubmitContent() {
     return (
       <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
         <PageHeader
-          title="Paperwork Submission"
-          description="Review the formatted paperwork below."
+          title={tPage('header.title')}
+          description={tPage('header.description')}
         />
         
         <Alert>
             <Info className="h-4 w-4" />
-            <AlertTitle>Heads up!</AlertTitle>
-            <AlertDescription>
-                The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it.
-            </AlertDescription>
+            <AlertTitle>{tPage('alert.title')}</AlertTitle>
+            <AlertDescription>{tPage('alert.description')}</AlertDescription>
         </Alert>
           
         {reportTitle && (
             <div className="space-y-2">
-                <Label htmlFor="report-title">Report Title</Label>
+                <Label htmlFor="report-title">{tPage('reportTitleLabel')}</Label>
                 <div className="flex items-center gap-2">
                     <Input id="report-title" value={reportTitle} readOnly />
                     <Button type="button" variant="outline" onClick={handleCopyTitle}>
                         <Clipboard className="mr-2 h-4 w-4" />
-                        Copy Title
+                        {tPage('buttons.copyTitle')}
                     </Button>
                 </div>
             </div>
@@ -346,11 +346,11 @@ function PaperworkSubmitContent() {
             )}
             <Button variant="outline" onClick={handleDownloadImage} disabled={!reportRef.current || isDownloadingImage}>
                 <ImageDown className="mr-2 h-4 w-4" />
-                {isDownloadingImage ? 'Preparing Image...' : 'Download Report'}
+                {isDownloadingImage ? tPage('buttons.downloading') : tPage('buttons.download')}
             </Button>
             <Button onClick={handleCopy} disabled={!isClient}>
                 <Clipboard className="mr-2 h-4 w-4" />
-                Copy Paperwork
+                {tPage('buttons.copyPaperwork')}
             </Button>
         </div>
       </div>
@@ -364,5 +364,3 @@ export function PaperworkSubmitPage() {
         </Suspense>
     )
 }
-
-    

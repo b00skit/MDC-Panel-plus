@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useScopedI18n } from '@/lib/i18n/client';
 import { useSettingsStore } from '@/stores/settings-store';
 import { ModuleCard } from '../dashboard/module-card';
 import { Separator } from '../ui/separator';
@@ -13,6 +14,7 @@ interface PaperworkGeneratorsListProps {
 
 export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: PaperworkGeneratorsListProps) {
     const { hiddenFactions, showHiddenGroups } = useSettingsStore();
+    const t = useScopedI18n('paperworkGenerators.list');
 
     const visibleFactionGroups = factionGroups.filter(group => {
         if (group.url) {
@@ -28,7 +30,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
         <div className="space-y-8">
             {globalGenerators.length > 0 && (
                  <div>
-                    <h2 className="text-2xl font-bold mb-4">Global Generators</h2>
+                    <h2 className="text-2xl font-bold mb-4">{t('globalTitle')}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {globalGenerators.map((generator) => (
                             <ModuleCard
@@ -64,7 +66,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
             ))}
 
             {globalGenerators.length === 0 && visibleFactionGroups.length === 0 && (
-                 <p className="text-muted-foreground text-center py-8">No paperwork generators available.</p>
+                 <p className="text-muted-foreground text-center py-8">{t('empty')}</p>
             )}
         </div>
     );

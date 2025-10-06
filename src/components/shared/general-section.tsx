@@ -11,6 +11,7 @@ import { useFormStore } from '@/stores/form-store';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/stores/settings-store';
 import { Combobox } from '../ui/combobox';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 const FormSection = ({
   title,
@@ -78,6 +79,7 @@ export function GeneralSection() {
         setFormField: state.setFormField,
     }));
     const { predefinedCallsigns, defaultCallsignId } = useSettingsStore();
+    const t = useScopedI18n('shared.generalSection');
 
     useEffect(() => {
         const now = new Date();
@@ -94,12 +96,12 @@ export function GeneralSection() {
 
 
   return (
-    <FormSection title="General Section" icon={<CalendarDays className="h-6 w-6" />}>
+    <FormSection title={t('title')} icon={<CalendarDays className="h-6 w-6" />}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <InputField
-            label="Date"
+            label={t('date')}
             id="date"
-            placeholder="DD/MMM/YYYY"
+            placeholder={t('datePlaceholder')}
             icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
             type="text"
             value={general?.date || ''}
@@ -107,9 +109,9 @@ export function GeneralSection() {
             onBlur={(e) => setFormField('general', 'date', e.target.value)}
           />
           <InputField
-            label="Time"
+            label={t('time')}
             id="time"
-            placeholder="HH:MM"
+            placeholder={t('timePlaceholder')}
             icon={<Clock className="h-4 w-4 text-muted-foreground" />}
             type="text"
             value={general?.time || ''}
@@ -117,7 +119,7 @@ export function GeneralSection() {
             onBlur={(e) => setFormField('general', 'time', e.target.value)}
           />
           <div className="grid gap-2">
-            <Label htmlFor="call-sign">Call Sign</Label>
+            <Label htmlFor="call-sign">{t('callSign')}</Label>
              <div className="relative flex items-center">
                 <Radio className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                 {predefinedCallsigns.length > 0 ? (
@@ -125,13 +127,13 @@ export function GeneralSection() {
                         options={predefinedCallsigns.map(c => c.value)}
                         value={general?.callSign || ''}
                         onChange={(value) => setFormField('general', 'callSign', value)}
-                        placeholder="Select or type callsign..."
+                        placeholder={t('callSignComboboxPlaceholder')}
                         className="pl-9 w-full"
                     />
                 ) : (
                     <Input
                         id="call-sign"
-                        placeholder="CALL SIGN"
+                        placeholder={t('callSignPlaceholder')}
                         value={general?.callSign || ''}
                         onChange={(e) => setFormField('general', 'callSign', e.target.value)}
                         onBlur={(e) => setFormField('general', 'callSign', e.target.value)}

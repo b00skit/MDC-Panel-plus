@@ -7,6 +7,7 @@ import { Combobox } from '@/components/ui/combobox';
 import { Label } from '@/components/ui/label';
 import { useFormStore } from '@/stores/form-store';
 import configData from '../../../data/config.json';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 interface LocationDetailsProps {
     districtFieldName: string;
@@ -22,6 +23,7 @@ export function LocationDetails({
     const { control, watch } = useFormContext();
     const [locations, setLocations] = useState<{ districts: string[], streets: string[] }>({ districts: [], streets: [] });
     const { setFormField } = useFormStore();
+    const t = useScopedI18n('shared.locationDetails');
 
 
     useEffect(() => {
@@ -44,7 +46,7 @@ export function LocationDetails({
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {showDistrict && (
                 <div className="grid gap-2">
-                    <Label htmlFor={districtFieldName}>District</Label>
+                    <Label htmlFor={districtFieldName}>{t('district')}</Label>
                     <Controller
                         name={districtFieldName}
                         control={control}
@@ -57,9 +59,9 @@ export function LocationDetails({
                                     field.onChange(value);
                                     setFormField('location', 'district', value);
                                 }}
-                                placeholder="Select or type a district"
-                                searchPlaceholder="Search districts..."
-                                emptyPlaceholder="No districts found."
+                                placeholder={t('districtPlaceholder')}
+                                searchPlaceholder={t('searchDistricts')}
+                                emptyPlaceholder={t('noDistrictsFound')}
                                 isInvalid={isDistrictInvalid}
                             />
                         )}
@@ -67,7 +69,7 @@ export function LocationDetails({
                 </div>
             )}
             <div className="grid gap-2">
-                <Label htmlFor={streetFieldName}>Street Name</Label>
+                <Label htmlFor={streetFieldName}>{t('street')}</Label>
                 <Controller
                     name={streetFieldName}
                     control={control}
@@ -80,9 +82,9 @@ export function LocationDetails({
                                 field.onChange(value);
                                 setFormField('location', 'street', value);
                             }}
-                            placeholder="Select or type a street"
-                            searchPlaceholder="Search streets..."
-                            emptyPlaceholder="No streets found."
+                            placeholder={t('streetPlaceholder')}
+                            searchPlaceholder={t('searchStreets')}
+                            emptyPlaceholder={t('noStreetsFound')}
                             isInvalid={isStreetInvalid}
                         />
                     )}

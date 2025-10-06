@@ -41,6 +41,7 @@ import { Switch } from '@/components/ui/switch';
 import { useTheme } from 'next-themes';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useI18n, useScopedI18n } from '@/lib/i18n/client';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
@@ -136,6 +137,8 @@ async function clearAllSiteData() {
 export default function SettingsPage() {
   const { toast } = useToast();
   const { setTheme, theme } = useTheme();
+  const { t: tRoot } = useI18n();
+  const t = useScopedI18n('settings');
   const { 
     officers, 
     updateOfficer, 
@@ -161,9 +164,9 @@ export default function SettingsPage() {
     setDefaultCallsignId,
     analyticsOptOut,
     toggleAnalytics,
-    factionGroups,
     experimentalFeatures,
-    toggleExperimentalFeature
+    toggleExperimentalFeature,
+    factionGroups,
   } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
@@ -173,6 +176,10 @@ export default function SettingsPage() {
   const resetBasicForm = useFormStore(state => state.reset);
   const resetAdvancedForm = useAdvancedReportStore(state => state.reset);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    document.title = tRoot('settings.pageTitle');
+  }, [tRoot]);
 
   useEffect(() => {
     setInitialOfficers();
@@ -208,18 +215,18 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     toast({
-      title: 'Settings Saved',
-      description: 'Your settings have been updated.',
+      title: t('toasts.settingsSaved'),
+      description: t('toasts.settingsSavedDesc'),
     });
   };
 
   const handleClearData = async () => {
     const success = await clearAllSiteData();
     toast({
-      title: success ? 'Data Cleared' : 'Error',
+      title: success ? t('toasts.dataCleared') : t('toasts.clearError'),
       description: success
-        ? 'All local and session data has been successfully cleared.'
-        : 'Could not clear all site data. Check the console for details.',
+        ? t('toasts.dataClearedDesc')
+        : t('toasts.clearErrorDesc'),
       ...(success ? {} : { variant: 'destructive' }),
     });
 
@@ -245,8 +252,8 @@ export default function SettingsPage() {
     a.click();
     URL.revokeObjectURL(url);
     toast({
-      title: 'Data Exported',
-      description: 'A file with your data has been downloaded.',
+      title: t('toasts.dataExported'),
+      description: t('toasts.dataExportedDesc'),
     });
   };
 
@@ -267,15 +274,15 @@ export default function SettingsPage() {
           }
         });
         toast({
-          title: 'Data Imported',
-          description: 'Local storage data has been imported.',
+          title: t('toasts.dataImported'),
+          description: t('toasts.dataImportedDesc'),
         });
         setTimeout(() => window.location.reload(), 1000);
       } catch (error) {
         console.error('Error importing data:', error);
         toast({
-          title: 'Import Failed',
-          description: 'Could not import data. Please ensure the file is valid.',
+          title: t('toasts.importFailed'),
+          description: t('toasts.importFailedDesc'),
           variant: 'destructive',
         });
       }
@@ -292,27 +299,27 @@ export default function SettingsPage() {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <PageHeader
-        title="Settings"
-        description="Manage your application settings and data."
+        title={t('header.title')}
+        description={t('header.description')}
       />
       <div className="grid gap-8 mt-6">
         <Card>
             <CardHeader>
-                <CardTitle>Appearance</CardTitle>
+                <CardTitle>{t('appearance.title')}</CardTitle>
                 <CardDescription>
-                    Customize the look and feel of the application.
+                    {t('appearance.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <Button variant={theme === 'light' ? 'default' : 'outline'} onClick={() => setTheme('light')}>
-                        <Sun className="mr-2" /> Light
+                        <Sun className="mr-2" /> {t('appearance.light')}
                     </Button>
                     <Button variant={theme === 'dark' ? 'default' : 'outline'} onClick={() => setTheme('dark')}>
-                        <Moon className="mr-2" /> Dark
+                        <Moon className="mr-2" /> {t('appearance.dark')}
                     </Button>
                     <Button variant={theme === 'system' ? 'default' : 'outline'} onClick={() => setTheme('system')}>
-                        <Monitor className="mr-2" /> System
+                        <Monitor className="mr-2" /> {t('appearance.system')}
                     </Button>
                 </div>
             </CardContent>
@@ -321,27 +328,27 @@ export default function SettingsPage() {
         {hasPredefinedOfficers ? (
              <Card>
                 <CardHeader>
-                    <CardTitle>Default Officer Information</CardTitle>
+                    <CardTitle>{t('defaultOfficer.predefinedActive.title')}</CardTitle>
                     <CardDescription>
-                        Your officer information is currently managed by a predefined lineup.
+                        {t('defaultOfficer.predefinedActive.description')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <Alert variant="warning">
                         <AlertTriangle className="h-4 w-4" />
-                        <AlertTitle>Predefined Lineup Active</AlertTitle>
+                        <AlertTitle>{t('defaultOfficer.predefinedActive.title')}</AlertTitle>
                         <AlertDescription>
-                            To manage your officer list, please go to the Advanced Form Parameters page. You can reset to a single default officer setup below.
+                            {t('defaultOfficer.predefinedActive.alert')}
                         </AlertDescription>
                     </Alert>
                     <div className="flex gap-2">
                          <Button asChild>
                             <Link href="/settings/advanced-form-parameters">
-                                <Settings2 className="mr-2" /> Go to Advanced Parameters
+                                <Settings2 className="mr-2" /> {t('defaultOfficer.predefinedActive.goToAdvanced')}
                             </Link>
                         </Button>
                         <Button variant="destructive" onClick={clearPredefinedOfficers}>
-                            <Trash2 className="mr-2" /> Reset to Default
+                            <Trash2 className="mr-2" /> {t('defaultOfficer.predefinedActive.reset')}
                         </Button>
                     </div>
                 </CardContent>
@@ -349,9 +356,9 @@ export default function SettingsPage() {
         ) : (
             <Card>
                 <CardHeader>
-                    <CardTitle>Default Officer Information</CardTitle>
+                    <CardTitle>{t('defaultOfficer.title')}</CardTitle>
                     <CardDescription>
-                    Set the default officer details that will be pre-filled in new arrest reports.
+                    {t('defaultOfficer.description')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -359,12 +366,12 @@ export default function SettingsPage() {
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="officer-name">Full Name</Label>
+                            <Label htmlFor="officer-name">{t('defaultOfficer.fields.fullName')}</Label>
                             <div className="relative flex items-center">
                                 <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                 <Input
                                 id="officer-name"
-                                placeholder="John Doe"
+                                placeholder={t('defaultOfficer.fields.fullNamePlaceholder')}
                                 value={defaultOfficer.name}
                                 onChange={(e) => handleOfficerChange('name', e.target.value)}
                                 className="pl-9"
@@ -372,14 +379,14 @@ export default function SettingsPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="rank">Rank & Department</Label>
+                            <Label htmlFor="rank">{t('defaultOfficer.fields.rankAndDept')}</Label>
                             <div className="relative flex items-center">
                                 <Shield className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                 <Select 
                                 value={defaultOfficer.department && defaultOfficer.rank ? `${defaultOfficer.department}__${defaultOfficer.rank}` : ''}
                                 onValueChange={handleRankChange}>
                                 <SelectTrigger id="rank" className="pl-9">
-                                    <SelectValue placeholder="Select Rank" />
+                                    <SelectValue placeholder={t('defaultOfficer.fields.rankPlaceholder')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.entries(deptRanks).map(([dept, ranks]) => (
@@ -395,12 +402,12 @@ export default function SettingsPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="badge-number">Badge Number</Label>
+                            <Label htmlFor="badge-number">{t('defaultOfficer.fields.badgeNo')}</Label>
                             <div className="relative flex items-center">
                                 <BadgeIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                 <Input
                                 id="badge-number"
-                                placeholder="12345"
+                                placeholder={t('defaultOfficer.fields.badgePlaceholder')}
                                 value={defaultOfficer.badgeNumber}
                                 onChange={(e) => handleOfficerChange('badgeNumber', e.target.value)}
                                 className="pl-9"
@@ -408,12 +415,12 @@ export default function SettingsPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="div-detail">Division / Detail</Label>
+                            <Label htmlFor="div-detail">{t('defaultOfficer.fields.divDetail')}</Label>
                             <div className="relative flex items-center">
                                 <BookUser className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                                 <Input
                                 id="div-detail"
-                                placeholder="e.g. Mission Row"
+                                placeholder={t('defaultOfficer.fields.divDetailPlaceholder')}
                                 value={defaultOfficer.divDetail || ''}
                                 onChange={(e) => handleOfficerChange('divDetail', e.target.value)}
                                 className="pl-9"
@@ -431,15 +438,15 @@ export default function SettingsPage() {
 
         <Card>
             <CardHeader>
-                <CardTitle>Advanced Form Parameters</CardTitle>
+                <CardTitle>{t('advancedParams.title')}</CardTitle>
                 <CardDescription>
-                    Configure advanced form options, such as setting a default officer lineup.
+                    {t('advancedParams.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <Button asChild>
                     <Link href="/settings/advanced-form-parameters">
-                        <Settings2 className="mr-2" /> Go to Advanced Parameters
+                        <Settings2 className="mr-2" /> {t('advancedParams.button')}
                     </Link>
                 </Button>
             </CardContent>
@@ -447,9 +454,9 @@ export default function SettingsPage() {
 
          <Card>
           <CardHeader>
-            <CardTitle>Predefined Callsigns</CardTitle>
+            <CardTitle>{t('predefinedCallsigns.title')}</CardTitle>
             <CardDescription>
-              Manage a list of callsigns to quickly select from in forms.
+              {t('predefinedCallsigns.description')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -462,7 +469,7 @@ export default function SettingsPage() {
                             className="flex-1"
                             value={callsign.value}
                             onChange={(e) => updateCallsign(callsign.id, e.target.value)}
-                            placeholder={`Callsign #${index + 1}`}
+                            placeholder={t('predefinedCallsigns.placeholder', { index: index + 1 })}
                         />
                         <Button variant="ghost" size="icon" onClick={() => removeCallsign(callsign.id)}>
                             <Trash2 className="h-4 w-4 text-red-500" />
@@ -471,35 +478,35 @@ export default function SettingsPage() {
                 ))}
             </RadioGroup>
             <Button variant="outline" onClick={addCallsign}>
-                <Plus className="mr-2 h-4 w-4" /> Add Callsign
+                <Plus className="mr-2 h-4 w-4" /> {t('predefinedCallsigns.addButton')}
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Alternative Characters</CardTitle>
+            <CardTitle>{t('altCharacters.title')}</CardTitle>
             <CardDescription>
-              Manage up to 3 alternative characters for quick selection in reports.
+              {t('altCharacters.description')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {alternativeCharacters.map((altChar, index) => (
               <div key={altChar.id} className="space-y-4">
                  <div className="flex justify-between items-center">
-                   <Label className="text-lg font-medium">Character {index + 1}</Label>
+                   <Label className="text-lg font-medium">{t('altCharacters.character', { index: index + 1 })}</Label>
                    <Button variant="ghost" size="icon" onClick={() => removeAlternativeCharacter(altChar.id)}>
                        <Trash2 className="h-4 w-4 text-red-500"/>
                    </Button>
                  </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <Label htmlFor={`alt-officer-name-${altChar.id}`}>Full Name</Label>
+                        <Label htmlFor={`alt-officer-name-${altChar.id}`}>{t('defaultOfficer.fields.fullName')}</Label>
                         <div className="relative flex items-center">
                             <User className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                             <Input
                                 id={`alt-officer-name-${altChar.id}`}
-                                placeholder="John Doe"
+                                placeholder={t('defaultOfficer.fields.fullNamePlaceholder')}
                                 value={altChar.name}
                                 onChange={(e) => handleAltOfficerChange(altChar.id, 'name', e.target.value)}
                                 className="pl-9"
@@ -507,14 +514,14 @@ export default function SettingsPage() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor={`alt-rank-${altChar.id}`}>Rank & Department</Label>
+                        <Label htmlFor={`alt-rank-${altChar.id}`}>{t('defaultOfficer.fields.rankAndDept')}</Label>
                         <div className="relative flex items-center">
                             <Shield className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                             <Select 
                                 value={altChar.department && altChar.rank ? `${altChar.department}__${altChar.rank}` : ''}
                                 onValueChange={(value) => handleAltRankChange(altChar.id, value)}>
                                 <SelectTrigger id={`alt-rank-${altChar.id}`} className="pl-9">
-                                    <SelectValue placeholder="Select Rank" />
+                                    <SelectValue placeholder={t('defaultOfficer.fields.rankPlaceholder')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.entries(deptRanks).map(([dept, ranks]) => (
@@ -530,12 +537,12 @@ export default function SettingsPage() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor={`alt-badge-number-${altChar.id}`}>Badge Number</Label>
+                        <Label htmlFor={`alt-badge-number-${altChar.id}`}>{t('defaultOfficer.fields.badgeNo')}</Label>
                         <div className="relative flex items-center">
                             <BadgeIcon className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                             <Input
                                 id={`alt-badge-number-${altChar.id}`}
-                                placeholder="123456"
+                                placeholder={t('defaultOfficer.fields.badgePlaceholder')}
                                 value={altChar.badgeNumber}
                                 onChange={(e) => handleAltOfficerChange(altChar.id, 'badgeNumber', e.target.value)}
                                 className="pl-9"
@@ -543,12 +550,12 @@ export default function SettingsPage() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor={`alt-div-detail-${altChar.id}`}>Division / Detail</Label>
+                        <Label htmlFor={`alt-div-detail-${altChar.id}`}>{t('defaultOfficer.fields.divDetail')}</Label>
                         <div className="relative flex items-center">
                             <BookUser className="absolute left-2.5 z-10 h-4 w-4 text-muted-foreground" />
                             <Input
                                 id={`alt-div-detail-${altChar.id}`}
-                                placeholder="e.g. Mission Row"
+                                placeholder={t('defaultOfficer.fields.divDetailPlaceholder')}
                                 value={altChar.divDetail || ''}
                                 onChange={(e) => handleAltOfficerChange(altChar.id, 'divDetail', e.target.value)}
                                 className="pl-9"
@@ -561,7 +568,7 @@ export default function SettingsPage() {
             ))}
             {alternativeCharacters.length < 3 && (
                 <Button variant="outline" onClick={addAlternativeCharacter}>
-                    <Plus className="mr-2 h-4 w-4" /> Add Character
+                    <Plus className="mr-2 h-4 w-4" /> {t('altCharacters.addButton')}
                 </Button>
             )}
           </CardContent>
@@ -569,9 +576,9 @@ export default function SettingsPage() {
         
         <Card>
             <CardHeader>
-                <CardTitle>Form Visibility</CardTitle>
+                <CardTitle>{t('formVisibility.title')}</CardTitle>
                 <CardDescription>
-                    Control which faction-specific forms are visible on the Paperwork Generators page.
+                    {t('formVisibility.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -598,16 +605,16 @@ export default function SettingsPage() {
                         </div>
                     ))
                 ) : (
-                    <p className="text-muted-foreground text-sm">No toggleable faction form groups found.</p>
+                    <p className="text-muted-foreground text-sm">{t('formVisibility.noGroups')}</p>
                 )}
             </CardContent>
         </Card>
         
          <Card>
             <CardHeader>
-                <CardTitle>Privacy Settings</CardTitle>
+                <CardTitle>{t('privacy.title')}</CardTitle>
                 <CardDescription>
-                    Manage how your data is used.
+                    {t('privacy.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -615,8 +622,8 @@ export default function SettingsPage() {
                     <div className="flex items-center gap-3">
                         <BarChart className="h-5 w-5 text-muted-foreground" />
                         <Label htmlFor="analytics-opt-out" className="text-base flex flex-col">
-                            Anonymous Analytics
-                           <span className="text-xs text-muted-foreground">Help improve the application by sharing anonymous usage data.</span>
+                            {t('privacy.analyticsLabel')}
+                           <span className="text-xs text-muted-foreground">{t('privacy.analyticsDescription')}</span>
                         </Label>
                     </div>
                     <Switch
@@ -630,9 +637,9 @@ export default function SettingsPage() {
         
          <Card>
             <CardHeader>
-                <CardTitle>Experimental Features</CardTitle>
+                <CardTitle>{t('experimental.title')}</CardTitle>
                 <CardDescription>
-                    Opt-in to try new features that are still in development. These may be unstable.
+                    {t('experimental.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -640,8 +647,8 @@ export default function SettingsPage() {
                     <div className="flex items-center gap-3">
                         <FlaskConical className="h-5 w-5 text-muted-foreground" />
                         <Label htmlFor="experimental-ai-reports" className="text-base flex flex-col">
-                            AI Arrest Reports
-                           <span className="text-xs text-muted-foreground">Shows AI features on the Basic Arrest Report, which can help with writing arrest reports for anyone who pled guilty.</span>
+                            {t('experimental.aiReportsLabel')}
+                           <span className="text-xs text-muted-foreground">{t('experimental.aiReportsDescription')}</span>
                         </Label>
                     </div>
                     <Switch
@@ -654,23 +661,23 @@ export default function SettingsPage() {
         </Card>
 
         <div className="flex justify-end">
-            <Button onClick={handleSave}>Save All Changes</Button>
+            <Button onClick={handleSave}>{t('buttons.save')}</Button>
         </div>
 
         <Card>
             <CardHeader>
-                <CardTitle>Data Management</CardTitle>
+                <CardTitle>{t('dataManagement.title')}</CardTitle>
                 <CardDescription>
-                    Permanently delete all your stored data, including saved reports, charges, and default settings. This action cannot be undone.
+                    {t('dataManagement.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex flex-wrap gap-2">
                     <Button onClick={handleExportData}>
-                        <Download className="mr-2 h-4 w-4" /> Export Data
+                        <Download className="mr-2 h-4 w-4" /> {t('dataManagement.exportButton')}
                     </Button>
                     <Button variant="outline" onClick={handleImportDataClick}>
-                        <Upload className="mr-2 h-4 w-4" /> Import Data
+                        <Upload className="mr-2 h-4 w-4" /> {t('dataManagement.importButton')}
                     </Button>
                     <input
                         ref={fileInputRef}
@@ -684,20 +691,19 @@ export default function SettingsPage() {
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button variant="destructive">
-                            <Trash2 className="mr-2 h-4 w-4" /> Clear All Site Data
+                            <Trash2 className="mr-2 h-4 w-4" /> {t('dataManagement.clearButton')}
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogTitle>{t('dataManagement.clearDialog.title')}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete all your
-                            application data from your browser's storage.
+                            {t('dataManagement.clearDialog.description')}
                         </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleClearData}>Continue</AlertDialogAction>
+                            <AlertDialogCancel>{t('buttons.cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleClearData}>{t('buttons.continue')}</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

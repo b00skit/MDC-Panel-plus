@@ -18,6 +18,7 @@ import { Skeleton } from '../ui/skeleton';
 import { Label } from '../ui/label';
 import { Officer } from '@/stores/officer-store';
 import { SelectedCharge, PenalCode } from '@/stores/charge-store';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 interface DialogProps {
   open: boolean;
@@ -37,6 +38,7 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
   const [logs, setLogs] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useScopedI18n('aiDialog');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +71,7 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
       handleClose();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'An error occurred while generating the narrative. Please try again.');
+      setError(err.message || t('error.generic'));
     } finally {
       setIsLoading(false);
     }
@@ -90,29 +92,29 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="text-primary" />
-            Generate Narrative with AI
+            {t('title')}
           </DialogTitle>
           <DialogDescription>
-            Paste your logs to generate a report narrative.
+            {t('description')}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Important Disclaimer</AlertTitle>
+            <AlertTitle>{t('disclaimer.title')}</AlertTitle>
             <AlertDescription>
-              The usage of AI is heavily discouraged and in the majority of cases disallowed, you should check with your department's policies as well as any standing LFM directives before utilizing AI to write arrest reports. This is meant as a tool and not as an outright replacement. The authenticity of the narrative is your responsibility.
+              {t('disclaimer.description')}
             </AlertDescription>
           </Alert>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-                <Label htmlFor="ai-logs">Your Logs</Label>
+                <Label htmlFor="ai-logs">{t('logsLabel')}</Label>
                 <Textarea
                     id="ai-logs"
                     value={logs}
                     onChange={(e) => setLogs(e.target.value)}
-                    placeholder="Paste your raw, unedited logs here..."
+                    placeholder={t('logsPlaceholder')}
                     disabled={isLoading}
                     rows={10}
                 />
@@ -123,19 +125,19 @@ export function BasicArrestReportAIDialog({ open, onOpenChange, onNarrativeGener
           {error && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>{t('error.title')}</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
         </div>
         <DialogFooter>
-            <Button variant="outline" onClick={handleClose}>Cancel</Button>
+            <Button variant="outline" onClick={handleClose}>{t('buttons.cancel')}</Button>
             <Button
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isLoading || !logs.trim()}
             >
-                {isLoading ? 'Generating...' : 'Generate'}
+                {isLoading ? t('buttons.generating') : t('buttons.generate')}
             </Button>
         </DialogFooter>
       </DialogContent>

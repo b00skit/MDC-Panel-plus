@@ -18,7 +18,7 @@ import { BasicFormattedReport } from '@/components/arrest-report/basic-formatted
 import { AdvancedFormattedReport } from '@/components/arrest-report/advanced-formatted-report';
 import { useArchiveStore } from '@/stores/archive-store';
 import configData from '../../../data/config.json';
-
+import { useI18n, useScopedI18n } from '@/lib/i18n/client';
 
 function ArrestSubmitContent() {
     const { report, penalCode, additions, reportInitialized } = useChargeStore();
@@ -33,11 +33,14 @@ function ArrestSubmitContent() {
     const { toast } = useToast();
     const reportRef = useRef<HTMLTableElement>(null);
     const [isDownloadingImage, setIsDownloadingImage] = useState(false);
+
+    const { t } = useI18n();
+    const tPage = useScopedI18n('arrestSubmit');
   
     useEffect(() => {
       setIsClient(true);
-      document.title = 'MDC Panel – Arrest Submission';
-    }, []);
+      document.title = t('arrestSubmit.documentTitle');
+    }, [t]);
 
     const isBasicReport = reportType === 'basic';
     const isAdvancedReport = reportType === 'advanced';
@@ -91,8 +94,8 @@ function ArrestSubmitContent() {
         if (reportRef.current) {
           navigator.clipboard.writeText(reportRef.current.outerHTML);
           toast({
-            title: "Success",
-            description: "Paperwork HTML copied to clipboard.",
+            title: tPage('toasts.success.title'),
+            description: tPage('toasts.success.description'),
             variant: "default",
           });
         }
@@ -120,14 +123,14 @@ function ArrestSubmitContent() {
             link.click();
 
             toast({
-                title: 'Download started',
-                description: 'Your formatted report image is being downloaded.',
+                title: tPage('toasts.downloadStart.title'),
+                description: tPage('toasts.downloadStart.description'),
             });
         } catch (error) {
             console.error('Failed to download report image:', error);
             toast({
-                title: 'Download failed',
-                description: 'Could not create an image from the report. Please try again.',
+                title: tPage('toasts.downloadFailed.title'),
+                description: tPage('toasts.downloadFailed.description'),
                 variant: 'destructive',
             });
         } finally {
@@ -154,15 +157,15 @@ function ArrestSubmitContent() {
     return (
       <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
         <PageHeader
-          title="Arrest Report Submission"
-          description="Review the calculated charges and the formatted arrest report below."
+          title={tPage('header.title')}
+          description={tPage('header.description')}
         />
         
         <Alert>
             <Info className="h-4 w-4" />
-            <AlertTitle>Heads up!</AlertTitle>
+            <AlertTitle>{tPage('alert.title')}</AlertTitle>
             <AlertDescription>
-                The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC. This report has also been archived.
+                {tPage('alert.description')}
             </AlertDescription>
         </Alert>
           
@@ -176,7 +179,7 @@ function ArrestSubmitContent() {
         )}
 
         <div className="mt-6">
-            <h3 className="text-2xl font-semibold tracking-tight mb-4">Formatted Report</h3>
+            <h3 className="text-2xl font-semibold tracking-tight mb-4">{tPage('formattedReport')}</h3>
             <div className="p-4 border rounded-lg bg-card">
             {isBasicReport && hasReport && penalCode && (
                 <BasicFormattedReport innerRef={reportRef} formData={formData} report={report} penalCode={penalCode} />
@@ -193,7 +196,7 @@ function ArrestSubmitContent() {
                   <Button variant="outline" asChild>
                       <a href={mdcRecordUrl} target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="mr-2 h-4 w-4" />
-                          Open MDC Record
+                          {tPage('buttons.mdcRecord')}
                       </a>
                   </Button>
                 )}
@@ -203,17 +206,17 @@ function ArrestSubmitContent() {
                           href={`/paperwork-generators/form?type=static&id=impound-report&prefill=${isAdvancedReport ? 'advanced-arrest-report' : 'basic-arrest-report'}`}
                       >
                           <Car className="mr-2 h-4 w-4" />
-                          Quick-Create Impound Report
+                          {tPage('buttons.impound')}
                       </a>
                   </Button>
               )}
               <Button variant="outline" onClick={handleDownloadImage} disabled={!reportRef.current || isDownloadingImage}>
                   <ImageDown className="mr-2 h-4 w-4" />
-                  {isDownloadingImage ? 'Preparing Image...' : 'Download Report'}
+                  {isDownloadingImage ? tPage('buttons.downloading') : tPage('buttons.download')}
               </Button>
               <Button onClick={handleCopy} disabled={isClient && !formData}>
                   <Clipboard className="mr-2 h-4 w-4" />
-                  Copy Paperwork
+                  {tPage('buttons.copy')}
               </Button>
           </div>
         </div>
