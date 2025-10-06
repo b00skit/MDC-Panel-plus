@@ -661,6 +661,11 @@
       "clearToReenable": "Clear the textarea to re-enable presets.",
       "textareaInGroupError": "textarea-with-preset cannot be used inside an input group.",
       "addEntry": "Add {label}"
+    },
+    "streetsAct": {
+      "title": "Streets Act Eligibility",
+      "description": "One or more selected charges are eligible under the Streets Act. Review departmental guidance before proceeding.",
+      "linkLabel": "Read the Streets Act guidance"
     }
   },
   "arrestCalculator": {
@@ -1408,5 +1413,3 @@
     "localStorageVersion": "Local Storage Version"
   }
 }
-
-    

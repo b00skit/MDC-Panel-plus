@@ -661,6 +661,11 @@
       "clearToReenable": "Vacía el área de texto para volver a habilitar los predefinidos.",
       "textareaInGroupError": "textarea-with-preset no se puede usar dentro de un grupo de entrada.",
       "addEntry": "Añadir {label}"
+    },
+    "streetsAct": {
+      "title": "Elegibilidad de la Ley de Calles",
+      "description": "Una o más imputaciones seleccionadas son elegibles según la Ley de Calles. Revise la guía del departamento antes de continuar.",
+      "linkLabel": "Leer la guía de la Ley de Calles"
     }
   },
   "arrestCalculator": {
@@ -1408,5 +1413,3 @@
     "localStorageVersion": "Versión de almacenamiento local"
   }
 }
-
-    
