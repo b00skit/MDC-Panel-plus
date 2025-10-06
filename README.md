@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="400px" src="https://raw.githubusercontent.com/CXDezign/MDC-Panel/9422146d3c4d902c141ad16b97c029f885bc3892/images/MDC-Panel.svg">
+  <img width="400px" src="https://raw.githubusercontent.com/CXDezign/MDC-Panel/9422146d3c4d902c141ad16b97c029f885bc3892/images/MDC-Panel.svg">
 </p>
 
 # MDC Panel+
@@ -10,13 +10,17 @@ MDC Panel+ is a multi-functional tool designed to assist roleplay communities' L
 
 ## ✨ Key Features
 
-* **Arrest Calculator**: Calculate arrest sentences and fines based on charges from a comprehensive and up-to-date penal code.
-* **Arrest Report Generator**: Create and manage both basic and advanced arrest reports, with functionality to pre-fill officer and charge details.
-* **Paperwork Generators**: Dynamically generate various types of paperwork from predefined templates. Includes a form builder to create custom templates.
-* **Simplified Penal Code**: An easy-to-navigate and searchable version of the official penal code.
-* **Caselaw & Legal Resources**: Access a database of relevant caselaw and other essential legal resources.
-* **Customizable Settings**: Personalize your experience by setting default officer information, managing alternative characters, and controlling the visibility of faction-specific forms.
-* **Theming**: Switch between light and dark modes to suit your preference.
+*   **Arrest Calculator**: Calculate arrest sentences and fines based on charges from a comprehensive and up-to-date penal code.
+*   **Arrest Report Generator**: Create and manage both basic and advanced arrest reports, with functionality to pre-fill officer and charge details.
+*   **Paperwork Generators**: Dynamically generate various types of paperwork from predefined templates. Includes a form builder to create custom templates.
+*   **Simplified Penal Code**: An easy-to-navigate and searchable version of the official penal code.
+*   **Caselaw & Legal Resources**: Access a database of relevant caselaw and other essential legal resources.
+*   **AI Legal Search**: An experimental AI-powered search engine to query the penal code and caselaw.
+*   **Interactive Map**: A searchable map of San Andreas with drawing tools, markers, and snapshot functionality.
+*   **Log Parser**: A utility to filter GTA:World chat logs for specific character interactions.
+*   **Report Archive**: Automatically saves submitted arrest reports and paperwork for future restoration.
+*   **Customizable Settings**: Personalize your experience by setting default officer information, managing alternative characters, and controlling the visibility of faction-specific forms.
+*   **Theming & Internationalization**: Switch between light and dark modes and multiple languages (English and Spanish supported).
 
 ---
 
@@ -26,15 +30,15 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-* Node.js (v18.18.0 or higher)
-* npm or yarn
-* Docker and Docker Compose (for containerized setup)
+*   Node.js (v18.18.0 or higher)
+*   npm or yarn
+*   Docker and Docker Compose (for containerized setup)
 
 ### Installation
 
 1.  Clone the repo:
     ```sh
-    git clone [https://github.com/b00skit/MDC-Panel-plus.git](https://github.com/b00skit/MDC-Panel-plus.git)
+    git clone https://github.com/b00skit/MDC-Panel-plus.git
     ```
 2.  Navigate to the project directory:
     ```sh
@@ -44,14 +48,15 @@ To get a local copy up and running, follow these simple steps.
     ```sh
     npm install
     ```
-4.  Create a `.env` file in the root of the project and add your Discord Webhook URL and Matomo settings:
+4.  Create a `.env` file in the root of the project and add your environment variables:
+    ```env
+    # Required for AI features
+    GEMINI_API_KEY=your_google_ai_api_key_here
+
+    # Optional: For logging errors and feedback to Discord
+    DISCORD_LOGS_WEBHOOK_URL=your_error_webhook_url_here
+    DISCORD_FEEDBACK_WEBHOOK_URL=your_feedback_webhook_url_here
     ```
-    DISCORD_WEBHOOK_URL=your_webhook_url_here
-    NEXT_PUBLIC_MATOMO_URL=https://your-matomo-domain.example/
-    NEXT_PUBLIC_MATOMO_SITE_ID=1
-    ```
-    * `NEXT_PUBLIC_MATOMO_URL` should point to your Matomo server and end with a trailing slash.
-    * `NEXT_PUBLIC_MATOMO_SITE_ID` must match the site ID configured in that Matomo instance.
 
 ---
 
@@ -80,10 +85,10 @@ For a containerized setup, you can use the provided Docker configuration to run 
 
 In the project directory, you can run:
 
-* `npm run dev`: Runs the app in development mode. Open [http://localhost:9002](http://localhost:9002) to view it in the browser.
-* `npm run build`: Builds the app for production to the `.next` folder.
-* `npm run start`: Starts a Next.js production server.
-* `npm run lint`: Runs ESLint to find and fix problems in your code.
+*   `npm run dev`: Runs the app in development mode. Open [http://localhost:9002](http://localhost:9002) to view it in the browser.
+*   `npm run build`: Builds the app for production to the `.next` folder.
+*   `npm run start`: Starts a Next.js production server.
+*   `npm run lint`: Runs ESLint to find and fix problems in your code.
 
 ---
 
@@ -91,12 +96,14 @@ In the project directory, you can run:
 
 This project is built with a modern tech stack to ensure a high-quality and maintainable application.
 
-* **Framework**: [Next.js](https://nextjs.org/)
-* **Styling**: [Tailwind CSS](https://tailwindcss.com/) with `tailwindcss-animate`
-* **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
-* **State Management**: [Zustand](https://github.com/pmndrs/zustand)
-* **Form Handling**: [React Hook Form](https://react-hook-form.com/)
-* **Icons**: [Lucide React](https://lucide.dev/)
+*   **Framework**: [Next.js](https://nextjs.org/)
+*   **Generative AI**: [Google AI & Genkit](https://firebase.google.com/docs/genkit)
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/) with `tailwindcss-animate`
+*   **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
+*   **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+*   **Form Handling**: [React Hook Form](https://react-hook-form.com/)
+*   **Mapping**: [Leaflet](https://leafletjs.com/)
+*   **Icons**: [Lucide React](https://lucide.dev/)
 
 ---
 
