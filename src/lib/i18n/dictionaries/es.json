@@ -47,6 +47,51 @@
       "empty": "No hay generadores de documentos disponibles."
     }
   },
+  "paperworkSubmit": {
+    "documentTitle": "MDC Panel – Envío de Documentación",
+    "header": {
+      "title": "Envío de Documentación",
+      "description": "Revisa la documentación formateada a continuación."
+    },
+    "alert": {
+      "title": "¡Atención!",
+      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectamente donde lo pegues."
+    },
+    "reportTitleLabel": "Título del Informe",
+    "buttons": {
+      "copyTitle": "Copiar Título",
+      "download": "Descargar Informe",
+      "downloading": "Preparando Imagen...",
+      "copyPaperwork": "Copiar Documentación"
+    },
+    "error": {
+      "header": {
+        "title": "Error de Envío",
+        "description": "No se encontraron los datos necesarios para generar esta documentación."
+      },
+      "alert": {
+        "title": "Error",
+        "description": "No se pudieron cargar los datos del informe. Por favor, vuelve a la página de generadores e inténtalo de nuevo."
+      }
+    },
+    "toasts": {
+      "copySuccess": {
+        "title": "Éxito",
+        "description": "Contenido de la documentación copiado al portapapeles."
+      },
+      "copyTitleSuccess": {
+        "description": "Título del informe copiado al portapapeles."
+      },
+      "downloadStart": {
+        "title": "Descarga iniciada",
+        "description": "La imagen de tu documentación se está descargando."
+      },
+      "downloadFailed": {
+        "title": "Descarga fallida",
+        "description": "No se pudo crear una imagen a partir de la vista previa. Por favor, inténtalo de nuevo."
+      }
+    }
+  },
   "maintenance": {
     "title": "En mantenimiento",
     "message": "Estamos realizando tareas de mantenimiento programadas. Volveremos en línea en breve."
@@ -836,7 +881,7 @@
     },
     "alert": {
       "title": "¡Atención!",
-      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido HTML generado está diseñado para funcionar perfectamente donde lo pegues."
+      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido HTML generado está diseñado para funcionar perfectamente en el MDC real. Este informe también ha sido archivado."
     },
     "formattedReport": "Informe Formateado",
     "buttons": {
@@ -849,7 +894,7 @@
     "toasts": {
       "success": {
         "title": "Éxito",
-        "description": "HTML de la documentación copiado al portapapeles."
+        "description": "Contenido de la documentación copiado al portapapeles."
       },
       "downloadStart": {
         "title": "Descarga iniciada",

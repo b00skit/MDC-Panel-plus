@@ -47,6 +47,51 @@
       "empty": "No paperwork generators available."
     }
   },
+  "paperworkSubmit": {
+    "documentTitle": "MDC Panel – Paperwork Submission",
+    "header": {
+      "title": "Paperwork Submission",
+      "description": "Review the formatted paperwork below."
+    },
+    "alert": {
+      "title": "Heads up!",
+      "description": "The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it."
+    },
+    "reportTitleLabel": "Report Title",
+    "buttons": {
+      "copyTitle": "Copy Title",
+      "download": "Download Report",
+      "downloading": "Preparing Image...",
+      "copyPaperwork": "Copy Paperwork"
+    },
+    "error": {
+      "header": {
+        "title": "Submission Error",
+        "description": "Could not find the necessary data to generate this paperwork."
+      },
+      "alert": {
+        "title": "Error",
+        "description": "Could not load report data. Please go back to the generators page and try again."
+      }
+    },
+    "toasts": {
+      "copySuccess": {
+        "title": "Success",
+        "description": "Paperwork content copied to clipboard."
+      },
+      "copyTitleSuccess": {
+        "description": "Report title copied to clipboard."
+      },
+      "downloadStart": {
+        "title": "Download started",
+        "description": "Your paperwork image is being downloaded."
+      },
+      "downloadFailed": {
+        "title": "Download failed",
+        "description": "Could not create an image from the paperwork preview. Please try again."
+      }
+    }
+  },
   "maintenance": {
     "title": "Under Maintenance",
     "message": "We are currently performing scheduled maintenance. We should be back online shortly."
@@ -849,7 +894,7 @@
     "toasts": {
       "success": {
         "title": "Success",
-        "description": "Paperwork HTML copied to clipboard."
+        "description": "Paperwork content copied to clipboard."
       },
       "downloadStart": {
         "title": "Download started",
