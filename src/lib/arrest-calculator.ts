@@ -1,8 +1,8 @@
 
 import type { SelectedCharge, Charge, Addition, PenalCode } from '@/stores/charge-store';
-import type { StreetsActData } from '@/components/arrest-calculator/arrest-calculator-page'
 import additionsData from '../../data/additions.json';
 import config from '../../data/config.json';
+import { areStreetCharges } from './code-enhancement';
 
 const formatTimeInMinutes = (time: { days: number; hours: number; min: number }) => {
   if (!time) return 0;
@@ -52,7 +52,6 @@ export interface ArrestCalculation {
 
 export async function calculateArrest(report: SelectedCharge[], isParoleViolator: boolean): Promise<ArrestCalculation> {
   const penalCode: PenalCode = await fetch(`${config.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`).then(res => res.json());
-  const streetsActData: StreetsActData = await fetch('/data/streets-act-charges.json').then(res => res.json())
   const additions: Addition[] = additionsData.additions;
 
   const paroleViolationAddition = additions.find(a => a.name === config.PAROLE_VIOLATION_DEFINITION);
@@ -222,7 +221,13 @@ export async function calculateArrest(report: SelectedCharge[], isParoleViolator
   const isImpoundCapped = totals.modified.impound > config.MAX_IMPOUND_DAYS;
   const suspensionCapped = Math.min(totals.modified.suspension, config.MAX_SUSPENSION_DAYS);
   const isSuspensionCapped = totals.modified.suspension > config.MAX_SUSPENSION_DAYS;
-  const isStreetsEligible = calculationResults.some(result => (streetsActData?.charges.includes(result.row.chargeId!) && result.row.offense! >= streetsActData.counts_required[result.row.chargeId!]))
+  const chargesResult = calculationResults.map(
+    (result: ChargeResult) => (result.row)
+  )
+  const chargesResultDetails = calculationResults.map(
+    (result: ChargeResult) => (result.chargeDetails)
+  )
+  const isStreetsEligible = areStreetCharges(chargesResult, chargesResultDetails)
   return {
     calculationResults,
     extras,
