@@ -41,6 +41,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { useBasicReportModifiersStore } from '@/stores/basic-report-modifiers-store';
 import { Checkbox } from '../ui/checkbox';
+import { areStreetCharges } from '@/lib/code-enhancement';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -62,11 +63,6 @@ interface DepaCategory {
 
 interface DepaData {
   categories: DepaCategory[];
-}
-
-export interface StreetsActData {
-  charges: string[];
-  counts_required: any;
 }
 
 export function ArrestCalculatorPage() {
@@ -102,7 +98,6 @@ export function ArrestCalculatorPage() {
     null
   );
   const [depaData, setDepaData] = useState<DepaData | null>(null);
-  const [streetsActCharges, setStreetsActCharges] = useState<StreetsActData | null>(null)
 
   const getChargeDetails = useCallback((chargeId: string | null): Charge | null => {
     if (!chargeId || !penalCode) return null;
@@ -121,12 +116,10 @@ export function ArrestCalculatorPage() {
         fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json').then(res => res.json()),
         fetch('/data/additions.json').then(res => res.json()),
         fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_depa_categories.json').then(res => res.json()),
-        fetch('/data/streets-act-charges.json').then(res => res.json())
-    ]).then(([penalCodeData, additionsData, depaData, streetsActCharges]) => {
+    ]).then(([penalCodeData, additionsData, depaData]) => {
         setPenalCode(penalCodeData);
         setAdditions(additionsData.additions);
         setDepaData(depaData);
-        setStreetsActCharges(streetsActCharges);
         setLoading(false);
     }).catch(error => {
         console.error("Failed to fetch initial data:", error);
@@ -185,9 +178,13 @@ export function ArrestCalculatorPage() {
     });
   }, [charges, getChargeDetails]);
 
-  const showStreetsActWarning = useMemo(() => {
-    return charges.some((charge : SelectedCharge) => (streetsActCharges?.charges.includes(charge.chargeId!) && charge.offense! >= streetsActCharges.counts_required[charge.chargeId!]))
-  }, [charges])
+  const showStreetsActWarning = useMemo(() => (
+    areStreetCharges(
+      charges,
+      charges.map(
+        (charge: SelectedCharge) => getChargeDetails(charge.chargeId)
+      ))
+  ), [charges])
   
   const handleChargeSelect = (chargeRow: SelectedCharge, chargeId: string) => {
     if (!penalCode) return;
