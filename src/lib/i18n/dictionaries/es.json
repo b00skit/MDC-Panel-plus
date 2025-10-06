@@ -752,5 +752,38 @@
         "linkCopiedDescription": "El enlace del cálculo se copió al portapapeles."
       }
     }
+  },
+  "arrestSubmit": {
+    "documentTitle": "MDC Panel – Envío de Arresto",
+    "header": {
+      "title": "Envío de Informe de Arresto",
+      "description": "Revisa los cargos calculados y el informe de arresto formateado a continuación."
+    },
+    "alert": {
+      "title": "¡Atención!",
+      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido HTML generado está diseñado para funcionar perfectamente donde lo pegues."
+    },
+    "formattedReport": "Informe Formateado",
+    "buttons": {
+      "mdcRecord": "Abrir Registro MDC",
+      "impound": "Crear Informe de Incautación Rápido",
+      "download": "Descargar Informe",
+      "downloading": "Preparando Imagen...",
+      "copy": "Copiar Documentación"
+    },
+    "toasts": {
+      "success": {
+        "title": "Éxito",
+        "description": "HTML de la documentación copiado al portapapeles."
+      },
+      "downloadStart": {
+        "title": "Descarga iniciada",
+        "description": "La imagen de tu informe formateado se está descargando."
+      },
+      "downloadFailed": {
+        "title": "Descarga fallida",
+        "description": "No se pudo crear una imagen a partir del informe. Por favor, inténtalo de nuevo."
+      }
+    }
   }
 }

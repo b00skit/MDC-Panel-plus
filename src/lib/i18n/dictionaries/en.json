@@ -649,9 +649,9 @@
       "currency": "${value}",
       "time": {
         "zero": "0 minutes",
-        "days": "Day(s)",
-        "hours": "Hour(s)",
-        "minutes": "Minute(s)",
+        "days": "{count, plural, one {# Day} other {# Days}}",
+        "hours": "{count, plural, one {# Hour} other {# Hours}}",
+        "minutes": "{count, plural, one {# Minute} other {# Minutes}}",
         "summary": "{parts} ({minutes} mins)"
       },
       "charges": {
@@ -750,6 +750,39 @@
         "copiedDescription": "{value} copied to clipboard.",
         "linkCopiedTitle": "Link copied",
         "linkCopiedDescription": "Calculation link copied to clipboard."
+      }
+    }
+  },
+  "arrestSubmit": {
+    "documentTitle": "MDC Panel – Arrest Submission",
+    "header": {
+      "title": "Arrest Report Submission",
+      "description": "Review the calculated charges and the formatted arrest report below."
+    },
+    "alert": {
+      "title": "Heads up!",
+      "description": "The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC. This report has also been archived."
+    },
+    "formattedReport": "Formatted Report",
+    "buttons": {
+      "mdcRecord": "Open MDC Record",
+      "impound": "Quick-Create Impound Report",
+      "download": "Download Report",
+      "downloading": "Preparing Image...",
+      "copy": "Copy Paperwork"
+    },
+    "toasts": {
+      "success": {
+        "title": "Success",
+        "description": "Paperwork HTML copied to clipboard."
+      },
+      "downloadStart": {
+        "title": "Download started",
+        "description": "Your formatted report image is being downloaded."
+      },
+      "downloadFailed": {
+        "title": "Download failed",
+        "description": "Could not create an image from the report. Please try again."
       }
     }
   }

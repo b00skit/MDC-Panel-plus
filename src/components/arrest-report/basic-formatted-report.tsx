@@ -162,7 +162,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                                     return (
                                         <tr key={row.uniqueId}>
                                             <td style={{ border: '1px solid black', padding: '0.5rem' }}>{title}</td>
-                                            <td style={{ border: '1px solid black', padding: '0.5rem' }}>{getType(chargeDetails.type, (key) => tShared(`types.${key}` as any))}</td>
+                                            <td style={{ border: '1px solid black', padding: '0.5rem' }}>{getType(chargeDetails.type, (key) => tShared(`${key}` as any))}</td>
                                             <td style={{ border: '1px solid black', padding: '0.5rem' }}>{row.class}</td>
                                             <td style={{ border: '1px solid black', padding: '0.5rem' }}>{row.offense}</td>
                                             <td style={{ border: '1px solid black', padding: '0.5rem' }}>
