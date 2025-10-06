@@ -10,10 +10,9 @@ export const metadata: Metadata = {
 };
 
 async function getHelpData() {
+    const { t } = await getTranslations();
+    const helpPath = path.join(process.cwd(), 'data/help.json');
     const configPath = path.join(process.cwd(), 'data/config.json');
-
-    const { locale, t } = await getTranslations();
-    const helpPath = path.join(process.cwd(), 'data/help', `${locale}.json`);
 
     const [helpFile, configFile] = await Promise.all([
         fs.readFile(helpPath, 'utf8'),
