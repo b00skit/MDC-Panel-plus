@@ -23,6 +23,62 @@
     "announcements": "Announcements",
     "github": "GitHub"
   },
+  "reportArchive": {
+    "documentTitle": "MDC Panel – Report Archive",
+    "header": {
+      "title": "Report Archive",
+      "description": "View and restore your past arrest reports and paperwork generator submissions."
+    },
+    "buttons": {
+      "deleteAll": "Delete All",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "restore": "Restore",
+      "delete": "Delete"
+    },
+    "dialogs": {
+      "deleteAll": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will permanently delete all {count} archived reports."
+      },
+      "deleteSingle": {
+        "title": "Are you sure?",
+        "description": "This action cannot be undone. This will permanently delete this archived report."
+      }
+    },
+    "tabs": {
+      "arrestReports": "Arrest Reports",
+      "paperworkGenerators": "Paperwork Generators"
+    },
+    "arrestReports": {
+      "title": "Arrest Reports",
+      "empty": "No archived arrest reports found."
+    },
+    "paperworkSubmissions": {
+      "title": "Paperwork Generator Submissions",
+      "empty": "No archived paperwork submissions found."
+    },
+    "table": {
+      "headers": {
+        "date": "Date",
+        "reportType": "Report Type",
+        "suspectName": "Suspect Name",
+        "actions": "Actions",
+        "generator": "Generator",
+        "source": "Source"
+      },
+      "notAvailable": "N/A",
+      "unknownGenerator": "Unknown Generator"
+    },
+    "reportTypes": {
+      "basic": "Basic",
+      "advanced": "Advanced"
+    },
+    "sourceTypes": {
+      "user": "Custom",
+      "static": "Static"
+    }
+  },
   "logParser": {
     "header": {
       "title": "Log Parser",
@@ -917,37 +973,28 @@
       },
       "narrative": {
         "source": {
-          "title": "SOURCE OF ACTIVITY",
-          "placeholder": "Describe the source of the activity..."
+          "title": "SOURCE OF ACTIVITY"
         },
         "investigation": {
-          "title": "INVESTIGATION",
-          "placeholder": "Describe the investigation..."
+          "title": "INVESTIGATION"
         },
         "arrest": {
-          "title": "ARREST",
-          "placeholder": "Describe the arrest..."
+          "title": "ARREST"
         },
         "photographs": {
-          "title": "PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING",
-          "placeholder": "Describe video or photographic evidence...",
-          "noVideoPlaceholder": "(( You may use this section if you don't have a video recording of what happened. Describe what the dashcam would capture. If you have a video, select 'Video?' in the Arrest Report Modifiers. Lying in this section will lead to OOC punishments. ))"
+          "title": "PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING"
         },
         "booking": {
-          "title": "BOOKING",
-          "placeholder": "Describe booking details..."
+          "title": "BOOKING"
         },
         "evidence": {
-          "title": "PHYSICAL EVIDENCE",
-          "placeholder": "Describe physical evidence..."
+          "title": "PHYSICAL EVIDENCE"
         },
         "court": {
-          "title": "COURT INFORMATION",
-          "placeholder": "Information for the court..."
+          "title": "COURT INFORMATION"
         },
         "additional": {
-          "title": "ADDITIONAL INFORMATION",
-          "placeholder": "Additional information..."
+          "title": "ADDITIONAL INFORMATION"
         },
         "enablePreset": "Enable Preset?",
         "clearToReenable": "Clear the textarea to re-enable presets."

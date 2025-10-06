@@ -27,6 +27,7 @@ import {
   } from "@/components/ui/alert-dialog";
 import configData from '../../../data/config.json';
 import { usePaperworkStore } from '@/stores/paperwork-store';
+import { useI18n, useScopedI18n } from '@/lib/i18n/client';
 
 export default function ReportArchivePage() {
     const { reports, deleteReport, clearArchive } = useArchiveStore();
@@ -37,6 +38,9 @@ export default function ReportArchivePage() {
     const setPendingRestore = usePaperworkStore(state => state.setPendingRestore);
     const router = useRouter();
     const [isClient, setIsClient] = useState(false);
+    const { t: tRoot } = useI18n();
+    const t = useScopedI18n('reportArchive');
+    
     const arrestReports = reports.filter(report => report.paperworkType === 'arrest-report');
     const paperworkReports = reports.filter(report => report.paperworkType === 'paperwork-generator');
     const [activeTab, setActiveTab] = useState<'arrest' | 'paperwork'>(
@@ -45,8 +49,8 @@ export default function ReportArchivePage() {
 
     useEffect(() => {
         setIsClient(true);
-        document.title = 'MDC Panel – Report Archive';
-    }, []);
+        document.title = tRoot('reportArchive.documentTitle');
+    }, [tRoot]);
 
     useEffect(() => {
         if (activeTab === 'arrest' && arrestReports.length === 0 && paperworkReports.length > 0) {
@@ -102,13 +106,13 @@ export default function ReportArchivePage() {
     
     const getReportTitle = (report: ArchivedReport) => {
         if (report.type === 'advanced') {
-            return report.fields.arrestee?.name || 'N/A';
+            return report.fields.arrestee?.name || t('table.notAvailable');
         }
-        return report.fields.arrest?.suspectName || 'N/A';
+        return report.fields.arrest?.suspectName || t('table.notAvailable');
     };
 
     const getGeneratorTitle = (report: ArchivedReport) => {
-        return report.generator?.title || 'Unknown Generator';
+        return report.generator?.title || t('table.unknownGenerator');
     };
 
     if (!isClient) {
@@ -119,27 +123,27 @@ export default function ReportArchivePage() {
         <div className="container mx-auto p-4 md:p-6 lg:p-8">
             <div className="flex justify-between items-center">
                 <PageHeader
-                    title="Report Archive"
-                    description="View and restore your past arrest reports and paperwork generator submissions."
+                    title={t('header.title')}
+                    description={t('header.description')}
                 />
                 {reports.length > 0 && (
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive">
-                                <Trash2 className="mr-2 h-4 w-4" /> Delete All
+                                <Trash2 className="mr-2 h-4 w-4" /> {t('buttons.deleteAll')}
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogTitle>{t('dialogs.deleteAll.title')}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete all {reports.length} archived reports.
+                                   {t('dialogs.deleteAll.description', { count: reports.length })}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel>{t('buttons.cancel')}</AlertDialogCancel>
                                 <AlertDialogAction onClick={clearArchive}>
-                                    Continue
+                                    {t('buttons.continue')}
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
@@ -148,22 +152,22 @@ export default function ReportArchivePage() {
             </div>
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'arrest' | 'paperwork')} className="mt-6">
                 <TabsList className="w-full justify-start">
-                    <TabsTrigger value="arrest">Arrest Reports ({arrestReports.length})</TabsTrigger>
-                    <TabsTrigger value="paperwork">Paperwork Generators ({paperworkReports.length})</TabsTrigger>
+                    <TabsTrigger value="arrest">{t('tabs.arrestReports')} ({arrestReports.length})</TabsTrigger>
+                    <TabsTrigger value="paperwork">{t('tabs.paperworkGenerators')} ({paperworkReports.length})</TabsTrigger>
                 </TabsList>
                 <TabsContent value="arrest">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Arrest Reports</CardTitle>
+                            <CardTitle>{t('arrestReports.title')}</CardTitle>
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Date</TableHead>
-                                        <TableHead>Report Type</TableHead>
-                                        <TableHead>Suspect Name</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+                                        <TableHead>{t('table.headers.date')}</TableHead>
+                                        <TableHead>{t('table.headers.reportType')}</TableHead>
+                                        <TableHead>{t('table.headers.suspectName')}</TableHead>
+                                        <TableHead className="text-right">{t('table.headers.actions')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -173,33 +177,33 @@ export default function ReportArchivePage() {
                                                 <TableCell>{format(new Date(report.id), 'PPP p')}</TableCell>
                                                 <TableCell>
                                                     {report.type ? (
-                                                        <Badge variant={report.type === 'advanced' ? 'default' : 'secondary'}>{report.type}</Badge>
+                                                        <Badge variant={report.type === 'advanced' ? 'default' : 'secondary'}>{t(`reportTypes.${report.type}`)}</Badge>
                                                     ) : (
-                                                        'N/A'
+                                                        t('table.notAvailable')
                                                     )}
                                                 </TableCell>
                                                 <TableCell>{getReportTitle(report)}</TableCell>
                                                 <TableCell className="text-right space-x-2">
                                                     <Button variant="outline" size="sm" onClick={() => handleRestore(report)}>
-                                                        <ArchiveRestore className="mr-2 h-4 w-4" /> Restore
+                                                        <ArchiveRestore className="mr-2 h-4 w-4" /> {t('buttons.restore')}
                                                     </Button>
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button variant="destructive" size="sm">
-                                                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                                                <Trash2 className="mr-2 h-4 w-4" /> {t('buttons.delete')}
                                                             </Button>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent>
                                                             <AlertDialogHeader>
-                                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                                <AlertDialogTitle>{t('dialogs.deleteSingle.title')}</AlertDialogTitle>
                                                                 <AlertDialogDescription>
-                                                                    This action cannot be undone. This will permanently delete this archived report.
+                                                                    {t('dialogs.deleteSingle.description')}
                                                                 </AlertDialogDescription>
                                                             </AlertDialogHeader>
                                                             <AlertDialogFooter>
-                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogCancel>{t('buttons.cancel')}</AlertDialogCancel>
                                                                 <AlertDialogAction onClick={() => deleteReport(report.id)}>
-                                                                    Continue
+                                                                    {t('buttons.continue')}
                                                                 </AlertDialogAction>
                                                             </AlertDialogFooter>
                                                         </AlertDialogContent>
@@ -210,7 +214,7 @@ export default function ReportArchivePage() {
                                     ) : (
                                         <TableRow>
                                             <TableCell colSpan={4} className="h-24 text-center">
-                                                No archived arrest reports found.
+                                                {t('arrestReports.empty')}
                                             </TableCell>
                                         </TableRow>
                                     )}
@@ -222,16 +226,16 @@ export default function ReportArchivePage() {
                 <TabsContent value="paperwork">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Paperwork Generator Submissions</CardTitle>
+                            <CardTitle>{t('paperworkSubmissions.title')}</CardTitle>
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Date</TableHead>
-                                        <TableHead>Generator</TableHead>
-                                        <TableHead>Source</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+                                        <TableHead>{t('table.headers.date')}</TableHead>
+                                        <TableHead>{t('table.headers.generator')}</TableHead>
+                                        <TableHead>{t('table.headers.source')}</TableHead>
+                                        <TableHead className="text-right">{t('table.headers.actions')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -243,31 +247,31 @@ export default function ReportArchivePage() {
                                                 <TableCell>
                                                     {report.generator ? (
                                                         <Badge variant={report.generator.type === 'user' ? 'default' : 'secondary'}>
-                                                            {report.generator.type === 'user' ? 'Custom' : 'Static'}
+                                                            {t(`sourceTypes.${report.generator.type}`)}
                                                         </Badge>
                                                     ) : 'N/A'}
                                                 </TableCell>
                                                 <TableCell className="text-right space-x-2">
                                                     <Button variant="outline" size="sm" onClick={() => handleRestore(report)}>
-                                                        <ArchiveRestore className="mr-2 h-4 w-4" /> Restore
+                                                        <ArchiveRestore className="mr-2 h-4 w-4" /> {t('buttons.restore')}
                                                     </Button>
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button variant="destructive" size="sm">
-                                                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                                                <Trash2 className="mr-2 h-4 w-4" /> {t('buttons.delete')}
                                                             </Button>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent>
                                                             <AlertDialogHeader>
-                                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                                <AlertDialogTitle>{t('dialogs.deleteSingle.title')}</AlertDialogTitle>
                                                                 <AlertDialogDescription>
-                                                                    This action cannot be undone. This will permanently delete this archived report.
+                                                                    {t('dialogs.deleteSingle.description')}
                                                                 </AlertDialogDescription>
                                                             </AlertDialogHeader>
                                                             <AlertDialogFooter>
-                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogCancel>{t('buttons.cancel')}</AlertDialogCancel>
                                                                 <AlertDialogAction onClick={() => deleteReport(report.id)}>
-                                                                    Continue
+                                                                    {t('buttons.continue')}
                                                                 </AlertDialogAction>
                                                             </AlertDialogFooter>
                                                         </AlertDialogContent>
@@ -278,7 +282,7 @@ export default function ReportArchivePage() {
                                     ) : (
                                         <TableRow>
                                             <TableCell colSpan={4} className="h-24 text-center">
-                                                No archived paperwork submissions found.
+                                                {t('paperworkSubmissions.empty')}
                                             </TableCell>
                                         </TableRow>
                                     )}

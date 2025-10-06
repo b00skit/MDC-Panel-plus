@@ -23,6 +23,62 @@
     "announcements": "Anuncios",
     "github": "GitHub"
   },
+  "reportArchive": {
+    "documentTitle": "MDC Panel – Archivo de Informes",
+    "header": {
+      "title": "Archivo de Informes",
+      "description": "Ve y restaura tus informes de arresto y envíos de generadores de documentos pasados."
+    },
+    "buttons": {
+      "deleteAll": "Eliminar Todo",
+      "cancel": "Cancelar",
+      "continue": "Continuar",
+      "restore": "Restaurar",
+      "delete": "Eliminar"
+    },
+    "dialogs": {
+      "deleteAll": {
+        "title": "¿Estás absolutamente seguro?",
+        "description": "Esta acción no se puede deshacer. Esto eliminará permanentemente los {count} informes archivados."
+      },
+      "deleteSingle": {
+        "title": "¿Estás seguro?",
+        "description": "Esta acción no se puede deshacer. Esto eliminará permanentemente este informe archivado."
+      }
+    },
+    "tabs": {
+      "arrestReports": "Informes de Arresto",
+      "paperworkGenerators": "Generadores de Documentos"
+    },
+    "arrestReports": {
+      "title": "Informes de Arresto",
+      "empty": "No se encontraron informes de arresto archivados."
+    },
+    "paperworkSubmissions": {
+      "title": "Envíos de Generadores de Documentos",
+      "empty": "No se encontraron envíos de documentación archivados."
+    },
+    "table": {
+      "headers": {
+        "date": "Fecha",
+        "reportType": "Tipo de Informe",
+        "suspectName": "Nombre del Sospechoso",
+        "actions": "Acciones",
+        "generator": "Generador",
+        "source": "Fuente"
+      },
+      "notAvailable": "N/D",
+      "unknownGenerator": "Generador Desconocido"
+    },
+    "reportTypes": {
+      "basic": "Básico",
+      "advanced": "Avanzado"
+    },
+    "sourceTypes": {
+      "user": "Personalizado",
+      "static": "Estático"
+    }
+  },
   "logParser": {
     "header": {
       "title": "Analizador de Registros",
@@ -463,7 +519,7 @@
     },
     "textareaWithPreset": {
       "enablePreset": "¿Habilitar Predefinido?",
-      "clearToReenable": "Borra el área de texto para volver a habilitar los predefinidos.",
+      "clearToReenable": "Vacía el área de texto para volver a habilitar los predefinidos.",
       "textareaInGroupError": "textarea-with-preset no se puede usar dentro de un grupo de entrada.",
       "addEntry": "Añadir {label}"
     }
@@ -917,37 +973,28 @@
       },
       "narrative": {
         "source": {
-          "title": "FUENTE DE LA ACTIVIDAD",
-          "placeholder": "Describe la fuente de la actividad..."
+          "title": "FUENTE DE LA ACTIVIDAD"
         },
         "investigation": {
-          "title": "INVESTIGACIÓN",
-          "placeholder": "Describe la investigación..."
+          "title": "INVESTIGACIÓN"
         },
         "arrest": {
-          "title": "ARRESTO",
-          "placeholder": "Describe el arresto..."
+          "title": "ARRESTO"
         },
         "photographs": {
-          "title": "FOTOGRAFÍAS, VIDEOS, VIDEO EN EL COCHE (DICV) E IMÁGENES DIGITALES",
-          "placeholder": "Describe las pruebas de video o fotográficas...",
-          "noVideoPlaceholder": "(( Puedes usar esta sección si no tienes una grabación de video de lo que sucedió. Describe lo que la cámara del tablero capturaría. Si tienes un video, selecciona '¿Video?' en los Modificadores del Informe de Arresto. Mentir en esta sección conllevará un castigo OOC. ))"
+          "title": "FOTOGRAFÍAS, VIDEOS, VIDEO EN EL COCHE (DICV) E IMÁGENES DIGITALES"
         },
         "booking": {
-          "title": "FICHAJE",
-          "placeholder": "Describe los detalles del fichaje..."
+          "title": "FICHAJE"
         },
         "evidence": {
-          "title": "PRUEBAS FÍSICAS",
-          "placeholder": "Describe las pruebas físicas..."
+          "title": "PRUEBAS FÍSICAS"
         },
         "court": {
-          "title": "INFORMACIÓN DEL TRIBUNAL",
-          "placeholder": "Información para el tribunal..."
+          "title": "INFORMACIÓN DEL TRIBUNAL"
         },
         "additional": {
-          "title": "INFORMACIÓN ADICIONAL",
-          "placeholder": "Información adicional..."
+          "title": "INFORMACIÓN ADICIONAL"
         },
         "enablePreset": "¿Habilitar Predefinido?",
         "clearToReenable": "Vacía el área de texto para volver a habilitar los predefinidos."
