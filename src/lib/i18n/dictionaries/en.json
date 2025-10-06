@@ -670,7 +670,7 @@
   },
   "arrestCalculator": {
     "page": {
-      "documentTitle": "Arrest Calculator",
+      "documentTitle": "MDC Panel – Arrest Calculator",
       "header": {
         "title": "Arrest Calculator",
         "description": "Calculate arrest sentences based on charges."
@@ -902,7 +902,7 @@
   },
   "arrestReport": {
     "page": {
-      "documentTitle": "Arrest Report",
+      "documentTitle": "MDC Panel – Arrest Report",
       "header": {
         "title": "Arrest Report",
         "descriptionWithReport": "A summary of the calculated charges and report form.",

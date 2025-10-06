@@ -14,7 +14,12 @@
         {
             "name": "paz?",
             "role": "SADCR Reports Creator",
-            "contribution": "Created the original Parole Tracking Program & Rules Violation reports on their website https://pazgtaw.github.io/paperwork-generator/ which was used as inspiration to create the paperwork generators on this website.."
+            "contribution": "Created the original Parole Tracking Program & Rules Violation reports on their website https://pazgtaw.github.io/paperwork-generator/ which was used as inspiration to create the paperwork generators on this website."
+        },
+        {
+            "name": "Bidrift",
+            "role": "Contributor",
+            "contribution": "Worked on a few relevant features such as the Log Parser in the MDC Panel, actively contributing and helping develop new features through Pull Requests."
         }
     ]
 }

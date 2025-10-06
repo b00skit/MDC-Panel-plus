@@ -1,6 +1,30 @@
 {
     "changelogs": [
         {
+            "version": "3.5.0",
+            "type": "Major Update",
+            "date": "2025-10-06",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Log Parser:</b> Added a new Log Parser system where people can easily parse their roleplay logs to get certain information out of it."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Calculator:</b> Added a STREETS notice to the Arrest Calculator on certain charges that support the STREETS Act."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Added full i18n support to the website allowing other international communities to fork this website and easily configurate it."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Fixed some missing fields not appearing on the warrant affidavit paperwork generator."
+                }
+            ],
+            "cacheVersion": "multi-lang-1"
+        },
+        {
             "version": "3.4.1",
             "type": "Minor Update",
             "date": "2025-10-01",

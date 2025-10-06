@@ -670,7 +670,7 @@
   },
   "arrestCalculator": {
     "page": {
-      "documentTitle": "Calculadora de Arrestos",
+      "documentTitle": "MDC Panel – Calculadora de Arrestos",
       "header": {
         "title": "Calculadora de Arrestos",
         "description": "Calcula sentencias de arresto según los cargos."
@@ -902,7 +902,7 @@
   },
   "arrestReport": {
     "page": {
-      "documentTitle": "Informe de Arresto",
+      "documentTitle": "MDC Panel – Informe de Arresto",
       "header": {
         "title": "Informe de Arresto",
         "descriptionWithReport": "Un resumen de los cargos calculados y el formulario de informe.",

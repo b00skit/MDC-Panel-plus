@@ -1,6 +1,16 @@
 {
     "announcements": [
         {
+            "id": 4,
+            "date": "2025-10-06",
+            "title": "Major Update: Log Parser",
+            "content": "A new major update is out adding the all new Log Parser to the website, allowing for people to easily parse out their logs with relevant information, alongside that a few fixes and i18n support!",
+            "button": {
+                "text": "Log Parser",
+                "href": "/log-parser"
+            }
+        },
+        {
             "id": 3,
             "date": "2025-09-30",
             "title": "Major Update: Parole Violations & Experimental Features",
