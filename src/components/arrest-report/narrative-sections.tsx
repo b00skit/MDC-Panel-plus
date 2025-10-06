@@ -23,11 +23,13 @@ interface NarrativeSectionProps {
 }
 
 export const NarrativeSection = ({ title, children, presetName, isChecked, isUserModified, onToggle }: NarrativeSectionProps) => {
-    
+
+    const { t } = useI18n();
+
     const checkboxWithLabel = (
         <div className="flex items-center space-x-2">
             <Checkbox id={`preset-${presetName}`} checked={isChecked} onCheckedChange={onToggle} disabled={isUserModified} />
-            <Label htmlFor={`preset-${presetName}`} className="text-sm font-medium">Enable Preset?</Label>
+            <Label htmlFor={`preset-${presetName}`} className="text-sm font-medium">{t('arrestReport.advancedForm.narrative.enablePreset')}</Label>
         </div>
     );
 
@@ -45,7 +47,7 @@ export const NarrativeSection = ({ title, children, presetName, isChecked, isUse
                            {checkboxWithLabel}
                         </TooltipTrigger>
                         <TooltipContent>
-                           <p>Clear the textarea to re-enable presets.</p>
+                           <p>{t('arrestReport.advancedForm.narrative.clearToReenable')}</p>
                         </TooltipContent>
                     </Tooltip>
                  </TooltipProvider>

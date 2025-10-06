@@ -49,7 +49,7 @@ interface DeptRanks {
 
 export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     const router = useRouter();
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     // Session state for the current report
     const { formData: sessionFormData, setFields: setSessionFields } = useAdvancedReportStore();
     // Persistent state for user preferences
@@ -144,94 +144,137 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         const divDetail = primaryOfficer.divDetail || '';
         const callsign = primaryOfficer.callSign || '';
 
-        let sourceText = '';
+        const sourceParts: string[] = [];
 
         if (officers && officers.length > 1) {
-            const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail); // Filter out empty partners
+            const partners = officers.slice(1).filter(p => p.name || p.badgeNumber || p.divDetail);
             if (partners.length > 0) {
-                const partnerDetails = partners.map(p => `${p.rank || ''} ${p.name || ''} (#${p.badgeNumber || ''}), assigned to ${p.divDetail || ''}`);
-
-                let partnerStr = '';
-                if (partnerDetails.length === 1) {
-                    partnerStr = partnerDetails[0];
-                } else if (partnerDetails.length > 1) {
-                    const lastPartner = partnerDetails.pop();
-                    partnerStr = partnerDetails.join(', ') + ', and ' + lastPartner;
-                }
-
-                sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, partnered with ${partnerStr}, were deployed under Unit ${callsign}. `;
-
+                const partnerDetails = partners.map(p =>
+                    t('arrestReport.advancedForm.presets.source.partnerDetail', {
+                        rank: p.rank || '',
+                        name: p.name || '',
+                        badge: p.badgeNumber || '',
+                        divDetail: p.divDetail || '',
+                    })
+                );
+                const partnerFormatter = new Intl.ListFormat(locale, { style: 'long', type: 'conjunction' });
+                const partnerStr = partnerFormatter.format(partnerDetails);
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.withPartners', {
+                        date,
+                        rank,
+                        name,
+                        badge,
+                        divDetail,
+                        partners: partnerStr,
+                        callsign,
+                    })
+                );
             } else {
-                 // Fallback for case where there are officer rows but they are empty
-                sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.singleOfficer', {
+                        date,
+                        rank,
+                        name,
+                        badge,
+                        divDetail,
+                        callsign,
+                    })
+                );
             }
         } else {
-            sourceText = `On ${date}, I, ${rank} ${name} (#${badge}), assigned to ${divDetail}, was deployed under Unit ${callsign}. `;
+            sourceParts.push(
+                t('arrestReport.advancedForm.presets.source.singleOfficer', {
+                    date,
+                    rank,
+                    name,
+                    badge,
+                    divDetail,
+                    callsign,
+                })
+            );
         }
-        
-        // Vehicle part
+
         if (watchedFields.modifiers?.markedUnit) {
-            if (watchedFields.modifiers?.slicktop) {
-                sourceText += 'I was driving a marked black and white slicktop. ';
-            } else {
-                sourceText += 'I was driving a marked black and white with a rooftop light bar. ';
-            }
+            sourceParts.push(
+                watchedFields.modifiers?.slicktop
+                    ? t('arrestReport.advancedForm.presets.source.vehicleMarkedSlicktop')
+                    : t('arrestReport.advancedForm.presets.source.vehicleMarkedLightbar')
+            );
         } else {
-            sourceText += 'I was driving an unmarked vehicle. ';
+            sourceParts.push(t('arrestReport.advancedForm.presets.source.vehicleUnmarked'));
         }
 
-        // Uniform part
         if (watchedFields.modifiers?.inUniform) {
-             if (watchedFields.modifiers?.inG3Uniform) {
-                const uniformType = isLSSD ? "SEB G3" : "metropolitan G3";
-                sourceText += `I was wearing my department-issued ${uniformType} uniform and was openly displaying my badge of office on my uniform.`;
+            if (watchedFields.modifiers?.inG3Uniform) {
+                const uniformType = isLSSD
+                    ? t('arrestReport.advancedForm.presets.source.uniforms.g3.lssd')
+                    : t('arrestReport.advancedForm.presets.source.uniforms.g3.lspd');
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.uniformWithBadge', { uniform: uniformType })
+                );
             } else if (watchedFields.modifiers?.inMetroUniform) {
-                const uniformType = isLSSD ? "SEB BDU" : "metropolitan BDU";
-                sourceText += `I was wearing my department-issued ${uniformType} uniform and was openly displaying my badge of office on my uniform.`;
+                const uniformType = isLSSD
+                    ? t('arrestReport.advancedForm.presets.source.uniforms.bdu.lssd')
+                    : t('arrestReport.advancedForm.presets.source.uniforms.bdu.lspd');
+                sourceParts.push(
+                    t('arrestReport.advancedForm.presets.source.uniformWithBadge', { uniform: uniformType })
+                );
             } else {
-                sourceText += 'I was wearing my department-issued patrol uniform and was openly displaying my badge of office on my uniform.';
+                sourceParts.push(t('arrestReport.advancedForm.presets.source.patrolUniform'));
             }
+        } else if (watchedFields.modifiers?.undercover) {
+            sourceParts.push(t('arrestReport.advancedForm.presets.source.plainClothes'));
         } else {
-            if (watchedFields.modifiers?.undercover) {
-                 sourceText += 'I was wearing plain clothes.';
-            } else {
-                 sourceText += 'I was wearing plain clothes and was openly displaying my badge.';
-            }
+            sourceParts.push(t('arrestReport.advancedForm.presets.source.plainClothesBadge'));
         }
-        
-        setValue('narrative.source', sourceText.trim());
+
+        setValue('narrative.source', sourceParts.filter(Boolean).join(' '));
 
     }, [
         isLSSD,
-        watchedFields.modifiers?.markedUnit, 
-        watchedFields.modifiers?.slicktop, 
-        watchedFields.modifiers?.inUniform, 
-        watchedFields.modifiers?.undercover, 
-        watchedFields.modifiers?.inMetroUniform, 
-        watchedFields.modifiers?.inG3Uniform, 
+        watchedFields.modifiers?.markedUnit,
+        watchedFields.modifiers?.slicktop,
+        watchedFields.modifiers?.inUniform,
+        watchedFields.modifiers?.undercover,
+        watchedFields.modifiers?.inMetroUniform,
+        watchedFields.modifiers?.inG3Uniform,
         watchedFields.incident?.date,
         JSON.stringify(watchedFields.officers),
         watchedFields.presets?.source,
         watchedFields.userModified?.source,
+        locale,
         setValue,
     ]);
 
     useEffect(() => {
         if (!watchedFields.presets?.investigation) return;
         if (watchedFields.userModified?.investigation) return;
-        let investigationText = '';
         const time = watchedFields.incident?.time || '';
         const street = watchedFields.incident?.locationStreet || '';
+
+        let investigationText = '';
 
         if(watchedFields.modifiers?.wasSuspectInVehicle) {
             const color = watchedFields.narrative?.vehicleColor || '';
             const model = watchedFields.narrative?.vehicleModel || '';
-            const plate = watchedFields.narrative?.vehiclePlate ? `with ${watchedFields.narrative.vehiclePlate} plates` : 'with no plates';
-            investigationText = `At approximately ${time} hours, I was driving on ${street} when I observed a ${color} ${model}, ${plate}.`;
+            const plate = watchedFields.narrative?.vehiclePlate
+                ? t('arrestReport.advancedForm.presets.investigation.plateKnown', { plate: watchedFields.narrative.vehiclePlate })
+                : t('arrestReport.advancedForm.presets.investigation.plateUnknown');
+            investigationText = t('arrestReport.advancedForm.presets.investigation.vehicleObserved', {
+                time,
+                street,
+                color,
+                model,
+                plate,
+            });
         } else {
-            investigationText = `At approximately ${time} hours, I was driving on ${street}`;
+            investigationText = t('arrestReport.advancedForm.presets.investigation.onPatrol', {
+                time,
+                street,
+            });
         }
-        setValue('narrative.investigation', investigationText);
+        setValue('narrative.investigation', investigationText.trim());
     }, [
         watchedFields.modifiers?.wasSuspectInVehicle,
         watchedFields.incident?.time,
@@ -244,39 +287,67 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         setValue,
     ]);
 
-     useEffect(() => {
+    useEffect(() => {
         if (!watchedFields.presets?.arrest) return;
         if (watchedFields.userModified?.arrest) return;
-        let arrestText = '';
-        const suspectName = watchedFields.arrestee?.name || 'the suspect';
+        const arrestParts: string[] = [];
+        const suspectName = watchedFields.arrestee?.name || t('arrestReport.advancedForm.presets.arrest.defaultSuspect');
         if (watchedFields.modifiers?.wasSuspectMirandized) {
-            const notebookType = isLSSD ? "Sheriff's Reference Book" : "Field Officer’s Notebook";
-            const understood = watchedFields.modifiers?.didSuspectUnderstandRights ? 'affirmatively' : 'negatively';
-            arrestText += `I admonished ${suspectName} utilizing my ${notebookType}, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n${suspectName} responded ${understood}.`;
+            const notebookType = isLSSD
+                ? t('arrestReport.advancedForm.presets.arrest.notebooks.lssd')
+                : t('arrestReport.advancedForm.presets.arrest.notebooks.lspd');
+            const understood = watchedFields.modifiers?.didSuspectUnderstandRights
+                ? t('arrestReport.advancedForm.presets.arrest.responses.affirmative')
+                : t('arrestReport.advancedForm.presets.arrest.responses.negative');
+            arrestParts.push(
+                t('arrestReport.advancedForm.presets.arrest.miranda', {
+                    suspectName,
+                    notebookType,
+                    understood,
+                })
+            );
         }
 
         const transportingRank = watchedFields.narrative?.transportingRank || '';
         const transportingName = watchedFields.narrative?.transportingName || '';
-        
-        const station = isLSSD ? "the nearest booking station" : "Mission Row Station";
+
+        const station = isLSSD
+            ? t('arrestReport.advancedForm.presets.arrest.stations.lssd')
+            : t('arrestReport.advancedForm.presets.arrest.stations.lspd');
         if (watchedFields.modifiers?.didYouTransport) {
-            arrestText += `\nI transported ${suspectName} to ${station}.`;
+            arrestParts.push(t('arrestReport.advancedForm.presets.arrest.transportSelf', { suspectName, station }));
         } else {
-            arrestText += `\n${transportingRank} ${transportingName} transported ${suspectName} to ${station}.`;
+            arrestParts.push(
+                t('arrestReport.advancedForm.presets.arrest.transportOther', {
+                    suspectName,
+                    station,
+                    transportingRank,
+                    transportingName,
+                })
+            );
         }
 
-        const chargesList = charges.map(c => {
-            const details = penalCode?.[c.chargeId!];
-            return details ? `${details.type}${c.class} ${details.id}. ${details.charge}` : 'an unknown charge';
-        }).join(', ');
+        const chargesList = charges
+            .map(c => {
+                const details = penalCode?.[c.chargeId!];
+                return details
+                    ? `${details.type}${c.class} ${details.id}. ${details.charge}`
+                    : t('arrestReport.advancedForm.unknownCharge');
+            })
+            .join(', ');
 
-        arrestText += `\n${suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).`;
-        arrestText += `\n${suspectName} was arrested for ${chargesList || 'the aforementioned charges'}.`;
+        arrestParts.push(t('arrestReport.advancedForm.presets.arrest.searched', { suspectName }));
+        arrestParts.push(
+            t('arrestReport.advancedForm.presets.arrest.arrestedFor', {
+                suspectName,
+                charges: chargesList || t('arrestReport.advancedForm.presets.arrest.aforementionedCharges'),
+            })
+        );
 
-        setValue('narrative.arrest', arrestText.trim() || '');
+        setValue('narrative.arrest', arrestParts.filter(Boolean).join('\n').trim());
     }, [
         isLSSD,
-        watchedFields.modifiers?.wasSuspectMirandized, 
+        watchedFields.modifiers?.wasSuspectMirandized,
         watchedFields.modifiers?.didSuspectUnderstandRights,
         watchedFields.modifiers?.didYouTransport,
         watchedFields.arrestee?.name,
@@ -292,22 +363,38 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     useEffect(() => {
         if (!watchedFields.presets?.photographs) return;
         if (watchedFields.userModified?.photographs) return;
-        
-        let photosText = '';
+
+        const photoLines: string[] = [];
         if (watchedFields.modifiers?.doYouHaveAVideo) {
-            photosText += `My Digital In-Car Video (DICV) was activated during this investigation - ${watchedFields.narrative?.dicvsLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.dicv', {
+                    link: watchedFields.narrative?.dicvsLink || '',
+                })
+            );
         }
         if (watchedFields.modifiers?.didYouTakePhotographs) {
-            photosText += `I took photographs using my Department-issued cell phone - ${watchedFields.narrative?.photosLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.photos', {
+                    link: watchedFields.narrative?.photosLink || '',
+                })
+            );
         }
         if (watchedFields.modifiers?.didYouObtainCctvFootage) {
-            photosText += `I obtained closed-circuit television (CCTV) footage - ${watchedFields.narrative?.cctvLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.cctv', {
+                    link: watchedFields.narrative?.cctvLink || '',
+                })
+            );
         }
         if (watchedFields.modifiers?.thirdPartyVideoFootage) {
-            photosText += `I obtained third party video footage - ${watchedFields.narrative?.thirdPartyLink || ''}\n`;
+            photoLines.push(
+                t('arrestReport.advancedForm.presets.photographs.thirdParty', {
+                    link: watchedFields.narrative?.thirdPartyLink || '',
+                })
+            );
         }
 
-        setValue('narrative.photographs', photosText.trim());
+        setValue('narrative.photographs', photoLines.join('\n').trim());
     }, [
         watchedFields.modifiers?.doYouHaveAVideo,
         watchedFields.modifiers?.didYouTakePhotographs,
@@ -325,26 +412,55 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     useEffect(() => {
         if (!watchedFields.presets?.booking) return;
         if (watchedFields.userModified?.booking) return;
-        let bookingText = '';
-        const suspectName = watchedFields.arrestee?.name || 'the suspect';
+        const suspectName = watchedFields.arrestee?.name || t('arrestReport.advancedForm.presets.arrest.defaultSuspect');
         const isFelony = charges.some(c => penalCode?.[c.chargeId!]?.type === 'F');
 
         const bookingRank = watchedFields.narrative?.bookingRank || '';
         const bookingName = watchedFields.narrative?.bookingName || '';
 
-        const booker = watchedFields.modifiers?.didYouBook ? 'I' : `${bookingRank} ${bookingName}`;
+        const booker = watchedFields.modifiers?.didYouBook
+            ? t('arrestReport.advancedForm.presets.booking.bookerSelf')
+            : t('arrestReport.advancedForm.presets.booking.bookerOther', {
+                  rank: bookingRank,
+                  name: bookingName,
+              });
+
+        const bookingLines: string[] = [];
 
         if (watchedFields.modifiers?.biometricsAlreadyOnFile) {
-            bookingText = `${suspectName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.`;
+            bookingLines.push(
+                t('arrestReport.advancedForm.presets.booking.biometricsOnFile', {
+                    suspectName,
+                })
+            );
         } else {
-            bookingText += `${booker} booked ${suspectName} on all of the charges listed under the ARREST sub-heading.\n`;
-            bookingText += `During booking, ${booker} took 10 fingerprint samples from ${suspectName} and entered them into the Automated Fingerprint Identification System (AFIS).\n`;
+            bookingLines.push(
+                t('arrestReport.advancedForm.presets.booking.booked', {
+                    booker,
+                    suspectName,
+                })
+            );
+            bookingLines.push(
+                t('arrestReport.advancedForm.presets.booking.fingerprints', {
+                    booker,
+                    suspectName,
+                })
+            );
             if (isFelony) {
-                bookingText += `As ${suspectName} was booked on a felony charge, ${booker} took a Bode SecurSwab 2 Deoxyribonucleic acid (DNA) profile from him.\n`;
-                bookingText += `${booker} submitted this profile to the Combined DNA Index System (CODIS).`;
+                bookingLines.push(
+                    t('arrestReport.advancedForm.presets.booking.dna', {
+                        booker,
+                        suspectName,
+                    })
+                );
+                bookingLines.push(
+                    t('arrestReport.advancedForm.presets.booking.codis', {
+                        booker,
+                    })
+                );
             }
         }
-        setValue('narrative.booking', bookingText.trim());
+        setValue('narrative.booking', bookingLines.join('\n').trim());
 
     }, [
         watchedFields.modifiers?.didYouBook,
@@ -362,17 +478,30 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     useEffect(() => {
         if (!watchedFields.presets?.evidence) return;
         if (watchedFields.userModified?.evidence) return;
-        
-        const propertyRoom = isLSSD ? "the booking station's property room" : "the Mission Row Station property room";
-        let evidenceText = `I booked all evidence into ${propertyRoom}.\n`;
+
+        const propertyRoom = isLSSD
+            ? t('arrestReport.advancedForm.presets.evidence.propertyRoom.lssd')
+            : t('arrestReport.advancedForm.presets.evidence.propertyRoom.lspd');
+        const evidenceLines = [
+            t('arrestReport.advancedForm.presets.evidence.booked', {
+                propertyRoom,
+            }),
+        ];
 
         const evidenceLogs = watchedFields.evidenceLogs || [];
         evidenceLogs.forEach((log, index) => {
             if(log.logNumber || log.description || log.quantity) {
-                 evidenceText += `Item ${index + 1} - ${log.logNumber || ''} - ${log.description || ''} (x${log.quantity || ''})\n`;
+                evidenceLines.push(
+                    t('arrestReport.advancedForm.presets.evidence.item', {
+                        index: index + 1,
+                        logNumber: log.logNumber || '',
+                        description: log.description || '',
+                        quantity: log.quantity || '',
+                    })
+                );
             }
         });
-        setValue('narrative.evidence', evidenceText.trim());
+        setValue('narrative.evidence', evidenceLines.join('\n').trim());
     }, [isLSSD, JSON.stringify(watchedFields.evidenceLogs), watchedFields.presets?.evidence, watchedFields.userModified?.evidence, setValue]);
 
     useEffect(() => {
@@ -380,23 +509,35 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         if (watchedFields.userModified?.court) return;
         const officers = watchedFields.officers || [];
         const primaryOfficer = officers[0];
-        let courtText = '';
+        const courtLines: string[] = [];
 
         if(primaryOfficer) {
             const rank = primaryOfficer.rank || '';
             const name = primaryOfficer.name || '';
             const badge = primaryOfficer.badgeNumber || '';
-            courtText = `I, ${rank} ${name} #${badge}, can testify to the contents of this report.`;
+            courtLines.push(
+                t('arrestReport.advancedForm.presets.court.primary', {
+                    rank,
+                    name,
+                    badge,
+                })
+            );
         }
 
         if (officers.length > 1) {
             officers.slice(1).forEach(officer => {
                 if(officer.name && officer.rank && officer.badgeNumber) {
-                    courtText += `\n${officer.rank} ${officer.name} #${officer.badgeNumber} can also testify to the contents of this report.`;
+                    courtLines.push(
+                        t('arrestReport.advancedForm.presets.court.additional', {
+                            rank: officer.rank,
+                            name: officer.name,
+                            badge: officer.badgeNumber,
+                        })
+                    );
                 }
             });
         }
-        setValue('narrative.court', courtText);
+        setValue('narrative.court', courtLines.join('\n'));
     }, [JSON.stringify(watchedFields.officers), watchedFields.presets?.court, watchedFields.userModified?.court, setValue]);
 
 
@@ -404,8 +545,11 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         if (!watchedFields.presets?.additional) return;
         if (watchedFields.userModified?.additional) return;
         const suspectName = watchedFields.arrestee?.name || '';
-        const plea = watchedFields.narrative?.plea || 'Guilty';
-        const additionalText = `(( ${suspectName} pled ${plea}. ))`;
+        const plea = watchedFields.narrative?.plea || t('arrestReport.advancedForm.pleas.guilty');
+        const additionalText = t('arrestReport.advancedForm.presets.additional.plea', {
+            suspectName,
+            plea,
+        });
         setValue('narrative.additional', additionalText);
     }, [
         watchedFields.arrestee?.name,

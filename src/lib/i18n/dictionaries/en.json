@@ -1,4 +1,3 @@
-
 {
   "common": {
     "language": {
@@ -431,7 +430,9 @@
         "additional": {
           "title": "ADDITIONAL INFORMATION",
           "placeholder": "Additional information..."
-        }
+        },
+        "enablePreset": "Enable Preset?",
+        "clearToReenable": "Clear the textarea to re-enable presets."
       },
       "pleas": {
         "guilty": "Guilty",
@@ -445,6 +446,87 @@
         "quantity": "QUANTITY",
         "add": "ADD EVIDENCE LOG",
         "itemDescriptionPlaceholder": "DESCRIPTION OF ITEM {index}"
+      },
+      "presets": {
+        "source": {
+          "partnerDetail": "{rank} {name} (#{badge}), assigned to {divDetail}",
+          "withPartners": "On {date}, I, {rank} {name} (#{badge}), assigned to {divDetail}, partnered with {partners}, were deployed under Unit {callsign}.",
+          "singleOfficer": "On {date}, I, {rank} {name} (#{badge}), assigned to {divDetail}, was deployed under Unit {callsign}.",
+          "vehicleMarkedSlicktop": "I was driving a marked black and white slicktop.",
+          "vehicleMarkedLightbar": "I was driving a marked black and white with a rooftop light bar.",
+          "vehicleUnmarked": "I was driving an unmarked vehicle.",
+          "uniformWithBadge": "I was wearing my department-issued {uniform} uniform and was openly displaying my badge of office on my uniform.",
+          "patrolUniform": "I was wearing my department-issued patrol uniform and was openly displaying my badge of office on my uniform.",
+          "plainClothes": "I was wearing plain clothes.",
+          "plainClothesBadge": "I was wearing plain clothes and was openly displaying my badge.",
+          "uniforms": {
+            "g3": {
+              "lspd": "metropolitan G3",
+              "lssd": "SEB G3"
+            },
+            "bdu": {
+              "lspd": "metropolitan BDU",
+              "lssd": "SEB BDU"
+            }
+          }
+        },
+        "investigation": {
+          "vehicleObserved": "At approximately {time} hours, I was driving on {street} when I observed a {color} {model}, {plate}.",
+          "onPatrol": "At approximately {time} hours, I was driving on {street}.",
+          "plateKnown": "with {plate} plates",
+          "plateUnknown": "with no plates"
+        },
+        "arrest": {
+          "defaultSuspect": "the suspect",
+          "notebooks": {
+            "lssd": "Sheriff's Reference Book",
+            "lspd": "Field Officer’s Notebook"
+          },
+          "responses": {
+            "affirmative": "affirmatively",
+            "negative": "negatively"
+          },
+          "miranda": "I admonished {suspectName} utilizing my {notebookType}, reading the following, verbatim:\n“You have the right to remain silent. Anything you say may be used against you in a court of law. You have the right to the presence of an attorney during any questioning. If you cannot afford an attorney, one will be appointed to you, free of charge, before any questioning, if you want. Do you understand?”\n{suspectName} responded {understood}.",
+          "stations": {
+            "lssd": "the nearest booking station",
+            "lspd": "Mission Row Station"
+          },
+          "transportSelf": "I transported {suspectName} to {station}.",
+          "transportOther": "{transportingRank} {transportingName} transported {suspectName} to {station}.",
+          "searched": "{suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).",
+          "arrestedFor": "{suspectName} was arrested for {charges}.",
+          "aforementionedCharges": "the aforementioned charges"
+        },
+        "photographs": {
+          "dicv": "My Digital In-Car Video (DICV) was activated during this investigation - {link}",
+          "photos": "I took photographs using my Department-issued cell phone - {link}",
+          "cctv": "I obtained closed-circuit television (CCTV) footage - {link}",
+          "thirdParty": "I obtained third party video footage - {link}"
+        },
+        "booking": {
+          "bookerSelf": "I",
+          "bookerOther": "{rank} {name}",
+          "biometricsOnFile": "{suspectName}'s full biometrics, including fingerprints and DNA, were already on file, streamlining the booking process.",
+          "booked": "{booker} booked {suspectName} on all of the charges listed under the ARREST sub-heading.",
+          "fingerprints": "During booking, {booker} took 10 fingerprint samples from {suspectName} and entered them into the Automated Fingerprint Identification System (AFIS).",
+          "dna": "As {suspectName} was booked on a felony charge, {booker} took a Bode SecurSwab 2 Deoxyribonucleic acid (DNA) profile from him.",
+          "codis": "{booker} submitted this profile to the Combined DNA Index System (CODIS)."
+        },
+        "evidence": {
+          "propertyRoom": {
+            "lssd": "the booking station's property room",
+            "lspd": "the Mission Row Station property room"
+          },
+          "booked": "I booked all evidence into {propertyRoom}.",
+          "item": "Item {index} - {logNumber} - {description} (x{quantity})"
+        },
+        "court": {
+          "primary": "I, {rank} {name} #{badge}, can testify to the contents of this report.",
+          "additional": "{rank} {name} #{badge} can also testify to the contents of this report."
+        },
+        "additional": {
+          "plea": "(( {suspectName} pled {plea}. ))"
+        }
       }
     },
     "advancedReport": {
