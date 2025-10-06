@@ -187,6 +187,9 @@ export default async function PaperworkGeneratorsPage() {
   );
 }
 
-export const metadata: Metadata = {
-  title: 'Paperwork Generators',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const { t } = await getTranslations();
+    return {
+        title: t('paperworkGenerators.page.documentTitle'),
+    };
+}

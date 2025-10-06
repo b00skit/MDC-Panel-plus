@@ -2,6 +2,7 @@ import { PaperworkGeneratorBuilder } from '@/components/paperwork-generators/pap
 import { promises as fs } from 'fs';
 import path from 'path';
 import type { Metadata } from 'next';
+import { getTranslations } from '@/lib/i18n/server';
 
 async function getConfig() {
     const configPath = path.join(process.cwd(), 'data/config.json');
@@ -30,6 +31,9 @@ export default async function PaperworkGeneratorBuilderPage() {
   );
 }
 
-export const metadata: Metadata = {
-  title: 'Form Builder',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const { t } = await getTranslations();
+    return {
+        title: t('paperworkGenerators.builder.pageTitle'),
+    };
+}

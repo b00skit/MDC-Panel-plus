@@ -4,10 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { promises as fs } from 'fs';
 import path from 'path';
 import type { Metadata } from 'next';
+import { getTranslations } from '@/lib/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Credits & Contributions',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const { t } = await getTranslations();
+    return {
+        title: t('credits.pageTitle'),
+    };
+}
 
 async function getCredits() {
     const filePath = path.join(process.cwd(), 'data/credits.json');
@@ -23,16 +27,17 @@ async function getCredits() {
 
 export default async function CreditsPage() {
     const credits = await getCredits();
+    const { t } = await getTranslations();
 
   return (
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         <PageHeader
-          title="Credits & Contributions"
-          description="This project stands on the shoulders of giants."
+          title={t('credits.header.title')}
+          description={t('credits.header.description')}
         />
 
         <div className="space-y-6">
-            <p className="text-lg text-muted-foreground">A huge thank you to everyone who has contributed, inspired, or supported this project. Many ideas and features were inspired by the work of others in the community, condensed here into one unified tool.</p>
+            <p className="text-lg text-muted-foreground">{t('credits.intro')}</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {credits.map((credit: any, index: number) => (

@@ -2,10 +2,14 @@ import { CaselawPage } from '@/components/caselaw/caselaw-page';
 import { promises as fs } from 'fs';
 import path from 'path';
 import type { Metadata } from 'next';
+import { getTranslations } from '@/lib/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Caselaw & Legal Resources',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const { t } = await getTranslations();
+    return {
+        title: t('caselaw.pageTitle'),
+    };
+}
 
 async function getCaselawData() {
     const caselawsPath = path.join(process.cwd(), 'data/caselaws.json');

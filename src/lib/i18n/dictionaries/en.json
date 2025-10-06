@@ -24,7 +24,7 @@
     "github": "GitHub"
   },
   "announcements": {
-    "pageTitle": "MDC Panel – Announcements",
+    "pageTitle": "Announcements",
     "header": {
       "title": "Announcements",
       "description": "Stay up-to-date with the latest news and updates."
@@ -32,7 +32,7 @@
     "postedOn": "Posted on"
   },
   "settings": {
-    "pageTitle": "MDC Panel – Settings",
+    "pageTitle": "Settings",
     "header": {
       "title": "Settings",
       "description": "Manage your application settings and data."
@@ -128,10 +128,23 @@
       "save": "Save All Changes",
       "cancel": "Cancel",
       "continue": "Continue"
+    },
+    "advanced": {
+      "pageTitle": "Advanced Form Parameters",
+      "header": {
+        "title": "Advanced Form Parameters",
+        "description": "Manage your predefined officer lineup for forms."
+      },
+      "setup": {
+        "title": "Predefined Officer Setup",
+        "description": "Define a list of officers you frequently patrol with. This lineup will be automatically loaded into new reports.",
+        "officer": "Officer {index}",
+        "addOfficerButton": "Add Officer"
+      }
     }
   },
   "reportArchive": {
-    "documentTitle": "MDC Panel – Report Archive",
+    "documentTitle": "Report Archive",
     "header": {
       "title": "Report Archive",
       "description": "View and restore your past arrest reports and paperwork generator submissions."
@@ -187,6 +200,7 @@
     }
   },
   "logParser": {
+    "pageTitle": "Log Parser",
     "header": {
       "title": "Log Parser",
       "description": "Filter GTA:World chat logs to isolate specific character interactions."
@@ -236,6 +250,7 @@
   },
   "simplifiedPenalCode": {
     "page": {
+      "documentTitle": "Simplified Penal Code",
       "header": {
         "title": "Simplified Penal Code",
         "description": "Browse and search through the list of charges."
@@ -303,6 +318,7 @@
     }
   },
   "legalSearch": {
+    "pageTitle": "Legal Search",
     "header": {
       "title": "Legal Search",
       "description": "Ask any questions and get penal code and caselaw citations in a single response."
@@ -347,6 +363,7 @@
     }
   },
   "caselaw": {
+    "pageTitle": "Caselaw & Legal Resources",
     "header": {
       "title": "Caselaw & Legal Resources",
       "description": "Quickly access legal documents, schedules, and important caselaw."
@@ -384,6 +401,7 @@
   },
   "paperworkGenerators": {
     "page": {
+      "documentTitle": "Paperwork Generators",
       "header": {
         "title": "Paperwork Generators",
         "description": "Select a template or use one of your saved forms."
@@ -401,20 +419,23 @@
         "empty": "You haven't created any forms yet. Click \"Create New Form\" to get started."
       }
     },
+    "builder": {
+      "pageTitle": "Form Builder"
+    },
     "list": {
       "globalTitle": "Global Generators",
       "empty": "No paperwork generators available."
     }
   },
   "paperworkSubmit": {
-    "documentTitle": "MDC Panel – Paperwork Submission",
+    "documentTitle": "Paperwork Submission",
     "header": {
       "title": "Paperwork Submission",
       "description": "Review the formatted paperwork below."
     },
     "alert": {
       "title": "Heads up!",
-      "description": "The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it."
+      "description": "The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it. This report has also been archived."
     },
     "reportTitleLabel": "Report Title",
     "buttons": {
@@ -572,6 +593,17 @@
       "description": "The current maintainer is {maintainer}. If you have any questions, find a bug, or have a suggestion, please feel free to reach out via Discord or use the feedback form available on the site."
     }
   },
+  "credits": {
+    "pageTitle": "Credits & Contributions",
+    "header": {
+      "title": "Credits & Contributions",
+      "description": "This project stands on the shoulders of giants."
+    },
+    "intro": "A huge thank you to everyone who has contributed, inspired, or supported this project. Many ideas and features were inspired by the work of others in the community, condensed here into one unified tool."
+  },
+  "map": {
+    "pageTitle": "Interactive Map"
+  },
   "help": {
     "pageTitle": "Help & Feedback",
     "header": {
@@ -633,7 +665,7 @@
   },
   "arrestCalculator": {
     "page": {
-      "documentTitle": "MDC Panel – Arrest Calculator",
+      "documentTitle": "Arrest Calculator",
       "header": {
         "title": "Arrest Calculator",
         "description": "Calculate arrest sentences based on charges."
@@ -738,7 +770,7 @@
           "one": "{count} Minute",
           "other": "{count} Minutes"
         },
-        "summary": "{parts} ({minutes} mins)"
+        "summary": "{parts} ({minutes} mins total)"
       },
       "charges": {
         "cardTitle": "Charges",
@@ -841,7 +873,7 @@
   },
   "arrestReport": {
     "page": {
-      "documentTitle": "MDC Panel – Arrest Report",
+      "documentTitle": "Arrest Report",
       "header": {
         "title": "Arrest Report",
         "descriptionWithReport": "A summary of the calculated charges and report form.",
@@ -976,6 +1008,28 @@
           "bailStatus": "BAIL STATUS",
           "bailAmount": "BAIL AMOUNT"
         }
+      },
+      "types": {
+        "felony": "Felony",
+        "misdemeanor": "Misdemeanor",
+        "infraction": "Infraction",
+        "unknown": "Unknown"
+      },
+      "time": {
+        "zero": "0 minutes",
+        "days": {
+          "one": "{count} Day",
+          "other": "{count} Days"
+        },
+        "hours": {
+          "one": "{count} Hour",
+          "other": "{count} Hours"
+        },
+        "minutes": {
+          "one": "{count} Minute",
+          "other": "{count} Minutes"
+        },
+        "summary": "{parts} ({minutes} mins total)"
       }
     },
     "advancedReport": {
@@ -1080,28 +1134,37 @@
       },
       "narrative": {
         "source": {
-          "title": "SOURCE OF ACTIVITY"
+          "title": "SOURCE OF ACTIVITY",
+          "placeholder": "Describe the initial contact or observation..."
         },
         "investigation": {
-          "title": "INVESTIGATION"
+          "title": "INVESTIGATION",
+          "placeholder": "Describe your investigation..."
         },
         "arrest": {
-          "title": "ARREST"
+          "title": "ARREST",
+          "placeholder": "Describe the arrest procedure..."
         },
         "photographs": {
-          "title": "PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING"
+          "title": "PHOTOGRAPHS, VIDEOS, IN-CAR VIDEO (DICV), and DIGITAL IMAGING",
+          "placeholder": "Provide links to any evidence...",
+          "noVideoPlaceholder": "No video or photographic evidence was available."
         },
         "booking": {
-          "title": "BOOKING"
+          "title": "BOOKING",
+          "placeholder": "Describe the booking procedure..."
         },
         "evidence": {
-          "title": "PHYSICAL EVIDENCE"
+          "title": "PHYSICAL EVIDENCE",
+          "placeholder": "List any physical evidence collected..."
         },
         "court": {
-          "title": "COURT INFORMATION"
+          "title": "COURT INFORMATION",
+          "placeholder": "Add any information relevant to the court..."
         },
         "additional": {
-          "title": "ADDITIONAL INFORMATION"
+          "title": "ADDITIONAL INFORMATION",
+          "placeholder": "Any additional information..."
         },
         "enablePreset": "Enable Preset?",
         "clearToReenable": "Clear the textarea to re-enable presets."
@@ -1164,7 +1227,7 @@
             "lspd": "Mission Row Station"
           },
           "transportSelf": "I transported {suspectName} to {station}.",
-          "transportOther": "{transportingRank} {transportingName} transported {suspectName} to {station}.",
+          "transportOther": "{suspectName} was transported to {station} by {transportingRank} {transportingName}.",
           "searched": "{suspectName} was searched in front of a police vehicle, which was covered by the vehicle's Digital In-Car Video (DICV).",
           "arrestedFor": "{suspectName} was arrested for {charges}.",
           "aforementionedCharges": "the aforementioned charges"
@@ -1203,14 +1266,14 @@
     }
   },
   "arrestSubmit": {
-    "documentTitle": "MDC Panel – Arrest Submission",
+    "documentTitle": "Arrest Submission",
     "header": {
       "title": "Arrest Report Submission",
       "description": "Review the calculated charges and the formatted arrest report below."
     },
     "alert": {
       "title": "Heads up!",
-      "description": "The preview on this page may not look 100% accurate, but the generated HTML is designed to work perfectly on the actual MDC. This report has also been archived."
+      "description": "The preview on this page may not look 100% accurate, but the generated content is designed to work perfectly where you paste it. This report has also been archived."
     },
     "formattedReport": "Formatted Report",
     "buttons": {
@@ -1289,5 +1352,61 @@
       "generate": "Generate",
       "generating": "Generating..."
     }
+  },
+  "changelog": {
+    "pageTitle": "Changelog",
+    "header": {
+      "title": "Changelog",
+      "description": "Follow our journey! All the latest features, improvements, and fixes."
+    },
+    "stats": {
+      "totalVersions": "Total Versions",
+      "totalChanges": "Overall Changes",
+      "featuresAdded": "Features & Additions",
+      "bugsFixed": "Bugs Fixed"
+    },
+    "whatsNew": {
+      "title": "What's New?",
+      "description": "A quick guide to understanding our update types."
+    },
+    "releaseTypes": {
+      "release": "Major features and stable releases.",
+      "major": "Significant new functionality.",
+      "minor": "Smaller improvements and tweaks.",
+      "hotfix": "Urgent bug fixes."
+    },
+    "filters": {
+      "searchPlaceholder": "Search changelog...",
+      "typePlaceholder": "Filter by type",
+      "all": "All Types"
+    },
+    "releaseTypeLabels": {
+      "release": "Release",
+      "majorupdate": "Major Update",
+      "minorupdate": "Minor Update",
+      "hotfix": "Hotfix"
+    },
+    "itemTypes": {
+      "feature": "🚀 Feature",
+      "addition": "✨ Addition",
+      "modification": "🎨 Modification",
+      "backend": "🔧 Backend",
+      "fix": "🐛 Fix"
+    },
+    "version": "Version",
+    "releasedOn": "Released on",
+    "lastUpdatedOn": "Last Updated on",
+    "experimental": {
+      "title": "Experimental Features",
+      "description": "Try upcoming ideas before they become permanent. Your choices are saved locally.",
+      "enable": "Enable",
+      "disable": "Disable",
+      "currentlyEnabled": "Currently enabled",
+      "currentlyDisabled": "Currently disabled"
+    },
+    "cacheVersion": "Cache Version",
+    "localStorageVersion": "Local Storage Version"
   }
 }
+
+    
