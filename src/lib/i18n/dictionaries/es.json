@@ -160,28 +160,63 @@
       "button": "Enviar comentario"
     }
   },
-  "arrestCalculation": {
+  "arrestCalculator": {
     "page": {
-      "title": "Cálculo de arresto",
-      "description": "Mostrando el cálculo basado en el enlace proporcionado.",
-      "loadingDescription": "Cargando detalles del cálculo...",
-      "error": {
-        "title": "Error en el cálculo de arresto",
-        "description": "No se pudo procesar la solicitud.",
-        "alertTitle": "Error"
+      "documentTitle": "MDC Panel – Calculadora de Arrestos",
+      "header": {
+        "title": "Calculadora de Arrestos",
+        "description": "Calcula sentencias de arresto según los cargos."
       },
-      "empty": {
-        "title": "No hay cargos para mostrar",
-        "description": "No hay cargos para mostrar. Puede deberse a un error en el enlace o a datos faltantes."
+      "buttons": {
+        "addCharge": "Añadir Cargo",
+        "calculate": "Calcular Arresto"
       },
-      "errors": {
-        "missingCharges": "No se proporcionaron cargos en la URL.",
-        "invalidFormat": "Formato de cargo no válido para el parámetro #{index}. Se esperaban al menos 3 partes, se recibieron {parts}.",
-        "unknownCharge": "No se encontró el cargo con ID \"{id}\".",
-        "invalidCategory": "Índice de categoría \"{category}\" no válido para el cargo de drogas \"{id}\".",
-        "penalCodeFetch": "No se pudieron cargar los datos del código penal."
+      "paroleViolatorLabel": "El sospechoso es un infractor de la libertad condicional",
+      "fields": {
+        "charge": "Cargo",
+        "class": "Clase",
+        "offense": "Delito",
+        "addition": "Adición",
+        "category": "Categoría"
       },
-      "documentTitle": "MDC Panel – Cálculo de arresto"
+      "placeholders": {
+        "selectCharge": "Seleccionar un cargo...",
+        "searchCharge": "Buscar cargo por nombre o ID...",
+        "selectClass": "Seleccionar clase",
+        "selectOffense": "Seleccionar delito",
+        "selectAddition": "Seleccionar adición",
+        "selectCategory": "Seleccionar categoría"
+      },
+      "options": {
+        "classA": "Clase A",
+        "classB": "Clase B",
+        "classC": "Clase C",
+        "offense": "Delito #{number}"
+      },
+      "noChargeFound": "No se encontró ningún cargo.",
+      "depaWarning": {
+        "title": "¡Atención!",
+        "description": "Asegúrate de seleccionar la Categoría correcta para los cargos de drogas. Consulta la orden judicial (si corresponde) para más información.",
+        "link": "Ley de Control y Prevención de Drogas de 2020 (DEPA)"
+      },
+      "depaCategories": {
+        "title": "Categorías de Sustancias Controladas según DEPA"
+      },
+      "loadingPenalCode": "Cargando código penal...",
+      "toasts": {
+        "noCharges": {
+          "title": "Sin Cargos",
+          "description": "Por favor, añade al menos un cargo."
+        },
+        "incomplete": {
+          "title": "Cargo Incompleto",
+          "selectCharge": "Por favor, selecciona un cargo para todas las filas.",
+          "selectClass": "Por favor, selecciona una clase para \"{charge}\".",
+          "selectOffense": "Por favor, selecciona un delito para \"{charge}\".",
+          "selectAddition": "Por favor, selecciona una adición para \"{charge}\".",
+          "selectCategory": "Por favor, selecciona una categoría para el cargo de drogas \"{charge}\"."
+        }
+      }
     },
     "results": {
       "additionNames": {
@@ -323,7 +358,16 @@
         "totalSuspension": "Suspensión total (días)",
         "bailCost": "Costo de fianza",
         "originalValue": "Original: {value}"
+      },
+      "toasts": {
+        "copiedTitle": "¡Copiado!",
+        "copiedDescription": "Se copió '{value}' al portapapeles.",
+        "copiedDescriptionWithLabel": "Se copió '{label}' ({value}) al portapapeles.",
+        "linkCopiedTitle": "¡Enlace copiado!",
+        "linkCopiedDescription": "Se ha copiado un enlace compartible a este cálculo."
       }
     }
   }
 }
+
+    

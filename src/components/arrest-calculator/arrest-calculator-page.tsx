@@ -41,6 +41,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { useBasicReportModifiersStore } from '@/stores/basic-report-modifiers-store';
 import { Checkbox } from '../ui/checkbox';
+import { useI18n, useScopedI18n } from '@/lib/i18n/client';
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -68,6 +69,8 @@ export function ArrestCalculatorPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isModifyMode = searchParams.get('modify') === 'true';
+  const { t } = useI18n();
+  const tPage = useScopedI18n('arrestCalculator.page');
 
   const { toast } = useToast();
   const {
@@ -102,6 +105,10 @@ export function ArrestCalculatorPage() {
     if (!chargeId || !penalCode) return null;
     return penalCode[chargeId] || null;
   }, [penalCode]);
+  
+  useEffect(() => {
+    document.title = t('arrestCalculator.page.documentTitle');
+  }, [t]);
 
   useEffect(() => {
     if (isModifyMode) {
@@ -129,30 +136,30 @@ export function ArrestCalculatorPage() {
   
   const handleCalculate = () => {
      if (charges.length === 0) {
-      toast({ title: "No Charges", description: "Please add at least one charge.", variant: "destructive" });
+      toast({ title: tPage('toasts.noCharges.title'), description: tPage('toasts.noCharges.description'), variant: "destructive" });
       return;
     }
 
      for (const charge of charges) {
       if (!charge.chargeId) {
-        toast({ title: "Incomplete Charge", description: "Please select a charge for all rows.", variant: "destructive" });
+        toast({ title: tPage('toasts.incomplete.title'), description: tPage('toasts.incomplete.selectCharge'), variant: "destructive" });
         return;
       }
       if (!charge.class) {
-        toast({ title: "Incomplete Charge", description: `Please select a class for "${penalCode?.[charge.chargeId]?.charge}".`, variant: "destructive" });
+        toast({ title: tPage('toasts.incomplete.title'), description: tPage('toasts.incomplete.selectClass', { charge: penalCode?.[charge.chargeId]?.charge }), variant: "destructive" });
         return;
       }
       if (!charge.offense) {
-        toast({ title: "Incomplete Charge", description: `Please select an offense for "${penalCode?.[charge.chargeId]?.charge}".`, variant: "destructive" });
+        toast({ title: tPage('toasts.incomplete.title'), description: tPage('toasts.incomplete.selectOffense', { charge: penalCode?.[charge.chargeId]?.charge }), variant: "destructive" });
         return;
       }
       if (!charge.addition) {
-        toast({ title: "Incomplete Charge", description: `Please select an addition for "${penalCode?.[charge.chargeId]?.charge}".`, variant: "destructive" });
+        toast({ title: tPage('toasts.incomplete.title'), description: tPage('toasts.incomplete.selectAddition', { charge: penalCode?.[charge.chargeId]?.charge }), variant: "destructive" });
         return;
       }
       const chargeDetails = getChargeDetails(charge.chargeId);
       if (chargeDetails?.drugs && !charge.category) {
-        toast({ title: "Incomplete Charge", description: `Please select a category for the drug charge "${chargeDetails.charge}".`, variant: "destructive" });
+        toast({ title: tPage('toasts.incomplete.title'), description: tPage('toasts.incomplete.selectCategory', { charge: chargeDetails.charge }), variant: "destructive" });
         return;
       }
     }
@@ -219,24 +226,24 @@ export function ArrestCalculatorPage() {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <PageHeader
-        title="Arrest Calculator"
-        description="Calculate arrest sentences based on charges."
+        title={tPage('header.title')}
+        description={tPage('header.description')}
       />
 
       <div className="space-y-4">
         <div className="flex items-center gap-4">
           <Button onClick={() => addCharge()} disabled={loading}>
-            <Plus className="mr-2 h-4 w-4" /> Add Charge
+            <Plus className="mr-2 h-4 w-4" /> {tPage('buttons.addCharge')}
           </Button>
 
           <Button variant="default" disabled={charges.length === 0} onClick={handleCalculate}>
-            Calculate Arrest
+            {tPage('buttons.calculate')}
           </Button>
         </div>
 
         <div className="flex items-center space-x-2">
             <Checkbox id="parole-violator" checked={isParoleViolator} onCheckedChange={(value) => setParoleViolator(value === true)} />
-            <Label htmlFor="parole-violator" className="text-base font-medium">Suspect is a Parole Violator</Label>
+            <Label htmlFor="parole-violator" className="text-base font-medium">{tPage('paroleViolatorLabel')}</Label>
         </div>
 
         {charges.map((chargeRow) => {
@@ -256,7 +263,7 @@ export function ArrestCalculatorPage() {
               >
                 {/* Charge Dropdown */}
                 <div className="space-y-1.5 md:col-span-2">
-                  <Label>Charge</Label>
+                  <Label>{tPage('fields.charge')}</Label>
                   <Popover
                     open={openChargeSelector === chargeRow.uniqueId}
                     onOpenChange={(isOpen) =>
@@ -286,7 +293,7 @@ export function ArrestCalculatorPage() {
                             </span>
                           </span>
                         ) : (
-                          'Select a charge...'
+                          tPage('placeholders.selectCharge')
                         )}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -313,8 +320,8 @@ export function ArrestCalculatorPage() {
                           return 0;
                         }}
                       >
-                        <CommandInput placeholder="Search charge by name or ID..." />
-                        <CommandEmpty>No charge found.</CommandEmpty>
+                        <CommandInput placeholder={tPage('placeholders.searchCharge')} />
+                        <CommandEmpty>{tPage('noChargeFound')}</CommandEmpty>
                         <CommandList>
                           <CommandGroup>
                             {penalCodeArray.map((c) => (
@@ -356,7 +363,7 @@ export function ArrestCalculatorPage() {
 
                 {/* Class Dropdown */}
                 <div className="space-y-1.5">
-                  <Label htmlFor={`class-${chargeRow.uniqueId}`}>Class</Label>
+                  <Label htmlFor={`class-${chargeRow.uniqueId}`}>{tPage('fields.class')}</Label>
                   <Select
                     value={chargeRow.class || ''}
                     onValueChange={(value) =>
@@ -366,17 +373,17 @@ export function ArrestCalculatorPage() {
                     required
                   >
                     <SelectTrigger id={`class-${chargeRow.uniqueId}`} className="h-9">
-                      <SelectValue placeholder="Select class" />
+                      <SelectValue placeholder={tPage('placeholders.selectClass')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="A" disabled={!chargeDetails?.class?.A}>
-                        Class A
+                        {tPage('options.classA')}
                       </SelectItem>
                       <SelectItem value="B" disabled={!chargeDetails?.class?.B}>
-                        Class B
+                        {tPage('options.classB')}
                       </SelectItem>
                       <SelectItem value="C" disabled={!chargeDetails?.class?.C}>
-                        Class C
+                        {tPage('options.classC')}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -384,7 +391,7 @@ export function ArrestCalculatorPage() {
 
                 {/* Offense Dropdown */}
                 <div className="space-y-1.5">
-                  <Label htmlFor={`offense-${chargeRow.uniqueId}`}>Offense</Label>
+                  <Label htmlFor={`offense-${chargeRow.uniqueId}`}>{tPage('fields.offense')}</Label>
                   <Select
                     value={chargeRow.offense || ''}
                     onValueChange={(value) =>
@@ -394,38 +401,38 @@ export function ArrestCalculatorPage() {
                     required
                   >
                     <SelectTrigger id={`offense-${chargeRow.uniqueId}`} className="h-9">
-                      <SelectValue placeholder="Select offense" />
+                      <SelectValue placeholder={tPage('placeholders.selectOffense')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
                         value="1"
                         disabled={!chargeDetails?.offence['1']}
                       >
-                        Offense #1
+                        {tPage('options.offense', { number: 1 })}
                       </SelectItem>
                       <SelectItem
                         value="2"
                         disabled={!chargeDetails?.offence['2']}
                       >
-                        Offense #2
+                        {tPage('options.offense', { number: 2 })}
                       </SelectItem>
                       <SelectItem
                         value="3"
                         disabled={!chargeDetails?.offence['3']}
                       >
-                        Offense #3
+                        {tPage('options.offense', { number: 3 })}
                       </SelectItem>
                       <SelectItem
                         value="4"
                         disabled={!chargeDetails?.offence['4']}
                       >
-                        Offense #4
+                        {tPage('options.offense', { number: 4 })}
                       </SelectItem>
                       <SelectItem
                         value="5"
                         disabled={!chargeDetails?.offence['5']}
                       >
-                        Offense #5
+                        {tPage('options.offense', { number: 5 })}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -434,7 +441,7 @@ export function ArrestCalculatorPage() {
                 {/* Addition Dropdown */}
                 <div className="space-y-1.5">
                   <Label htmlFor={`addition-${chargeRow.uniqueId}`}>
-                    Addition
+                    {tPage('fields.addition')}
                   </Label>
                   <Select
                     value={chargeRow.addition || ''}
@@ -448,7 +455,7 @@ export function ArrestCalculatorPage() {
                       id={`addition-${chargeRow.uniqueId}`}
                       className="h-9"
                     >
-                      <SelectValue placeholder="Select addition" />
+                      <SelectValue placeholder={tPage('placeholders.selectAddition')} />
                     </SelectTrigger>
                     <SelectContent>
                       {additionsWithoutParole.map((addition) => (
@@ -462,7 +469,7 @@ export function ArrestCalculatorPage() {
                 {isDrugCharge && (
                   <div className="space-y-1.5">
                     <Label htmlFor={`category-${chargeRow.uniqueId}`}>
-                      Category
+                      {tPage('fields.category')}
                     </Label>
                     <Select
                       value={chargeRow.category || ''}
@@ -476,7 +483,7 @@ export function ArrestCalculatorPage() {
                         id={`category-${chargeRow.uniqueId}`}
                         className="h-9"
                       >
-                        <SelectValue placeholder="Select category" />
+                        <SelectValue placeholder={tPage('placeholders.selectCategory')} />
                       </SelectTrigger>
                       <SelectContent>
                         {chargeDetails?.drugs &&
@@ -507,10 +514,9 @@ export function ArrestCalculatorPage() {
         {showDrugChargeWarning && (
             <Alert variant="warning" className="mt-4">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Heads up!</AlertTitle>
+                <AlertTitle>{tPage('depaWarning.title')}</AlertTitle>
                 <AlertDescription>
-                   Please ensure you select the correct Category for drug charges. Check the warrant (if applicable) for more information.<br/>
-                   Reference: <a href={configData.URL_DEPA} target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-700">Drug Enforcement & Prevention Act of 2020 (DEPA)</a>
+                   {tPage('depaWarning.description')} <a href={configData.URL_DEPA} target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-700">{tPage('depaWarning.link')}</a>
                 </AlertDescription>
             </Alert>
         )}
@@ -518,7 +524,7 @@ export function ArrestCalculatorPage() {
         {showDrugChargeWarning && depaData && (
           <Card className="mt-4">
             <CardHeader>
-              <CardTitle>DEPA Controlled Substance Categories</CardTitle>
+              <CardTitle>{tPage('depaCategories.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {depaData.categories.map((category, index) => (
@@ -536,10 +542,12 @@ export function ArrestCalculatorPage() {
           </Card>
         )}
 
-        {loading && <p>Loading penal code...</p>}
+        {loading && <p>{tPage('loadingPenalCode')}</p>}
       </div>
     </div>
   );
 }
+
+    
 
     

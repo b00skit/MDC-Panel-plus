@@ -160,28 +160,63 @@
       "button": "Submit Feedback"
     }
   },
-  "arrestCalculation": {
+  "arrestCalculator": {
     "page": {
-      "title": "Arrest Calculation",
-      "description": "Displaying calculation based on the provided link.",
-      "loadingDescription": "Loading calculation details...",
-      "error": {
-        "title": "Arrest Calculation Error",
-        "description": "Could not process the request.",
-        "alertTitle": "Error"
+      "documentTitle": "MDC Panel – Arrest Calculator",
+      "header": {
+        "title": "Arrest Calculator",
+        "description": "Calculate arrest sentences based on charges."
       },
-      "empty": {
-        "title": "No Charges to Display",
-        "description": "There are no charges to display. This might be due to an error in the link or missing data."
+      "buttons": {
+        "addCharge": "Add Charge",
+        "calculate": "Calculate Arrest"
       },
-      "errors": {
-        "missingCharges": "No charges provided in the URL.",
-        "invalidFormat": "Invalid charge format for parameter #{index}. Expected at least 3 parts, received {parts}.",
-        "unknownCharge": "Charge with ID \"{id}\" not found.",
-        "invalidCategory": "Invalid category index \"{category}\" for drug charge \"{id}\".",
-        "penalCodeFetch": "Could not load penal code data."
+      "paroleViolatorLabel": "Suspect is a Parole Violator",
+      "fields": {
+        "charge": "Charge",
+        "class": "Class",
+        "offense": "Offense",
+        "addition": "Addition",
+        "category": "Category"
       },
-      "documentTitle": "MDC Panel – Arrest Calculation"
+      "placeholders": {
+        "selectCharge": "Select a charge...",
+        "searchCharge": "Search charge by name or ID...",
+        "selectClass": "Select class",
+        "selectOffense": "Select offense",
+        "selectAddition": "Select addition",
+        "selectCategory": "Select category"
+      },
+      "options": {
+        "classA": "Class A",
+        "classB": "Class B",
+        "classC": "Class C",
+        "offense": "Offense #{number}"
+      },
+      "noChargeFound": "No charge found.",
+      "depaWarning": {
+        "title": "Heads up!",
+        "description": "Please ensure you select the correct Category for drug charges. Check the warrant (if applicable) for more information.",
+        "link": "Drug Enforcement & Prevention Act of 2020 (DEPA)"
+      },
+      "depaCategories": {
+        "title": "DEPA Controlled Substance Categories"
+      },
+      "loadingPenalCode": "Loading penal code...",
+      "toasts": {
+        "noCharges": {
+          "title": "No Charges",
+          "description": "Please add at least one charge."
+        },
+        "incomplete": {
+          "title": "Incomplete Charge",
+          "selectCharge": "Please select a charge for all rows.",
+          "selectClass": "Please select a class for \"{charge}\".",
+          "selectOffense": "Please select an offense for \"{charge}\".",
+          "selectAddition": "Please select an addition for \"{charge}\".",
+          "selectCategory": "Please select a category for the drug charge \"{charge}\"."
+        }
+      }
     },
     "results": {
       "additionNames": {
@@ -323,7 +358,16 @@
         "totalSuspension": "Total Suspension (Days)",
         "bailCost": "Bail Cost",
         "originalValue": "Original: {value}"
+      },
+      "toasts": {
+        "copiedTitle": "Copied!",
+        "copiedDescription": "Copied '{value}' to clipboard.",
+        "copiedDescriptionWithLabel": "Copied '{label}' ({value}) to clipboard.",
+        "linkCopiedTitle": "Link Copied!",
+        "linkCopiedDescription": "A shareable link to this calculation has been copied."
       }
     }
   }
 }
+
+    
