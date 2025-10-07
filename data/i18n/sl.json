@@ -1,0 +1,1588 @@
+{
+  "common": {
+    "language": {
+      "label": "Jezik",
+      "english": "Angleščina",
+      "spanish": "Španščina",
+      "slovenian": "Slovenščina"
+    }
+  },
+  "navigation": {
+    "dashboard": "Nadzorna plošča",
+    "legalSearch": "Pravno iskanje",
+    "arrestCalculator": "Kalkulator aretacij",
+    "arrestReport": "Poročilo o aretaciji",
+    "paperworkGenerators": "Generatorji dokumentacije",
+    "simplifiedPenalCode": "Poenostavljen kazenski zakonik",
+    "caselaw": "Sodna praksa in viri",
+    "map": "Interaktivni zemljevid",
+    "logParser": "Analizator dnevnikov",
+    "reportArchive": "Arhiv poročil",
+    "settings": "Nastavitve",
+    "help": "Pomoč in povratne informacije",
+    "announcements": "Objave",
+    "github": "GitHub"
+  },
+  "announcements": {
+    "pageTitle": "Objave",
+    "header": {
+      "title": "Objave",
+      "description": "Ostanite na tekočem z najnovejšimi novicami in posodobitvami."
+    },
+    "postedOn": "Objavljeno"
+  },
+  "settings": {
+    "pageTitle": "Nastavitve",
+    "header": {
+      "title": "Nastavitve",
+      "description": "Upravljajte nastavitve in podatke aplikacije."
+    },
+    "appearance": {
+      "title": "Videz",
+      "description": "Prilagodite videz in občutek aplikacije.",
+      "light": "Svetlo",
+      "dark": "Temno",
+      "system": "Sistemsko"
+    },
+    "defaultOfficer": {
+      "title": "Privzete informacije o policistu",
+      "description": "Nastavite privzete podatke o policistu, ki se bodo samodejno izpolnili v novih poročilih o aretaciji.",
+      "predefinedActive": {
+        "title": "Aktivna je vnaprej določena postava",
+        "description": "Podatke o vašem policistu trenutno upravlja vnaprej določena postava.",
+        "alert": "Za upravljanje seznama policistov pojdite na stran Napredni parametri obrazca. Spodaj lahko ponastavite na nastavitev enega samega privzetega policista.",
+        "goToAdvanced": "Pojdi na napredne parametre",
+        "reset": "Ponastavi na privzeto"
+      },
+      "fields": {
+        "fullName": "Polno ime",
+        "fullNamePlaceholder": "Janez Novak",
+        "rankAndDept": "Čin in oddelek",
+        "rankPlaceholder": "Izberite čin",
+        "badgeNo": "Številka značke",
+        "badgePlaceholder": "12345",
+        "divDetail": "Oddelek / Enota",
+        "divDetailPlaceholder": "npr. Centralna policijska postaja"
+      }
+    },
+    "advancedParams": {
+      "title": "Napredni parametri obrazca",
+      "description": "Konfigurirajte napredne možnosti obrazca, kot je nastavitev privzete postave policistov.",
+      "button": "Pojdi na napredne parametre"
+    },
+    "predefinedCallsigns": {
+      "title": "Vnaprej določeni klicni znaki",
+      "description": "Upravljajte seznam klicnih znakov za hiter izbor v obrazcih.",
+      "placeholder": "Klicni znak #{index}",
+      "addButton": "Dodaj klicni znak"
+    },
+    "altCharacters": {
+      "title": "Alternativni liki",
+      "description": "Upravljajte do 3 alternativne like za hiter izbor v poročilih.",
+      "character": "Lik {index}",
+      "addButton": "Dodaj lik"
+    },
+    "formVisibility": {
+      "title": "Vidnost obrazcev",
+      "description": "Nadzirajte, kateri obrazci za določene frakcije so vidni na strani Generatorji dokumentacije.",
+      "noGroups": "Ni najdenih preklopljivih skupin obrazcev frakcij."
+    },
+    "privacy": {
+      "title": "Nastavitve zasebnosti",
+      "description": "Upravljajte, kako se uporabljajo vaši podatki.",
+      "analyticsLabel": "Anonimna analitika",
+      "analyticsDescription": "Pomagajte izboljšati aplikacijo z deljenjem anonimnih podatkov o uporabi."
+    },
+    "experimental": {
+      "title": "Eksperimentalne funkcije",
+      "description": "Vključite se in preizkusite nove funkcije, ki so še v razvoju. Lahko so nestabilne.",
+      "aiReportsLabel": "Poročila o aretaciji z AI",
+      "aiReportsDescription": "Prikaže funkcije AI na osnovnem poročilu o aretaciji, kar lahko pomaga pri pisanju poročil za tiste, ki so priznali krivdo."
+    },
+    "dataManagement": {
+      "title": "Upravljanje podatkov",
+      "description": "Trajno izbrišite vse shranjene podatke, vključno s shranjenimi poročili, obtožbami in privzetimi nastavitvami. Tega dejanja ni mogoče razveljaviti.",
+      "exportButton": "Izvozi podatke",
+      "importButton": "Uvozi podatke",
+      "clearButton": "Počisti vse podatke spletnega mesta",
+      "clearDialog": {
+        "title": "Ste popolnoma prepričani?",
+        "description": "Tega dejanja ni mogoče razveljaviti. To bo trajno izbrisalo vse podatke vaše aplikacije iz shrambe brskalnika."
+      }
+    },
+    "toasts": {
+      "settingsSaved": "Nastavitve shranjene",
+      "settingsSavedDesc": "Vaše nastavitve so bile posodobljene.",
+      "dataCleared": "Podatki počiščeni",
+      "dataClearedDesc": "Vsi lokalni in sejni podatki so bili uspešno počiščeni.",
+      "clearError": "Napaka",
+      "clearErrorDesc": "Ni bilo mogoče počistiti vseh podatkov spletnega mesta. Preverite konzolo za podrobnosti.",
+      "dataExported": "Podatki izvoženi",
+      "dataExportedDesc": "Datoteka z vašimi podatki je bila prenesena.",
+      "dataImported": "Podatki uvoženi",
+      "dataImportedDesc": "Podatki iz lokalne shrambe so bili uvoženi.",
+      "importFailed": "Uvoz ni uspel",
+      "importFailedDesc": "Podatkov ni bilo mogoče uvoziti. Prepričajte se, da je datoteka veljavna."
+    },
+    "buttons": {
+      "save": "Shrani vse spremembe",
+      "cancel": "Prekliči",
+      "continue": "Nadaljuj"
+    },
+    "advanced": {
+      "pageTitle": "Napredni parametri obrazca",
+      "header": {
+        "title": "Napredni parametri obrazca",
+        "description": "Upravljajte svojo vnaprej določeno postavo policistov za obrazce."
+      },
+      "setup": {
+        "title": "Vnaprej določena nastavitev policistov",
+        "description": "Določite seznam policistov, s katerimi pogosto patruljirate. Ta postava se bo samodejno naložila v nova poročila.",
+        "officer": "Policist {index}",
+        "addOfficerButton": "Dodaj policista"
+      }
+    }
+  },
+  "reportArchive": {
+    "documentTitle": "Arhiv poročil",
+    "header": {
+      "title": "Arhiv poročil",
+      "description": "Oglejte si in obnovite pretekla poročila o aretacijah in oddane dokumente iz generatorja."
+    },
+    "buttons": {
+      "deleteAll": "Izbriši vse",
+      "cancel": "Prekliči",
+      "continue": "Nadaljuj",
+      "restore": "Obnovi",
+      "delete": "Izbriši"
+    },
+    "dialogs": {
+      "deleteAll": {
+        "title": "Ste popolnoma prepričani?",
+        "description": "Tega dejanja ni mogoče razveljaviti. To bo trajno izbrisalo vseh {count} arhiviranih poročil."
+      },
+      "deleteSingle": {
+        "title": "Ste prepričani?",
+        "description": "Tega dejanja ni mogoče razveljaviti. To bo trajno izbrisalo to arhivirano poročilo."
+      }
+    },
+    "tabs": {
+      "arrestReports": "Poročila o aretacijah",
+      "paperworkGenerators": "Generatorji dokumentacije"
+    },
+    "arrestReports": {
+      "title": "Poročila o aretacijah",
+      "empty": "Ni najdenih arhiviranih poročil o aretacijah."
+    },
+    "paperworkSubmissions": {
+      "title": "Oddani dokumenti iz generatorja",
+      "empty": "Ni najdenih arhiviranih oddanih dokumentov."
+    },
+    "table": {
+      "headers": {
+        "date": "Datum",
+        "reportType": "Vrsta poročila",
+        "suspectName": "Ime osumljenca",
+        "actions": "Dejanja",
+        "generator": "Generator",
+        "source": "Vir"
+      },
+      "notAvailable": "N/A",
+      "unknownGenerator": "Neznan generator"
+    },
+    "reportTypes": {
+      "basic": "Osnovno",
+      "advanced": "Napredno"
+    },
+    "sourceTypes": {
+      "user": "Po meri",
+      "static": "Statično"
+    }
+  },
+  "logParser": {
+    "pageTitle": "Analizator dnevnikov",
+    "header": {
+      "title": "Analizator dnevnikov",
+      "description": "Filtrirajte dnevnike klepeta GTA:World za izolacijo interakcij določenih likov."
+    },
+    "configuration": {
+      "title": "Konfiguracija",
+      "description": "Vnesite imena likov in izberite možnosti filtriranja.",
+      "characterNamesLabel": "Imena likov",
+      "characterNamePlaceholder": "Ime lika {index}",
+      "addCharacterButton": "Dodaj lik",
+      "filteringOptionsLabel": "Možnosti filtriranja",
+      "options": {
+        "includeTimestamps": "Vključi časovne žige",
+        "includeEmotes": "Vključi čustva",
+        "includeRadio": "Vključi radio",
+        "includeAme": "Vključi /ame",
+        "includeDo": "Vključi /do"
+      }
+    },
+    "io": {
+      "title": "Vnos & Izhod",
+      "rawLogLabel": "Surovi dnevnik klepeta",
+      "rawLogPlaceholder": "Prilepite svoj dnevnik klepeta tukaj...",
+      "filteredOutputLabel": "Filtriran izhod",
+      "filteredOutputPlaceholder": "Filtrirani dnevniki se bodo prikazali tukaj...",
+      "parseButton": "Analiziraj dnevnike",
+      "copyButton": "Kopiraj izhod"
+    },
+    "toasts": {
+      "missingName": {
+        "title": "Manjkajoče ime lika",
+        "description": "Prosimo, vnesite vsaj eno ime lika za filtriranje dnevnikov."
+      },
+      "success": {
+        "title": "Dnevniki analizirani",
+        "description": "Dnevnik klepeta je bil filtriran glede na vaše izbire."
+      },
+      "nothingToCopy": {
+        "title": "Nič za kopirati",
+        "description": "Izhod je prazen."
+      },
+      "copied": {
+        "title": "Kopirano!",
+        "description": "Filtriran izhod je bil kopiran v odložišče."
+      }
+    }
+  },
+  "simplifiedPenalCode": {
+    "page": {
+      "documentTitle": "Poenostavljen kazenski zakonik",
+      "header": {
+        "title": "Poenostavljen kazenski zakonik",
+        "description": "Brskajte in iščite po seznamu obtožb."
+      },
+      "searchPlaceholder": "Išči po ID-ju, imenu, definiciji ali določbi...",
+      "filters": {
+        "all": "Vse",
+        "felonies": "Zločini",
+        "misdemeanors": "Prekrški",
+        "infractions": "Manjši prekrški"
+      },
+      "error": {
+        "title": "Napaka pri nalaganju podatkov",
+        "fetchFailed": "Napaka pri pridobivanju podatkov kazenskega zakonika"
+      },
+      "noResults": "Ni najdenih obtožb, ki bi ustrezale vašim iskalnim kriterijem."
+    },
+    "chargeCard": {
+      "types": {
+        "felony": "Zločin",
+        "misdemeanor": "Prekršek",
+        "infraction": "Manjši prekršek",
+        "other": "Drugo"
+      },
+      "drugRelated": "Povezano z drogami",
+      "details": {
+        "classes": "Razredi",
+        "offenses": "Kazniva dejanja",
+        "points": "Točke",
+        "fine": "Globa",
+        "minSentence": "Min. kazen (kriv)",
+        "maxSentence": "Maks. kazen (brez izjave)",
+        "bail": "Varščina",
+        "varies": "Spremenljivo",
+        "variesByCategory": "Spremenljivo po kategoriji"
+      },
+      "stipulations": {
+        "title": "Določbe",
+        "note": "Opomba"
+      },
+      "drugCategories": {
+        "title": "Kategorije drog & določbe",
+        "minTime": "Min. čas",
+        "fine": "Globa"
+      },
+      "time": {
+        "days": {
+          "one": "dan",
+          "other": "dni"
+        },
+        "hours": {
+          "one": "ura",
+          "other": "ur"
+        },
+        "minutes": {
+          "one": "minuta",
+          "other": "minut"
+        }
+      },
+      "bail": {
+        "noBail": "Brez varščine",
+        "discretionary": "Diskrecijsko",
+        "autoBail": "Avtomatska varščina"
+      }
+    }
+  },
+  "legalSearch": {
+    "pageTitle": "Pravno iskanje",
+    "header": {
+      "title": "Pravno iskanje",
+      "description": "Postavite kakršnokoli vprašanje in pridobite citate iz kazenskega zakonika in sodne prakse v enem samem odgovoru."
+    },
+    "accuracyNotice": {
+      "title": "Opozorilo o točnosti",
+      "description": "Ta asistent lahko dela napake. Preden ukrepate na podlagi posredovanih informacij, vedno preverite citiran kazenski zakonik in sodno prakso."
+    },
+    "intro": {
+      "title": "Asistent za pravno iskanje",
+      "description": "Opišite situacijo ali vprašajte o statutu. Zagotovil bom kratko razlago in citiral ustrezne obtožbe iz kazenskega zakonika ali sodno prakso, da boste lahko takoj poglobili svoje znanje.",
+      "bullets": {
+        "penalCode": "Poiščite ustrezne obtožbe iz kazenskega zakonika San Andreasa.",
+        "caselaw": "Prikažite povzetke in posledice lokalne sodne prakse.",
+        "oyez": "Povezava do podobnih primerov na Oyez.org za nadaljnje branje."
+      }
+    },
+    "chargeTypes": {
+      "felony": "Zločin",
+      "misdemeanor": "Prekršek",
+      "infraction": "Manjši prekršek"
+    },
+    "results": {
+      "explanation": "Razlaga",
+      "penalCode": "Citati kazenskega zakonika",
+      "caselaw": "Citati sodne prakse",
+      "oyez": "Reference Oyez",
+      "noPenalCode": "Za to poizvedbo niso bile identificirane nobene obtožbe iz kazenskega zakonika.",
+      "noCaselaw": "Nobena lokalna sodna praksa se ni neposredno ujemala s tem vprašanjem.",
+      "summary": "Povzetek",
+      "implication": "Posledica"
+    },
+    "inputPlaceholder": "Vprašajte o obtožbi, sodni praksi ali pravnem scenariju...",
+    "buttons": {
+      "search": "Išči",
+      "searching": "Iskanje..."
+    },
+    "errors": {
+      "title": "Iskanje ni mogoče",
+      "overloaded": "Model je trenutno preobremenjen. Prosimo, poskusite znova čez nekaj trenutkov.",
+      "generic": "Prišlo je do napake med iskanjem. Prosimo, poskusite znova."
+    }
+  },
+  "caselaw": {
+    "pageTitle": "Sodna praksa & pravni viri",
+    "header": {
+      "title": "Sodna praksa & pravni viri",
+      "description": "Hiter dostop do pravnih dokumentov, urnikov in pomembne sodne prakse."
+    },
+    "database": {
+      "title": "Baza podatkov sodne prakse",
+      "description": "Iščite relevantne sodne prakse.",
+      "searchPlaceholder": "Išči po imenu primera ali povzetku...",
+      "filters": {
+        "all": "Vse",
+        "federal": "Združene države",
+        "local": "San Andreas"
+      },
+      "noResults": "Ni najdenih sodnih praks, ki bi ustrezale vašim iskalnim kriterijem."
+    },
+    "cards": {
+      "summary": "Povzetek",
+      "implication": "Posledica za policiste",
+      "viewSource": "Ogled vira"
+    },
+    "jurisdictions": {
+      "federal": "Zvezno",
+      "federalCivil": "Zvezno (civilno)",
+      "localSupreme": "Vrhovno sodišče SA",
+      "localAppeals": "Pritožbeno sodišče SA",
+      "localAppealsCivil": "Pritožbeno sodišče SA (civilno)",
+      "unknown": "Neznano"
+    },
+    "toasts": {
+      "copied": {
+        "title": "Kopirano v odložišče",
+        "description": "Vsebina {title} je bila kopirana."
+      }
+    }
+  },
+  "paperworkGenerators": {
+    "page": {
+      "documentTitle": "Generatorji dokumentacije",
+      "header": {
+        "title": "Generatorji dokumentacije",
+        "description": "Izberite predlogo ali uporabite enega od shranjenih obrazcev."
+      },
+      "builderButton": "Ustvari nov obrazec",
+      "customForms": {
+        "title": "Vaši obrazci po meri",
+        "table": {
+          "title": "Naslov",
+          "description": "Opis",
+          "lastModified": "Zadnja sprememba",
+          "actions": "Dejanja",
+          "useForm": "Uporabi obrazec"
+        },
+        "empty": "Niste še ustvarili nobenega obrazca. Kliknite \"Ustvari nov obrazec\" za začetek."
+      }
+    },
+    "builder": {
+      "pageTitle": "Graditelj obrazcev"
+    },
+    "list": {
+      "globalTitle": "Globalni generatorji",
+      "empty": "Ni na voljo nobenih generatorjev dokumentacije."
+    }
+  },
+  "paperworkSubmit": {
+    "documentTitle": "Oddaja dokumentacije",
+    "header": {
+      "title": "Oddaja dokumentacije",
+      "description": "Spodaj preglejte formatirano dokumentacijo."
+    },
+    "alert": {
+      "title": "Pozor!",
+      "description": "Predogled na tej strani morda ni 100% natančen, vendar je generirana vsebina zasnovana tako, da deluje popolnoma tam, kjer jo prilepite. To poročilo je bilo tudi arhivirano."
+    },
+    "reportTitleLabel": "Naslov poročila",
+    "buttons": {
+      "copyTitle": "Kopiraj naslov",
+      "download": "Prenesi poročilo",
+      "downloading": "Pripravljanje slike...",
+      "copyPaperwork": "Kopiraj dokumentacijo"
+    },
+    "error": {
+      "header": {
+        "title": "Napaka pri oddaji",
+        "description": "Ni bilo mogoče najti potrebnih podatkov za generiranje te dokumentacije."
+      },
+      "alert": {
+        "title": "Napaka",
+        "description": "Ni bilo mogoče naložiti podatkov poročila. Prosimo, pojdite nazaj na stran z generatorji in poskusite znova."
+      }
+    },
+    "toasts": {
+      "copySuccess": {
+        "title": "Uspeh",
+        "description": "Vsebina dokumentacije je kopirana v odložišče."
+      },
+      "copyTitleSuccess": {
+        "description": "Naslov poročila je kopiran v odložišče."
+      },
+      "downloadStart": {
+        "title": "Prenos se je začel",
+        "description": "Slika vaše dokumentacije se prenaša."
+      },
+      "downloadFailed": {
+        "title": "Prenos ni uspel",
+        "description": "Ni bilo mogoče ustvariti slike iz predogleda dokumentacije. Prosimo, poskusite znova."
+      }
+    }
+  },
+  "maintenance": {
+    "title": "Vzdrževanje",
+    "message": "Trenutno izvajamo načrtovano vzdrževanje. Kmalu bomo spet na spletu."
+  },
+  "clientLayout": {
+    "betaEndedTitle": "Beta dostop se je končal",
+    "betaEndedMessage": "Ta beta različica ni več aktivna. Prosimo, uporabite glavno spletno stran.",
+    "betaLiveSite": "Pojdi на spletno stran v živo",
+    "exportData": "Izvozi podatke",
+    "toast": {
+      "exportedTitle": "Podatki izvoženi",
+      "exportedDescription": "Datoteka z vašimi podatki je bila prenesena."
+    }
+  },
+  "dashboard": {
+    "header": {
+      "title": "Nadzorna plošča",
+      "description": "Dobrodošli na MDC Panel+. Tu so vaša razpoložljiva orodja."
+    },
+    "modules": {
+      "arrestCalculator": {
+        "title": "Kalkulator aretacij",
+        "description": "Izračunajte kazni za aretacije na podlagi obtožb."
+      },
+      "arrestReport": {
+        "title": "Poročilo o aretaciji",
+        "description": "Ustvarite in upravljajte poročila o aretacijah."
+      },
+      "paperworkGenerators": {
+        "title": "Generatorji dokumentacije",
+        "description": "Generirajte različne vrste dokumentacije."
+      },
+      "penalCode": {
+        "title": "Poenostavljen kazenski zakonik",
+        "description": "Brskajte po poenostavljeni različici kazenskega zakonika."
+      },
+      "caselaw": {
+        "title": "Sodna praksa in viri",
+        "description": "Dostopajte do sodne prakse in drugih pravnih virov."
+      },
+      "settings": {
+        "title": "Nastavitve",
+        "description": "Upravljajte nastavitve in podatke aplikacije."
+      }
+    }
+  },
+  "footer": {
+    "rights": "Vse pravice pridržane.",
+    "version": "Različica",
+    "about": "O strani",
+    "credits": "Zasluge in prispevki"
+  },
+  "about": {
+    "pageTitle": "O strani",
+    "header": {
+      "title": "O MDC Panel+",
+      "description": "Projekt iz strasti, zasnovan za pomoč."
+    },
+    "overview": {
+      "title": "Za kaj gre?",
+      "paragraphs": [
+        "Živjo! Sem samostojni razvijalec, ki je ustvaril to orodje iz iskrene želje, da bi pomagal policistom v naši igralski skupnosti. Moj cilj je bil preprost: olajšati in povečati učinkovitost dela z dokumentacijo in iskanjem virov.",
+        "Ta projekt je plod ljubezni, ustvarjen za poenostavitev vsakodnevnih nalog in zagotavljanje osrednjega vozlišča za bistvena orodja LEO. Ne glede na to, ali izračunavate kazen, pišete poročilo ali iščete sodno prakso, upam, da vam ta plošča olajša izkušnjo."
+      ]
+    },
+    "tech": {
+      "title": "Tehnične malenkosti",
+      "description": "Kratek pogled pod pokrov.",
+      "cards": {
+        "openSource": {
+          "title": "Odprtokodno",
+          "description": "Celoten projekt je odprtokoden. Kodo si lahko ogledate, predlagate spremembe ali celo prispevate sami na {link}.",
+          "linkLabel": "GitHub repozitoriju"
+        },
+        "ai": {
+          "title": "Razvoj s pomočjo AI",
+          "description": "Za pospešitev razvoja in raziskovanje sodobnih kodirnih praks je bila ta aplikacija zgrajena s pomočjo AI, natančneje Google-ovega Firebase Studio."
+        }
+      },
+      "table": {
+        "siteVersion": {
+          "label": "Različica spletnega mesta",
+          "tooltip": "Trenutna javna različica aplikacije."
+        },
+        "cacheVersion": {
+          "label": "Različica predpomnilnika",
+          "tooltip": "Nadzira predpomnilnik brskalnika; spreminja se ob večjih posodobitvah, da prisili nalaganje novih sredstev."
+        },
+        "localStorageVersion": {
+          "label": "Različica lokalne shrambe",
+          "tooltip": "Nadzira lokalne podatke; spreminja se ob večjih posodobitvah, da počisti zastarele nastavitve."
+        },
+        "cdn": {
+          "label": "CDN",
+          "tooltip": "Osnovni URL, s katerega se strežejo statična sredstva, kot so kazenski zakoniki."
+        },
+        "github": {
+          "label": "GitHub repozitorij",
+          "tooltip": "Javna izvorna koda za ta projekt."
+        },
+        "discord": {
+          "label": "Discord skupnost",
+          "tooltip": "Uradni strežnik skupnosti in podpore."
+        },
+        "notSet": "Ni nastavljeno"
+      }
+    },
+    "support": {
+      "title": "Podpora & donacije",
+      "description": "Vaša podpora je cenjena, vendar delimo ljubezen.",
+      "intro": "Čeprav resnično cenim vsako misel na donacijo, bi vas najprej spodbudil, da podprete platforme in ljudi, ki so omogočili ta projekt. Razmislite o donaciji {gtaWorld} za ohranjanje delovanja naše skupnosti ali pa prvotnemu ustvarjalcu MDC Panel, {founder}, na čigar temeljih sem gradil.",
+      "buttons": {
+        "supportFounder": "Podprite ustanovitelja",
+        "donate": "Donirajte mi на Ko-fi"
+      }
+    },
+    "contact": {
+      "title": "Kontakt & povratne informacije",
+      "description": "Trenutni vzdrževalec je {maintainer}. Če imate kakršnakoli vprašanja, najdete napako ali imate predlog, se obrnite name preko Discorda ali uporabite obrazec za povratne informacije, ki je na voljo на spletnem mestu."
+    }
+  },
+  "credits": {
+    "pageTitle": "Zasluge & prispevki",
+    "header": {
+      "title": "Zasluge & prispevki",
+      "description": "Ta projekt stoji на ramenih velikanov."
+    },
+    "intro": "Velika hvala vsem, ki so prispevali, navdihnili ali podprli ta projekt. Številne ideje in funkcije so bile navdihnjene z delom drugih v skupnosti, združene tukaj v eno enotno orodje."
+  },
+  "map": {
+    "pageTitle": "Interaktivni zemljevid"
+  },
+  "help": {
+    "pageTitle": "Pomoč & povratne informacije",
+    "header": {
+      "title": "Center за pomoč & povratne informacije",
+      "description": "Poiščite odgovore na pogosta vprašanja in pridobite podporo."
+    },
+    "faq": {
+      "title": "Pogosta vprašanja",
+      "searchPlaceholder": "Išči vprašanja...",
+      "empty": "Ni najdenih vprašanj, ki bi ustrezala vašemu iskanju."
+    },
+    "cta": {
+      "title": "Ne najdete, kar iščete?",
+      "description": "Vedno sem vesel povratnih informacij.",
+      "button": "Oddaj povratne informacije"
+    }
+  },
+  "shared": {
+    "generalSection": {
+      "title": "Splošni oddelek",
+      "date": "Datum",
+      "datePlaceholder": "DD/MMM/LLLL",
+      "time": "Čas",
+      "timePlaceholder": "HH:MM",
+      "callSign": "Klicni znak",
+      "callSignPlaceholder": "KLICNI ZNAK",
+      "callSignComboboxPlaceholder": "Izberite ali vnesite klicni znak..."
+    },
+    "locationDetails": {
+      "district": "Okrožje",
+      "districtPlaceholder": "Izberite ali vnesite okrožje",
+      "searchDistricts": "Išči okrožja...",
+      "noDistrictsFound": "Ni najdenih okrožij.",
+      "street": "Ime ulice",
+      "streetPlaceholder": "Izberite ali vnesite ulico",
+      "searchStreets": "Išči ulice...",
+      "noStreetsFound": "Ni najdenih ulic."
+    },
+    "officerSection": {
+      "title": "Oddelek policista",
+      "addOfficer": "Dodaj policista",
+      "fullName": "Polno ime",
+      "rank": "Čin",
+      "selectRank": "Izberite čin",
+      "badgeNo": "Št. značke",
+      "unitDetail": "Enota / Podrobnost",
+      "policyNotice": {
+        "title": "Opozorilo o politiki",
+        "description": "Politika LSPD zahteva uporabo naprednega formata poročila o aretaciji.",
+        "button": "Preklopi na napredno"
+      }
+    },
+    "textareaWithPreset": {
+      "enablePreset": "Omogoči prednastavitev?",
+      "clearToReenable": "Počistite besedilno polje, da ponovno omogočite prednastavitve.",
+      "textareaInGroupError": "textarea-with-preset ni mogoče uporabiti znotraj vhodne skupine.",
+      "addEntry": "Dodaj {label}"
+    },
+    "streetsAct": {
+      "title": "Pozor!",
+      "description": "Ena ali več obtožb se nanaša na <strong>Oddelek IV</strong> zakona STREETS.<br/>Aretirana oseba je lahko predmet klavzule o večkratnih kršiteljih in povečanih zasegov vozil ter odvzemov vozniških dovoljenj (s 7 na 28 dni).<br/> Referenca: {link}",
+      "linkLabel": "Zakon o krepitvi prometnih predpisov za zagotavljanje varnosti vsakega potnika 2024 (Zakon STREETS)"
+    }
+  },
+  "arrestCalculator": {
+    "page": {
+      "documentTitle": "MDC Panel – Kalkulator aretacij",
+      "header": {
+        "title": "Kalkulator aretacij",
+        "description": "Izračunajte kazni za aretacije na podlagi obtožb."
+      },
+      "buttons": {
+        "addCharge": "Dodaj obtožbo",
+        "calculate": "Izračunaj aretacijo"
+      },
+      "paroleViolatorLabel": "Osumljenec je kršitelj pogojnega izpusta",
+      "fields": {
+        "charge": "Obtožba",
+        "class": "Razred",
+        "offense": "Prekršek",
+        "addition": "Dodatek",
+        "category": "Kategorija"
+      },
+      "placeholders": {
+        "selectCharge": "Izberite obtožbo...",
+        "searchCharge": "Išči obtožbo po imenu ali ID-ju...",
+        "selectClass": "Izberite razred",
+        "selectOffense": "Izberite prekršek",
+        "selectAddition": "Izberite dodatek",
+        "selectCategory": "Izberite kategorijo"
+      },
+      "options": {
+        "classA": "Razred A",
+        "classB": "Razred B",
+        "classC": "Razred C",
+        "offense": "Prekršek #{number}"
+      },
+      "noChargeFound": "Ni najdenih obtožb.",
+      "depaWarning": {
+        "title": "Pozor!",
+        "description": "Prepričajte se, da ste izbrali pravilno kategorijo za obtožbe v zvezi z drogami. Za več informacij preverite nalog (če obstaja).",
+        "link": "Zakon o preprečevanju in obravnavi drog iz leta 2020 (DEPA)"
+      },
+      "depaCategories": {
+        "title": "Kategorije nadzorovanih snovi po DEPA"
+      },
+      "loadingPenalCode": "Nalaganje kazenskega zakonika...",
+      "toasts": {
+        "noCharges": {
+          "title": "Brez obtožb",
+          "description": "Prosimo, dodajte vsaj eno obtožbo."
+        },
+        "incomplete": {
+          "title": "Nepopolna obtožba",
+          "selectCharge": "Prosimo, izberite obtožbo za vse vrstice.",
+          "selectClass": "Prosimo, izberite razred za \"{charge}\".",
+          "selectOffense": "Prosimo, izberite prekršek za \"{charge}\".",
+          "selectAddition": "Prosimo, izberite dodatek za \"{charge}\".",
+          "selectCategory": "Prosimo, izberite kategorijo za obtožbo v zvezi z drogami \"{charge}\"."
+        }
+      }
+    },
+    "results": {
+      "additionNames": {
+        "offender": "Storilec",
+        "attempt": "Poskus",
+        "accomplice": "Sostorilec",
+        "accessory": "Pomočnik",
+        "conspiracy": "Zarota",
+        "solicitation": "Nagovarjanje",
+        "paroleViolation": "Kršitev pogojnega izpusta"
+      },
+      "types": {
+        "felony": "Zločin",
+        "misdemeanor": "Prekršek",
+        "infraction": "Manjši prekršek",
+        "unknown": "Neznano"
+      },
+      "autoBail": {
+        "na": "N/A",
+        "noBail": "Brez varščine",
+        "auto": "Avtomatsko",
+        "discretionary": "Diskrecijsko"
+      },
+      "bailStatus": {
+        "na": "N/A",
+        "notEligible": "Ni upravičen",
+        "discretionary": "Diskrecijsko",
+        "eligible": "Upravičen"
+      },
+      "labels": {
+        "yes": "Da",
+        "no": "Ne",
+        "notAvailable": "N/A",
+        "yesWithValue": "Da ({value})"
+      },
+      "currency": "{value} $",
+      "time": {
+        "zero": "0 minut",
+        "days": {
+          "one": "{count} dan",
+          "other": "{count} dni"
+        },
+        "hours": {
+          "one": "{count} ura",
+          "other": "{count} ur"
+        },
+        "minutes": {
+          "one": "{count} minuta",
+          "other": "{count} minut"
+        },
+        "summary": "{parts} ({minutes} min skupaj)"
+      },
+      "charges": {
+        "cardTitle": "Obtožbe",
+        "copyLink": "Kopiraj povezavo izračuna",
+        "modify": "Spremeni obtožbe",
+        "title": "{prefix} {id}. {charge}",
+        "categorySuffix": "(Kategorija: {category})",
+        "offenseSuffix": "(Prekršek {offense})",
+        "offenseNumber": "Prekršek #{offense}",
+        "copyTooltip": "Kopiraj {field} v odložišče",
+        "copyAria": "Kopiraj {field} v odložišče",
+        "table": {
+          "title": "Obtožba",
+          "addition": "Dodatek",
+          "offense": "Prekršek",
+          "type": "Vrsta",
+          "minTime": "Min. čas",
+          "maxTime": "Maks. čas",
+          "points": "Točke",
+          "fine": "Globa",
+          "impound": "Zaseg",
+          "suspension": "Odvzem",
+          "autoBail": "Avtomatska varščina",
+          "bail": "Varščina"
+        },
+        "tooltip": {
+          "sentenceMultiplier": "Množitelj kazni: x{value}",
+          "pointsMultiplier": "Množitelj točk: x{value}",
+          "originalTime": "Prvotni čas: {value}",
+          "modifiedTime": "Spremenjeni čas: {value}",
+          "originalPoints": "Prvotne točke: {value}",
+          "modifiedPoints": "Spremenjene točke: {value}"
+        }
+      },
+      "copyLabels": {
+        "rawFine": "Surova globa"
+      },
+      "stipulations": {
+        "title": "Določbe",
+        "charge": "Obtožba",
+        "stipulation": "Določba"
+      },
+      "summary": {
+        "title": "Povzetek",
+        "alerts": {
+          "sentence": {
+            "title": "Kazen omejena",
+            "description": "Skupna kazen presega največ {maxDays} dni. Prikazani čas je bil omejen.",
+            "originalMinLabel": "Prvotni min:",
+            "originalMaxLabel": "Prvotni maks:"
+          },
+          "impound": {
+            "title": "Zaseg omejen",
+            "description": "Skupno trajanje zasega presega največ {maxDays} dni. Prikazana vrednost: {value}."
+          },
+          "suspension": {
+            "title": "Odvzem omejen",
+            "description": "Skupno trajanje odvzema presega največ {maxDays} dni. Prikazana vrednost: {value}."
+          }
+        },
+        "mobile": {
+          "minTime": "Min. čas",
+          "maxTime": "Maks. čas",
+          "points": "Točke",
+          "fine": "Globa",
+          "impound": "Zaseg",
+          "suspension": "Odvzem",
+          "bailStatus": "Stanje varščine",
+          "highestBail": "Najvišja varščina"
+        },
+        "table": {
+          "minTime": "Min. čas",
+          "maxTime": "Maks. čas",
+          "points": "Točke",
+          "fine": "Globa",
+          "impound": "Zaseg",
+          "suspension": "Odvzem",
+          "bailStatus": "Stanje varščine",
+          "highestBail": "Najvišja varščina"
+        }
+      },
+      "copyables": {
+        "minMinutes": "Minimalne minute",
+        "maxMinutes": "Maksimalne minute",
+        "totalImpound": "Skupni dnevi zasega",
+        "totalSuspension": "Skupni dnevi odvzema",
+        "bailCost": "Najvišja varščina",
+        "toastTitle": "Kopirano",
+        "toastDescription": "{label} kopirano v odložišče.",
+        "originalValue": "Prvotna vrednost: {value}"
+      },
+      "toasts": {
+        "copiedTitle": "Kopirano v odložišče",
+        "copiedDescription": "Kopirano: {value}",
+        "copiedDescriptionWithLabel": "Kopirano {label}: {value}",
+        "linkCopiedTitle": "Povezava kopirana",
+        "linkCopiedDescription": "Delite to povezavo za ogled istega izračuna"
+      }
+    }
+  },
+  "arrestCalculation": {
+    "page": {
+      "documentTitle": "Izračun aretacije",
+      "loadingDescription": "Nalaganje vašega deljenega izračuna aretacije...",
+      "title": "Izračun aretacije",
+      "description": "Deljeni izračun aretacije.",
+      "error": {
+        "title": "Napaka pri nalaganju izračuna",
+        "description": "Prišlo je do težave pri obdelavi povezave deljenega izračuna aretacije.",
+        "alertTitle": "Napaka",
+        "missingCharges": "Deljena povezava ne vsebuje nobenih informacij o obtožbah.",
+        "invalidFormat": "Obtožba #{index} ima neveljavno obliko. Pričakovano vsaj 3 dele, dobili pa ste {parts}.",
+        "unknownCharge": "ID obtožbe '{id}' ni veljavna obtožba v kazenskem zakoniku.",
+        "invalidCategory": "Neveljaven indeks kategorije drog '{category}' za obtožbo '{id}'."
+      },
+      "errors": {
+        "penalCodeFetch": "Napaka pri pridobivanju podatkov kazenskega zakonika."
+      },
+      "empty": {
+        "title": "Ni najdenih obtožb",
+        "description": "V priloženi povezavi niso bile najdene nobene veljavne obtožbe."
+      }
+    },
+    "results": {
+      "additionNames": {
+        "offender": "Storilec",
+        "attempt": "Poskus",
+        "accomplice": "Sostorilec",
+        "accessory": "Pomočnik",
+        "conspiracy": "Zarota",
+        "solicitation": "Nagovarjanje",
+        "paroleViolation": "Kršitev pogojnega izpusta"
+      },
+      "types": {
+        "felony": "Zločin",
+        "misdemeanor": "Prekršek",
+        "infraction": "Manjši prekršek",
+        "unknown": "Neznano"
+      },
+      "autoBail": {
+        "na": "N/A",
+        "noBail": "Brez varščine",
+        "auto": "Avtomatsko",
+        "discretionary": "Diskrecijsko"
+      },
+      "bailStatus": {
+        "na": "N/A",
+        "notEligible": "Ni upravičen",
+        "discretionary": "Diskrecijsko",
+        "eligible": "Upravičen"
+      },
+      "labels": {
+        "yes": "Da",
+        "no": "Ne",
+        "notAvailable": "N/A",
+        "yesWithValue": "Da ({value})"
+      },
+      "currency": "{value} $",
+      "time": {
+        "zero": "0 minut",
+        "days": {
+          "one": "{count} dan",
+          "other": "{count} dni"
+        },
+        "hours": {
+          "one": "{count} ura",
+          "other": "{count} ur"
+        },
+        "minutes": {
+          "one": "{count} minuta",
+          "other": "{count} minut"
+        },
+        "summary": "{parts} ({minutes} min skupaj)"
+      },
+      "charges": {
+        "cardTitle": "Obtožbe",
+        "copyLink": "Kopiraj povezavo izračuna",
+        "modify": "Spremeni obtožbe",
+        "title": "{prefix} {id}. {charge}",
+        "categorySuffix": "(Kategorija: {category})",
+        "offenseSuffix": "(Prekršek {offense})",
+        "offenseNumber": "Prekršek #{offense}",
+        "copyTooltip": "Kopiraj {field} v odložišče",
+        "copyAria": "Kopiraj {field} v odložišče",
+        "table": {
+          "title": "Obtožba",
+          "addition": "Dodatek",
+          "offense": "Prekršek",
+          "type": "Vrsta",
+          "minTime": "Min. čas",
+          "maxTime": "Maks. čas",
+          "points": "Točke",
+          "fine": "Globa",
+          "impound": "Zaseg",
+          "suspension": "Odvzem",
+          "autoBail": "Avtomatska varščina",
+          "bail": "Varščina"
+        },
+        "tooltip": {
+          "sentenceMultiplier": "Množitelj kazni: x{value}",
+          "pointsMultiplier": "Množitelj točk: x{value}",
+          "originalTime": "Prvotni čas: {value}",
+          "modifiedTime": "Spremenjeni čas: {value}",
+          "originalPoints": "Prvotne točke: {value}",
+          "modifiedPoints": "Spremenjene točke: {value}"
+        }
+      },
+      "copyLabels": {
+        "rawFine": "Surova globa"
+      },
+      "stipulations": {
+        "title": "Določbe",
+        "charge": "Obtožba",
+        "stipulation": "Določba"
+      },
+      "summary": {
+        "title": "Povzetek",
+        "alerts": {
+          "sentence": {
+            "title": "Kazen omejena",
+            "description": "Skupna kazen presega največ {maxDays} dni. Prikazani čas je bil omejen.",
+            "originalMinLabel": "Prvotni min:",
+            "originalMaxLabel": "Prvotni maks:"
+          },
+          "impound": {
+            "title": "Zaseg omejen",
+            "description": "Skupno trajanje zasega presega največ {maxDays} dni. Prikazana vrednost: {value}."
+          },
+          "suspension": {
+            "title": "Odvzem omejen",
+            "description": "Skupno trajanje odvzema presega največ {maxDays} dni. Prikazana vrednost: {value}."
+          }
+        },
+        "mobile": {
+          "minTime": "Min. čas",
+          "maxTime": "Maks. čas",
+          "points": "Točke",
+          "fine": "Globa",
+          "impound": "Zaseg",
+          "suspension": "Odvzem",
+          "bailStatus": "Stanje varščine",
+          "highestBail": "Najvišja varščina"
+        },
+        "table": {
+          "minTime": "Min. čas",
+          "maxTime": "Maks. čas",
+          "points": "Točke",
+          "fine": "Globa",
+          "impound": "Zaseg",
+          "suspension": "Odvzem",
+          "bailStatus": "Stanje varščine",
+          "highestBail": "Najvišja varščina"
+        }
+      },
+      "copyables": {
+        "minMinutes": "Minimalne minute",
+        "maxMinutes": "Maksimalne minute",
+        "totalImpound": "Skupni dnevi zasega",
+        "totalSuspension": "Skupni dnevi odvzema",
+        "bailCost": "Najvišja varščina",
+        "toastTitle": "Kopirano",
+        "toastDescription": "{label} kopirano v odložišče.",
+        "originalValue": "Prvotna vrednost: {value}"
+      },
+      "toasts": {
+        "copiedTitle": "Kopirano",
+        "copiedDescriptionWithLabel": "{label}: {value} kopirano v odložišče.",
+        "copiedDescription": "{value} kopirano v odložišče.",
+        "linkCopiedTitle": "Povezava kopirana",
+        "linkCopiedDescription": "Povezava izračuna je kopirana v odložišče."
+      }
+    }
+  },
+  "arrestReport": {
+    "page": {
+      "documentTitle": "MDC Panel – Poročilo o aretaciji",
+      "header": {
+        "title": "Poročilo o aretaciji",
+        "descriptionWithReport": "Povzetek izračunanih obtožb in obrazec za poročilo.",
+        "descriptionNew": "Ustvari novo poročilo o aretaciji."
+      },
+      "disclaimer": {
+        "title": "Izjava o omejitvi odgovornosti",
+        "description": "To orodje vam pomaga pri papirologiji, kakovost vašega pisanja pa je vaša odgovornost. Še vedno se pričakuje, da boste zagotovili resnične in podrobne informacije."
+      },
+      "enableAdvanced": "Omogoči napredno poročilo",
+      "noCharges": {
+        "title": "Nobena obtožba ni izbrana",
+        "description": "Preden lahko ustvarite poročilo, morate najprej izbrati obtožbe v Kalkulatorju aretacij.",
+        "button": "Pojdi na Kalkulator aretacij"
+      }
+    },
+    "form": {
+      "sections": {
+        "location": {
+          "title": "Podrobnosti o lokaciji"
+        },
+        "arrest": {
+          "title": "Oddelek o aretaciji"
+        },
+        "evidence": {
+          "title": "Oddelek z dokazi"
+        }
+      },
+      "fields": {
+        "suspectName": {
+          "label": "Polno ime osumljenca",
+          "placeholder": "Ime Priimek"
+        },
+        "narrative": {
+          "label": "Pripoved o aretaciji",
+          "placeholder": "Pripoved o aretaciji",
+          "description": "Opišite dogodke, ki so privedli do aretacije, v prvi osebi in v kronološkem vrstnem redu, pri čemer pojasnite utemeljen sum za vsako od obtožb in aretacijo."
+        },
+        "supportingEvidence": {
+          "label": "Podporni dokazi",
+          "placeholder": "Video posnetki, fotografije, povezave, zvočni posnetki/prepis, izjave prič in pričanja",
+          "description": "Predložite podporne dokaze za dopolnitev poročila o aretaciji."
+        },
+        "dashcam": {
+          "label": "Kamera na armaturni plošči",
+          "placeholder": "Kamera na armaturni plošči zajema zvočne in video posnetke, ki prikazujejo...",
+          "description": {
+            "main": "Igrajte, kaj zajema kamera na armaturni plošči ALI predložite povezave na Streamable/YouTube.",
+            "warning": "(( Laganje v tem oddelku bo vodilo v OOC kazen ))"
+          }
+        }
+      },
+      "modifiers": {
+        "callOfService": {
+          "label": "Klic na pomoč",
+          "text": "prejel klic na pomoč št."
+        },
+        "evaded": {
+          "label": "Ubežal",
+          "text": "Pri poskusu pridržanja {{suspect}} je ta z vozilom pobegnil, kar je privedlo do pregona s strani oddelka."
+        },
+        "resistedArrest": {
+          "label": "Uprl se je aretaciji",
+          "text": "Pri poskusu prijetja {{suspect}} se je osumljenec fizično uprl pridržanju in poskušal pobegniti policistom, vpletenim v aretacijo."
+        },
+        "searched": {
+          "label": "Preiskan",
+          "text": "{{suspect}} je bil postavljen pred kamero na armaturni plošči oddelčnega vozila in preiskan v skladu z zakonskimi zahtevami ter politiko oddelka in usposabljanjem, ki sem ga opravil. V posesti osumljenca so bili najdeni naslednji predmeti:"
+        },
+        "booking": {
+          "label": "Zapisnik",
+          "text": "{{suspect}} sem prepeljal na najbližjo postajo oddelka, kjer sem ga vpisal za obtožbe, navedene v tem poročilu, v skladu z vsemi določenimi smernicami oddelka, državnimi zahtevami in usposabljanjem."
+        }
+      },
+      "narrative": {
+        "base": "Na dan {date} sem jaz, {rank} {name} (#{badge}) iz {department}, med delovanjem pod klicnim znakom {callsign}, aretiral {suspect}. Približno ob {time} uri sem vozil po {street}, ko sem "
+      },
+      "buttons": {
+        "generateAi": "Generiraj pripoved z AI",
+        "saveDraft": "Shrani osnutek",
+        "submit": "Oddaj poročilo"
+      }
+    },
+    "basicReport": {
+      "title": "Poročilo o aretaciji",
+      "sections": {
+        "general": {
+          "title": "1. SPLOŠNE INFORMACIJE",
+          "date": "A. DATUM",
+          "time": "B. ČAS (24h)",
+          "callsign": "C. KLICNI ZNAK"
+        },
+        "officers": {
+          "title": "2. INFORMACIJE O POLICISTU(-IH)",
+          "officerName": "A. IME POLICISTA {number}",
+          "rank": "B. ČIN",
+          "badge": "C. ZNAČKA"
+        },
+        "suspect": {
+          "title": "3. INFORMACIJE O Osumljencu",
+          "fullName": "A. POLNO IME"
+        },
+        "location": {
+          "title": "4. KRAJ ARETACIJE",
+          "district": "A. OKROŽJE",
+          "street": "B. ULICA"
+        },
+        "charges": {
+          "title": "5. OBTOŽBE",
+          "headers": {
+            "description": "OPIS OBTOŽBE",
+            "type": "VRSTA",
+            "class": "RAZRED",
+            "offense": "PREKRŠEK",
+            "addition": "DODATEK"
+          }
+        },
+        "narrative": {
+          "title": "6. PRIPOVED"
+        },
+        "evidence": {
+          "title": "7. DOKAZI",
+          "supporting": "A. PODPORNI DOKAZI",
+          "dashcam": "B. POSNETEK KAMERE NA ARMATURNI PLOŠČI"
+        },
+        "summary": {
+          "title": "(( 8. POVZETEK KAZNI IN AVTOMATSKE VARŠČINE ))",
+          "minSentence": "MINIMALNA KAZEN",
+          "maxSentence": "MAKSIMALNA KAZEN",
+          "totalFine": "SKUPNA GLOBA",
+          "points": "TOČKE",
+          "bailStatus": "STATUS VARŠČINE",
+          "bailAmount": "ZNESEK VARŠČINE"
+        }
+      },
+      "types": {
+        "felony": "Zločin",
+        "misdemeanor": "Prekršek",
+        "infraction": "Manjši prekršek",
+        "unknown": "Neznano"
+      },
+      "time": {
+        "zero": "0 minut",
+        "days": {
+          "one": "{count} dan",
+          "other": "{count} dni"
+        },
+        "hours": {
+          "one": "{count} ura",
+          "other": "{count} ur"
+        },
+        "minutes": {
+          "one": "{count} minuta",
+          "other": "{count} minut"
+        },
+        "summary": "{parts} ({minutes} min skupaj)"
+      }
+    },
+    "advancedReport": {
+      "department": {
+        "lspd": "POLICIJSKA UPRAVA LOS SANTOS",
+        "lssd": "ŠERIFOVA PISARNA OKROŽJA LOS SANTOS"
+      },
+      "title": "POROČILO O ARETACIJI",
+      "officer": "{officer}"
+    },
+    "advancedForm": {
+      "headers": {
+        "arresteeName": "IME ARETIRANEGA (IME, SREDNJE IME, PRIIMEK)",
+        "sex": "SPOL (M/Ž/D)",
+        "hair": "LASJE",
+        "eyes": "OČI",
+        "residence": "PREBIVALIŠČE",
+        "age": "STAROST",
+        "height": "VIŠINA",
+        "descent": "POREKLO",
+        "clothing": "OBLAČILA",
+        "oddities": "OSEBNE POSEBNOSTI",
+        "alias": "VZDEVEK/ALIAS",
+        "gang": "TOLPA/KLUB",
+        "charges": "OBTOŽBE",
+        "personsWithSubject": "OSEBE Z OSEBKO",
+        "name": "IME",
+        "gangMoniker": "TOLPA/VZDEVEK",
+        "remove": "ODSTRANI",
+        "incidentSetting": "OKOLIŠČINE INCIDENTA",
+        "date": "DATUM",
+        "time": "ČAS",
+        "location": "LOKACIJA",
+        "handlingOfficers": "{officer} V OBRAVNAVI",
+        "rank": "ČIN",
+        "badgeNo": "{badge} ŠT.",
+        "callsign": "KLICNI ZNAK",
+        "divDetail": "{div}/ENOTA",
+        "modifiers": "SPREMEMBE POROČILA O ARETACIJI"
+      },
+      "placeholders": {
+        "arresteeName": "IME ARETIRANEGA",
+        "sex": "M / Ž / D",
+        "hair": "BARVA LAS",
+        "eyes": "BARVA OČI",
+        "residence": "NASLOV, MESTO, DRŽAVA",
+        "age": "STAROST",
+        "height": "VIŠINA",
+        "descent": "POREKLO",
+        "clothing": "OPIŠITE OBLAČILA",
+        "oddities": "OPIŠITE OSEBNE POSEBNOSTI",
+        "alias": "VZDEVEK / ALIAS, ČE JE ZNAN",
+        "gang": "TOLPA / KLUB, ČE JE ZNAN",
+        "name": "IME {index}",
+        "gangMoniker": "TOLPA / VZDEVEK / ALIAS, ČE JE ZNAN",
+        "date": "DD/MMM/LLLL",
+        "time": "HH:MM (24h)",
+        "district": "Izberite ali vnesite okrožje",
+        "street": "Izberite ali vnesite ulico",
+        "rank": "Izberite čin",
+        "officer": "POLICIST {index}",
+        "badgeNo": "{badge} ŠT.",
+        "callsign": "KLICNI ZNAK",
+        "divDetail": "{div}/ENOTA",
+        "vehicleColor": "BARVA VOZILA",
+        "vehicleModel": "MODEL VOZILA",
+        "vehiclePlate": "REGISTRSKA OZNAKA VOZILA",
+        "transportingRank": "ČIN POLICISTA, KI PREVAŽA",
+        "transportingName": "IME POLICISTA, KI PREVAŽA",
+        "bookingRank": "ČIN POLICISTA, KI VODI POSTOPEK",
+        "bookingName": "IME POLICISTA, KI VODI POSTOPEK",
+        "dicvsLink": "Povezava na posnetek DICVS",
+        "cctvLink": "Povezava na posnetek CCTV",
+        "photosLink": "Povezava na fotografije",
+        "thirdPartyLink": "Povezava na posnetek tretje osebe",
+        "plea": "Izberite izjavo..."
+      },
+      "buttons": {
+        "addPerson": "DODAJ OSEBO",
+        "addOfficer": "DODAJ {officer}",
+        "submit": "Generiraj predogled poročila"
+      },
+      "unknownCharge": "Neznana obtožba",
+      "noChargesSelected": "Nobena obtožba ni izbrana",
+      "modifiers": {
+        "markedUnit": "Označena enota?",
+        "slicktop": "Slicktop?",
+        "inUniform": "V uniformi?",
+        "undercover": "V civilu?",
+        "inMetroUniform": "V {metro} uniformi?",
+        "inG3Uniform": "V G3 uniformi?",
+        "suspectInVehicle": "Osumljenec v vozilu?",
+        "mirandized": "Prebrani Miranda?",
+        "understoodRights": "Razumel pravice?",
+        "video": "Video?",
+        "photographs": "Fotografije?",
+        "cctv": "CCTV?",
+        "thirdPartyVideo": "Video tretje osebe?",
+        "transported": "Ste prevažali?",
+        "booked": "Ste vodili postopek?",
+        "biometricsOnFile": "Biometrija v evidenci?"
+      },
+      "narrative": {
+        "source": {
+          "title": "VIR AKTIVNOSTI",
+          "placeholder": "Opišite začetni stik ali opazovanje..."
+        },
+        "investigation": {
+          "title": "PREISKAVA",
+          "placeholder": "Opišite svojo preiskavo..."
+        },
+        "arrest": {
+          "title": "ARETACIJA",
+          "placeholder": "Opišite postopek aretacije..."
+        },
+        "photographs": {
+          "title": "FOTOGRAFIJE, VIDEO POSNETKI, VIDEO V AVTOMOBILU (DICV) IN DIGITALNE SLIKE",
+          "placeholder": "Zagotovite povezave do kakršnihkoli dokazov...",
+          "noVideoPlaceholder": "Ni bilo na voljo nobenih video ali fotografskih dokazov."
+        },
+        "booking": {
+          "title": "VODENJE POSTOPKA",
+          "placeholder": "Opišite postopek vodenja postopka..."
+        },
+        "evidence": {
+          "title": "FIZIČNI DOKAZI",
+          "placeholder": "Naštejte vse zbrane fizične dokaze..."
+        },
+        "court": {
+          "title": "INFORMACIJE ZA SODIŠČE",
+          "placeholder": "Dodajte vse informacije, pomembne za sodišče..."
+        },
+        "additional": {
+          "title": "DODATNE INFORMACIJE",
+          "placeholder": "Vse dodatne informacije..."
+        },
+        "enablePreset": "Omogoči prednastavitev?",
+        "clearToReenable": "Počistite besedilno polje, da ponovno omogočite prednastavitve."
+      },
+      "pleas": {
+        "guilty": "Kriv",
+        "notGuilty": "Ni kriv",
+        "noContest": "Ne izjavljam se",
+        "requiredCase": "Zahtevan primer"
+      },
+      "evidenceLog": {
+        "logNumber": "ŠTEVILKA DNEVNIKA DOKAZOV",
+        "description": "OPIS",
+        "quantity": "KOLIČINA",
+        "add": "DODAJ DNEVNIK DOKAZOV",
+        "itemDescriptionPlaceholder": "OPIS PREDMETA {index}"
+      },
+      "presets": {
+        "source": {
+          "partnerDetail": "{rank} {name} (#{badge}), dodeljen {divDetail}",
+          "withPartners": "Na dan {date} sem jaz, {rank} {name} (#{badge}), dodeljen {divDetail}, skupaj z {partners}, deloval pod enoto {callsign}.",
+          "singleOfficer": "Na dan {date} sem jaz, {rank} {name} (#{badge}), dodeljen {divDetail}, deloval pod enoto {callsign}.",
+          "vehicleMarkedSlicktop": "Vozil sem označeno črno-belo vozilo brez strešnih luči.",
+          "vehicleMarkedLightbar": "Vozil sem označeno črno-belo vozilo z lučmi na strehi.",
+          "vehicleUnmarked": "Vozil sem neoznačeno vozilo.",
+          "uniformWithBadge": "Nosil sem svojo oddelčno uniformo {uniform} in sem imel vidno prikazano svojo značko.",
+          "patrolUniform": "Nosil sem svojo oddelčno patruljno uniformo in sem imel vidno prikazano svojo značko.",
+          "plainClothes": "Bil sem v civilnih oblačilih.",
+          "plainClothesBadge": "Bil sem v civilnih oblačilih in sem imel vidno prikazano svojo značko.",
+          "uniforms": {
+            "g3": {
+              "lspd": "metropolitansko G3",
+              "lssd": "SEB G3"
+            },
+            "bdu": {
+              "lspd": "metropolitansko BDU",
+              "lssd": "SEB BDU"
+            }
+          }
+        },
+        "investigation": {
+          "vehicleObserved": "Približno ob {time} uri sem vozil po {street}, ko sem opazil {color} {model}, {plate}.",
+          "onPatrol": "Približno ob {time} uri sem vozil po {street}.",
+          "plateKnown": "z registrsko oznako {plate}",
+          "plateUnknown": "brez registrske oznake"
+        },
+        "arrest": {
+          "defaultSuspect": "osumljenca",
+          "notebooks": {
+            "lssd": "referenčni priročnik šerifa",
+            "lspd": "terenski zvezek policista"
+          },
+          "responses": {
+            "affirmative": "potrdilno",
+            "negative": "zanikalno"
+          },
+          "miranda": "Osumljenca {{suspectName}} sem seznanil z njegovimi pravicami po Mirandi, pri čemer sem uporabil svoj {{notebookType}} in mu dobesedno prebral naslednje:\n\"Imate pravico molčati. Vse, kar boste rekli, se lahko uporabi proti vam na sodišču. Imate pravico do prisotnosti odvetnika med vsakim zaslišanjem. Če si odvetnika ne morete privoščiti, vam bo pred vsakim zaslišanjem, če tako želite, dodeljen brezplačno. Ali razumete?\"\n{{suspectName}} je odgovoril {{understood}}.",
+          "stations": {
+            "lssd": "najbližjo postajo za vodenje postopkov",
+            "lspd": "postajo Mission Row"
+          },
+          "transportSelf": "Osumljenca {{suspectName}} sem prepeljal na {{station}}.",
+          "transportOther": "Osumljenca {{suspectName}} je na {{station}} prepeljal {{transportingRank}} {{transportingName}}.",
+          "searched": "Osumljenec {{suspectName}} je bil preiskan pred policijskim vozilom, kar je bilo zajeto z digitalno video kamero v vozilu (DICV).",
+          "arrestedFor": "Osumljenec {{suspectName}} je bil aretiran zaradi {{charges}}.",
+          "aforementionedCharges": "zgoraj omenjenih obtožb"
+        },
+        "photographs": {
+          "dicv": "Med to preiskavo je bila aktivirana moja digitalna video kamera v vozilu (DICV) - {link}",
+          "photos": "S svojim oddelčnim mobilnim telefonom sem posnel fotografije - {link}",
+          "cctv": "Pridobil sem posnetek zaprtega kroga televizije (CCTV) - {link}",
+          "thirdParty": "Pridobil sem video posnetek tretje osebe - {link}"
+        },
+        "booking": {
+          "bookerSelf": "Jaz",
+          "bookerOther": "{rank} {name}",
+          "biometricsOnFile": "Celotna biometrija osumljenca {{suspectName}}, vključno s prstnimi odtisi in DNK, je bila že v evidenci, kar je poenostavilo postopek vodenja postopka.",
+          "booked": "{{booker}} je osumljenca {{suspectName}} vpisal za vse obtožbe, navedene pod podnaslovom ARETACIJA.",
+          "fingerprints": "Med vodenjem postopka je {{booker}} odvzel 10 vzorcev prstnih odtisov osumljenca {{suspectName}} in jih vnesel v avtomatiziran sistem za identifikacijo prstnih odtisov (AFIS).",
+          "dna": "Ker je bil osumljenec {{suspectName}} obtožen zločina, mu je {{booker}} odvzel profil deoksiribonukleinske kisline (DNK) z Bode SecurSwab 2.",
+          "codis": "{{booker}} je ta profil predložil v kombinirani sistem indeksov DNK (CODIS)."
+        },
+        "evidence": {
+          "propertyRoom": {
+            "lssd": "prostor za dokaze na postaji za vodenje postopkov",
+            "lspd": "prostor za dokaze na postaji Mission Row"
+          },
+          "booked": "Vse dokaze sem vpisal v {{propertyRoom}}.",
+          "item": "Predmet {index} - {logNumber} - {description} (x{quantity})"
+        },
+        "court": {
+          "primary": "Jaz, {rank} {name} #{badge}, lahko pričam o vsebini tega poročila.",
+          "additional": "{rank} {name} #{badge} lahko prav tako priča o vsebini tega poročila."
+        },
+        "additional": {
+          "plea": "(( {{suspectName}} se je izrekel za {{plea}}. ))"
+        }
+      }
+    }
+  },
+  "arrestSubmit": {
+    "documentTitle": "Oddaja aretacije",
+    "header": {
+      "title": "Oddaja poročila o aretaciji",
+      "description": "Spodaj preglejte izračunane obtožbe in formatirano poročilo o aretaciji."
+    },
+    "alert": {
+      "title": "Pozor!",
+      "description": "Predogled na tej strani morda ni 100% natančen, vendar je generirana vsebina zasnovana tako, da deluje popolnoma tam, kjer jo prilepite. To poročilo je bilo tudi arhivirano."
+    },
+    "formattedReport": "Formatirano poročilo",
+    "buttons": {
+      "mdcRecord": "Odpri zapis MDC",
+      "impound": "Hitro ustvari zaseg",
+      "download": "Prenesi poročilo",
+      "downloading": "Pripravljanje slike...",
+      "copy": "Kopiraj dokumentacijo"
+    },
+    "toasts": {
+      "success": {
+        "title": "Uspeh",
+        "description": "Vsebina poročila je kopirana v odložišče."
+      },
+      "downloadStart": {
+        "title": "Prenos se je začel",
+        "description": "Slika vašega formatiranega poročila se prenaša."
+      },
+      "downloadFailed": {
+        "title": "Prenos ni uspel",
+        "description": "Ni bilo mogoče ustvariti slike iz predogleda dokumentacije. Prosimo, poskusite znova."
+      }
+    }
+  },
+  "feedbackDialog": {
+    "title": "Delite svoje mnenje",
+    "description": "Povejte mi, kaj si mislite. Vaše povratne informacije mi pomagajo izboljšati.",
+    "reasons": {
+      "title": "Kaj imate v mislih?",
+      "positive": {
+        "design": "Dizajn je čist in intuitiven.",
+        "performance": "Aplikacija je hitra in odzivna.",
+        "feature": "Zelo mi je všeč določena funkcija.",
+        "helpful": "To orodje je zelo koristno za moje naloge."
+      },
+      "negative": {
+        "bug": "Naletel sem na tehnično napako.",
+        "slow": "Aplikacija se zdi počasna ali neodzivna.",
+        "confusing": "Postavitev ali funkcija se mi zdi zmedena.",
+        "missing": "Manjka funkcija, ki jo potrebujem."
+      }
+    },
+    "additionalThoughts": "Imate še kakšne dodatne misli? (Neobvezno)",
+    "additionalThoughtsPlaceholder": "Povejte nam več...",
+    "help": "Pomoč",
+    "cancel": "Prekliči",
+    "submit": "Oddaj povratne informacije",
+    "submitting": "Oddajanje...",
+    "toasts": {
+      "selectType": "Prosimo, izberite vrsto povratnih informacij (palec gor ali dol).",
+      "success": {
+        "title": "Hvala!",
+        "description": "Vaše povratne informacije so bile uspešno oddane."
+      },
+      "error": {
+        "title": "Napaka",
+        "description": "Povratnih informacij ni bilo mogoče oddati. Prosimo, poskusite znova."
+      }
+    }
+  },
+  "aiDialog": {
+    "title": "Generiraj pripoved z AI",
+    "description": "Prilepite svoje dnevnike, da generirate pripoved za poročilo.",
+    "disclaimer": {
+      "title": "Pomembna izjava o omejitvi odgovornosti",
+      "description": "Uporaba AI je močno odsvetovana in v večini primerov ni dovoljena. Pred uporabo AI za pisanje poročil o aretacijah preverite politike svojega oddelka in vse veljavne direktive LFM. To je mišljeno kot orodje in ne kot popoln nadomestek. Avtentičnost pripovedi je vaša odgovornost."
+    },
+    "logsLabel": "Vaši dnevniki",
+    "logsPlaceholder": "Prilepite svoje surove, neurejene dnevnike tukaj...",
+    "error": {
+      "title": "Napaka",
+      "generic": "Prišlo je do napake med generiranjem pripovedi. Prosimo, poskusite znova."
+    },
+    "buttons": {
+      "cancel": "Prekliči",
+      "generate": "Generiraj",
+      "generating": "Generiranje..."
+    }
+  },
+  "changelog": {
+    "pageTitle": "Dnevnik sprememb",
+    "header": {
+      "title": "Dnevnik sprememb",
+      "description": "Sledite našemu potovanju! Vse najnovejše funkcije, izboljšave in popravki."
+    },
+    "stats": {
+      "totalVersions": "Skupno različic",
+      "totalChanges": "Splošne spremembe",
+      "featuresAdded": "Dodane funkcije in dodatki",
+      "bugsFixed": "Odpravljene napake"
+    },
+    "whatsNew": {
+      "title": "Kaj je novega?",
+      "description": "Hiter vodnik za razumevanje naših vrst posodobitev."
+    },
+    "releaseTypes": {
+      "release": "Glavne funkcije in stabilne izdaje.",
+      "major": "Pomembna nova funkcionalnost.",
+      "minor": "Manjše izboljšave in popravki.",
+      "hotfix": "Nujni popravki napak."
+    },
+    "filters": {
+      "searchPlaceholder": "Išči v dnevniku sprememb...",
+      "typePlaceholder": "Filtriraj po vrsti",
+      "all": "Vse vrste"
+    },
+    "releaseTypeLabels": {
+      "release": "Izdaja",
+      "majorupdate": "Večja posodobitev",
+      "minorupdate": "Manjša posodobitev",
+      "hotfix": "Popravek"
+    },
+    "itemTypes": {
+      "feature": "🚀 Funkcija",
+      "addition": "✨ Dodatek",
+      "modification": "🎨 Sprememba",
+      "backend": "🔧 Ozadje",
+      "fix": "🐛 Popravek"
+    },
+    "version": "Različica",
+    "releasedOn": "Izdano",
+    "lastUpdatedOn": "Zadnja posodobitev",
+    "experimental": {
+      "title": "Eksperimentalne funkcije",
+      "description": "Preizkusite prihajajoče ideje, preden postanejo stalne. Vaše izbire so shranjene lokalno.",
+      "enable": "Omogoči",
+      "disable": "Onemogoči",
+      "currentlyEnabled": "Trenutno omogočeno",
+      "currentlyDisabled": "Trenutno onemogočeno"
+    },
+    "cacheVersion": "Različica predpomnilnika",
+    "localStorageVersion": "Različica lokalne shrambe"
+  }
+}

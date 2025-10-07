@@ -1,20 +1,23 @@
 import type { Locale } from './config';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 type Dictionary = Record<string, unknown>;
 
-type DictionaryLoader = () => Promise<Dictionary>;
+async function readDictionaryFile(locale: Locale): Promise<Dictionary> {
+    const filePath = path.join(process.cwd(), 'data', 'i18n', `${locale}.json`);
+    const fileContents = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(fileContents);
+}
 
-const dictionaries: Record<Locale, DictionaryLoader> = {
-  en: () => import('./dictionaries/en.json').then((module) => module.default),
-  es: () => import('./dictionaries/es.json').then((module) => module.default),
-};
 
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  const loader = dictionaries[locale];
-  if (!loader) {
-    return dictionaries.en();
-  }
-  return loader();
+    try {
+        return await readDictionaryFile(locale);
+    } catch (error) {
+        console.warn(`Could not load '${locale}' dictionary, falling back to 'en'.`, error);
+        return readDictionaryFile('en');
+    }
 }
 
 export type { Dictionary };

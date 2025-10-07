@@ -1,34 +1,17 @@
 import { cookies, headers } from 'next/headers';
 import Negotiator from 'negotiator';
-import path from 'path';
-import { promises as fs } from 'fs';
 import { defaultLocale, isLocale, type Locale } from './config';
 import { getDictionary } from './dictionaries';
 import { formatMessage, getDictionaryValue, type TranslationValues } from './utils';
+import configData from '../../../data/config.json';
 
-let cachedConfigLocale: Locale | null | undefined;
 
 async function getConfiguredLocale(): Promise<Locale | null> {
-  if (cachedConfigLocale !== undefined) {
-    return cachedConfigLocale;
+  const configuredLang = configData.SITE_LANGUAGE;
+  if (isLocale(configuredLang)) {
+    return configuredLang;
   }
-
-  try {
-    const file = await fs.readFile(
-      path.join(process.cwd(), 'data/config.json'),
-      'utf8'
-    );
-    const config = JSON.parse(file) as { SITE_LANGUAGE?: string };
-    if (isLocale(config.SITE_LANGUAGE)) {
-      cachedConfigLocale = config.SITE_LANGUAGE;
-      return cachedConfigLocale;
-    }
-  } catch (error) {
-    // Ignore errors and fall back to existing locale resolution
-  }
-
-  cachedConfigLocale = null;
-  return cachedConfigLocale;
+  return null;
 }
 
 export async function resolveRequestLocale(): Promise<Locale> {

@@ -1,0 +1,90 @@
+{
+    "id": "infraction-report",
+    "title": "Infraction Report",
+    "description": "Generate a non-traffic infraction citation.",
+    "icon": "FileWarning",
+    "icon_color": "#f59e0b",
+    "is_html_output": true,
+    "custom_button_text": "Open MDC Record",
+    "custom_button_link": "https://mdc.gta.world/record/{{defendant_name}}",
+    "custom_button_replace_spaces": true,
+    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:4px solid black;background-color:white;color:black;\"><tbody><tr><td colspan=\"3\" style=\"text-align:center;padding-bottom:2rem\"><h1 style=\"font-family:Arial,sans-serif;font-size:2rem;font-weight:700;text-transform:uppercase;margin:0\">COUNTY OF LOS SANTOS</h1><h2 style=\"font-family:Arial,sans-serif;font-size:1.5rem;font-weight:600;margin:0\">Infraction Citation Report</h2></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">1. GENERAL INFORMATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">A. DATE:</strong> {{general.date}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">B. TIME (24HR):</strong> {{general.time}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">C. CALLSIGN:</strong> {{general.callSign}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">2. OFFICER INFORMATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody>{{#each officers}}<tr><td style=\"border:1px solid black;padding:.5rem;width:41.66%\"><strong style=\"font-family:Arial,sans-serif\">A. OFFICER NAME:</strong> {{this.name}}</td><td style=\"border:1px solid black;padding:.5rem;width:33.33%\"><strong style=\"font-family:Arial,sans-serif\">B. RANK:</strong> {{this.rank}}</td><td style=\"border:1px solid black;padding:.5rem;width:25%\"><strong style=\"font-family:Arial,sans-serif\">C. BADGE:</strong> #{{this.badgeNumber}}</td></tr>{{/each}}</tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">3. DEFENDANT INFORMATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:100%\"><strong style=\"font-family:Arial,sans-serif\">A. FULL NAME:</strong> {{defendant_name}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">4. LOCATION OF CITATION</h3><table style=\"width:100%;border-collapse:collapse\"><tbody><tr><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">A. DISTRICT:</strong> {{location.district}}</td><td style=\"border:1px solid black;padding:.5rem;width:50%\"><strong style=\"font-family:Arial,sans-serif\">B. STREET:</strong> {{location.street}}</td></tr></tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">5. CITATIONS</h3><table style=\"width:100%;border-collapse:collapse;border:1px solid black\"><thead style=\"background-color:#e5e7eb\"><tr><th style=\"border:1px solid black;padding:.5rem;font-family:Arial,sans-serif\">CHARGE DESCRIPTION</th><th style=\"border:1px solid black;padding:.5rem;font-family:Arial,sans-serif\">FINE</th></tr></thead><tbody>{{#each charges}}<tr><td style=\"border:1px solid black;padding:.5rem\">IC {{chargeId}}. {{#with (lookup @root.penalCode chargeId)}}{{this.charge}}{{/with}}</td><td style=\"border:1px solid black;padding:.5rem\">${{fine}}</td></tr>{{/each}}</tbody></table></td></tr><tr><td colspan=\"3\" style=\"border-top:2px solid black;padding:.5rem\"><h3 style=\"font-family:Arial,sans-serif;font-weight:700;font-size:1.125rem;margin-bottom:.5rem\">6. NARRATIVE</h3><p style=\"border:1px solid black;padding:.5rem;min-height:150px;white-space:pre-wrap;margin:0\">{{narrative}}</p></td></tr></tbody></table>",
+    "form": [
+        {
+            "type": "section",
+            "title": "General Information"
+        },
+        {
+            "type": "general",
+            "name": "general"
+        },
+        {
+            "type": "section",
+            "title": "Officer Information"
+        },
+        {
+            "type": "officer",
+            "name": "officers",
+            "showBadgeNumber": true,
+            "multi": true
+        },
+        {
+            "type": "section",
+            "title": "Defendant Information"
+        },
+        {
+            "type": "text",
+            "name": "defendant_name",
+            "label": "Defendant's Full Name",
+            "placeholder": "Firstname Lastname",
+            "required": true
+        },
+        {
+            "type": "section",
+            "title": "Location of Citation"
+        },
+        {
+            "type": "location",
+            "name": "location",
+            "showDistrict": true
+        },
+        {
+            "type": "section",
+            "title": "Citations"
+        },
+        {
+            "type": "charge",
+            "name": "charges",
+            "showClass": false,
+            "showOffense": true,
+            "allowedTypes": {
+                "I": true
+            },
+            "allowedIds": "133,423,433,434,441,611,612",
+            "customFields": [
+                {
+                    "type": "text",
+                    "name": "fine",
+                    "label": "Fine",
+                    "placeholder": "Fine Amount"
+                }
+            ],
+            "previewFields": {
+                "fine": true
+            },
+            "copyable_charge": true
+        },
+        {
+            "type": "section",
+            "title": "Narrative"
+        },
+        {
+            "type": "textarea",
+            "name": "narrative",
+            "label": "Narrative of Events",
+            "placeholder": "Provide a detailed account of the events leading to the citation...",
+            "required": true
+        }
+    ],
+    "countyCityStipulation": true
+}
