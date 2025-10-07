@@ -1,10 +1,10 @@
-
 {
   "common": {
     "language": {
       "label": "Idioma",
       "english": "Inglés",
-      "spanish": "Español"
+      "spanish": "Español",
+      "slovenian": "Esloveno"
     }
   },
   "navigation": {
@@ -158,7 +158,7 @@
     },
     "dialogs": {
       "deleteAll": {
-        "title": "¿Estás absolutamente seguro?",
+        "title": "¿Estás absolutely seguro?",
         "description": "Esta acción no se puede deshacer. Esto eliminará permanentemente los {count} informes archivados."
       },
       "deleteSingle": {
@@ -1031,13 +1031,13 @@
         }
       },
       "copyables": {
-        "toastTitle": "Copiado",
-        "toastDescription": "{label} copiado al portapapeles.",
         "minMinutes": "Minutos mínimos",
         "maxMinutes": "Minutos máximos",
         "totalImpound": "Días totales de incautación",
         "totalSuspension": "Días totales de suspensión",
         "bailCost": "Fianza más alta",
+        "toastTitle": "Copiado",
+        "toastDescription": "{label} copiado al portapapeles.",
         "originalValue": "Valor original: {value}"
       },
       "toasts": {
@@ -1338,7 +1338,7 @@
         },
         "court": {
           "title": "INFORMACIÓN DEL TRIBUNAL",
-          "placeholder": "Añade cualquier información relevante para el tribunal..."
+          "placeholder": "Añade any información relevante para el tribunal..."
         },
         "additional": {
           "title": "INFORMACIÓN ADICIONAL",

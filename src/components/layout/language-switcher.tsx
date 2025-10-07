@@ -30,6 +30,15 @@ export function LanguageSwitcher() {
     });
   };
 
+  const getLanguageName = (l: Locale) => {
+    switch (l) {
+        case 'en': return t('common.language.english');
+        case 'es': return t('common.language.spanish');
+        case 'sl': return t('common.language.slovenian');
+        default: return l;
+    }
+  }
+
   return (
     <div className="space-y-1">
       <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
@@ -42,9 +51,7 @@ export function LanguageSwitcher() {
         <SelectContent align="end">
           {locales.map((availableLocale) => (
             <SelectItem key={availableLocale} value={availableLocale}>
-              {availableLocale === 'en'
-                ? t('common.language.english')
-                : t('common.language.spanish')}
+              {getLanguageName(availableLocale)}
             </SelectItem>
           ))}
         </SelectContent>

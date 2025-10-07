@@ -1,10 +1,10 @@
-
 {
   "common": {
     "language": {
       "label": "Language",
       "english": "English",
-      "spanish": "Spanish"
+      "spanish": "Spanish",
+      "slovenian": "Slovenian"
     }
   },
   "navigation": {
@@ -858,21 +858,21 @@
         }
       },
       "copyables": {
-        "toastTitle": "Copied",
-        "toastDescription": "{label} copied to clipboard.",
         "minMinutes": "Minimum minutes",
         "maxMinutes": "Maximum minutes",
         "totalImpound": "Total impound days",
         "totalSuspension": "Total suspension days",
         "bailCost": "Highest bail",
+        "toastTitle": "Copied",
+        "toastDescription": "{label} copied to clipboard.",
         "originalValue": "Original value: {value}"
       },
       "toasts": {
-        "copiedTitle": "Copied",
-        "copiedDescriptionWithLabel": "{label}: {value} copied to clipboard.",
-        "copiedDescription": "{value} copied to clipboard.",
+        "copiedTitle": "Copied to clipboard",
+        "copiedDescription": "Copied: {value}",
+        "copiedDescriptionWithLabel": "Copied {label}: {value}",
         "linkCopiedTitle": "Link copied",
-        "linkCopiedDescription": "Calculation link copied to clipboard."
+        "linkCopiedDescription": "Share this link to view the same calculation"
       }
     }
   },
@@ -1036,14 +1036,14 @@
         "totalImpound": "Total Impound Days",
         "totalSuspension": "Total Suspension Days",
         "bailCost": "Highest Bail",
-        "toastTitle": "Copied to clipboard",
-        "toastDescription": "{label} copied to clipboard",
+        "toastTitle": "Copied",
+        "toastDescription": "{label} copied to clipboard.",
         "originalValue": "Original: {value}"
       },
       "toasts": {
-        "copiedTitle": "Copied to clipboard",
-        "copiedDescription": "Copied: {value}",
-        "copiedDescriptionWithLabel": "Copied {label}: {value}",
+        "copiedTitle": "Copied",
+        "copiedDescriptionWithLabel": "{label}: {value} copied to clipboard.",
+        "copiedDescription": "{value} copied to clipboard.",
         "linkCopiedTitle": "Link copied",
         "linkCopiedDescription": "Share this link to view the same calculation"
       }

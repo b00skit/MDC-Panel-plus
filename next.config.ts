@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   },
   env: {},
   i18n: {
-    locales: ['en', 'es'],
+    locales: ['en', 'es', 'sl'],
     defaultLocale: 'en',
   },
 };
