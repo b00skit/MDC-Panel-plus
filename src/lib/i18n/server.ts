@@ -37,16 +37,16 @@ export async function resolveRequestLocale(): Promise<Locale> {
     return configuredLocale;
   }
 
-  const cookieLocale = cookies().get('locale')?.value;
+  const cookieLocale = (await cookies()).get('locale')?.value;
   if (isLocale(cookieLocale)) {
     return cookieLocale;
   }
 
-  const acceptLanguage = headers().get('accept-language');
+  const acceptLanguage = (await headers()).get('accept-language');
   if (acceptLanguage) {
     const negotiator = new Negotiator({ headers: { 'accept-language': acceptLanguage } });
     const languages = negotiator.languages();
-    const matched = languages.find((language) => {
+    const matched = languages.find((language : any) => {
       const code = language.split('-')[0];
       return isLocale(code);
     });
