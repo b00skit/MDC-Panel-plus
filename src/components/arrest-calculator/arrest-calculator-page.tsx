@@ -39,6 +39,7 @@ import {
 import { useFormStore } from '@/stores/form-store';
 import { useToast } from '@/hooks/use-toast';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
+import { useAdvancedReportModifiersStore } from '@/stores/advanced-report-modifiers-store';
 import configData from '../../../data/config.json';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
@@ -98,6 +99,7 @@ export function ArrestCalculatorPage() {
   const resetForm = useFormStore((state) => state.reset);
   const resetAdvancedForm = useAdvancedReportStore((state) => state.reset);
   const resetModifiers = useBasicReportModifiersStore((state) => state.reset);
+  const resetAdvancedModifiers = useAdvancedReportModifiersStore((state) => state.reset);
 
   const [loading, setLoading] = useState(true);
   const [openChargeSelector, setOpenChargeSelector] = useState<number | null>(null);
@@ -213,6 +215,7 @@ export function ArrestCalculatorPage() {
       resetForm();
       resetAdvancedForm();
       resetModifiers();
+      resetAdvancedModifiers();
     }
     resetCharges();
     router.push('/arrest-report');
