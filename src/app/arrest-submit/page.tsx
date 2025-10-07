@@ -19,7 +19,9 @@ import { AdvancedFormattedReport } from '@/components/arrest-report/advanced-for
 import { ArchivedReport, useArchiveStore } from '@/stores/archive-store';
 import configData from '../../../data/config.json';
 import { useI18n, useScopedI18n } from '@/lib/i18n/client';
-import { getReportType } from '@/stores/report-store';
+import { useReportType } from '@/stores/report-store';
+import { FormState as AdvancedFormState } from '@/stores/advanced-report-store';
+import { FormState as BasicFormState } from '@/stores/form-store';
 
 function ArrestSubmitContent() {
     const { report, penalCode, additions, reportInitialized } = useChargeStore();
@@ -27,7 +29,7 @@ function ArrestSubmitContent() {
     const { formData: advancedFormData } = useAdvancedReportStore();
     const { archiveReport } = useArchiveStore();
 
-    const reportType = getReportType();
+    const reportType = useReportType();
     
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
@@ -138,7 +140,7 @@ function ArrestSubmitContent() {
         }
     };
 
-    const suspectName = isBasicReport ? formData?.arrest?.suspectName : formData?.arrestee?.name;
+    const suspectName = isBasicReport ? (formData as BasicFormState)?.arrest?.suspectName : (formData as AdvancedFormState)?.arrestee?.name;
     const mdcRecordUrl = suspectName ? `https://mdc.gta.world/record/${suspectName.replace(/ /g, '_')}` : null;
   
     if (!isClient) {
