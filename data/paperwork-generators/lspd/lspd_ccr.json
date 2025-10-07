@@ -1,0 +1,24 @@
+
+{
+    "id": "lspd_ccr",
+    "title": "Crime Complaint Report (CCR)",
+    "description": "Generate an LSPD Crime Complaint Report.",
+    "icon": "FilePlus",
+    "icon_color": "#2563eb",
+    "is_html_output": false,
+    "output": "[divbox2=white][color=transparent]spacer[/color]\n\n[aligntable=right,0,0,15,0,0,transparent]LOS SANTOS POLICE DEPT.\nOFFICE OF OPERATIONS\nMISSION ROW POLICE STATION\nSINNER STREET 1\nLOS SANTOS\n\n\n\n[/aligntable][aligntable=left,0,15,0,0,0,transparent][bwlspdlogo=130][/bwlspdlogo][/aligntable]\n\n[color=transparent]tt[/color]\n\n[color=transparent]tt[/color]\n\n\n[color=transparent]tt[/color]\n\n[hr][/hr]\n[b]CRIME COMPLAINT REPORT #{{report_number}}[/b]\n\n[b]PERSONNEL INFORMATION[/b]\nFull name(s): {{#each officers}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}\nDepartmental rank(s): {{#each officers}}{{this.rank}}{{#unless @last}}, {{/unless}}{{/each}}\nBadge number(s): {{#each officers}}#{{this.badgeNumber}}{{#unless @last}}, {{/unless}}{{/each}}\nDuty callsign: {{general.callSign}}\n\n[hr][/hr]\n\n[b]TIME AND LOCATION[/b]\nTime and date: {{general.time}} - {{general.date}}\nStreet: {{location.street}}\nArea: {{location.district}}\n{{#if casings_label}}IF CASINGS COLLECTED ADD LABEL HERE: -{{casings_label}}-\n{{/if}}\n\n[hr][/hr]\n\n[b]NARRATIVE[/b]\n{{narrative}}\n\n[hr][/hr]\n\n[b]EVIDENCE[/b]\n{{evidence}}",
+    "form": [
+        { "type": "section", "title": "General Information" },
+        { "type": "text", "name": "report_number", "label": "Report Number", "placeholder": "XXX", "required": true },
+        { "type": "general", "name": "general" },
+        { "type": "section", "title": "Officer Information" },
+        { "type": "officer", "name": "officers", "multi": true, "showBadgeNumber": true },
+        { "type": "section", "title": "Location Details" },
+        { "type": "location", "name": "location", "showDistrict": true },
+        { "type": "text", "name": "casings_label", "label": "Casings Label (Optional)", "placeholder": "Enter casings label if applicable" },
+        { "type": "section", "title": "Narrative" },
+        { "type": "textarea", "name": "narrative", "label": "Narrative", "placeholder": "Insert your narrative here...", "required": true },
+        { "type": "section", "title": "Evidence" },
+        { "type": "textarea", "name": "evidence", "label": "Evidence", "placeholder": "List any evidence collected...", "required": true }
+    ]
+}
