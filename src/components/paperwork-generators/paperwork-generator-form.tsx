@@ -95,7 +95,7 @@ type GeneratorConfig = {
 
 interface PaperworkGeneratorFormProps {
     generatorConfig: GeneratorConfig;
-    generatorId: string;
+    generatorId: string | null;
     generatorType: 'static' | 'user';
     groupId: string | null;
 }
