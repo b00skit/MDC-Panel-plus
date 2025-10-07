@@ -1,6 +1,29 @@
 {
     "changelogs": [
         {
+            "version": "3.5.1",
+            "type": "Major Update",
+            "date": "2025-10-07",
+            "items": [
+                {
+                    "type": "addition",
+                    "description": "<b>Paperwork Generators:</b> Created a new Infraction Report generator for non-traffic related citations issued to individuals."
+                },
+                {
+                    "type": "addition",
+                    "description": "<b>Paperwork Generators:</b> Created a new LSPD Crime Complaint Report (CCR) generator, as suggested by a member of LSPD."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Moved the i18n language files to the main data folder."
+                },
+                {
+                    "type": "fix",
+                    "description": "<b>Arrest Report:</b> Fixed a bug that did not clear the advanced arrest report on new arrest calculations."
+                }
+            ]
+        },
+        {
             "version": "3.5.0.01",
             "type": "Hotfix",
             "date": "2025-10-06",
