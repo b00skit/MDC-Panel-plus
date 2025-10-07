@@ -73,6 +73,7 @@
     "@types/handlebars": "^4.1.0",
     "@types/leaflet": "^1.9.12",
     "@types/leaflet-draw": "^1.0.11",
+    "@types/negotiator": "^0.6.4",
     "@types/node": "^20",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
