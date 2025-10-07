@@ -227,7 +227,7 @@ function FieldEditor({ field, index, onRemove, register, control, watch }: any) 
                              {subFields.map((subField, subIndex) => (
                                  <SubFieldEditor
                                      key={subField.id}
-                                     field={subField}
+                                     field={subField as Field}
                                      fieldPath={`form.${index}.fields.${subIndex}`}
                                      onRemove={() => removeSubField(subIndex)}
                                      register={register}
@@ -418,7 +418,7 @@ export function PaperworkGeneratorBuilder() {
                     <CardHeader><CardTitle>Add Form Fields</CardTitle></CardHeader>
                     <CardContent className="flex flex-wrap gap-2">
                         {fieldTypes.map(ft => (
-                             <Button key={ft.type} type="button" variant="outline" size="sm" onClick={() => append(ft.default)}>
+                             <Button key={ft.type} type="button" variant="outline" size="sm" onClick={() => append(ft.default as Field)}>
                                 <Plus className="mr-2 h-4 w-4" /> {ft.label}
                             </Button>
                         ))}
