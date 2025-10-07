@@ -8,10 +8,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import 'leaflet-search';
 import './map.css';
 import 'leaflet-draw';
+import { Street } from '@/lib/street-data';
 
 
 export function MapPage() {
-  const [streets, setStreets] = useState([]);
+  const [streets, setStreets] = useState<Street[]>([]);
 
   useEffect(() => {
     fetch('/map/streets.json')

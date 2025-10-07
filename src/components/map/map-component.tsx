@@ -11,6 +11,7 @@ import 'leaflet-draw';
 import { useEffect, useState } from 'react';
 import 'leaflet-search';
 import MapDrawControl from './map-draw-control';
+import { Street } from '@/lib/street-data';
 
 // Fix for default icon issue with Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -26,7 +27,7 @@ L.Icon.Default.mergeOptions({
 
 const transparentPixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
-const SearchComponent = ({ streets }: { streets: any[] }) => {
+const SearchComponent = ({ streets }: { streets: Street[] }) => {
     const map = useMap();
 
     useEffect(() => {
@@ -37,7 +38,8 @@ const SearchComponent = ({ streets }: { streets: any[] }) => {
             for (const i in streets) {
                 const title = streets[i].title,
                     loc = streets[i].loc,
-                    marker = new L.Marker(new L.latLng(loc), { title: title });
+                    latlng : L.LatLngExpression = new L.LatLng(loc[0], loc[1]),
+                    marker : L.Marker = new L.Marker(latlng, { title: title });
                 marker.setOpacity(0);
                 markersLayer.addLayer(marker);
             }
