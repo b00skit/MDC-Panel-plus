@@ -16,9 +16,10 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { ArrestCalculatorResults } from '@/components/arrest-calculator/arrest-calculator-results';
 import { BasicFormattedReport } from '@/components/arrest-report/basic-formatted-report';
 import { AdvancedFormattedReport } from '@/components/arrest-report/advanced-formatted-report';
-import { useArchiveStore } from '@/stores/archive-store';
+import { ArchivedReport, useArchiveStore } from '@/stores/archive-store';
 import configData from '../../../data/config.json';
 import { useI18n, useScopedI18n } from '@/lib/i18n/client';
+import { getReportType } from '@/stores/report-store';
 
 function ArrestSubmitContent() {
     const { report, penalCode, additions, reportInitialized } = useChargeStore();
@@ -26,8 +27,7 @@ function ArrestSubmitContent() {
     const { formData: advancedFormData } = useAdvancedReportStore();
     const { archiveReport } = useArchiveStore();
 
-    const searchParams = useSearchParams();
-    const reportType = searchParams.get('type') || 'basic';
+    const reportType = getReportType();
     
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
@@ -80,7 +80,7 @@ function ArrestSubmitContent() {
     // Effect to archive the report once data is available
     useEffect(() => {
         if (hasReport && formData) {
-            const archiveData = {
+            const archiveData : Omit<ArchivedReport, 'id'> = {
                 paperworkType: 'arrest-report',
                 type: reportType,
                 fields: formData,
