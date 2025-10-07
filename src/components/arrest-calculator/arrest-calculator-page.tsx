@@ -160,6 +160,7 @@ export function ArrestCalculatorPage() {
     }
 
     for (const charge of charges) {
+
       if (!charge.chargeId) {
         toast({
           title: tPage('toasts.incomplete.title'),
@@ -168,44 +169,50 @@ export function ArrestCalculatorPage() {
         });
         return;
       }
-      if (!charge.class) {
-        toast({
-          title: tPage('toasts.incomplete.title'),
-          description: tPage('toasts.incomplete.selectClass', {
-            charge: penalCode?.[charge.chargeId]?.charge,
-          }),
-          variant: 'destructive',
-        });
-        return;
-      }
-      if (!charge.offense) {
-        toast({
-          title: tPage('toasts.incomplete.title'),
-          description: tPage('toasts.incomplete.selectOffense', {
-            charge: penalCode?.[charge.chargeId]?.charge,
-          }),
-          variant: 'destructive',
-        });
-        return;
-      }
-      if (!charge.addition) {
-        toast({
-          title: tPage('toasts.incomplete.title'),
-          description: tPage('toasts.incomplete.selectAddition', {
-            charge: penalCode?.[charge.chargeId]?.charge,
-          }),
-          variant: 'destructive',
-        });
-        return;
-      }
       const chargeDetails = getChargeDetails(charge.chargeId);
-      if (chargeDetails?.drugs && !charge.category) {
-        toast({
-          title: tPage('toasts.incomplete.title'),
-          description: tPage('toasts.incomplete.selectCategory', { charge: chargeDetails.charge }),
-          variant: 'destructive',
-        });
-        return;
+      const chargeName = chargeDetails?.charge
+      if (!chargeName) {
+         // TODO: What to show if the charge is invalid?
+      } else {
+        if (!charge.class) {
+          toast({
+            title: tPage('toasts.incomplete.title'),
+            description: tPage('toasts.incomplete.selectClass', {
+              charge: chargeName,
+            }),
+            variant: 'destructive',
+          });
+          return;
+        }
+        if (!charge.offense) {
+          toast({
+            title: tPage('toasts.incomplete.title'),
+            description: tPage('toasts.incomplete.selectOffense', {
+              charge: chargeName,
+            }),
+            variant: 'destructive',
+          });
+          return;
+        }
+        if (!charge.addition) {
+          toast({
+            title: tPage('toasts.incomplete.title'),
+            description: tPage('toasts.incomplete.selectAddition', {
+              charge: chargeName,
+            }),
+            variant: 'destructive',
+          });
+          return;
+        }
+        
+        if (chargeDetails?.drugs && !charge.category) {
+          toast({
+            title: tPage('toasts.incomplete.title'),
+            description: tPage('toasts.incomplete.selectCategory', { charge: chargeName }),
+            variant: 'destructive',
+          });
+          return;
+        }
       }
     }
     setReport(charges);
