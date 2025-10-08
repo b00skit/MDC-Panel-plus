@@ -1,8 +1,27 @@
 {
     "changelogs": [
         {
+            "version": "3.5.2",
+            "type": "Minor Update",
+            "date": "2025-10-08",
+            "items": [
+                {
+                    "type": "fix",
+                    "description": "<b>Paperwork Generators:</b> Modified some character escaping issues when copying the paperwork."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Fixed some issues with plural definitions when handling i18n translations."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Simplified Penal Code:</b> Modified the display of stipulations so that it only shows for all those that are not 'N/A'."
+                }
+            ]
+        },
+        {
             "version": "3.5.1",
-            "type": "Major Update",
+            "type": "Minor Update",
             "date": "2025-10-07",
             "items": [
                 {
