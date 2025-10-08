@@ -27,6 +27,37 @@ export function formatMessage(
     return '';
   }
 
+  if (typeof message === 'object' && !Array.isArray(message)) {
+    const record = message as Record<string, unknown>;
+
+    if (values && 'count' in values) {
+      const count = Number(values.count);
+
+      if (!Number.isNaN(count)) {
+        const pluralRules = new Intl.PluralRules();
+        const rule = pluralRules.select(count);
+
+        const candidates = [
+          rule,
+          count === 0 ? 'zero' : undefined,
+          count === 1 ? 'one' : undefined,
+          count === 2 ? 'two' : undefined,
+          'other',
+        ].filter((candidate): candidate is string => Boolean(candidate));
+
+        for (const key of candidates) {
+          if (key in record) {
+            return formatMessage(record[key], values);
+          }
+        }
+      }
+    }
+
+    if ('default' in record) {
+      return formatMessage(record.default, values);
+    }
+  }
+
   const text = typeof message === 'string' ? message : String(message);
 
   if (!values) {
