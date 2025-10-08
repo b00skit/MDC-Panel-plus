@@ -94,7 +94,7 @@ const ChargeCard = ({ charge }: { charge: Charge }) => {
                     <ChargeDetail label={t('details.maxSentence')} value={isDrugCharge ? t('details.variesByCategory') : formatTime(charge.maxtime)} />
                     <ChargeDetail label={t('details.bail')} value={isDrugCharge ? t('details.variesByCategory') : formatBail(charge.bail)} />
                 </div>
-                 {charge.extra && (
+                 {charge.extra && charge.extra !== 'N/A' && (
                     <>
                         <Separator />
                          <div className="space-y-2">
