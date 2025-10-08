@@ -21,11 +21,13 @@ const GeneratedFormattedReport = ({
     setReportTitle,
     setCustomButton,
     onGeneratorLoaded,
+    onTemplateUpdate,
 }: {
     innerRef: React.RefObject<HTMLDivElement>,
     setReportTitle: (title: string) => void,
     setCustomButton: (button: { text: string; link: string } | null) => void,
     onGeneratorLoaded?: (details: { title?: string; description?: string; icon?: string }) => void,
+    onTemplateUpdate?: (template: string) => void,
 }) => {
     const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
     const [template, setTemplate] = useState('');
@@ -147,8 +149,9 @@ const GeneratedFormattedReport = ({
             }
 
             setTemplate(parsedOutput);
+            onTemplateUpdate?.(parsedOutput);
         }
-    }, [generatorConfig, formData, setReportTitle, setCustomButton]);
+    }, [generatorConfig, formData, setReportTitle, setCustomButton, onTemplateUpdate]);
   
     return (
         <div ref={innerRef} className="p-4 border rounded-lg bg-card text-card-foreground">
@@ -176,6 +179,7 @@ function PaperworkSubmitContent() {
     const [isDownloadingImage, setIsDownloadingImage] = useState(false);
     const [generatorDetails, setGeneratorDetails] = useState<{ title?: string; description?: string; icon?: string } | null>(null);
     const [hasArchived, setHasArchived] = useState(false);
+    const [generatedOutput, setGeneratedOutput] = useState('');
 
     useEffect(() => {
       setIsClient(true);
@@ -185,6 +189,10 @@ function PaperworkSubmitContent() {
     useEffect(() => {
         setHasArchived(false);
     }, [generatorId, lastFormValues]);
+
+    useEffect(() => {
+        setGeneratedOutput('');
+    }, [generatorId, generatorType]);
 
     useEffect(() => {
         if (
@@ -221,14 +229,16 @@ function PaperworkSubmitContent() {
     ]);
 
     const handleCopy = () => {
-        if (reportRef.current?.firstChild) {
-          navigator.clipboard.writeText((reportRef.current.firstChild as HTMLElement).innerHTML);
-          toast({
+        if (!generatedOutput) {
+            return;
+        }
+
+        navigator.clipboard.writeText(generatedOutput);
+        toast({
             title: tPage('toasts.copySuccess.title'),
             description: tPage('toasts.copySuccess.description'),
             variant: "default",
-          })
-        }
+        });
     };
 
     const handleCopyTitle = () => {
@@ -333,6 +343,7 @@ function PaperworkSubmitContent() {
             setReportTitle={setReportTitle}
             setCustomButton={setCustomButton}
             onGeneratorLoaded={setGeneratorDetails}
+            onTemplateUpdate={setGeneratedOutput}
         />
 
         <div className="flex justify-end mt-6 gap-2">
@@ -348,7 +359,7 @@ function PaperworkSubmitContent() {
                 <ImageDown className="mr-2 h-4 w-4" />
                 {isDownloadingImage ? tPage('buttons.downloading') : tPage('buttons.download')}
             </Button>
-            <Button onClick={handleCopy} disabled={!isClient}>
+            <Button onClick={handleCopy} disabled={!isClient || !generatedOutput}>
                 <Clipboard className="mr-2 h-4 w-4" />
                 {tPage('buttons.copyPaperwork')}
             </Button>

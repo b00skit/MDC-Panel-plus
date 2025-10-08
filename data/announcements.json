@@ -1,6 +1,16 @@
 {
     "announcements": [
         {
+            "id": 5,
+            "date": "2025-10-08",
+            "title": "Law Update: Implied Consent & Weapons on School Grounds",
+            "content": "There's been new implementations & updates to the Penal Code, specifically sections; 1519, 714, 431.",
+            "button": {
+                "text": "Penal Code Changelog",
+                "href": "https://forum.gta.world/en/topic/9421-san-andreas-penal-code-changelog/?do=findComment&comment=1803539"
+            }
+        },
+        {
             "id": 4,
             "date": "2025-10-06",
             "title": "Major Update: Log Parser",
