@@ -42,7 +42,7 @@ const BetterSwitch = React.forwardRef<
         aria-checked={checked}
         onClick={() => onCheckedChange(!checked)}
         className={cn(
-          'relative flex h-10 w-32 items-center rounded-full p-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          'relative flex h-10 w-40 items-center rounded-full p-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           checked ? 'bg-green-500' : 'bg-destructive',
           className
         )}
@@ -57,10 +57,21 @@ const BetterSwitch = React.forwardRef<
         >
           {checked ? <Check className="h-5 w-5 text-green-500"/> : <X className="h-5 w-5 text-destructive" />}
         </motion.div>
-        <div className="relative flex w-full items-center justify-around text-white">
-            <span className={cn("text-sm font-medium", !checked && "opacity-50")}>{textOff}</span>
-            <span className={cn("text-sm font-medium", checked && "opacity-50")}>{textOn}</span>
-        </div>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={checked ? textOn : textOff}
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className={cn(
+              "absolute w-full text-center text-sm font-medium text-white",
+              checked ? 'left-[-1.5rem]' : 'right-[-1.5rem]'
+            )}
+          >
+            {checked ? textOn : textOff}
+          </motion.span>
+        </AnimatePresence>
       </button>
     );
   }
