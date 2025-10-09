@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -24,7 +25,7 @@ type TextField = {
   fontSize: number;
   color: string;
   fontWeight?: 'normal' | 'bold';
-  textAlign?: 'left' | 'center' | 'right';
+  textAlign?: 'left' | 'center' | 'right' | 'justify';
 };
 
 type FormStampConfig = {
