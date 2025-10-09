@@ -42,7 +42,7 @@ const BetterSwitch = React.forwardRef<
         aria-checked={checked}
         onClick={() => onCheckedChange(!checked)}
         className={cn(
-          'relative flex h-10 w-full max-w-none md:max-w-[calc(100%/3)] items-center rounded-full p-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          'relative flex h-10 w-full items-center rounded-full p-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           checked ? 'bg-green-500' : 'bg-destructive',
           className
         )}

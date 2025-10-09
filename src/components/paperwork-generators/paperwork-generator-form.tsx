@@ -19,7 +19,7 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { Switch } from '../ui/switch';
 import { type PenalCode } from '@/stores/charge-store';
-import { useEffect, useState, useCallback, Suspense, useMemo } from 'react';
+import { useEffect, useState, useCallback, Suspense, useMemo, type ReactNode } from 'react';
 import { Combobox } from '../ui/combobox';
 import { PaperworkChargeField } from './paperwork-generator-charge-field';
 import { LocationDetails } from '../shared/location-details';
@@ -465,11 +465,23 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
     }, [vehiclesFetched, isFetchingVehicles]);
 
 
-    const renderField = (
-        field: FormField, 
+    type RenderFieldOptions = {
+        parentType?: 'group' | 'input_group';
+    };
+    type RenderFieldFn = (
+        field: FormField,
         path: string,
         index?: number,
+        options?: RenderFieldOptions
+    ) => ReactNode;
+
+    const renderField: RenderFieldFn = (
+        field,
+        path,
+        index,
+        options = {},
     ) => {
+        const { parentType } = options;
         const fieldKey = `${path}-${index}`;
         if (field.stipulations) {
             const allMet = field.stipulations.every(stip => {
@@ -758,9 +770,16 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                         </Label>
                     </div>
                 );
-             case 'better-switch':
+            case 'better-switch': {
+                const limitToOneColumn = !parentType;
                 return (
-                    <div key={fieldKey} className="flex flex-col space-y-2 pt-2">
+                    <div
+                        key={fieldKey}
+                        className={cn(
+                            'flex flex-col space-y-2 pt-2',
+                            limitToOneColumn && 'md:max-w-[calc(100%/3)]'
+                        )}
+                    >
                         <Label>{field.label}</Label>
                         <Controller
                             name={path}
@@ -772,11 +791,15 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                                     onCheckedChange={onChange}
                                     textOn={field.dataOn}
                                     textOff={field.dataOff}
+                                    className={cn(
+                                        limitToOneColumn && 'md:max-w-[calc(100%/3)] md:w-full'
+                                    )}
                                 />
                             )}
                         />
                     </div>
                 );
+            }
 
             case 'charge':
                 return (
@@ -805,7 +828,11 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                     <div key={fieldKey} className="flex flex-col md:flex-row items-end gap-4 w-full">
                         {field.fields?.map((subField, subIndex) => {
                             const subFieldPath = subField.name;
-                            return <div key={`${subField.name}-${subIndex}`} className="w-full">{renderField(subField, subFieldPath, subIndex)}</div>;
+                            return (
+                                <div key={`${subField.name}-${subIndex}`} className="w-full">
+                                    {renderField(subField, subFieldPath, subIndex, { parentType: 'group' })}
+                                </div>
+                            );
                         })}
                     </div>
                 );
@@ -818,7 +845,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
         }
     };
 
-    const MultiInputGroup = ({ fieldConfig, renderField }: { fieldConfig: FormField, renderField: Function }) => {
+    const MultiInputGroup = ({ fieldConfig, renderField }: { fieldConfig: FormField, renderField: RenderFieldFn }) => {
         const { fields, append, remove } = useFieldArray({
             control,
             name: fieldConfig.name
@@ -879,13 +906,23 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                                             <div key={`${subField.name}-${subIndex}`} className="flex flex-col md:flex-row items-end gap-4 w-full">
                                                 {subField.fields?.map((innerField, innerIndex) => (
                                                     <div key={`${innerField.name}-${innerIndex}`} className="w-full">
-                                                        {renderField(innerField, `${fieldConfig.name}.${index}.${innerField.name}`, innerIndex)}
+                                                        {renderField(
+                                                            innerField,
+                                                            `${fieldConfig.name}.${index}.${innerField.name}`,
+                                                            innerIndex,
+                                                            { parentType: 'group' }
+                                                        )}
                                                     </div>
                                                 ))}
                                             </div>
                                         );
                                     }
-                                    return renderField(subField, `${fieldConfig.name}.${index}.${subField.name}`, subIndex);
+                                    return renderField(
+                                        subField,
+                                        `${fieldConfig.name}.${index}.${subField.name}`,
+                                        subIndex,
+                                        { parentType: 'input_group' }
+                                    );
                                 })}
                             </div>
                             <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
