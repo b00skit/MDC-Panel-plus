@@ -32,6 +32,7 @@ import Handlebars from 'handlebars';
 import { cn, registerHelpers } from '@/lib/utils';
 import configData from '../../../data/config.json';
 import { FormField } from './paperwork-generator-charge-field';
+import { BetterSwitch } from '../ui/better-switch';
 
 type GeneratorConfig = {
     id: string;
@@ -173,7 +174,7 @@ const buildDefaultValues = (fields: FormField[], parentPath: string[] = []): Rec
             continue;
         }
 
-        if (field.type === 'toggle') {
+        if (field.type === 'toggle' || field.type === 'better-switch') {
             setValueAtPath(defaults, currentPath, field.defaultValue === true);
         } else if (field.type === 'multi-select') {
             setValueAtPath(defaults, currentPath, field.defaultValue || []);
@@ -755,6 +756,25 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                         <Label htmlFor={path}>
                             {watch(path) ? field.dataOn : field.dataOff}
                         </Label>
+                    </div>
+                );
+             case 'better-switch':
+                return (
+                    <div key={fieldKey} className="flex flex-col space-y-2 pt-2">
+                        <Label>{field.label}</Label>
+                        <Controller
+                            name={path}
+                            control={control}
+                            defaultValue={field.defaultValue === true}
+                            render={({ field: { onChange, value } }) => (
+                                <BetterSwitch
+                                    checked={value}
+                                    onCheckedChange={onChange}
+                                    textOn={field.dataOn}
+                                    textOff={field.dataOff}
+                                />
+                            )}
+                        />
                     </div>
                 );
 

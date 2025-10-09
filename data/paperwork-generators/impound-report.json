@@ -41,7 +41,7 @@
             "type": "group",
             "fields": [
                 {
-                    "type": "toggle",
+                    "type": "better-switch",
                     "name": "vehicle_registered",
                     "label": "Registration Status",
                     "dataOn": "Registered",

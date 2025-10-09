@@ -42,37 +42,24 @@ const BetterSwitch = React.forwardRef<
         aria-checked={checked}
         onClick={() => onCheckedChange(!checked)}
         className={cn(
-          'relative flex h-10 w-48 items-center rounded-full p-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          'relative flex h-10 w-32 items-center rounded-full p-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           checked ? 'bg-green-500' : 'bg-destructive',
           className
         )}
       >
         <motion.div
-          className="absolute z-10 h-8 w-8 rounded-full bg-white shadow-md"
+          className="absolute z-10 h-8 w-8 rounded-full bg-white shadow-md flex items-center justify-center"
           layout
           transition={spring}
           style={{
-            left: checked ? '0.25rem' : 'calc(100% - 2.25rem)',
+            left: checked ? 'calc(100% - 2.25rem)' : '0.25rem',
           }}
-        />
-        <div className="relative flex w-full items-center justify-center text-white">
-          <AnimatePresence initial={false} mode="wait">
-            <motion.span
-              key={checked ? 'on' : 'off'}
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -10, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center gap-2 text-sm font-medium"
-            >
-              {checked ? (
-                <Check className="h-4 w-4" />
-              ) : (
-                <X className="h-4 w-4" />
-              )}
-              {checked ? textOn : textOff}
-            </motion.span>
-          </AnimatePresence>
+        >
+          {checked ? <Check className="h-5 w-5 text-green-500"/> : <X className="h-5 w-5 text-destructive" />}
+        </motion.div>
+        <div className="relative flex w-full items-center justify-around text-white">
+            <span className={cn("text-sm font-medium", !checked && "opacity-50")}>{textOff}</span>
+            <span className={cn("text-sm font-medium", checked && "opacity-50")}>{textOn}</span>
         </div>
       </button>
     );
