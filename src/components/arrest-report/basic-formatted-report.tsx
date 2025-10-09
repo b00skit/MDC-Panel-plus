@@ -46,7 +46,7 @@ interface BasicFormattedReportProps {
     formData: any;
     report: any[];
     penalCode: any;
-    innerRef: React.RefObject<HTMLTableElement>;
+    innerRef: React.RefObject<HTMLTableElement | null>;
 }
 
 export function BasicFormattedReport({ formData, report, penalCode, innerRef }: BasicFormattedReportProps) {

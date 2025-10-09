@@ -16,9 +16,12 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { ArrestCalculatorResults } from '@/components/arrest-calculator/arrest-calculator-results';
 import { BasicFormattedReport } from '@/components/arrest-report/basic-formatted-report';
 import { AdvancedFormattedReport } from '@/components/arrest-report/advanced-formatted-report';
-import { useArchiveStore } from '@/stores/archive-store';
+import { ArchivedReport, useArchiveStore } from '@/stores/archive-store';
 import configData from '../../../data/config.json';
 import { useI18n, useScopedI18n } from '@/lib/i18n/client';
+import { useReportType } from '@/stores/report-store';
+import { FormState as AdvancedFormState } from '@/stores/advanced-report-store';
+import { FormState as BasicFormState } from '@/stores/form-store';
 
 function ArrestSubmitContent() {
     const { report, penalCode, additions, reportInitialized } = useChargeStore();
@@ -26,8 +29,7 @@ function ArrestSubmitContent() {
     const { formData: advancedFormData } = useAdvancedReportStore();
     const { archiveReport } = useArchiveStore();
 
-    const searchParams = useSearchParams();
-    const reportType = searchParams.get('type') || 'basic';
+    const reportType = useReportType();
     
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
@@ -80,7 +82,7 @@ function ArrestSubmitContent() {
     // Effect to archive the report once data is available
     useEffect(() => {
         if (hasReport && formData) {
-            const archiveData = {
+            const archiveData : Omit<ArchivedReport, 'id'> = {
                 paperworkType: 'arrest-report',
                 type: reportType,
                 fields: formData,
@@ -138,7 +140,7 @@ function ArrestSubmitContent() {
         }
     };
 
-    const suspectName = isBasicReport ? formData?.arrest?.suspectName : formData?.arrestee?.name;
+    const suspectName = isBasicReport ? (formData as BasicFormState)?.arrest?.suspectName : (formData as AdvancedFormState)?.arrestee?.name;
     const mdcRecordUrl = suspectName ? `https://mdc.gta.world/record/${suspectName.replace(/ /g, '_')}` : null;
   
     if (!isClient) {

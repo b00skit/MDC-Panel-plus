@@ -19,7 +19,7 @@ const DRAW_TOOLS: { type: ToolType; icon: React.ReactNode; title: string }[] = [
 ];
 
 const MapDrawControl = () => {
-    const map = useMap();
+    const map = useMap() as L.DrawMap;
     const [history, setHistory] = useState<L.Layer[]>([]);
     const [redoStack, setRedoStack] = useState<L.Layer[]>([]);
     const [selectedColor, setSelectedColor] = useState(colors[0]);
@@ -97,7 +97,7 @@ const MapDrawControl = () => {
 
         if (type === null) return;
 
-        let drawer;
+        let drawer : L.Draw.Feature;
         const options = { shapeOptions: { color: selectedColor } };
 
         switch (type) {
@@ -148,15 +148,14 @@ const MapDrawControl = () => {
                 map.on('mousemove', onMouseMove);
                 map.on('mouseup', finish);
                 map.on('mouseleave', finish);
-
-                drawer = {
-                    disable: () => {
-                        map.off('mousedown', onMouseDown);
-                        map.off('mousemove', onMouseMove);
-                        map.off('mouseup', finish);
-                        map.off('mouseleave', finish);
-                        map.dragging.enable();
-                    },
+                drawer = new L.Draw.Feature(map);
+                drawer.disable = () => {
+                    map.off('mousedown', onMouseDown);
+                    map.off('mousemove', onMouseMove);
+                    map.off('mouseup', finish);
+                    map.off('mouseleave', finish);
+                    map.dragging.enable();
+                    return drawer;
                 };
                 break;
         }
@@ -216,7 +215,7 @@ const MapDrawControl = () => {
 
 
     useEffect(() => {
-        const control = L.control({ position: 'topright' });
+        const control = new L.Control({ position: 'topright' });
 
         control.onAdd = () => {
             const container = L.DomUtil.create('div', 'leaflet-bar leaflet-custom-draw-controls');
@@ -234,7 +233,7 @@ const MapDrawControl = () => {
             DRAW_TOOLS.forEach(tool => {
                 const btn = L.DomUtil.create('button', 'leaflet-custom-draw-button', drawContainer);
                 btn.title = tool.title;
-                btn.dataset.toolType = tool.type;
+                btn.dataset.toolType = tool.type as string;
                 createRoot(btn).render(tool.icon);
                 L.DomEvent.on(btn, 'click', () => activateDrawer(tool.type));
             });

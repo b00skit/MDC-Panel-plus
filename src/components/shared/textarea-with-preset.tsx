@@ -74,7 +74,7 @@ export function TextareaWithPreset({
 
         const normalizedWatchedNarrative = watchedNarrative || '';
 
-        setLocalValue((previous) => (previous === normalizedWatchedNarrative ? previous : normalizedWatchedNarrative));
+        setLocalValue((previous: string) => (previous === normalizedWatchedNarrative ? previous : normalizedWatchedNarrative));
     }, [watchedNarrative]);
 
     useEffect(() => {

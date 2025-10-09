@@ -26,7 +26,7 @@ interface EvidenceState {
     dashcam: string;
 }
 
-interface FormState {
+export interface FormState {
     general: GeneralState;
     officers: Officer[];
     arrest: ArrestState;

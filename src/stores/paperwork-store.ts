@@ -6,7 +6,7 @@ import { Officer } from './officer-store';
 import { useFormStore } from './form-store';
 
 interface PendingRestoreState {
-    generatorId: string;
+    generatorId: string | null;
     generatorType: 'static' | 'user';
     groupId?: string | null;
     fields: Record<string, any>;
@@ -19,7 +19,7 @@ interface PaperworkState {
   formData: Record<string, any> & { officers?: Officer[], general?: any };
   lastFormValues: Record<string, any> | null;
   pendingRestore: PendingRestoreState | null;
-  setGeneratorData: (data: { generatorId: string; generatorType: 'static' | 'user'; groupId?: string | null }) => void;
+  setGeneratorData: (data: { generatorId: string | null; generatorType: 'static' | 'user'; groupId?: string | null }) => void;
   setFormData: (data: Record<string, any>) => void;
   setLastFormValues: (data: Record<string, any>) => void;
   setPendingRestore: (data: PendingRestoreState) => void;

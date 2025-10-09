@@ -7,7 +7,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const slug = params.slug;
+  const slug = (await params).slug;
   const searchParams = request.nextUrl.searchParams;
   
   const formType = searchParams.get('type') as 'user' | 'static' | null;

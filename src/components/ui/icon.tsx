@@ -48,7 +48,7 @@ export const Icon: React.FC<IconProps> = ({
   ariaLabel,
 }) => {
   const normalized = normalize(name);
-  const LucideIcon = normalized ? Icons[normalized] : Icons.Puzzle; // fallback
+  const LucideIcon = normalized ? (Icons[normalized] as React.ComponentType<Icons.LucideProps>) : Icons.Puzzle; // fallback
 
   // prefer title/aria-label for a11y; hide if none provided
   const a11yProps =

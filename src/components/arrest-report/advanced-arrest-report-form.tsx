@@ -641,10 +641,10 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         if (isInitialLoad.current && (officersFromStore.length > 0 || predefinedOfficers.length > 0)) {
             const mergedFormData: FormState = {
                 ...sessionFormData,
-                modifiers: { ...modifiers, ...sessionFormData.modifiers },
-                presets: { ...presets, ...sessionFormData.presets },
-                userModified: { ...userModified, ...sessionFormData.userModified },
-                narrative: { ...persistentNarrative, ...sessionFormData.narrative },
+                modifiers: { ...modifiers, ...(sessionFormData as FormState).modifiers },
+                presets: { ...presets, ...(sessionFormData as FormState).presets },
+                userModified: { ...userModified, ...(sessionFormData as FormState).userModified },
+                narrative: { ...persistentNarrative, ...(sessionFormData as FormState).narrative },
             };
 
             if (!mergedFormData.officers || mergedFormData.officers.length === 0) {
