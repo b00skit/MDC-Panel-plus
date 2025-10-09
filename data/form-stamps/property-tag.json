@@ -1,0 +1,55 @@
+
+{
+    "id": "property-tag",
+    "title": "Property Tag",
+    "description": "Generate a simple property evidence tag.",
+    "image": "property-tag-bg.png",
+    "font": "monospace",
+    "fields": [
+        {
+            "name": "item_name",
+            "label": "Item Name",
+            "placeholder": "e.g., Handgun",
+            "x": 10,
+            "y": 25,
+            "width": 80,
+            "fontSize": 24,
+            "color": "black",
+            "fontWeight": "bold",
+            "textAlign": "center"
+        },
+        {
+            "name": "date",
+            "label": "Date",
+            "placeholder": "DD/MMM/YYYY",
+            "x": 5,
+            "y": 55,
+            "width": 40,
+            "fontSize": 14,
+            "color": "#333",
+            "textAlign": "left"
+        },
+        {
+            "name": "officer_name",
+            "label": "Officer Name",
+            "placeholder": "John Doe",
+            "x": 5,
+            "y": 70,
+            "width": 90,
+            "fontSize": 16,
+            "color": "#111",
+            "textAlign": "left"
+        },
+        {
+            "name": "badge_number",
+            "label": "Badge Number",
+            "placeholder": "#12345",
+            "x": 5,
+            "y": 85,
+            "width": 90,
+            "fontSize": 16,
+            "color": "#111",
+            "textAlign": "left"
+        }
+    ]
+}
