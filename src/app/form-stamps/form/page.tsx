@@ -20,6 +20,7 @@ type TextField = {
   x: number;
   y: number;
   width: number;
+  height: number;
   fontSize: number;
   color: string;
   fontWeight?: 'normal' | 'bold';
@@ -104,13 +105,16 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
                             left: `${field.x}%`,
                             top: `${field.y}%`,
                             width: `${field.width}%`,
+                            height: `${field.height}%`,
                             fontSize: `${field.fontSize}px`,
+                            lineHeight: `${field.fontSize * 1.2}px`,
                             color: field.color,
                             fontWeight: field.fontWeight || 'normal',
                             textAlign: field.textAlign || 'left',
-                            whiteSpace: 'nowrap',
+                            display: 'flex',
+                            alignItems: 'flex-start',
                             overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            wordBreak: 'break-word',
                         }}
                     >
                         {formData[field.name] || field.placeholder}

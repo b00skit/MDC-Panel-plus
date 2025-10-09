@@ -13,6 +13,7 @@
             "x": 10,
             "y": 25,
             "width": 80,
+            "height": 10,
             "fontSize": 24,
             "color": "black",
             "fontWeight": "bold",
@@ -25,6 +26,7 @@
             "x": 5,
             "y": 55,
             "width": 40,
+            "height": 5,
             "fontSize": 14,
             "color": "#333",
             "textAlign": "left"
@@ -36,6 +38,7 @@
             "x": 5,
             "y": 70,
             "width": 90,
+            "height": 5,
             "fontSize": 16,
             "color": "#111",
             "textAlign": "left"
@@ -47,6 +50,7 @@
             "x": 5,
             "y": 85,
             "width": 90,
+            "height": 5,
             "fontSize": 16,
             "color": "#111",
             "textAlign": "left"
