@@ -10,9 +10,14 @@ import { Icon } from '../ui/icon';
 interface PaperworkGeneratorsListProps {
     globalGenerators: any[];
     factionGroups: any[];
+    basePath?: string;
 }
 
-export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: PaperworkGeneratorsListProps) {
+export function PaperworkGeneratorsList({ 
+    globalGenerators, 
+    factionGroups,
+    basePath = '/paperwork-generators'
+}: PaperworkGeneratorsListProps) {
     const { hiddenFactions, showHiddenGroups } = useSettingsStore();
     const t = useScopedI18n('paperworkGenerators.list');
 
@@ -38,7 +43,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                                 title={generator.title}
                                 description={generator.description}
                                 icon={<Icon name={generator.icon} color={generator.icon_color} className="w-8 h-8" />}
-                                href={`/paperwork-generators/form?type=static&id=${generator.id}`}
+                                href={`${basePath}/form?type=static&id=${generator.id}`}
                                 disabled={generator.generator_disabled}
                             />
                         ))}
@@ -57,7 +62,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                             title={generator.title}
                             description={generator.description}
                             icon={<Icon name={generator.icon} color={generator.icon_color} className="w-8 h-8" />}
-                            href={`/paperwork-generators/form?type=static&id=${generator.id}&group_id=${group.group_id}`}
+                            href={`${basePath}/form?type=static&id=${generator.id}&group_id=${group.group_id}`}
                             disabled={generator.generator_disabled}
                         />
                     ))}

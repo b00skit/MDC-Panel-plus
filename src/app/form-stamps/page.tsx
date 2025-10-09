@@ -1,3 +1,4 @@
+
 import { promises as fs } from 'fs';
 import path from 'path';
 import { PageHeader } from '@/components/dashboard/page-header';
@@ -77,7 +78,11 @@ export default async function FormStampsPage() {
                 title={t('formStamps')}
                 description="Select a form stamp template to use."
             />
-            <PaperworkGeneratorsList globalGenerators={globalGenerators} factionGroups={factionGroups} />
+            <PaperworkGeneratorsList 
+                globalGenerators={globalGenerators} 
+                factionGroups={factionGroups} 
+                basePath="/form-stamps"
+            />
         </div>
     );
 }
