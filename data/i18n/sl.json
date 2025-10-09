@@ -13,6 +13,7 @@
     "arrestCalculator": "Kalkulator aretacij",
     "arrestReport": "Poročilo o aretaciji",
     "paperworkGenerators": "Generatorji dokumentacije",
+    "formStamps": "Žigi obrazcev",
     "simplifiedPenalCode": "Poenostavljen kazenski zakonik",
     "caselaw": "Sodna praksa in viri",
     "map": "Interaktivni zemljevid",
@@ -479,7 +480,7 @@
   "clientLayout": {
     "betaEndedTitle": "Beta dostop se je končal",
     "betaEndedMessage": "Ta beta različica ni več aktivna. Prosimo, uporabite glavno spletno stran.",
-    "betaLiveSite": "Pojdi на spletno stran v živo",
+    "betaLiveSite": "Pojdi na spletno stran v živo",
     "exportData": "Izvozi podatke",
     "toast": {
       "exportedTitle": "Podatki izvoženi",
@@ -585,19 +586,19 @@
       "intro": "Čeprav resnično cenim vsako misel na donacijo, bi vas najprej spodbudil, da podprete platforme in ljudi, ki so omogočili ta projekt. Razmislite o donaciji {gtaWorld} za ohranjanje delovanja naše skupnosti ali pa prvotnemu ustvarjalcu MDC Panel, {founder}, na čigar temeljih sem gradil.",
       "buttons": {
         "supportFounder": "Podprite ustanovitelja",
-        "donate": "Donirajte mi на Ko-fi"
+        "donate": "Donirajte mi na Ko-fi"
       }
     },
     "contact": {
       "title": "Kontakt & povratne informacije",
-      "description": "Trenutni vzdrževalec je {maintainer}. Če imate kakršnakoli vprašanja, najdete napako ali imate predlog, se obrnite name preko Discorda ali uporabite obrazec za povratne informacije, ki je na voljo на spletnem mestu."
+      "description": "Trenutni vzdrževalec je {maintainer}. Če imate kakršnakoli vprašanja, najdete napako ali imate predlog, se obrnite name preko Discorda ali uporabite obrazec za povratne informacije, ki je na voljo na spletnem mestu."
     }
   },
   "credits": {
     "pageTitle": "Zasluge & prispevki",
     "header": {
       "title": "Zasluge & prispevki",
-      "description": "Ta projekt stoji на ramenih velikanov."
+      "description": "Ta projekt stoji na ramenih velikanov."
     },
     "intro": "Velika hvala vsem, ki so prispevali, navdihnili ali podprli ta projekt. Številne ideje in funkcije so bile navdihnjene z delom drugih v skupnosti, združene tukaj v eno enotno orodje."
   },
@@ -607,7 +608,7 @@
   "help": {
     "pageTitle": "Pomoč & povratne informacije",
     "header": {
-      "title": "Center за pomoč & povratne informacije",
+      "title": "Center za pomoč & povratne informacije",
       "description": "Poiščite odgovore na pogosta vprašanja in pridobite podporo."
     },
     "faq": {

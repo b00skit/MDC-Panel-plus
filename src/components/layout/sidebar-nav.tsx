@@ -21,6 +21,7 @@ import {
   History,
   Search,
   TextSearch,
+  Stamp,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -192,6 +193,18 @@ export function SidebarNav() {
               <Link href="/paperwork-generators">
                 <Archive />
                 <span>{tNav('paperworkGenerators')}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/form-stamps')}
+              tooltip={tNav('formStamps')}
+            >
+              <Link href="/form-stamps">
+                <Stamp />
+                <span>{tNav('formStamps')}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
