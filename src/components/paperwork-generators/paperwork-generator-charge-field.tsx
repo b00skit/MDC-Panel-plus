@@ -33,13 +33,55 @@ const getTypeClasses = (type: Charge['type']) => {
   }
 };
 
-type FormField = {
-    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group';
+export type FormField = {
+    type: 'text' | 'textarea' | 'dropdown' | 'officer' | 'general' | 'section' | 'hidden' | 'toggle' | 'datalist' | 'charge' | 'group' | 'location' | 'input_group' | 'multi-select' | 'textarea-with-preset' | 'modifier_itemgroup';
     name: string;
     label?: string;
     placeholder?: string;
-    options?: string[];
-  };
+    options?: any[];
+    optionsSource?: 'districts' | 'streets' | 'vehicles';
+    title?: string;
+    value?: string;
+    dataOn?: string;
+    dataOff?: string;
+    defaultValue?: any;
+    required?: boolean;
+    multi?: boolean;
+    showDivDetail?: boolean;
+    showBadgeNumber?: boolean;
+    stipulation?: {
+        field: string;
+        value: any;
+    },
+    stipulations?: {
+        field: string;
+        value: any;
+    }[],
+    fields?: FormField[]; // For group and input_group types
+    // Charge field specific config
+    showClass?: boolean;
+    showOffense?: boolean;
+    showAddition?: boolean;
+    showCategory?: boolean;
+    allowedTypes?: { F?: boolean, M?: boolean, I?: boolean };
+    allowedIds?: string;
+    customFields?: FormField[];
+    previewFields?: {
+        sentence?: boolean;
+        fine?: boolean;
+        impound?: boolean;
+        suspension?: boolean;
+    };
+    copyable_charge?: boolean;
+    // Location field specific config
+    showDistrict?: boolean;
+    // Textarea with preset
+    modifiers?: any[];
+    preset?: string;
+    noLocalStorage?: boolean;
+    refreshOn?: string[];
+    prefillKey?: string;
+};
 
 interface PaperworkChargeFieldProps {
   control: Control<any>;

@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { motion, useInView, useSpring, useTransform } from 'framer-motion';
+import { motion, useInView, useSpring, useTransform, Variants } from 'framer-motion';
 import { useSettingsStore } from '@/stores/settings-store';
 import { useScopedI18n } from '@/lib/i18n/client';
 
@@ -86,7 +86,7 @@ const typeOrder = ['feature', 'addition', 'modification', 'backend', 'fix'];
 
 // --- ANIMATION VARIANTS ---
 const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 10 } } };
+const itemVariants : Variants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 10 } } };
 
 
 // --- ANIMATED STAT CARD COMPONENT ---

@@ -12,7 +12,7 @@ function GeneratorPageContent() {
     const id = searchParams.get('id');
     const groupId = searchParams.get('group_id');
     
-    const [generatorConfig, setGeneratorConfig] = useState(null);
+    const [generatorConfig, setGeneratorConfig] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 

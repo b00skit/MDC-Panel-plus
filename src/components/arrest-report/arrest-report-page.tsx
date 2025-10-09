@@ -158,10 +158,10 @@ export function ArrestReportPage() {
 
 
   const renderReport = useCallback(() => {
-    if (!hasReport) return null;
+    if (!hasReport || !penalCode) return null;
 
     const extras = report.map(row => {
-        const chargeDetails = penalCode[row.chargeId!];
+        const chargeDetails = penalCode[row.chargeId!] || null;
         if (chargeDetails && chargeDetails.extra && chargeDetails.extra !== 'N/A') {
             const typePrefix = `${chargeDetails.type}${row.class}`;
             let title = `${typePrefix} ${chargeDetails.id}. ${chargeDetails.charge}`;

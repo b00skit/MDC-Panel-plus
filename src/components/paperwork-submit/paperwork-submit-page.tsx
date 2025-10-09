@@ -23,7 +23,7 @@ const GeneratedFormattedReport = ({
     onGeneratorLoaded,
     onTemplateUpdate,
 }: {
-    innerRef: React.RefObject<HTMLDivElement>,
+    innerRef: React.RefObject<HTMLDivElement | null>,
     setReportTitle: (title: string) => void,
     setCustomButton: (button: { text: string; link: string } | null) => void,
     onGeneratorLoaded?: (details: { title?: string; description?: string; icon?: string }) => void,

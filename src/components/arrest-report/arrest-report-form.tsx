@@ -394,10 +394,10 @@ export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function Arre
                 onOpenChange={setIsAiDialogOpen}
                 onNarrativeGenerated={handleNarrativeGenerated}
                 context={{
-                    officers: officers,
                     charges: report,
                     penalCode: penalCode,
                     ...formData,
+                    officers: officers
                 }}
             />
         )}

@@ -4,7 +4,7 @@ import { useI18n } from '@/lib/i18n/client';
 
 interface AdvancedFormattedReportProps {
     formData: any;
-    innerRef: React.RefObject<HTMLTableElement>;
+    innerRef: React.RefObject<HTMLTableElement | null>;
 }
 
 export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormattedReportProps) {
