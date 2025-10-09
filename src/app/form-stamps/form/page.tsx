@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +18,7 @@ import { Card, CardContent } from '@/components/ui/card';
 type TextField = {
   name: string;
   label: string;
+  type?: 'textfield' | 'textarea';
   placeholder?: string;
   x: number;
   y: number;
@@ -72,12 +74,22 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
         {config.fields.map((field) => (
           <div key={field.name}>
             <Label htmlFor={field.name}>{field.label}</Label>
-            <Input
-              id={field.name}
-              {...register(field.name)}
-              placeholder={field.placeholder}
-              className="mt-1"
-            />
+            {field.type === 'textarea' ? (
+              <Textarea
+                id={field.name}
+                {...register(field.name)}
+                placeholder={field.placeholder}
+                className="mt-1"
+                rows={4}
+              />
+            ) : (
+              <Input
+                id={field.name}
+                {...register(field.name)}
+                placeholder={field.placeholder}
+                className="mt-1"
+              />
+            )}
           </div>
         ))}
         <Button onClick={handleDownload} disabled={isDownloading}>
@@ -114,7 +126,8 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
                             textAlign: field.textAlign || 'left',
                             display: 'flex',
                             alignItems: 'flex-start',
-                            overflow: 'hidden',
+                            overflowWrap: 'break-word',
+                            wordWrap: 'break-word',
                             wordBreak: 'break-word',
                         }}
                     >

@@ -9,6 +9,7 @@
         {
             "name": "item_name",
             "label": "Item Name",
+            "type": "textfield",
             "placeholder": "e.g., Handgun",
             "x": 10,
             "y": 25,
@@ -22,6 +23,7 @@
         {
             "name": "date",
             "label": "Date",
+            "type": "textfield",
             "placeholder": "DD/MMM/YYYY",
             "x": 5,
             "y": 55,
@@ -34,6 +36,7 @@
         {
             "name": "officer_name",
             "label": "Officer Name",
+            "type": "textfield",
             "placeholder": "John Doe",
             "x": 5,
             "y": 70,
@@ -46,6 +49,7 @@
         {
             "name": "badge_number",
             "label": "Badge Number",
+            "type": "textfield",
             "placeholder": "#12345",
             "x": 5,
             "y": 85,
