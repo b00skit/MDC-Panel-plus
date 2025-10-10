@@ -125,7 +125,13 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
                             fontWeight: field.fontWeight || 'normal',
                             textAlign: field.textAlign || 'left',
                             display: 'flex',
-                            alignItems: 'flex-start',
+                            justifyContent:
+                                field.textAlign === 'center'
+                                    ? 'center'
+                                    : field.textAlign === 'right'
+                                      ? 'flex-end'
+                                      : 'flex-start',
+                            alignItems: field.textAlign === 'center' ? 'center' : 'flex-start',
                             overflowWrap: 'break-word',
                             wordWrap: 'break-word',
                             wordBreak: 'break-word',

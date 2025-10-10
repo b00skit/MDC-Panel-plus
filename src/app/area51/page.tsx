@@ -19,6 +19,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
 import { produce } from 'immer';
+import { Rnd } from 'react-rnd';
 
 import changelogData from '../../../data/changelog.json';
 
@@ -445,7 +446,7 @@ function FormStampsEditor() {
     const [stampFiles, setStampFiles] = useState<{ id: string; title: string }[]>([]);
     const [selectedStamp, setSelectedStamp] = useState<string>('');
     const { toast } = useToast();
-    const { register, control, handleSubmit, watch, reset } = useForm<FormStampConfig>();
+    const { register, control, handleSubmit, watch, reset, setValue } = useForm<FormStampConfig>();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -453,6 +454,7 @@ function FormStampsEditor() {
     });
 
     const formData = watch();
+    const previewContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // In a real app, this would be an API call
@@ -487,6 +489,28 @@ function FormStampsEditor() {
         console.log(data);
         toast({ title: 'JSON Generated', description: 'Check console for output.' });
     }
+
+    const onDragStop = (index: number, e: any, d: any) => {
+        const parentBounds = previewContainerRef.current?.getBoundingClientRect();
+        if (!parentBounds) return;
+
+        const x = (d.x / parentBounds.width) * 100;
+        const y = (d.y / parentBounds.height) * 100;
+
+        setValue(`fields.${index}.x`, parseFloat(x.toFixed(2)));
+        setValue(`fields.${index}.y`, parseFloat(y.toFixed(2)));
+    };
+
+    const onResizeStop = (index: number, e: any, direction: any, ref: any, delta: any, position: any) => {
+        const parentBounds = previewContainerRef.current?.getBoundingClientRect();
+        if (!parentBounds) return;
+
+        const width = (parseInt(ref.style.width, 10) / parentBounds.width) * 100;
+        const height = (parseInt(ref.style.height, 10) / parentBounds.height) * 100;
+
+        setValue(`fields.${index}.width`, parseFloat(width.toFixed(2)));
+        setValue(`fields.${index}.height`, parseFloat(height.toFixed(2)));
+    };
 
     return (
         <form onSubmit={handleSubmit(generateJson)} className="space-y-6">
@@ -634,29 +658,43 @@ function FormStampsEditor() {
                 <CardHeader><CardTitle>Live Preview</CardTitle></CardHeader>
                 <CardContent>
                     <div
-                        className="relative bg-gray-200 dark:bg-gray-800 border border-dashed"
+                        ref={previewContainerRef}
+                        className="relative bg-gray-200 dark:bg-gray-800 border border-dashed overflow-hidden"
                         style={{ width: '500px', height: '500px' }}
                     >
-                        {formData.image && <img src={`/data/form-stamps/img/${formData.image}`} alt="background" className="absolute top-0 left-0 w-full h-full object-contain" />}
+                        {formData.image && <img src={`/data/form-stamps/img/${formData.image}`} alt="background" className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none" />}
                         {formData.fields?.map((field, index) => (
-                            <div
+                            <Rnd
                                 key={index}
-                                className="absolute border border-blue-500/50 p-1"
-                                style={{
-                                    left: `${field.x}%`,
-                                    top: `${field.y}%`,
+                                size={{
                                     width: `${field.width}%`,
                                     height: `${field.height}%`,
-                                    fontSize: `${field.fontSize}px`,
-                                    color: field.color,
-                                    fontFamily: formData.font,
-                                    fontWeight: field.fontWeight,
-                                    textAlign: field.textAlign,
-                                    overflowWrap: 'break-word',
                                 }}
+                                position={{
+                                    x: (field.x / 100) * (previewContainerRef.current?.offsetWidth || 0),
+                                    y: (field.y / 100) * (previewContainerRef.current?.offsetHeight || 0),
+                                }}
+                                onDragStop={(e, d) => onDragStop(index, e, d)}
+                                onResizeStop={(e, direction, ref, delta, position) => onResizeStop(index, e, direction, ref, delta, position)}
+                                bounds="parent"
+                                className="border border-blue-500/50 p-1 box-border"
                             >
-                                {field.placeholder || `Field ${index+1}`}
-                            </div>
+                                <div
+                                    className="w-full h-full"
+                                    style={{
+                                        fontSize: `${field.fontSize}px`,
+                                        color: field.color,
+                                        fontFamily: formData.font,
+                                        fontWeight: field.fontWeight,
+                                        textAlign: field.textAlign,
+                                        overflowWrap: 'break-word',
+                                        wordWrap: 'break-word',
+                                        wordBreak: 'break-word',
+                                    }}
+                                >
+                                    {field.placeholder || `Field ${index+1}`}
+                                </div>
+                            </Rnd>
                         ))}
                     </div>
                 </CardContent>
