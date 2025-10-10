@@ -15,6 +15,11 @@ import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
 
+type FontSetting = {
+  family: string;
+  file?: string;
+};
+
 type TextField = {
   name: string;
   label: string;
@@ -28,6 +33,7 @@ type TextField = {
   color: string;
   fontWeight?: 'normal' | 'bold';
   textAlign?: 'left' | 'center' | 'right' | 'justify';
+  font?: FontSetting;
 };
 
 type FormStampConfig = {
@@ -35,9 +41,37 @@ type FormStampConfig = {
   title: string;
   description: string;
   image: string;
-  font?: string;
+  font?: FontSetting;
   fields: TextField[];
 };
+
+type RawFontSetting = string | FontSetting | undefined;
+
+function normalizeFontSetting(font?: RawFontSetting): FontSetting | undefined {
+  if (!font) return undefined;
+  if (typeof font === 'string') {
+    const trimmed = font.trim();
+    if (!trimmed) return undefined;
+    return { family: trimmed };
+  }
+  if (!font.family) {
+    return undefined;
+  }
+  return font;
+}
+
+function normalizeFormStampConfig(data: any): FormStampConfig {
+  return {
+    ...data,
+    font: normalizeFontSetting(data?.font),
+    fields: Array.isArray(data?.fields)
+      ? data.fields.map((field: any) => ({
+          ...field,
+          font: normalizeFontSetting(field?.font),
+        }))
+      : [],
+  };
+}
 
 function FormStampFormComponent({ config }: { config: FormStampConfig }) {
   const { register, watch } = useForm();
@@ -45,6 +79,48 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
   const { toast } = useToast();
   const previewRef = React.useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = React.useState(false);
+  const globalFontFamily = config.font?.family;
+
+  React.useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const fontsToLoad = new Map<string, string>();
+    const addFont = (font?: FontSetting) => {
+      if (!font?.family || !font.file) return;
+      fontsToLoad.set(font.family, font.file);
+    };
+
+    addFont(config.font);
+    config.fields.forEach((field) => addFont(field.font));
+
+    if (!fontsToLoad.size) return;
+
+    let cancelled = false;
+
+    const loadFonts = async () => {
+      for (const [family, file] of fontsToLoad) {
+        try {
+          const fontCheck = `1em "${family.replace(/"/g, '\"')}"`;
+          if (document.fonts?.check?.(fontCheck)) {
+            continue;
+          }
+          const fontFace = new FontFace(family, `url(/data/form-stamps/fonts/${file})`);
+          const loadedFont = await fontFace.load();
+          if (!cancelled) {
+            document.fonts.add(loadedFont);
+          }
+        } catch (error) {
+          console.error(`Failed to load font "${family}" from file "${file}"`, error);
+        }
+      }
+    };
+
+    loadFonts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [config]);
 
   const handleDownload = () => {
     if (!previewRef.current) return;
@@ -104,7 +180,7 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
                 ref={previewRef}
                 className="relative"
                 style={{
-                    fontFamily: config.font || 'sans-serif',
+                    fontFamily: [globalFontFamily, 'sans-serif'].filter(Boolean).join(', '),
                     width: '100%',
                     aspectRatio: '1',
                 }}
@@ -123,6 +199,7 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
                             lineHeight: `${field.fontSize * 1.2}px`,
                             color: field.color,
                             fontWeight: field.fontWeight || 'normal',
+                            fontFamily: [field.font?.family, globalFontFamily, 'sans-serif'].filter(Boolean).join(', '),
                             textAlign: field.textAlign || 'left',
                             display: 'flex',
                             justifyContent:
@@ -169,7 +246,7 @@ function FormStampPageContent() {
     fetch(url.replace('paperwork-generators', 'form-stamps'))
       .then((res) => res.json())
       .then((data) => {
-        setConfig(data);
+        setConfig(normalizeFormStampConfig(data));
         setLoading(false);
       })
       .catch(() => setLoading(false));

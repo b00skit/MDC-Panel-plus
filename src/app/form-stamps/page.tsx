@@ -26,7 +26,7 @@ async function getFormStampsData() {
         const directories = entries.filter(entry => entry.isDirectory());
         for (const dir of directories) {
             const groupDir = path.join(baseDir, dir.name);
-            if (dir.name === 'img' || dir.name === 'font') continue; // Skip asset directories
+            if (dir.name === 'img' || dir.name === 'fonts') continue; // Skip asset directories
             const manifestPath = path.join(groupDir, 'manifest.json');
             try {
                 const manifestContents = await fs.readFile(manifestPath, 'utf8');

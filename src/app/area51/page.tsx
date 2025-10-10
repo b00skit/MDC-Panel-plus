@@ -58,6 +58,11 @@ const emptyChangelog: ChangelogEntry = {
 
 
 // Types for Form Stamp Editor
+type FontSetting = {
+  family: string;
+  file?: string;
+};
+
 type TextField = {
   name: string;
   label: string;
@@ -71,6 +76,7 @@ type TextField = {
   color: string;
   fontWeight?: 'normal' | 'bold';
   textAlign?: 'left' | 'center' | 'right' | 'justify';
+  font?: FontSetting;
 };
 
 type FormStampConfig = {
@@ -78,9 +84,33 @@ type FormStampConfig = {
   title: string;
   description: string;
   image: string;
-  font?: string;
+  font?: FontSetting;
   fields: TextField[];
 };
+
+type RawFontSetting = string | FontSetting | undefined;
+
+const normalizeFontSetting = (font?: RawFontSetting): FontSetting | undefined => {
+  if (!font) return undefined;
+  if (typeof font === 'string') {
+    const trimmed = font.trim();
+    if (!trimmed) return undefined;
+    return { family: trimmed };
+  }
+  if (!font.family) return undefined;
+  return font;
+};
+
+const normalizeFormStampConfig = (data: any): FormStampConfig => ({
+  ...data,
+  font: normalizeFontSetting(data?.font),
+  fields: Array.isArray(data?.fields)
+    ? data.fields.map((field: any) => ({
+        ...field,
+        font: normalizeFontSetting(field?.font),
+      }))
+    : [],
+});
 
 // Component for Changelog Generator
 function ChangelogGenerator() {
@@ -463,6 +493,47 @@ function FormStampsEditor() {
     const SNAP_THRESHOLD = 8;
 
     useEffect(() => {
+        if (typeof document === 'undefined') return;
+
+        const fontsToLoad = new Map<string, string>();
+        const addFont = (font?: FontSetting) => {
+            if (!font?.family || !font.file) return;
+            fontsToLoad.set(font.family, font.file);
+        };
+
+        addFont(formData.font);
+        (formData.fields ?? []).forEach((field) => addFont(field?.font));
+
+        if (!fontsToLoad.size) return;
+
+        let cancelled = false;
+
+        const loadFonts = async () => {
+            for (const [family, file] of fontsToLoad) {
+                try {
+                    const fontCheck = `1em "${family.replace(/"/g, '\"')}"`;
+                    if (document.fonts?.check?.(fontCheck)) {
+                        continue;
+                    }
+                    const fontFace = new FontFace(family, `url(/data/form-stamps/fonts/${file})`);
+                    const loadedFont = await fontFace.load();
+                    if (!cancelled) {
+                        document.fonts.add(loadedFont);
+                    }
+                } catch (error) {
+                    console.error(`Failed to load font "${family}" from file "${file}"`, error);
+                }
+            }
+        };
+
+        loadFonts();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [formData]);
+
+    useEffect(() => {
         const updateSize = () => {
             if (!previewContainerRef.current) return;
             const { width, height } = previewContainerRef.current.getBoundingClientRect();
@@ -506,7 +577,7 @@ function FormStampsEditor() {
 
     const handleStampSelection = async (stampId: string) => {
         if (!stampId || stampId === 'new') {
-            reset({ id: '', title: '', description: '', image: '', font: '', fields: [] });
+            reset({ id: '', title: '', description: '', image: '', font: undefined, fields: [] });
             setSelectedStamp(stampId || '');
             return;
         }
@@ -514,15 +585,35 @@ function FormStampsEditor() {
         try {
             const res = await fetch(`/api/form-stamps/form?type=static&id=${stampId}`);
             if(!res.ok) throw new Error('Failed to load stamp');
-            const data: FormStampConfig = await res.json();
-            reset(data);
+            const data = await res.json();
+            reset(normalizeFormStampConfig(data));
         } catch (error) {
             toast({ title: 'Error loading stamp', description: (error as Error).message, variant: 'destructive' });
         }
     };
 
+    const sanitizeFont = (font?: FontSetting) => {
+        const normalized = normalizeFontSetting(font);
+        if (!normalized) return undefined;
+        const result: FontSetting = { family: normalized.family };
+        if (normalized.file) {
+            result.file = normalized.file;
+        }
+        return result;
+    };
+
     const generateJson = (data: FormStampConfig) => {
-        console.log(data);
+        const sanitized: FormStampConfig = {
+            ...data,
+            font: sanitizeFont(data.font),
+            fields: (data.fields || []).map((field) => {
+                const sanitizedFont = sanitizeFont(field.font);
+                const { font: _font, ...rest } = field;
+                return sanitizedFont ? { ...rest, font: sanitizedFont } : rest;
+            }),
+        };
+
+        console.log(JSON.stringify(sanitized, null, 2));
         toast({ title: 'JSON Generated', description: 'Check console for output.' });
     }
 
@@ -745,13 +836,17 @@ function FormStampsEditor() {
                         <Label htmlFor="stamp-desc">Description</Label>
                         <Input id="stamp-desc" {...register('description')} />
                     </div>
-                     <div>
+                    <div>
                         <Label htmlFor="stamp-image">Background Image</Label>
                         <Input id="stamp-image" {...register('image')} placeholder="e.g., property-tag-bg.png" />
                     </div>
                     <div>
-                        <Label htmlFor="stamp-font">Font</Label>
-                        <Input id="stamp-font" {...register('font')} placeholder="e.g., monospace" />
+                        <Label htmlFor="stamp-font-family">Global Font Family</Label>
+                        <Input id="stamp-font-family" {...register('font.family')} placeholder="e.g., DejaVu Sans" />
+                    </div>
+                    <div>
+                        <Label htmlFor="stamp-font-file">Global Font File</Label>
+                        <Input id="stamp-font-file" {...register('font.file')} placeholder="e.g., DejaVuSans.ttf" />
                     </div>
                 </CardContent>
             </Card>
@@ -800,9 +895,17 @@ function FormStampsEditor() {
                                     <Label>Font Size</Label>
                                     <Input type="number" {...register(`fields.${index}.fontSize`, { valueAsNumber: true })} />
                                 </div>
-                                 <div className="space-y-2">
+                                <div className="space-y-2">
                                     <Label>Color</Label>
                                     <Input type="color" {...register(`fields.${index}.color`)} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Font Family (Override)</Label>
+                                    <Input {...register(`fields.${index}.font.family`)} placeholder="Optional" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Font File (Override)</Label>
+                                    <Input {...register(`fields.${index}.font.file`)} placeholder="Optional" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Font Weight</Label>
@@ -907,7 +1010,9 @@ function FormStampsEditor() {
                                         style={{
                                             fontSize: `${field.fontSize}px`,
                                             color: field.color,
-                                            fontFamily: formData.font,
+                                            fontFamily: [formData.fields?.[index]?.font?.family, formData.font?.family, 'sans-serif']
+                                                .filter(Boolean)
+                                                .join(', '),
                                             fontWeight: field.fontWeight,
                                             textAlign: field.textAlign,
                                             overflowWrap: 'break-word',

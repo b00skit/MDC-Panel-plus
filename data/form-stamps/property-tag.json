@@ -4,7 +4,10 @@
     "title": "Property Tag",
     "description": "Generate a simple property evidence tag.",
     "image": "property-tag-bg.png",
-    "font": "monospace",
+    "font": {
+        "family": "DejaVu Sans",
+        "file": "DejaVuSans.ttf"
+    },
     "fields": [
         {
             "name": "item_name",
@@ -57,7 +60,11 @@
             "height": 5,
             "fontSize": 16,
             "color": "#111",
-            "textAlign": "left"
+            "textAlign": "left",
+            "font": {
+                "family": "DejaVu Sans Mono",
+                "file": "DejaVuSansMono.ttf"
+            }
         }
     ]
 }
