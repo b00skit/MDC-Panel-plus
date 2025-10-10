@@ -467,9 +467,9 @@ function FormStampsEditor() {
     }, []);
 
     const handleStampSelection = async (stampId: string) => {
-        if (!stampId) {
+        if (!stampId || stampId === 'new') {
             reset({ id: '', title: '', description: '', image: '', font: '', fields: [] });
-            setSelectedStamp('');
+            setSelectedStamp(stampId || '');
             return;
         }
         setSelectedStamp(stampId);
@@ -501,7 +501,7 @@ function FormStampsEditor() {
                             <SelectValue placeholder="Select a stamp..." />
                         </SelectTrigger>
                         <SelectContent>
-                             <SelectItem value="">➕ New Stamp</SelectItem>
+                             <SelectItem value="new">➕ New Stamp</SelectItem>
                             {stampFiles.map(file => (
                                 <SelectItem key={file.id} value={file.id}>{file.title}</SelectItem>
                             ))}
@@ -692,5 +692,3 @@ export default function Area51Page() {
         </div>
     );
 }
-
-    
