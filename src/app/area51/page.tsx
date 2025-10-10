@@ -456,6 +456,11 @@ function FormStampsEditor() {
     const formData = watch();
     const previewContainerRef = useRef<HTMLDivElement>(null);
     const [previewSize, setPreviewSize] = useState({ width: 500, height: 500 });
+    const [snapGuides, setSnapGuides] = useState<{ vertical: number | null; horizontal: number | null }>({
+        vertical: null,
+        horizontal: null,
+    });
+    const SNAP_THRESHOLD = 8;
 
     useEffect(() => {
         const updateSize = () => {
@@ -523,7 +528,8 @@ function FormStampsEditor() {
 
     const setFieldValue = useCallback(
         (path: `fields.${number}.${'x' | 'y' | 'width' | 'height'}`, value: number) => {
-            setValue(path, parseFloat(value.toFixed(2)), {
+            const rounded = Math.round(value * 1000) / 1000;
+            setValue(path, rounded, {
                 shouldDirty: true,
                 shouldTouch: true,
             });
@@ -545,24 +551,165 @@ function FormStampsEditor() {
 
     const toPercent = (value: number, total: number) => (total ? (value / total) * 100 : 0);
 
-    const onDrag = (index: number, _e: any, d: any) => {
+    const getFieldRectPx = (field?: TextField) => {
+        if (!previewSize.width || !previewSize.height || !field) {
+            return { x: 0, y: 0, width: 0, height: 0 };
+        }
+
+        return {
+            x: ((field.x ?? 0) / 100) * previewSize.width,
+            y: ((field.y ?? 0) / 100) * previewSize.height,
+            width: ((field.width ?? 0) / 100) * previewSize.width,
+            height: ((field.height ?? 0) / 100) * previewSize.height,
+        };
+    };
+
+    const computeSnappedRect = (
+        index: number,
+        rect: { x?: number; y?: number; width?: number; height?: number },
+        options?: { snapWidth?: boolean }
+    ) => {
+        if (!previewSize.width || !previewSize.height) {
+            return {
+                rect: {
+                    x: rect.x ?? 0,
+                    y: rect.y ?? 0,
+                    width: rect.width ?? 0,
+                    height: rect.height ?? 0,
+                },
+                guides: { vertical: null as number | null, horizontal: null as number | null },
+            };
+        }
+
+        const fieldsData = formData.fields ?? [];
+        const currentField = fieldsData[index];
+
+        if (!currentField) {
+            return {
+                rect: {
+                    x: rect.x ?? 0,
+                    y: rect.y ?? 0,
+                    width: rect.width ?? 0,
+                    height: rect.height ?? 0,
+                },
+                guides: { vertical: null as number | null, horizontal: null as number | null },
+            };
+        }
+
+        const baseRect = getFieldRectPx(currentField);
+        let width = rect.width ?? baseRect.width;
+        let height = rect.height ?? baseRect.height;
+        let x = rect.x ?? baseRect.x;
+        let y = rect.y ?? baseRect.y;
+
+        const otherRects = fieldsData
+            .map((field, idx) => (idx === index ? null : getFieldRectPx(field)))
+            .filter((value): value is { x: number; y: number; width: number; height: number } => Boolean(value));
+
+        if (options?.snapWidth && otherRects.length) {
+            let closestWidth = width;
+            let closestDiff = SNAP_THRESHOLD + 1;
+
+            otherRects.forEach((other) => {
+                const diff = Math.abs(other.width - width);
+                if (diff < closestDiff && diff <= SNAP_THRESHOLD) {
+                    closestDiff = diff;
+                    closestWidth = other.width;
+                }
+            });
+
+            width = closestWidth;
+        }
+
+        const verticalCandidates: number[] = [0, previewSize.width / 2, previewSize.width];
+        const horizontalCandidates: number[] = [0, previewSize.height / 2, previewSize.height];
+
+        otherRects.forEach((other) => {
+            verticalCandidates.push(other.x, other.x + other.width / 2, other.x + other.width);
+            horizontalCandidates.push(other.y, other.y + other.height / 2, other.y + other.height);
+        });
+
+        const snapAxis = (value: number, size: number, candidates: number[]) => {
+            let snappedValue = value;
+            let guide: number | null = null;
+            let bestDiff = SNAP_THRESHOLD + 1;
+
+            const points = [
+                { point: value, offset: 0 },
+                { point: value + size / 2, offset: -size / 2 },
+                { point: value + size, offset: -size },
+            ];
+
+            candidates.forEach((candidate) => {
+                points.forEach(({ point, offset }) => {
+                    const diff = Math.abs(point - candidate);
+                    if (diff < bestDiff && diff <= SNAP_THRESHOLD) {
+                        bestDiff = diff;
+                        snappedValue = candidate + offset;
+                        guide = candidate;
+                    }
+                });
+            });
+
+            return { value: snappedValue, guide };
+        };
+
+        const { value: snappedX, guide: verticalGuide } = snapAxis(x, width, verticalCandidates);
+        const { value: snappedY, guide: horizontalGuide } = snapAxis(y, height, horizontalCandidates);
+
+        x = Math.min(Math.max(0, snappedX), Math.max(0, previewSize.width - width));
+        y = Math.min(Math.max(0, snappedY), Math.max(0, previewSize.height - height));
+
+        return {
+            rect: { x, y, width, height },
+            guides: { vertical: verticalGuide, horizontal: horizontalGuide },
+        };
+    };
+
+    const handleDrag = (index: number, _e: any, d: any) => {
         if (!previewSize.width || !previewSize.height) return;
 
+        const { rect, guides } = computeSnappedRect(index, { x: d.x, y: d.y });
+        setSnapGuides(guides);
+
         updateFieldRect(index, {
-            x: toPercent(d.x, previewSize.width),
-            y: toPercent(d.y, previewSize.height),
+            x: toPercent(rect.x, previewSize.width),
+            y: toPercent(rect.y, previewSize.height),
         });
     };
 
-    const onResize = (index: number, _e: any, _direction: any, ref: HTMLElement, _delta: any, position: any) => {
+    const handleDragStop = (index: number, e: any, d: any) => {
+        handleDrag(index, e, d);
+        setSnapGuides({ vertical: null, horizontal: null });
+    };
+
+    const handleResize = (index: number, _e: any, _direction: any, ref: HTMLElement, _delta: any, position: any) => {
         if (!previewSize.width || !previewSize.height) return;
 
+        const { rect, guides } = computeSnappedRect(
+            index,
+            {
+                x: position.x,
+                y: position.y,
+                width: ref.offsetWidth,
+                height: ref.offsetHeight,
+            },
+            { snapWidth: true }
+        );
+
+        setSnapGuides(guides);
+
         updateFieldRect(index, {
-            width: toPercent(ref.offsetWidth, previewSize.width),
-            height: toPercent(ref.offsetHeight, previewSize.height),
-            x: toPercent(position.x, previewSize.width),
-            y: toPercent(position.y, previewSize.height),
+            width: toPercent(rect.width, previewSize.width),
+            height: toPercent(rect.height, previewSize.height),
+            x: toPercent(rect.x, previewSize.width),
+            y: toPercent(rect.y, previewSize.height),
         });
+    };
+
+    const handleResizeStop = (index: number, e: any, direction: any, ref: HTMLElement, delta: any, position: any) => {
+        handleResize(index, e, direction, ref, delta, position);
+        setSnapGuides({ vertical: null, horizontal: null });
     };
 
     return (
@@ -687,19 +834,19 @@ function FormStampsEditor() {
                              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div className="space-y-2">
                                     <Label>X Position (%)</Label>
-                                    <Input type="number" {...register(`fields.${index}.x`, { valueAsNumber: true })} />
+                                    <Input type="number" step="any" {...register(`fields.${index}.x`, { valueAsNumber: true })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Y Position (%)</Label>
-                                    <Input type="number" {...register(`fields.${index}.y`, { valueAsNumber: true })} />
+                                    <Input type="number" step="any" {...register(`fields.${index}.y`, { valueAsNumber: true })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Width (%)</Label>
-                                    <Input type="number" {...register(`fields.${index}.width`, { valueAsNumber: true })} />
+                                    <Input type="number" step="any" {...register(`fields.${index}.width`, { valueAsNumber: true })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Height (%)</Label>
-                                    <Input type="number" {...register(`fields.${index}.height`, { valueAsNumber: true })} />
+                                    <Input type="number" step="any" {...register(`fields.${index}.height`, { valueAsNumber: true })} />
                                 </div>
                             </div>
                         </Card>
@@ -716,6 +863,18 @@ function FormStampsEditor() {
                         style={{ width: '500px', height: '500px' }}
                     >
                         {formData.image && <img src={`/data/form-stamps/img/${formData.image}`} alt="background" className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none" />}
+                        {snapGuides.vertical !== null && (
+                            <div
+                                className="absolute top-0 bottom-0 bg-blue-500/60 pointer-events-none"
+                                style={{ left: `${snapGuides.vertical}px`, width: '1px', zIndex: 30 }}
+                            />
+                        )}
+                        {snapGuides.horizontal !== null && (
+                            <div
+                                className="absolute left-0 right-0 bg-blue-500/60 pointer-events-none"
+                                style={{ top: `${snapGuides.horizontal}px`, height: '1px', zIndex: 30 }}
+                            />
+                        )}
                         {formData.fields?.map((field, index) => {
                             const containerWidth = previewSize.width;
                             const containerHeight = previewSize.height;
@@ -736,10 +895,10 @@ function FormStampsEditor() {
                                         x: xPx,
                                         y: yPx,
                                     }}
-                                    onDrag={(e, d) => onDrag(index, e, d)}
-                                    onDragStop={(e, d) => onDrag(index, e, d)}
-                                    onResize={(e, direction, ref, delta, position) => onResize(index, e, direction, ref, delta, position)}
-                                    onResizeStop={(e, direction, ref, delta, position) => onResize(index, e, direction, ref, delta, position)}
+                                    onDrag={(e, d) => handleDrag(index, e, d)}
+                                    onDragStop={(e, d) => handleDragStop(index, e, d)}
+                                    onResize={(e, direction, ref, delta, position) => handleResize(index, e, direction, ref, delta, position)}
+                                    onResizeStop={(e, direction, ref, delta, position) => handleResizeStop(index, e, direction, ref, delta, position)}
                                     bounds="parent"
                                     className="border border-blue-500/50 p-1 box-border"
                                 >
