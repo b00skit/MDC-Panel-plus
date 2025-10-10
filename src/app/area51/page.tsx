@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Trash2, Copy, ChevronsUpDown, Check } from 'lucide-react';
+import { Plus, Trash2, Copy, ChevronsUpDown, Check, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -63,6 +63,11 @@ type FontSetting = {
   file?: string;
 };
 
+type ImageOption = {
+    name: string;
+    image: string;
+};
+
 type TextField = {
   name: string;
   label: string;
@@ -83,7 +88,9 @@ type FormStampConfig = {
   id: string;
   title: string;
   description: string;
-  image: string;
+  image?: string;
+  enable_image_swap?: boolean;
+  image_multi?: ImageOption[];
   font?: FontSetting;
   fields: TextField[];
 };
@@ -110,6 +117,7 @@ const normalizeFormStampConfig = (data: any): FormStampConfig => ({
         font: normalizeFontSetting(field?.font),
       }))
     : [],
+  image_multi: data.image_multi || [],
 });
 
 // Component for Changelog Generator
@@ -477,10 +485,16 @@ function FormStampsEditor() {
     const [selectedStamp, setSelectedStamp] = useState<string>('');
     const { toast } = useToast();
     const { register, control, handleSubmit, watch, reset, setValue } = useForm<FormStampConfig>();
+    const [selectedPreviewImage, setSelectedPreviewImage] = useState<string>('');
 
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'fields',
+    });
+
+    const { fields: imageMultiFields, append: appendImage, remove: removeImage } = useFieldArray({
+        control,
+        name: 'image_multi',
     });
 
     const formData = watch();
@@ -491,6 +505,15 @@ function FormStampsEditor() {
         horizontal: null,
     });
     const SNAP_THRESHOLD = 8;
+    const enableImageSwap = watch('enable_image_swap');
+
+    useEffect(() => {
+        if(enableImageSwap && formData.image_multi && formData.image_multi.length > 0) {
+            setSelectedPreviewImage(formData.image_multi[0].image);
+        } else if (formData.image) {
+            setSelectedPreviewImage(formData.image);
+        }
+    }, [enableImageSwap, formData.image, formData.image_multi]);
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
@@ -577,7 +600,7 @@ function FormStampsEditor() {
 
     const handleStampSelection = async (stampId: string) => {
         if (!stampId || stampId === 'new') {
-            reset({ id: '', title: '', description: '', image: '', font: undefined, fields: [] });
+            reset({ id: '', title: '', description: '', image: '', font: undefined, fields: [], enable_image_swap: false, image_multi: [] });
             setSelectedStamp(stampId || '');
             return;
         }
@@ -603,17 +626,22 @@ function FormStampsEditor() {
     };
 
     const generateJson = (data: FormStampConfig) => {
-        const sanitized: FormStampConfig = {
-            ...data,
-            font: sanitizeFont(data.font),
-            fields: (data.fields || []).map((field) => {
-                const sanitizedFont = sanitizeFont(field.font);
-                const { font: _font, ...rest } = field;
-                return sanitizedFont ? { ...rest, font: sanitizedFont } : rest;
-            }),
-        };
+        const sanitizedData: Partial<FormStampConfig> = { ...data };
 
-        console.log(JSON.stringify(sanitized, null, 2));
+        if (data.enable_image_swap) {
+            delete sanitizedData.image;
+        } else {
+            delete sanitizedData.image_multi;
+        }
+
+        sanitizedData.font = sanitizeFont(data.font);
+        sanitizedData.fields = (data.fields || []).map((field) => {
+            const sanitizedFont = sanitizeFont(field.font);
+            const { font: _font, ...rest } = field;
+            return sanitizedFont ? { ...rest, font: sanitizedFont } : rest;
+        });
+
+        console.log(JSON.stringify(sanitizedData, null, 2));
         toast({ title: 'JSON Generated', description: 'Check console for output.' });
     }
 
@@ -836,10 +864,37 @@ function FormStampsEditor() {
                         <Label htmlFor="stamp-desc">Description</Label>
                         <Input id="stamp-desc" {...register('description')} />
                     </div>
-                    <div>
-                        <Label htmlFor="stamp-image">Background Image</Label>
-                        <Input id="stamp-image" {...register('image')} placeholder="e.g., property-tag-bg.png" />
+                     <div className="col-span-1 md:col-span-2">
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="enable_image_swap" {...register('enable_image_swap')} checked={enableImageSwap} />
+                            <Label htmlFor="enable_image_swap">Enable Image Swapping</Label>
+                        </div>
                     </div>
+
+                    {!enableImageSwap ? (
+                        <div>
+                            <Label htmlFor="stamp-image">Background Image</Label>
+                            <Input id="stamp-image" {...register('image')} placeholder="e.g., property-tag-bg.png" />
+                        </div>
+                    ) : (
+                        <div className="col-span-1 md:col-span-2 space-y-4">
+                             {imageMultiFields.map((field, index) => (
+                                <div key={field.id} className="flex items-end gap-2 p-2 border rounded-md">
+                                    <div className="flex-1 grid grid-cols-2 gap-2">
+                                        <Input {...register(`image_multi.${index}.name`)} placeholder="Display Name (e.g., Standard)" />
+                                        <Input {...register(`image_multi.${index}.image`)} placeholder="Image Filename (e.g., tag.png)" />
+                                    </div>
+                                    <Button type="button" variant="ghost" size="icon" onClick={() => removeImage(index)}>
+                                        <Trash2 className="h-4 w-4 text-red-500" />
+                                    </Button>
+                                </div>
+                             ))}
+                             <Button type="button" variant="outline" size="sm" onClick={() => appendImage({ name: '', image: '' })}>
+                                <Plus className="mr-2" /> Add Image Option
+                            </Button>
+                        </div>
+                    )}
+
                     <div>
                         <Label htmlFor="stamp-font-family">Global Font Family</Label>
                         <Input id="stamp-font-family" {...register('font.family')} placeholder="e.g., DejaVu Sans" />
@@ -958,14 +1013,30 @@ function FormStampsEditor() {
             </Card>
 
             <Card>
-                <CardHeader><CardTitle>Live Preview</CardTitle></CardHeader>
+                <CardHeader>
+                    <CardTitle>Live Preview</CardTitle>
+                    {enableImageSwap && (
+                        <CardDescription>
+                            <Select value={selectedPreviewImage} onValueChange={setSelectedPreviewImage}>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Select image to preview" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {(formData.image_multi || []).map((img, i) => (
+                                        <SelectItem key={i} value={img.image}>{img.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </CardDescription>
+                    )}
+                </CardHeader>
                 <CardContent>
                     <div
                         ref={previewContainerRef}
                         className="relative bg-gray-200 dark:bg-gray-800 border border-dashed overflow-hidden"
                         style={{ width: '500px', height: '500px' }}
                     >
-                        {formData.image && <img src={`/data/form-stamps/img/${formData.image}`} alt="background" className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none" />}
+                        {selectedPreviewImage && <img src={`/data/form-stamps/img/${selectedPreviewImage}`} alt="background" className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none" />}
                         {snapGuides.vertical !== null && (
                             <div
                                 className="absolute top-0 bottom-0 bg-blue-500/60 pointer-events-none"
@@ -1009,6 +1080,7 @@ function FormStampsEditor() {
                                         className="w-full h-full"
                                         style={{
                                             fontSize: `${field.fontSize}px`,
+                                            lineHeight: `${field.fontSize * 1.2}px`,
                                             color: field.color,
                                             fontFamily: [formData.fields?.[index]?.font?.family, formData.font?.family, 'sans-serif']
                                                 .filter(Boolean)

@@ -14,10 +14,22 @@ import { Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type FontSetting = {
   family: string;
   file?: string;
+};
+
+type ImageOption = {
+    name: string;
+    image: string;
 };
 
 type TextField = {
@@ -40,7 +52,9 @@ type FormStampConfig = {
   id: string;
   title: string;
   description: string;
-  image: string;
+  image?: string;
+  enable_image_swap?: boolean;
+  image_multi?: ImageOption[];
   font?: FontSetting;
   fields: TextField[];
 };
@@ -79,6 +93,12 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
   const { toast } = useToast();
   const previewRef = React.useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = React.useState(false);
+  const [selectedImage, setSelectedImage] = React.useState<string>(
+    config.enable_image_swap && config.image_multi && config.image_multi.length > 0
+      ? config.image_multi[0].image
+      : config.image || ''
+  );
+  
   const globalFontFamily = config.font?.family;
 
   React.useEffect(() => {
@@ -147,6 +167,23 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
   return (
     <div className="grid md:grid-cols-2 gap-8">
       <div className="space-y-4">
+        {config.enable_image_swap && config.image_multi && (
+          <div>
+            <Label htmlFor="image-select">Image Style</Label>
+            <Select value={selectedImage} onValueChange={setSelectedImage}>
+              <SelectTrigger id="image-select">
+                <SelectValue placeholder="Select an image style" />
+              </SelectTrigger>
+              <SelectContent>
+                {config.image_multi.map((opt) => (
+                  <SelectItem key={opt.image} value={opt.image}>
+                    {opt.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         {config.fields.map((field) => (
           <div key={field.name}>
             <Label htmlFor={field.name}>{field.label}</Label>
@@ -185,7 +222,7 @@ function FormStampFormComponent({ config }: { config: FormStampConfig }) {
                     aspectRatio: '1',
                 }}
             >
-                <img src={`/data/form-stamps/img/${config.image}`} alt={config.title} className="w-full h-full object-contain" />
+                <img src={`/data/form-stamps/img/${selectedImage}`} alt={config.title} className="w-full h-full object-contain" />
                 {config.fields.map((field) => (
                     <div
                         key={field.name}
@@ -238,12 +275,12 @@ function FormStampPageContent() {
       return;
     }
     
-    let url = `/api/paperwork-generators/${id}?type=${type}&id=${id}`;
+    let url = `/api/form-stamps/${id}?type=${type}&id=${id}`;
     if (groupId) {
         url += `&group_id=${groupId}`;
     }
 
-    fetch(url.replace('paperwork-generators', 'form-stamps'))
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setConfig(normalizeFormStampConfig(data));

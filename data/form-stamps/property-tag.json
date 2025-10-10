@@ -3,7 +3,17 @@
     "id": "property-tag",
     "title": "Property Tag",
     "description": "Generate a simple property evidence tag.",
-    "image": "property-tag-bg.png",
+    "enable_image_swap": true,
+    "image_multi": [
+        {
+            "name": "Standard Tag",
+            "image": "property-tag-bg.png"
+        },
+        {
+            "name": "Red Tag (Urgent)",
+            "image": "property-tag-bg.png"
+        }
+    ],
     "font": {
         "family": "DejaVu Sans",
         "file": "DejaVuSans.ttf"
