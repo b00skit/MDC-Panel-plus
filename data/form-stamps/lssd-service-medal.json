@@ -1,0 +1,36 @@
+{
+    "id": "lssd-service-medal",
+    "title": "LSSD Service Medal",
+    "description": "Generate a service medal for an LSSD deputy.",
+    "enable_image_swap": true,
+    "image_multi": [
+      {
+        "name": "Mereterious Service Medal",
+        "image": "meritorious_service_award.png"
+      }
+    ],
+    "font": {
+      "family": "Palladio Bold",
+      "file": "Palladio-Bold.ttf"
+    },
+    "fields": [
+      {
+        "name": "deputy_name",
+        "label": "Name",
+        "x": 29.5,
+        "y": 50,
+        "width": 41,
+        "height": 9,
+        "fontSize": 25,
+        "color": "#000000",
+        "textAlign": "center",
+        "type": "textfield",
+        "placeholder": "Deputy John Doe",
+        "fontWeight": "normal",
+        "font": {
+          "family": "Palladio Bold",
+          "file": "Palladio-Bold.ttf"
+        }
+      }
+    ]
+  }

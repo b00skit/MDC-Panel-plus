@@ -591,7 +591,8 @@ function FormStampsEditor() {
         const fetchStampFiles = async () => {
              // Mocking the API response for now, replace with actual fetch
             const mockFiles = [
-                {id: 'property-tag', title: 'Property Tag'}
+                {id: 'property-tag', title: 'Property Tag'},
+                {id: 'lssd-service-medal', title: 'LSSD Service Medal'}
             ];
             setStampFiles(mockFiles);
         }
