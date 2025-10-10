@@ -455,6 +455,37 @@ function FormStampsEditor() {
 
     const formData = watch();
     const previewContainerRef = useRef<HTMLDivElement>(null);
+    const [previewSize, setPreviewSize] = useState({ width: 500, height: 500 });
+
+    useEffect(() => {
+        const updateSize = () => {
+            if (!previewContainerRef.current) return;
+            const { width, height } = previewContainerRef.current.getBoundingClientRect();
+            setPreviewSize({ width, height });
+        };
+
+        updateSize();
+
+        const element = previewContainerRef.current;
+        if (!element) return;
+
+        const cleanupFns: (() => void)[] = [];
+
+        if (typeof ResizeObserver !== 'undefined') {
+            const resizeObserver = new ResizeObserver(updateSize);
+            resizeObserver.observe(element);
+            cleanupFns.push(() => resizeObserver.disconnect());
+        }
+
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', updateSize);
+            cleanupFns.push(() => window.removeEventListener('resize', updateSize));
+        }
+
+        return () => {
+            cleanupFns.forEach((fn) => fn());
+        };
+    }, []);
 
     useEffect(() => {
         // In a real app, this would be an API call
@@ -490,26 +521,48 @@ function FormStampsEditor() {
         toast({ title: 'JSON Generated', description: 'Check console for output.' });
     }
 
-    const onDragStop = (index: number, e: any, d: any) => {
-        const parentBounds = previewContainerRef.current?.getBoundingClientRect();
-        if (!parentBounds) return;
+    const setFieldValue = useCallback(
+        (path: `fields.${number}.${'x' | 'y' | 'width' | 'height'}`, value: number) => {
+            setValue(path, parseFloat(value.toFixed(2)), {
+                shouldDirty: true,
+                shouldTouch: true,
+            });
+        },
+        [setValue]
+    );
 
-        const x = (d.x / parentBounds.width) * 100;
-        const y = (d.y / parentBounds.height) * 100;
+    const clampPercent = useCallback((value: number) => Math.min(100, Math.max(0, value)), []);
 
-        setValue(`fields.${index}.x`, parseFloat(x.toFixed(2)));
-        setValue(`fields.${index}.y`, parseFloat(y.toFixed(2)));
+    const updateFieldRect = useCallback(
+        (index: number, rect: { x?: number; y?: number; width?: number; height?: number }) => {
+            if (typeof rect.x === 'number') setFieldValue(`fields.${index}.x`, clampPercent(rect.x));
+            if (typeof rect.y === 'number') setFieldValue(`fields.${index}.y`, clampPercent(rect.y));
+            if (typeof rect.width === 'number') setFieldValue(`fields.${index}.width`, clampPercent(rect.width));
+            if (typeof rect.height === 'number') setFieldValue(`fields.${index}.height`, clampPercent(rect.height));
+        },
+        [clampPercent, setFieldValue]
+    );
+
+    const toPercent = (value: number, total: number) => (total ? (value / total) * 100 : 0);
+
+    const onDrag = (index: number, _e: any, d: any) => {
+        if (!previewSize.width || !previewSize.height) return;
+
+        updateFieldRect(index, {
+            x: toPercent(d.x, previewSize.width),
+            y: toPercent(d.y, previewSize.height),
+        });
     };
 
-    const onResizeStop = (index: number, e: any, direction: any, ref: any, delta: any, position: any) => {
-        const parentBounds = previewContainerRef.current?.getBoundingClientRect();
-        if (!parentBounds) return;
+    const onResize = (index: number, _e: any, _direction: any, ref: HTMLElement, _delta: any, position: any) => {
+        if (!previewSize.width || !previewSize.height) return;
 
-        const width = (parseInt(ref.style.width, 10) / parentBounds.width) * 100;
-        const height = (parseInt(ref.style.height, 10) / parentBounds.height) * 100;
-
-        setValue(`fields.${index}.width`, parseFloat(width.toFixed(2)));
-        setValue(`fields.${index}.height`, parseFloat(height.toFixed(2)));
+        updateFieldRect(index, {
+            width: toPercent(ref.offsetWidth, previewSize.width),
+            height: toPercent(ref.offsetHeight, previewSize.height),
+            x: toPercent(position.x, previewSize.width),
+            y: toPercent(position.y, previewSize.height),
+        });
     };
 
     return (
@@ -663,39 +716,51 @@ function FormStampsEditor() {
                         style={{ width: '500px', height: '500px' }}
                     >
                         {formData.image && <img src={`/data/form-stamps/img/${formData.image}`} alt="background" className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none" />}
-                        {formData.fields?.map((field, index) => (
-                            <Rnd
-                                key={index}
-                                size={{
-                                    width: `${field.width}%`,
-                                    height: `${field.height}%`,
-                                }}
-                                position={{
-                                    x: (field.x / 100) * (previewContainerRef.current?.offsetWidth || 0),
-                                    y: (field.y / 100) * (previewContainerRef.current?.offsetHeight || 0),
-                                }}
-                                onDragStop={(e, d) => onDragStop(index, e, d)}
-                                onResizeStop={(e, direction, ref, delta, position) => onResizeStop(index, e, direction, ref, delta, position)}
-                                bounds="parent"
-                                className="border border-blue-500/50 p-1 box-border"
-                            >
-                                <div
-                                    className="w-full h-full"
-                                    style={{
-                                        fontSize: `${field.fontSize}px`,
-                                        color: field.color,
-                                        fontFamily: formData.font,
-                                        fontWeight: field.fontWeight,
-                                        textAlign: field.textAlign,
-                                        overflowWrap: 'break-word',
-                                        wordWrap: 'break-word',
-                                        wordBreak: 'break-word',
+                        {formData.fields?.map((field, index) => {
+                            const containerWidth = previewSize.width;
+                            const containerHeight = previewSize.height;
+
+                            const widthPx = ((field.width ?? 0) / 100) * containerWidth;
+                            const heightPx = ((field.height ?? 0) / 100) * containerHeight;
+                            const xPx = ((field.x ?? 0) / 100) * containerWidth;
+                            const yPx = ((field.y ?? 0) / 100) * containerHeight;
+
+                            return (
+                                <Rnd
+                                    key={index}
+                                    size={{
+                                        width: widthPx,
+                                        height: heightPx,
                                     }}
+                                    position={{
+                                        x: xPx,
+                                        y: yPx,
+                                    }}
+                                    onDrag={(e, d) => onDrag(index, e, d)}
+                                    onDragStop={(e, d) => onDrag(index, e, d)}
+                                    onResize={(e, direction, ref, delta, position) => onResize(index, e, direction, ref, delta, position)}
+                                    onResizeStop={(e, direction, ref, delta, position) => onResize(index, e, direction, ref, delta, position)}
+                                    bounds="parent"
+                                    className="border border-blue-500/50 p-1 box-border"
                                 >
-                                    {field.placeholder || `Field ${index+1}`}
-                                </div>
-                            </Rnd>
-                        ))}
+                                    <div
+                                        className="w-full h-full"
+                                        style={{
+                                            fontSize: `${field.fontSize}px`,
+                                            color: field.color,
+                                            fontFamily: formData.font,
+                                            fontWeight: field.fontWeight,
+                                            textAlign: field.textAlign,
+                                            overflowWrap: 'break-word',
+                                            wordWrap: 'break-word',
+                                            wordBreak: 'break-word',
+                                        }}
+                                    >
+                                        {field.placeholder || `Field ${index + 1}`}
+                                    </div>
+                                </Rnd>
+                            );
+                        })}
                     </div>
                 </CardContent>
             </Card>
