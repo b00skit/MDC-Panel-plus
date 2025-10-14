@@ -1,7 +1,7 @@
 
 {
-    "id": "traffic-report",
-    "title": "Traffic Report",
+    "id": "traffic-infraction-report",
+    "title": "Traffic Infraction Report",
     "description": "Generate a traffic citation report.",
     "icon": "TrafficCone",
     "icon_color": "#f97316",

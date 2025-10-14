@@ -1,0 +1,92 @@
+
+{
+    "id": "realistic-infraction-report",
+    "title": "Infraction Citation",
+    "description": "A realistic, non-traffic related infraction citation.",
+    "icon": "FileWarning",
+    "icon_color": "#f59e0b",
+    "is_html_output": true,
+    "custom_button_text": "Open MDC Record",
+    "custom_button_link": "https://mdc.gta.world/record/{{defendant_name}}",
+    "custom_button_replace_spaces": true,
+    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:2px solid black;background-color:white;color:black;\"><tbody><tr><td colspan=\"4\" style=\"text-align:center;padding:8px;border-bottom:2px solid black;\"><h1 style=\"font-family:Arial,sans-serif;font-size:1.5rem;font-weight:700;margin:0;text-transform:uppercase;\">COUNTY OF LOS SANTOS</h1><h2 style=\"font-family:Arial,sans-serif;font-size:1rem;font-weight:600;margin:0;\">Notice to Appear - Infraction Citation</h2></td></tr><tr><td colspan=\"2\" style=\"padding:4px;border-right:1px solid black;\"><strong>Date:</strong> {{general.date}}</td><td colspan=\"2\" style=\"padding:4px;\"><strong>Time:</strong> {{general.time}}</td></tr><tr><td colspan=\"4\" style=\"padding:4px;border-top:1px solid black;\"><strong>Cited Person:</strong> {{defendant_name}}</td></tr><tr><td colspan=\"4\" style=\"padding:4px;border-top:1px solid black;\"><strong>Location of Violation:</strong> {{location.street}}, {{location.district}}</td></tr><tr style=\"background-color:#e5e7eb;\"><td colspan=\"4\" style=\"padding:6px;border-top:2px solid black;border-bottom:1px solid black;text-align:center;font-weight:bold;\">VIOLATION(S)</td></tr><tr><td style=\"padding:4px;font-weight:bold;border-bottom:1px solid #ccc;\">Offense #</td><td style=\"padding:4px;font-weight:bold;border-bottom:1px solid #ccc;\" colspan=\"2\">Description</td><td style=\"padding:4px;font-weight:bold;border-bottom:1px solid #ccc;text-align:right;\">Fine</td></tr>{{#each charges}}<tr><td style=\"padding:4px;border-bottom:1px solid #eee;\">{{@index_1}}</td><td style=\"padding:4px;border-bottom:1px solid #eee;\" colspan=\"2\">{{#with (lookup @root.penalCode chargeId)}}{{charge}}{{/with}}</td><td style=\"padding:4px;border-bottom:1px solid #eee;text-align:right;\">${{fine}}</td></tr>{{/each}}<tr><td colspan=\"3\" style=\"padding:4px;text-align:right;font-weight:bold;border-top:1px solid black;\">Total Fine:</td><td style=\"padding:4px;text-align:right;font-weight:bold;border-top:1px solid black;\">${{charges_total_fine}}</td></tr><tr style=\"background-color:#e5e7eb;\"><td colspan=\"4\" style=\"padding:6px;border-top:2px solid black;border-bottom:1px solid black;text-align:center;font-weight:bold;\">OFFICER'S NARRATIVE</td></tr><tr><td colspan=\"4\" style=\"padding:8px;min-height:100px;white-space:pre-wrap;border-bottom:2px solid black;\">{{narrative}}</td></tr><tr><td style=\"padding:4px;\"><strong>Issuing Officer:</strong></td><td style=\"padding:4px;\" colspan=\"2\">{{officers.0.name}}</td><td style=\"padding:4px;\"><strong>Badge #:</strong> {{officers.0.badgeNumber}}</td></tr><tr><td colspan=\"4\" style=\"padding:8px;font-size:0.8rem;text-align:center;border-top:2px solid black;\">You are required to pay the fine or contest this citation within 28 days. Failure to do so may result in a warrant for your arrest. Payment constitutes an admission of guilt.</td></tr></tbody></table>",
+    "form": [
+        {
+            "type": "section",
+            "title": "General Information"
+        },
+        {
+            "type": "general",
+            "name": "general"
+        },
+        {
+            "type": "section",
+            "title": "Officer Information"
+        },
+        {
+            "type": "officer",
+            "name": "officers",
+            "showBadgeNumber": true,
+            "multi": false
+        },
+        {
+            "type": "section",
+            "title": "Defendant Information"
+        },
+        {
+            "type": "text",
+            "name": "defendant_name",
+            "label": "Defendant's Full Name",
+            "placeholder": "Firstname Lastname",
+            "required": true
+        },
+        {
+            "type": "section",
+            "title": "Location of Citation"
+        },
+        {
+            "type": "location",
+            "name": "location",
+            "showDistrict": true
+        },
+        {
+            "type": "section",
+            "title": "Citations"
+        },
+        {
+            "type": "charge",
+            "name": "charges",
+            "showClass": false,
+            "showOffense": true,
+            "allowedTypes": {
+                "I": true
+            },
+            "allowedIds": "133,423,433,434,441,611,612",
+            "customFields": [
+                {
+                    "type": "text",
+                    "name": "fine",
+                    "label": "Fine",
+                    "placeholder": "Fine Amount"
+                }
+            ]
+        },
+        {
+            "type": "hidden",
+            "name": "charges_total_fine",
+            "value": "{{#with (sum (pluck charges 'fine'))}}{{this}}{{/with}}"
+        },
+        {
+            "type": "section",
+            "title": "Narrative"
+        },
+        {
+            "type": "textarea",
+            "name": "narrative",
+            "label": "Narrative of Events",
+            "placeholder": "Provide a detailed account of the events leading to the citation...",
+            "required": true
+        }
+    ],
+    "countyCityStipulation": true
+}
