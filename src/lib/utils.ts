@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import Handlebars from "handlebars";
 import { array } from "zod";
+import { addDays, format } from "date-fns";
 
 let helpersRegistered = false;
 
@@ -54,8 +55,6 @@ export function registerHelpers(): void {
       return ret;
   });
   Handlebars.registerHelper('any', function(this: any, context, options) {
-    console.log(context)
-    console.log(context.length)
     if (Array.isArray(context) && context.length > 0) {
       return options.fn(this);
     } else {
@@ -63,4 +62,20 @@ export function registerHelpers(): void {
     }
   })
   Handlebars.registerHelper('is_in', (array, value) => array?.includes(value));
+  Handlebars.registerHelper('addDays', (dateString, days) => {
+    try {
+        const date = new Date(dateString);
+        const newDate = addDays(date, days);
+        return format(newDate, 'dd/MMM/yyyy').toUpperCase();
+    } catch(e) {
+        // if date is invalid, try with today
+        try {
+            const today = new Date();
+            const newDate = addDays(today, days);
+            return format(newDate, 'dd/MMM/yyyy').toUpperCase();
+        } catch (e2) {
+            return 'INVALID DATE';
+        }
+    }
+  });
 }

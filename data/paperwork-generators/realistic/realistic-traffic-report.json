@@ -1,4 +1,3 @@
-
 {
     "id": "realistic-traffic-report",
     "title": "Traffic Citation",
@@ -9,36 +8,596 @@
     "custom_button_text": "Open MDC Record",
     "custom_button_link": "https://mdc.gta.world/record/{{defendant_name}}",
     "custom_button_replace_spaces": true,
-    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:2px solid black;background-color:white;color:black;\"><tbody><tr><td colspan=\"4\" style=\"text-align:center;padding:8px;border-bottom:2px solid black;\"><h1 style=\"font-family:Arial,sans-serif;font-size:1.5rem;font-weight:700;margin:0;text-transform:uppercase;\">COUNTY OF LOS SANTOS</h1><h2 style=\"font-family:Arial,sans-serif;font-size:1rem;font-weight:600;margin:0;\">Notice to Appear - Traffic Citation</h2></td></tr><tr><td colspan=\"2\" style=\"padding:4px;border-bottom:1px solid black;border-right:1px solid black;\"><strong>Date:</strong> {{general.date}}</td><td colspan=\"2\" style=\"padding:4px;border-bottom:1px solid black;\"><strong>Time:</strong> {{general.time}}</td></tr><tr style=\"background-color:#e5e7eb;\"><td colspan=\"4\" style=\"padding:6px;border-top:1px solid black;border-bottom:1px solid black;text-align:center;font-weight:bold;\">DEFENDANT & VEHICLE INFORMATION</td></tr><tr><td style=\"padding:4px;\" colspan=\"2\"><strong>Name:</strong> {{defendant_name}}</td><td style=\"padding:4px;\" colspan=\"2\"><strong>License Status:</strong> {{defendant_license_status}}</td></tr><tr><td style=\"padding:4px;\" colspan=\"2\"><strong>Vehicle:</strong> {{vehicle_make_model}}</td><td style=\"padding:4px;\" colspan=\"2\"><strong>Plate:</strong> {{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}}</td></tr><tr><td style=\"padding:4px;\" colspan=\"2\"><strong>Reg. Owner:</strong> {{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</td><td style=\"padding:4px;\" colspan=\"2\"><strong>Insurance:</strong> {{#if vehicle_insured}}Insured{{else}}Uninsured{{/if}}</td></tr><tr><td style=\"padding:4px;\" colspan=\"4\"><strong>Location of Violation:</strong> {{location.street}}, {{location.district}}</td></tr><tr style=\"background-color:#e5e7eb;\"><td colspan=\"4\" style=\"padding:6px;border-top:2px solid black;border-bottom:1px solid black;text-align:center;font-weight:bold;\">VIOLATION(S)</td></tr><tr><td style=\"padding:4px;font-weight:bold;border-bottom:1px solid #ccc;\">Off. #</td><td style=\"padding:4px;font-weight:bold;border-bottom:1px solid #ccc;\" colspan=\"2\">Description</td><td style=\"padding:4px;font-weight:bold;border-bottom:1px solid #ccc;text-align:right;\">Fine</td></tr>{{#each charges}}<tr><td style=\"padding:4px;border-bottom:1px solid #eee;\">{{@index_1}}</td><td style=\"padding:4px;border-bottom:1px solid #eee;\" colspan=\"2\">{{#with (lookup @root.penalCode chargeId)}}{{charge}}{{/with}}</td><td style=\"padding:4px;border-bottom:1px solid #eee;text-align:right;\">${{fine}}</td></tr>{{/each}}<tr><td colspan=\"3\" style=\"padding:4px;text-align:right;font-weight:bold;border-top:1px solid black;\">Total Fine:</td><td style=\"padding:4px;text-align:right;font-weight:bold;border-top:1px solid black;\">${{charges_total_fine}}</td></tr><tr style=\"background-color:#e5e7eb;\"><td colspan=\"4\" style=\"padding:6px;border-top:2px solid black;border-bottom:1px solid black;text-align:center;font-weight:bold;\">NARRATIVE</td></tr><tr><td colspan=\"4\" style=\"padding:8px;min-height:100px;white-space:pre-wrap;border-bottom:2px solid black;\">{{narrative}}</td></tr><tr><td style=\"padding:4px;\"><strong>Issuing Officer:</strong></td><td style=\"padding:4px;\" colspan=\"2\">{{officers.0.name}}</td><td style=\"padding:4px;\"><strong>Badge #:</strong> {{officers.0.badgeNumber}}</td></tr></tbody></table>",
+    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:2px solid #111;background-color:white;color:#111;\">\n  <tbody>\n    <tr>\n      <td colspan=\"4\" style=\"text-align:center;padding:10px;border-bottom:2px solid #111;\">\n        <h1 style=\"font-family:Arial,sans-serif;font-size:1.6rem;font-weight:700;margin:0;text-transform:uppercase;\">County of Los Santos</h1>\n        <h2 style=\"font-family:Arial,sans-serif;font-size:1.05rem;font-weight:600;margin:2px 0 0;\">Notice of Traffic Citation</h2>\n      </td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Citation #:</strong> {{citation_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Citation Type:</strong> {{citation_type}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Date:</strong> {{general.date}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Time:</strong> {{general.time}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\" colspan=\"2\"><strong>Court:</strong> {{court_name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\" colspan=\"2\"><strong>Court Address:</strong> {{court_address}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Appearance:</strong> {{#if appearance_required}}Required{{else}}Optional{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Arraignment Date:</strong> {{arraignment_date}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Arraignment Time:</strong> {{arraignment_time}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Courtroom:</strong> {{arraignment_room}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Respond By:</strong> {{respond_by_date}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;font-weight:bold;\" colspan=\"2\">PAY ON OR BEFORE: {{addDays general.date 28}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Service Method:</strong> {{citation_service_method}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Officer &amp; Certification</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer:</strong> {{officers.0.name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Badge #:</strong> {{officers.0.badgeNumber}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Unit:</strong> {{general.callSign}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Division/Detail:</strong> {{officers.0.divDetail}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer Contact:</strong> {{officer_contact}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer Signature:</strong> {{officer_signature}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Issuing Agency:</strong> {{officers.0.department}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Supervisor:</strong> {{supervisor_name}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Defendant Identification</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Name:</strong> {{defendant_name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Address:</strong> {{defendant_address}}, {{defendant_city_state_zip}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Date of Birth:</strong> {{defendant_dob}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Age:</strong> {{defendant_age}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Sex:</strong> {{defendant_sex}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Race:</strong> {{defendant_race}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Height:</strong> {{defendant_height}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Weight:</strong> {{defendant_weight}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Eye Color:</strong> {{defendant_eye_color}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Hair Color:</strong> {{defendant_hair_color}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Phone:</strong> {{defendant_phone}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Email:</strong> {{defendant_email}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Employer:</strong> {{defendant_employer}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Signature (if obtained):</strong> {{defendant_signature}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Driver License #:</strong> {{defendant_dl_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>State:</strong> {{defendant_dl_state}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>License Class:</strong> {{license_class}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>License Status:</strong> {{defendant_license_status}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Vehicle &amp; Insurance</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Vehicle:</strong> {{vehicle_year}} {{vehicle_make_model}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Body Style:</strong> {{vehicle_body_style}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Color:</strong> {{vehicle_color}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>VIN:</strong> {{vehicle_vin}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Plate:</strong> {{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Reg. State:</strong> {{vehicle_registered_state}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Reg. Status:</strong> {{#if vehicle_registered}}Valid{{else}}Expired/None{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Owner:</strong> {{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Insurance:</strong> {{#if vehicle_insured}}Insured{{else}}Uninsured{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Provider:</strong> {{vehicle_insurance_provider}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Policy #:</strong> {{vehicle_insurance_policy}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Expiration:</strong> {{vehicle_insurance_expiry}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Location of Violation:</strong> {{location.street}}, {{location.district}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Stop Conditions &amp; Measurement</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Weather:</strong> {{weather_conditions}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Road Surface:</strong> {{road_conditions}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Traffic Conditions:</strong> {{traffic_conditions}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Traffic Control Device:</strong> {{traffic_control_device}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Posted Speed:</strong> {{speed_limit}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Alleged Speed:</strong> {{alleged_speed}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Paced/Estimated:</strong> {{pace_speed}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Radar/Lidar Unit:</strong> {{radar_unit}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Unit Serial #:</strong> {{radar_serial}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Calibration Date:</strong> {{calibration_date}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Accident Involved:</strong> {{#if accident_involved}}Yes{{else}}No{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Injuries Reported:</strong> {{#if injuries_reported}}Yes{{else}}No{{/if}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Injury / Collision Details:</strong> {{injury_details}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Vehicle Impounded:</strong> {{#if vehicle_impounded}}Yes{{else}}No{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Impound Location:</strong> {{impound_location}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Impound Reason:</strong> {{impound_reason}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>License Seized:</strong> {{#if license_confiscated}}Yes{{else}}No{{/if}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Confiscated Document #:</strong> {{confiscated_document}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Basis for Stop:</strong> {{traffic_stop_basis}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Violation(s)</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:0;border:1px solid #bbb;border-left:none;border-right:none;\">\n        <table style=\"width:100%;border-collapse:collapse;\">\n          <tbody>\n            <tr style=\"background-color:#f3f4f6;\">\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;\">Off. #</td>\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;\" colspan=\"2\">Description</td>\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;text-align:right;\">Fine</td>\n            </tr>\n            {{#each charges}}\n            <tr>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;\">{{@index_1}}</td>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\">{{#with (lookup @root.penalCode chargeId)}}{{charge}}{{/with}}</td>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;text-align:right;\">${{fine}}</td>\n            </tr>\n            {{/each}}\n            <tr>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\" colspan=\"3\">Total Fine:</td>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\">${{charges_total_fine}}</td>\n            </tr>\n          </tbody>\n        </table>\n      </td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Narrative of Events:</strong>\n{{narrative}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Officer Actions / Warnings:</strong>\n{{officer_actions}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Witness Statements:</strong>\n{{witness_statements}}</td>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Evidence Collected:</strong>\n{{evidence_collected}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:8px;font-size:0.85rem;border-top:1px solid #bbb;white-space:pre-wrap;\">{{compliance_instructions}}</td>\n    </tr>\n  </tbody>\n</table>",
     "form": [
-        { "type": "section", "title": "General Section" },
-        { "type": "general", "name": "general" },
-        { "type": "section", "title": "Officer Section" },
-        { "type": "officer", "name": "officers", "showBadgeNumber": true, "multi": false },
-        { "type": "section", "title": "Defendant Details" },
-        { "type": "text", "name": "defendant_name", "label": "Defendant's Full Name", "placeholder": "Firstname Lastname", "required": true },
-        { "type": "dropdown", "name": "defendant_license_status", "label": "Driver's License Status", "placeholder": "Select License Status", "options": ["Valid", "No License", "Expired", "Suspended", "Revoked"], "required": true },
-        { "type": "section", "title": "Vehicle Details" },
-        { "type": "group", "fields": [
-            { "type": "better-switch", "name": "vehicle_registered", "label": "Registration Status", "dataOn": "Registered", "dataOff": "Unregistered", "defaultValue": true },
-            { "type": "text", "name": "vehicle_owner", "label": "Registered Owner", "placeholder": "Firstname Lastname", "stipulation": {"field": "vehicle_registered", "value": true}},
-            { "type": "text", "name": "vehicle_plate", "label": "Identification Plate", "placeholder": "###XXX", "stipulation": {"field": "vehicle_registered", "value": true}}
-          ]
+        {
+            "type": "section",
+            "title": "Citation Details"
         },
-        { "type": "group", "fields": [
-            { "type": "better-switch", "name": "vehicle_insured", "label": "Insurance Status", "dataOn": "Insured", "dataOff": "Uninsured", "defaultValue": true }
-          ]
+        {
+            "type": "general",
+            "name": "general"
         },
-        { "type": "datalist", "name": "vehicle_make_model", "label": "Make & Model", "placeholder": "e.g. Benefactor Dubsta", "optionsSource": "vehicles", "required": true },
-        { "type": "section", "title": "Location Details" },
-        { "type": "location", "name": "location", "showDistrict": true },
-        { "type": "section", "title": "Charges" },
-        { 
+        {
+            "type": "text",
+            "name": "citation_number",
+            "label": "Citation Number",
+            "placeholder": "e.g. TC-240512",
+            "required": true
+        },
+        {
+            "type": "dropdown",
+            "name": "citation_type",
+            "label": "Citation Type",
+            "placeholder": "Select citation type",
+            "options": [
+                "Moving Violation",
+                "Non-Moving Violation",
+                "Collision Related",
+                "Equipment Violation"
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "court_name",
+                    "label": "Court Name",
+                    "placeholder": "Los Santos Superior Court - Traffic"
+                },
+                {
+                    "type": "text",
+                    "name": "court_address",
+                    "label": "Court Address",
+                    "placeholder": "e.g. 111 Justice Way, Los Santos"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "arraignment_date",
+                    "label": "Arraignment Date",
+                    "placeholder": "DD/MM/YYYY"
+                },
+                {
+                    "type": "text",
+                    "name": "arraignment_time",
+                    "label": "Arraignment Time",
+                    "placeholder": "HH:MM"
+                },
+                {
+                    "type": "text",
+                    "name": "arraignment_room",
+                    "label": "Courtroom",
+                    "placeholder": "e.g. Division 3"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "better-switch",
+                    "name": "appearance_required",
+                    "label": "Court Appearance",
+                    "dataOn": "Required",
+                    "dataOff": "Optional",
+                    "defaultValue": true
+                },
+                {
+                    "type": "text",
+                    "name": "respond_by_date",
+                    "label": "Respond By",
+                    "placeholder": "DD/MM/YYYY"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "citation_service_method",
+            "label": "Service Method",
+            "placeholder": "e.g. In Person, Mailed Copy"
+        },
+        {
+            "type": "section",
+            "title": "Officer Information"
+        },
+        {
+            "type": "officer",
+            "name": "officers",
+            "showBadgeNumber": true,
+            "showDivDetail": true,
+            "multi": false
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "officer_watch",
+                    "label": "Watch / Shift",
+                    "placeholder": "e.g. Day Watch"
+                },
+                {
+                    "type": "text",
+                    "name": "officer_contact",
+                    "label": "Officer Contact",
+                    "placeholder": "e.g. (555) 010-2211"
+                }
+            ]
+        },
+         {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "officer_signature",
+                    "label": "Officer Signature",
+                    "placeholder": "Full name or digital signature"
+                },
+                {
+                    "type": "text",
+                    "name": "supervisor_name",
+                    "label": "Approving Supervisor",
+                    "placeholder": "Name, Rank, #Badge"
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Defendant Identification"
+        },
+        {
+            "type": "text",
+            "name": "defendant_name",
+            "label": "Defendant's Full Name",
+            "placeholder": "Firstname Lastname",
+            "required": true
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "defendant_address",
+                    "label": "Address",
+                    "placeholder": "Street address"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_city_state_zip",
+                    "label": "City / State / ZIP",
+                    "placeholder": "Los Santos, SA 90012"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "defendant_dob",
+                    "label": "Date of Birth",
+                    "placeholder": "DD/MM/YYYY"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_age",
+                    "label": "Age",
+                    "placeholder": "Age"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_sex",
+                    "label": "Sex",
+                    "placeholder": "M/F/X"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_race",
+                    "label": "Race",
+                    "placeholder": "Race"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "defendant_height",
+                    "label": "Height",
+                    "placeholder": "e.g. 6'0\""
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_weight",
+                    "label": "Weight",
+                    "placeholder": "e.g. 185 lbs"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_eye_color",
+                    "label": "Eye Color",
+                    "placeholder": "e.g. Brown"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_hair_color",
+                    "label": "Hair Color",
+                    "placeholder": "e.g. Black"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "defendant_phone",
+                    "label": "Phone Number",
+                    "placeholder": "e.g. (555) 010-7788"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_email",
+                    "label": "Email",
+                    "placeholder": "name@example.com"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_employer",
+                    "label": "Employer / Occupation",
+                    "placeholder": "e.g. Gruppe Sechs Security"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_signature",
+                    "label": "Defendant Signature",
+                    "placeholder": "If obtained"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "defendant_dl_number",
+                    "label": "Driver License Number",
+                    "placeholder": "DL #"
+                },
+                {
+                    "type": "text",
+                    "name": "defendant_dl_state",
+                    "label": "License State",
+                    "placeholder": "SA"
+                },
+                {
+                    "type": "text",
+                    "name": "license_class",
+                    "label": "License Class",
+                    "placeholder": "e.g. C"
+                },
+                {
+                    "type": "dropdown",
+                    "name": "defendant_license_status",
+                    "label": "Driver's License Status",
+                    "placeholder": "Select status",
+                    "options": [
+                        "Valid",
+                        "No License",
+                        "Expired",
+                        "Suspended",
+                        "Revoked"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Vehicle & Insurance"
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "better-switch",
+                    "name": "vehicle_registered",
+                    "label": "Registration Status",
+                    "dataOn": "Registered",
+                    "dataOff": "Unregistered",
+                    "defaultValue": true
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_owner",
+                    "label": "Registered Owner",
+                    "placeholder": "Firstname Lastname",
+                    "stipulation": {
+                        "field": "vehicle_registered",
+                        "value": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_plate",
+                    "label": "Identification Plate",
+                    "placeholder": "###XXX",
+                    "stipulation": {
+                        "field": "vehicle_registered",
+                        "value": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_registered_state",
+                    "label": "Registration State",
+                    "placeholder": "SA",
+                    "stipulation": {
+                        "field": "vehicle_registered",
+                        "value": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "vehicle_year",
+                    "label": "Vehicle Year",
+                    "placeholder": "2024"
+                },
+                {
+                    "type": "datalist",
+                    "name": "vehicle_make_model",
+                    "label": "Make & Model",
+                    "placeholder": "e.g. Vapid Scout",
+                    "optionsSource": "vehicles",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_body_style",
+                    "label": "Body Style",
+                    "placeholder": "e.g. Sedan"
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_color",
+                    "label": "Primary Color",
+                    "placeholder": "e.g. White"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "vehicle_vin",
+            "label": "Vehicle Identification Number",
+            "placeholder": "17-character VIN"
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "better-switch",
+                    "name": "vehicle_insured",
+                    "label": "Insurance Status",
+                    "dataOn": "Insured",
+                    "dataOff": "Uninsured",
+                    "defaultValue": true
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_insurance_provider",
+                    "label": "Insurance Provider",
+                    "placeholder": "e.g. Maze Bank Insurance",
+                    "stipulation": {
+                        "field": "vehicle_insured",
+                        "value": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_insurance_policy",
+                    "label": "Policy Number",
+                    "placeholder": "Policy #",
+                    "stipulation": {
+                        "field": "vehicle_insured",
+                        "value": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "vehicle_insurance_expiry",
+                    "label": "Policy Expiration",
+                    "placeholder": "DD/MM/YYYY",
+                    "stipulation": {
+                        "field": "vehicle_insured",
+                        "value": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Location & Conditions"
+        },
+        {
+            "type": "location",
+            "name": "location",
+            "showDistrict": true
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "weather_conditions",
+                    "label": "Weather Conditions",
+                    "placeholder": "e.g. Clear, 70\u00b0F"
+                },
+                {
+                    "type": "text",
+                    "name": "road_conditions",
+                    "label": "Road Surface",
+                    "placeholder": "e.g. Dry Asphalt"
+                },
+                {
+                    "type": "text",
+                    "name": "traffic_conditions",
+                    "label": "Traffic Conditions",
+                    "placeholder": "e.g. Moderate"
+                },
+                {
+                    "type": "text",
+                    "name": "traffic_control_device",
+                    "label": "Traffic Control Device",
+                    "placeholder": "e.g. Red Light"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "speed_limit",
+                    "label": "Posted Speed",
+                    "placeholder": "e.g. 35 MPH"
+                },
+                {
+                    "type": "text",
+                    "name": "alleged_speed",
+                    "label": "Alleged Speed",
+                    "placeholder": "e.g. 52 MPH"
+                },
+                {
+                    "type": "text",
+                    "name": "pace_speed",
+                    "label": "Paced/Estimated Speed",
+                    "placeholder": "e.g. 50 MPH"
+                },
+                {
+                    "type": "text",
+                    "name": "radar_unit",
+                    "label": "Radar/Lidar Unit",
+                    "placeholder": "e.g. Stalker Dual"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "radar_serial",
+                    "label": "Unit Serial Number",
+                    "placeholder": "Serial #"
+                },
+                {
+                    "type": "text",
+                    "name": "calibration_date",
+                    "label": "Calibration Date",
+                    "placeholder": "DD/MM/YYYY"
+                }
+            ]
+        },
+        {
+            "type": "better-switch",
+            "name": "accident_involved",
+            "label": "Accident Involved",
+            "dataOn": "Yes",
+            "dataOff": "No"
+        },
+        {
+            "type": "better-switch",
+            "name": "injuries_reported",
+            "label": "Injuries Reported",
+            "dataOn": "Yes",
+            "dataOff": "No"
+        },
+        {
+            "type": "textarea",
+            "name": "injury_details",
+            "label": "Injury / Collision Details",
+            "placeholder": "Document any injuries, transported parties, or collision reference numbers..."
+        },
+        {
+            "type": "better-switch",
+            "name": "vehicle_impounded",
+            "label": "Vehicle Impounded",
+            "dataOn": "Yes",
+            "dataOff": "No"
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "impound_location",
+                    "label": "Impound Location",
+                    "placeholder": "e.g. Mission Row Impound",
+                    "stipulation": {
+                        "field": "vehicle_impounded",
+                        "value": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "impound_reason",
+                    "label": "Impound Reason",
+                    "placeholder": "Reason",
+                    "stipulation": {
+                        "field": "vehicle_impounded",
+                        "value": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "better-switch",
+            "name": "license_confiscated",
+            "label": "Driver License Seized",
+            "dataOn": "Yes",
+            "dataOff": "No"
+        },
+        {
+            "type": "text",
+            "name": "confiscated_document",
+            "label": "Confiscated Document #",
+            "placeholder": "Receipt or license number",
+            "stipulation": {
+                "field": "license_confiscated",
+                "value": true
+            }
+        },
+        {
+            "type": "textarea",
+            "name": "traffic_stop_basis",
+            "label": "Basis for Traffic Stop",
+            "placeholder": "Summarize the probable cause / reasonable suspicion leading to the stop..."
+        },
+        {
+            "type": "section",
+            "title": "Charges"
+        },
+        {
             "type": "charge",
             "name": "charges",
             "showClass": true,
             "showOffense": true,
-            "allowedTypes": { "M": false, "I": true },
+            "allowedTypes": {
+                "M": false,
+                "I": true
+            },
             "allowedIds": "401-429,435-442",
             "customFields": [
                 {
@@ -48,15 +607,52 @@
                     "placeholder": "Fine Amount"
                 }
             ],
-            "previewFields": { "fine": true, "impound": true, "suspension": true }
+            "previewFields": {
+                "fine": true,
+                "impound": true,
+                "suspension": true
+            }
         },
         {
             "type": "hidden",
             "name": "charges_total_fine",
             "value": "{{#with (sum (pluck charges 'fine'))}}{{this}}{{/with}}"
         },
-        { "type": "section", "title": "Narrative" },
-        { "type": "textarea", "name": "narrative", "label": "Traffic Stop Narrative", "placeholder": "Witnessed the defendant to be...", "required": true }
+        {
+            "type": "section",
+            "title": "Narrative & Evidence"
+        },
+        {
+            "type": "textarea",
+            "name": "narrative",
+            "label": "Traffic Stop Narrative",
+            "placeholder": "Detail the sequence of events, observed violations, and statements made by the defendant...",
+            "required": true
+        },
+        {
+            "type": "textarea",
+            "name": "officer_actions",
+            "label": "Officer Actions / Warnings Issued",
+            "placeholder": "Document verbal warnings, field sobriety tests, searches conducted, or other actions taken."
+        },
+        {
+            "type": "textarea",
+            "name": "witness_statements",
+            "label": "Witness Statements",
+            "placeholder": "Summaries of any witness statements or recordings."
+        },
+        {
+            "type": "textarea",
+            "name": "evidence_collected",
+            "label": "Evidence Collected",
+            "placeholder": "List dash cam clips, photographs, physical evidence, or citations issued."
+        },
+        {
+            "type": "textarea",
+            "name": "compliance_instructions",
+            "label": "Compliance Instructions",
+            "placeholder": "Outline payment instructions, options to contest, or required corrective actions."
+        }
     ],
     "countyCityStipulation": true
 }
