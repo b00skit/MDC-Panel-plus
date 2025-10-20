@@ -2,5 +2,6 @@
 {
     "group_name": "Realistic Formats",
     "group_id": "realistic",
-    "hidden": false
+    "hidden": false,
+    "order": 5
 }

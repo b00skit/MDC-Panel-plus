@@ -8,6 +8,7 @@ export interface FactionGroup {
     group_id: string;
     hidden?: boolean;
     url?: boolean;
+    order?: number;
 }
 
 export interface PredefinedCallsign {

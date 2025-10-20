@@ -2,5 +2,6 @@
 {
     "group_name": "Special Formats",
     "group_id": "special",
-    "url": true
+    "url": true,
+    "order": 4
 }

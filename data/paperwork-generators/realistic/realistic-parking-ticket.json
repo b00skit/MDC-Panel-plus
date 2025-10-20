@@ -1,7 +1,7 @@
 {
     "id": "realistic-parking-ticket",
     "title": "Realistic Parking Ticket",
-    "new_expiry": "20/NOV/2025",
+    "new_until": "20/NOV/2025",
     "description": "A realistic parking ticket citation.",
     "icon": "SquareParking",
     "icon_color": "#1e6da5",

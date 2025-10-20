@@ -1,5 +1,6 @@
 
 {
     "group_name": "Los Santos Police Department",
-    "group_id": "lspd"
+    "group_id": "lspd",
+    "order": 1
 }

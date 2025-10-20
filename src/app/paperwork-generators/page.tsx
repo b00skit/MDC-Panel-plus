@@ -64,6 +64,9 @@ async function getPaperworkData() {
         console.error("Could not read paperwork generators directory:", error);
     }
 
+    // Sort faction groups by order
+    factionGroups.sort((a, b) => (a.order || 99) - (b.order || 99));
+
     return { globalGenerators, factionGroups };
 }
 

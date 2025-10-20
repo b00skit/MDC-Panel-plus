@@ -293,8 +293,9 @@ export default function SettingsPage() {
   
   const hasPredefinedOfficers = predefinedOfficers.length > 0;
 
-  const visibleGroups = factionGroups.filter(g => !g.hidden && !g.url);
-  const hiddenGroups = factionGroups.filter(g => g.hidden);
+  const sortedFactionGroups = [...factionGroups].sort((a, b) => (a.order || 99) - (b.order || 99));
+  const visibleGroups = sortedFactionGroups.filter(g => !g.hidden && !g.url);
+  const hiddenGroups = sortedFactionGroups.filter(g => g.hidden);
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">

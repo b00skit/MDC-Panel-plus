@@ -1,5 +1,6 @@
 
 {
     "group_name": "Los Santos Sheriff's Department",
-    "group_id": "lssd"
+    "group_id": "lssd",
+    "order": 2
 }
