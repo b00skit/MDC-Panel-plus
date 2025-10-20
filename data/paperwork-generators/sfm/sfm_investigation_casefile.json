@@ -1,0 +1,171 @@
+
+{
+    "id": "sfm_investigation_casefile",
+    "title": "Investigation Casefile",
+    "description": "Generate an SFM Investigation Casefile report.",
+    "icon": "Flame",
+    "icon_color": "#dc2626",
+    "output_title": "[CASEFILE] #{{case_number}} - {{case_name}}",
+    "is_html_output": false,
+    "output": "[divbox=white][hr][/hr]\n[divbox=#4D0000][center][b][color=#FFFFFF][size=150] CASEFILE #{{case_number}} - {{case_name}}[/size][/color][/b][/center] [/divbox][hr][/hr]\n[b]DATE AND TIME OF FIRE:[/b] {{general.date}}; {{general.time}}\n[b]LOCATION OF FIRE:[/b] {{location_of_fire}}\n[b]ASSIGNED INVESTIGATOR:[/b] {{assigned_investigator}}\n[b]LEAD INVESTIGATOR:[/b] {{lead_investigator}}\n[b]OTHER INVESTIGATORS:[/b] {{#each other_investigators}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}\n[b]CRIMINAL PROCEEDINGS:[/b] {{#if criminal_proceedings}}Y{{else}}N{{/if}}\n[b]APT INVOLVED:[/b] {{#if apt_involved}}Y{{else}}N{{/if}}\n[b]LINK TO COLLABORATIVE TOPIC / DOCUMENT:[/b] {{collaborative_link}}\n[/divbox]\n[divbox=white][hr] [/hr]\n[divbox=#4D0000][center][b][color=#FFFFFF][size=150] Narrative[/size][/color][/b][/center] [/divbox][hr][/hr]\n{{narrative}}\n[hr][/hr]\n[divbox=#4D0000][center][b][color=#FFFFFF][size=150]Evidence [/size][/color][/b][/center] [/divbox][hr][/hr]\n{{evidence}}\n[hr][/hr]\n[divbox=#4D0000][center][b][color=#FFFFFF][size=150]PERSONS OF INTEREST[/size][/color][/b][/center] [/divbox][hr][/hr]\n{{#each persons_of_interest}}[b]Name:[/b] {{this.name}}\n[b]Role:[/b] {{this.role}}\n[b]Contact:[/b] {{this.contact}}\n[hr][/hr]\n{{/each}}\n[divbox=#4D0000][center][b][color=#FFFFFF][size=150]CONCLUSION [/size][/color][/b][/center] [/divbox][hr][/hr]\n{{conclusion}}\n[/divbox]",
+    "form": [
+        {
+            "type": "section",
+            "title": "Case Information"
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "case_number",
+                    "label": "Case Number",
+                    "placeholder": "e.g., 001",
+                    "required": true
+                },
+                {
+                    "type": "text",
+                    "name": "case_name",
+                    "label": "Case Name",
+                    "placeholder": "e.g., Grove Street Arson",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "type": "general",
+            "name": "general"
+        },
+        {
+            "type": "text",
+            "name": "location_of_fire",
+            "label": "Location of Fire",
+            "placeholder": "Property, Street, District, City",
+            "required": true
+        },
+        {
+            "type": "section",
+            "title": "Investigator Information"
+        },
+        {
+            "type": "text",
+            "name": "assigned_investigator",
+            "label": "Assigned Investigator",
+            "placeholder": "Rank Name",
+            "required": true
+        },
+        {
+            "type": "text",
+            "name": "lead_investigator",
+            "label": "Lead Investigator",
+            "placeholder": "Rank Name",
+            "required": true
+        },
+        {
+            "type": "input_group",
+            "name": "other_investigators",
+            "label": "Other Investigator",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "name",
+                    "label": "Investigator Name",
+                    "placeholder": "Rank Name"
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Case Details"
+        },
+        {
+            "type": "group",
+            "fields": [
+                {
+                    "type": "toggle",
+                    "name": "criminal_proceedings",
+                    "label": "Criminal Proceedings",
+                    "dataOn": "Yes",
+                    "dataOff": "No",
+                    "defaultValue": false
+                },
+                {
+                    "type": "toggle",
+                    "name": "apt_involved",
+                    "label": "APT Involved",
+                    "dataOn": "Yes",
+                    "dataOff": "No",
+                    "defaultValue": false
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "collaborative_link",
+            "label": "Collaborative Topic/Document Link",
+            "placeholder": "https://forum.gta.world/..."
+        },
+        {
+            "type": "section",
+            "title": "Narrative"
+        },
+        {
+            "type": "textarea",
+            "name": "narrative",
+            "label": "Narrative",
+            "placeholder": "Write a detailed narrative describing the situation in the third person.",
+            "required": true
+        },
+        {
+            "type": "section",
+            "title": "Evidence"
+        },
+        {
+            "type": "textarea",
+            "name": "evidence",
+            "label": "Evidence",
+            "placeholder": "Add evidence related to the investigation (Photos, CCTV footage, witness statements, etc.).",
+            "required": true
+        },
+        {
+            "type": "section",
+            "title": "Persons of Interest"
+        },
+        {
+            "type": "input_group",
+            "name": "persons_of_interest",
+            "label": "Person of Interest",
+            "fields": [
+                {
+                    "type": "text",
+                    "name": "name",
+                    "label": "Name",
+                    "placeholder": "Firstname Lastname"
+                },
+                {
+                    "type": "text",
+                    "name": "role",
+                    "label": "Role",
+                    "placeholder": "Witness, Victim, Suspect, etc."
+                },
+                {
+                    "type": "text",
+                    "name": "contact",
+                    "label": "Contact Information",
+                    "placeholder": "Phone number, address, etc."
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Conclusion"
+        },
+        {
+            "type": "textarea",
+            "name": "conclusion",
+            "label": "Conclusion",
+            "placeholder": "Add a conclusion at the end of the investigation.",
+            "required": true
+        }
+    ]
+}
