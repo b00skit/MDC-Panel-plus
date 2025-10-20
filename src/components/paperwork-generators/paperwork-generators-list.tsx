@@ -40,6 +40,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                                 icon={<Icon name={generator.icon} color={generator.icon_color} className="w-8 h-8" />}
                                 href={`/paperwork-generators/form?type=static&id=${generator.id}`}
                                 disabled={generator.generator_disabled}
+                                color={generator.icon_color}
                             />
                         ))}
                     </div>
@@ -59,6 +60,7 @@ export function PaperworkGeneratorsList({ globalGenerators, factionGroups }: Pap
                             icon={<Icon name={generator.icon} color={generator.icon_color} className="w-8 h-8" />}
                             href={`/paperwork-generators/form?type=static&id=${generator.id}&group_id=${group.group_id}`}
                             disabled={generator.generator_disabled}
+                            color={generator.icon_color}
                         />
                     ))}
                     </div>
