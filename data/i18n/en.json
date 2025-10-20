@@ -1,3 +1,4 @@
+
 {
   "common": {
     "language": {
@@ -417,7 +418,8 @@
           "useForm": "Use Form"
         },
         "empty": "You haven't created any forms yet. Click \"Create New Form\" to get started."
-      }
+      },
+      "newAddition": "NEW"
     },
     "builder": {
       "pageTitle": "Form Builder"

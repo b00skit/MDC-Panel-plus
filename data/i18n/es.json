@@ -1,3 +1,4 @@
+
 {
   "common": {
     "language": {
@@ -417,7 +418,8 @@
           "useForm": "Usar formulario"
         },
         "empty": "Aún no has creado ningún formulario. Haz clic en \"Crear nuevo formulario\" para comenzar."
-      }
+      },
+      "newAddition": "NUEVO"
     },
     "builder": {
       "pageTitle": "Creador de Formularios"
@@ -435,7 +437,7 @@
     },
     "alert": {
       "title": "¡Atención!",
-      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectamente donde lo pegues. Este informe también ha sido archivado."
+      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectly donde lo pegues. Este informe también ha sido archivado."
     },
     "reportTitleLabel": "Título del Informe",
     "buttons": {
@@ -502,7 +504,7 @@
       },
       "paperworkGenerators": {
         "title": "Generadores de Formularios",
-        "description": "Genera distintos tipos de documentación."
+        "description": "Genera distintos tipos de documentation."
       },
       "penalCode": {
         "title": "Código Penal Simplificado",
@@ -704,7 +706,7 @@
       "noChargeFound": "No se encontró ningún cargo.",
       "depaWarning": {
         "title": "¡Atención!",
-        "description": "Asegúrate de seleccionar la Categoría correcta para los cargos de drogas. Consulta la orden judicial (si corresponde) para más información.",
+        "description": "Asegúrate de seleccionar la Categoría correcta para los cargos de drogas. Consulta la orden judicial (si corresponde) para más information.",
         "link": "Ley de Control y Prevención de Drogas de 2020 (DEPA)"
       },
       "depaCategories": {
@@ -1059,7 +1061,7 @@
       },
       "disclaimer": {
         "title": "Descargo de responsabilidad",
-        "description": "Esta herramienta es para ayudarte con tu documentación. La calidad de tu redacción es tu responsabilidad. Se espera que proporciones información veraz y detallada."
+        "description": "Esta herramienta es para ayudarte con tu documentation. La calidad de tu redacción es tu responsabilidad. Se espera que proporciones información veraz y detallada."
       },
       "enableAdvanced": "Habilitar Informe Avanzado",
       "noCharges": {
@@ -1451,7 +1453,7 @@
     },
     "alert": {
       "title": "¡Atención!",
-      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectamente donde lo pegues. Este informe también ha sido archivado."
+      "description": "La vista previa en esta página puede no ser 100% precisa, pero el contenido generado está diseñado para funcionar perfectly donde lo pegues. Este informe también ha sido archivado."
     },
     "formattedReport": "Informe Formateado",
     "buttons": {
@@ -1520,7 +1522,7 @@
       "description": "El uso de IA está muy desaconsejado y en la mayoría de los casos no está permitido. Debes consultar las políticas de tu departamento, así como cualquier directiva vigente de LFM, antes de utilizar la IA para redactar informes de arresto. Esto está pensado como una herramienta y no como un reemplazo total. La autenticidad de la narrativa es tu responsabilidad."
     },
     "logsLabel": "Tus Registros",
-    "logsPlaceholder": "Pega aquí tus registros sin editar...",
+    "logsPlaceholder": "Pega here tus registros sin editar...",
     "error": {
       "title": "Error",
       "generic": "Ocurrió un error al generar la narrativa. Por favor, inténtalo de nuevo."

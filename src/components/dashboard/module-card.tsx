@@ -1,10 +1,13 @@
 
+'use client';
+
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useScopedI18n } from '@/lib/i18n/client';
 
 export type ModuleCardProps = {
   icon: React.ReactNode;
@@ -14,9 +17,24 @@ export type ModuleCardProps = {
   dataAiHint?: string;
   disabled?: boolean;
   color?: string;
+  newExpiry?: string;
 };
 
-export function ModuleCard({ icon, title, description, href, dataAiHint, disabled = false, color }: ModuleCardProps) {
+export function ModuleCard({ icon, title, description, href, dataAiHint, disabled = false, color, newExpiry }: ModuleCardProps) {
+  const { t } = useScopedI18n('paperworkGenerators.page');
+
+  const isNew = useMemo(() => {
+    if (!newExpiry) return false;
+    try {
+      const expiryDate = new Date(newExpiry);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Compare dates only
+      return expiryDate >= today;
+    } catch (e) {
+      return false;
+    }
+  }, [newExpiry]);
+  
   const cardClasses = cn(
     "h-[190px] flex flex-col justify-between transition-all duration-300 ease-in-out relative overflow-hidden",
     !disabled && "group-hover:border-primary/50 group-hover:shadow-lg group-hover:-translate-y-1",
@@ -33,13 +51,14 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
           />
         )}
         <CardHeader>
-          <div className="flex items-center justify-between">
-             <div className={cn(
-                "transition-all duration-300",
+          <div className="flex items-start justify-between">
+            <div className={cn(
+                "transition-all duration-300 flex flex-col items-start gap-2",
                 !disabled && "group-hover:[&>svg]:drop-shadow-[0_0_8px_var(--glow-color)]"
-             )}>
+            )}>
                 {icon}
-             </div>
+                {isNew && <Badge variant="destructive" className="text-xs px-1.5 py-0.5">{t('newAddition')}</Badge>}
+            </div>
             {disabled ? (
                 <Badge variant="secondary">COMING SOON</Badge>
             ) : (
