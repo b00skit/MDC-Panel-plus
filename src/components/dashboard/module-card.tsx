@@ -57,7 +57,6 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
                 !disabled && "group-hover:[&>svg]:drop-shadow-[0_0_8px_var(--glow-color)]"
             )}>
                 {icon}
-                {isNew && <Badge variant="destructive" className="text-xs px-1.5 py-0.5">{t('newAddition')}</Badge>}
             </div>
             {disabled ? (
                 <Badge variant="secondary">COMING SOON</Badge>
@@ -70,6 +69,7 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
           <CardTitle className="font-headline text-xl">{title}</CardTitle>
           <CardDescription className="mt-2">{description}</CardDescription>
         </CardContent>
+        {isNew && <Badge variant="secondary" className="absolute top-2 right-2 text-xs px-1.5 py-0.5">{t('newAddition')}</Badge>}
       </Card>
   );
 
