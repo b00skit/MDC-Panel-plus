@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
@@ -29,7 +30,7 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
         {color && !disabled && (
           <>
             <div
-              className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_farthest-side,var(--glow-color),transparent)] opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+              className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_farthest-side,var(--glow-color),transparent)] opacity-5 group-hover:opacity-25 transition-opacity duration-300"
             />
             <div className="absolute inset-0 bg-[radial-gradient(circle_farthest-corner_at_10%_10%,hsl(var(--card)),transparent)] opacity-50" />
           </>
