@@ -19,7 +19,7 @@ import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useChargeStore } from '@/stores/charge-store';
 import { Switch } from '../ui/switch';
 import { type PenalCode } from '@/stores/charge-store';
-import { useEffect, useState, useCallback, Suspense, useMemo, type ReactNode } from 'react';
+import { useEffect, useState, useCallback, Suspense, useMemo, useRef, type ReactNode } from 'react';
 import { Combobox } from '../ui/combobox';
 import { PaperworkChargeField } from './paperwork-generator-charge-field';
 import { LocationDetails } from '../shared/location-details';
@@ -31,8 +31,9 @@ import { TextareaWithPreset, ModifierInputGroup } from '../shared/textarea-with-
 import Handlebars from 'handlebars';
 import { cn, registerHelpers } from '@/lib/utils';
 import configData from '../../../data/config.json';
-import { FormField } from './paperwork-generator-charge-field';
+import { FormField, type ValueGeneratorConfig } from './paperwork-generator-charge-field';
 import { BetterSwitch } from '../ui/better-switch';
+import { addDays, format } from 'date-fns';
 
 type GeneratorConfig = {
     id: string;
@@ -129,7 +130,104 @@ const normalizeFieldPaths = (input: Record<string, any>): Record<string, any> =>
     return normalized;
 };
 
-const buildDefaultValues = (fields: FormField[], parentPath: string[] = []): Record<string, any> => {
+const randomDigits = (length: number) => Array.from({ length }, () => Math.floor(Math.random() * 10)).join('');
+
+const defaultGeneratorConfigs: Record<string, ValueGeneratorConfig> = {
+    trafficCitationNumber: { type: 'pattern', pattern: 'TC-{{date:MMM}}-{{digits:5}}', uppercase: true },
+    infractionCitationNumber: { type: 'pattern', pattern: 'IC-{{date:MMM}}-{{digits:5}}', uppercase: true },
+    parkingCitationNumber: { type: 'pattern', pattern: 'PT-{{date:MMM}}-{{digits:5}}', uppercase: true },
+    insuranceProvider: { type: 'choice', options: ['Maze Bank Insurance', 'Fleeca Insurance'] },
+    insurancePolicyNumber: { type: 'pattern', pattern: 'POL-{{digits:7}}' },
+    unitSerialNumber: { type: 'pattern', pattern: 'US-{{digits:6}}' },
+    propertyReceiptNumber: { type: 'pattern', pattern: 'PR-{{digits:5}}' },
+    parkingInventoryNumber: { type: 'pattern', pattern: 'INV-{{digits:5}}' },
+    parkingRespondByDate: { type: 'pattern', pattern: '{{date+14:dd/MMM/yyyy}}', uppercase: true },
+};
+
+const PATTERN_TOKEN_REGEX = /\{\{\s*([^}]+?)\s*\}\}/g;
+
+const resolvePatternToken = (rawToken: string): string => {
+    const token = rawToken.trim();
+    if (!token) return '';
+
+    const [directive, ...rest] = token.split(':');
+    const normalizedDirective = directive.trim();
+
+    if (/^digits\d*$/i.test(normalizedDirective) || normalizedDirective.toLowerCase() === 'digits') {
+        const lengthPart = rest[0]?.trim() ?? normalizedDirective.replace(/^[^\d]*/, '');
+        const length = Number.parseInt(lengthPart || '0', 10);
+        return randomDigits(Number.isFinite(length) ? length : 0);
+    }
+
+    if (normalizedDirective.toLowerCase().startsWith('date')) {
+        const offsetMatch = normalizedDirective.match(/^date([+-]\d+)?$/i);
+        const offset = offsetMatch?.[1] ? Number.parseInt(offsetMatch[1], 10) : 0;
+        const formatString = rest.join(':').trim() || 'yyyy-MM-dd';
+        const targetDate = addDays(new Date(), Number.isFinite(offset) ? offset : 0);
+        return format(targetDate, formatString);
+    }
+
+    if (normalizedDirective.toLowerCase() === 'choice') {
+        const options = rest.join(':')
+            .split('|')
+            .map(option => option.trim())
+            .filter(Boolean);
+        if (options.length === 0) {
+            return '';
+        }
+        return options[Math.floor(Math.random() * options.length)];
+    }
+
+    return '';
+};
+
+const generateFromPattern = ({ pattern, uppercase }: Extract<ValueGeneratorConfig, { type: 'pattern' }>): string => {
+    const resolved = pattern.replace(PATTERN_TOKEN_REGEX, (_, token) => resolvePatternToken(token));
+    return uppercase ? resolved.toUpperCase() : resolved;
+};
+
+const generateFromChoice = ({ options, uppercase }: Extract<ValueGeneratorConfig, { type: 'choice' }>): string => {
+    if (!options || options.length === 0) {
+        return '';
+    }
+    const choice = options[Math.floor(Math.random() * options.length)];
+    return uppercase ? choice.toUpperCase() : choice;
+};
+
+const resolveGeneratorConfig = (generator: FormField['generateValue']): ValueGeneratorConfig | null => {
+    if (!generator) {
+        return null;
+    }
+
+    if (typeof generator === 'string') {
+        return defaultGeneratorConfigs[generator] ?? null;
+    }
+
+    return generator;
+};
+
+const generateFieldValue = (generator: FormField['generateValue']): string => {
+    const config = resolveGeneratorConfig(generator);
+    if (!config) {
+        return '';
+    }
+
+    if (config.type === 'pattern') {
+        return generateFromPattern(config);
+    }
+
+    if (config.type === 'choice') {
+        return generateFromChoice(config);
+    }
+
+    return '';
+};
+
+const buildDefaultValues = (
+    fields: FormField[],
+    parentPath: string[] = [],
+    generatedValues: Record<string, any>
+): Record<string, any> => {
     const defaults: Record<string, any> = {};
 
     for (const field of fields) {
@@ -137,7 +235,7 @@ const buildDefaultValues = (fields: FormField[], parentPath: string[] = []): Rec
             const nextParentPath = field.name
                 ? [...parentPath, ...splitFieldPath(field.name)]
                 : parentPath;
-            mergeDeep(defaults, buildDefaultValues(field.fields, nextParentPath));
+            mergeDeep(defaults, buildDefaultValues(field.fields, nextParentPath, generatedValues));
             continue;
         }
 
@@ -146,6 +244,7 @@ const buildDefaultValues = (fields: FormField[], parentPath: string[] = []): Rec
         }
 
         const currentPath = [...parentPath, ...splitFieldPath(field.name)];
+        const pathKey = currentPath.join('.');
 
         if (field.type === 'input_group') {
             setValueAtPath(defaults, currentPath, field.defaultValue ?? []);
@@ -175,11 +274,32 @@ const buildDefaultValues = (fields: FormField[], parentPath: string[] = []): Rec
         }
 
         if (field.type === 'toggle' || field.type === 'better-switch') {
-            setValueAtPath(defaults, currentPath, field.defaultValue === true);
+            let value = field.defaultValue === true;
+            if (field.generateValue) {
+                if (!generatedValues[pathKey]) {
+                    generatedValues[pathKey] = generateFieldValue(field.generateValue);
+                }
+                value = generatedValues[pathKey];
+            }
+            setValueAtPath(defaults, currentPath, value);
         } else if (field.type === 'multi-select') {
-            setValueAtPath(defaults, currentPath, field.defaultValue || []);
+            let value = field.defaultValue || [];
+            if (field.generateValue) {
+                if (!generatedValues[pathKey]) {
+                    generatedValues[pathKey] = generateFieldValue(field.generateValue);
+                }
+                value = generatedValues[pathKey];
+            }
+            setValueAtPath(defaults, currentPath, value);
         } else {
-            setValueAtPath(defaults, currentPath, field.defaultValue ?? '');
+            let value = field.defaultValue ?? '';
+            if (field.generateValue) {
+                if (!generatedValues[pathKey]) {
+                    generatedValues[pathKey] = generateFieldValue(field.generateValue);
+                }
+                value = generatedValues[pathKey];
+            }
+            setValueAtPath(defaults, currentPath, value);
         }
     }
 
@@ -215,8 +335,12 @@ const collectPrefillValuesFromFields = (
 function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generatorType, groupId }: PaperworkGeneratorFormProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const generatedValuesRef = useRef<Record<string, any>>({});
 
-    const defaultValues = useMemo(() => buildDefaultValues(generatorConfig.form), [generatorConfig.form]);
+    const defaultValues = useMemo(() => {
+        generatedValuesRef.current = {};
+        return buildDefaultValues(generatorConfig.form, [], generatedValuesRef.current);
+    }, [generatorConfig.form]);
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -483,12 +607,14 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
     ) => {
         const { parentType } = options;
         const fieldKey = `${path}-${index}`;
-        if (field.stipulations) {
-            const allMet = field.stipulations.every(stip => {
+        if (field.stipulations && field.stipulations.length > 0) {
+            const results = field.stipulations.map(stip => {
                 const watchedValue = watch(stip.field);
                 return String(watchedValue) === String(stip.value);
             });
-            if (!allMet) {
+            const mode = field.stipulationMode ?? 'all';
+            const shouldRender = mode === 'any' ? results.some(Boolean) : results.every(Boolean);
+            if (!shouldRender) {
                 return null;
             }
         } else if (field.stipulation) {
@@ -498,8 +624,18 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
             }
         }
         switch (field.type) {
-            case 'hidden':
-                return <input key={fieldKey} type="hidden" {...register(path)} defaultValue={field.value} />;
+            case 'hidden': {
+                const pathSegments = splitFieldPath(path);
+                const pathKey = pathSegments.join('.');
+                let hiddenValue = field.value ?? '';
+                if (field.generateValue) {
+                    if (!generatedValuesRef.current[pathKey]) {
+                        generatedValuesRef.current[pathKey] = generateFieldValue(field.generateValue);
+                    }
+                    hiddenValue = generatedValuesRef.current[pathKey];
+                }
+                return <input key={fieldKey} type="hidden" {...register(path)} defaultValue={hiddenValue} />;
+            }
 
             case 'section':
                 return (
@@ -883,12 +1019,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
         }
 
         const buildDefaults = (fields: FormField[]): Record<string, any> => {
-            return fields.reduce((acc, f) => {
-                if (f.type === 'group' && f.fields) {
-                    return { ...acc, ...buildDefaults(f.fields) };
-                }
-                return { ...acc, [f.name]: f.defaultValue || '' };
-            }, {} as Record<string, any>);
+            return buildDefaultValues(fields, [], generatedValuesRef.current);
         };
 
         return (

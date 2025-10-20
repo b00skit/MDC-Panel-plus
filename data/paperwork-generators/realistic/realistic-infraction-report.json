@@ -8,7 +8,7 @@
     "custom_button_text": "Open MDC Record",
     "custom_button_link": "https://mdc.gta.world/record/{{defendant_name}}",
     "custom_button_replace_spaces": true,
-    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:2px solid #111;background-color:white;color:#111;\">\n  <tbody>\n    <tr>\n      <td colspan=\"4\" style=\"text-align:center;padding:10px;border-bottom:2px solid #111;\">\n        <h1 style=\"font-family:Arial,sans-serif;font-size:1.6rem;font-weight:700;margin:0;text-transform:uppercase;\">County of Los Santos</h1>\n        <h2 style=\"font-family:Arial,sans-serif;font-size:1.05rem;font-weight:600;margin:2px 0 0;\">Notice of Infraction Citation</h2>\n      </td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Citation #:</strong> {{citation_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Agency Case #:</strong> {{case_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Date:</strong> {{general.date}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;font-weight:bold;text-align:right;background-color:#f3f4f6;\">PAY ON OR BEFORE: {{addDays general.date 28}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Time:</strong> {{general.time}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\" colspan=\"2\"><strong>Issuing Agency:</strong> {{officers.0.department}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Service Method:</strong> {{citation_service_method}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Officer Information</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer:</strong> {{officers.0.name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Badge #:</strong> {{officers.0.badgeNumber}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Division / Unit:</strong> {{officers.0.divDetail}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Watch / Shift:</strong> {{officer_watch}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer Contact:</strong> {{officer_contact}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer Signature:</strong> {{officer_signature}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Supervisor:</strong> {{supervisor_name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Incident Type:</strong> {{incident_type}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Defendant Information</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Name:</strong> {{defendant_name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Address:</strong> {{defendant_address}}, {{defendant_city_state_zip}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Date of Birth:</strong> {{defendant_dob}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Age:</strong> {{defendant_age}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Gender:</strong> {{defendant_gender}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Race:</strong> {{defendant_race}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Phone:</strong> {{defendant_phone}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Email:</strong> {{defendant_email}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Preferred Contact:</strong> {{contact_preference}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Identification:</strong> {{defendant_id_type}} {{defendant_id_number}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Employer:</strong> {{defendant_employer}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Occupation:</strong> {{defendant_occupation}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Signature (if obtained):</strong> {{defendant_signature}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Custody Release:</strong> {{#if custody_release}}Released{{else}}N/A{{/if}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Release Conditions:</strong> {{release_conditions}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Victim / Complainant:</strong> {{victim_name}} {{victim_contact}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Violation &amp; Location Details</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Location of Violation:</strong> {{location.street}}, {{location.district}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Property Seized:</strong> {{#if property_seized}}Yes{{else}}No{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Property Receipt #:</strong> {{property_receipt_number}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:0;border:1px solid #bbb;border-left:none;border-right:none;\">\n        <table style=\"width:100%;border-collapse:collapse;\">\n          <tbody>\n            <tr style=\"background-color:#f3f4f6;\">\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;\">Offense #</td>\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;\" colspan=\"2\">Description</td>\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;text-align:right;\">Fine</td>\n            </tr>\n            {{#each charges}}\n            <tr>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;\">{{@index_1}}</td>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\">{{#with (lookup @root.penalCode chargeId)}}{{charge}}{{/with}}</td>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;text-align:right;\">${{fine}}</td>\n            </tr>\n            {{/each}}\n            <tr>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\" colspan=\"3\">Total Fine:</td>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\">${{charges_total_fine}}</td>\n            </tr>\n          </tbody>\n        </table>\n      </td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Narrative of Events:</strong>\n{{narrative}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Officer Observations:</strong>\n{{officer_observations}}</td>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Witness Statements:</strong>\n{{witness_statements}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Evidence Collected:</strong>\n{{evidence_collected}}</td>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Victim Impact / Notes:</strong>\n{{victim_impact}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Compliance Information</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Supporting Documents Provided:</strong> {{supporting_documents}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Payment Methods:</strong> {{payment_methods}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:8px;font-size:0.85rem;border-top:1px solid #bbb;background-color:#f9fafb;\"><strong>Court Filing Notice:</strong> Any court appearance related to this citation must be initiated through the Los Santos Greg E. Joplin Courthouse. Cases must be filed in advance via the official e-form before a hearing will be scheduled.</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:8px;font-size:0.85rem;border-top:1px solid #bbb;white-space:pre-wrap;\">{{compliance_instructions}}</td>\n    </tr>\n  </tbody>\n</table>",
+    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:2px solid #111;background-color:white;color:#111;\">\n  <tbody>\n    <tr>\n      <td colspan=\"4\" style=\"text-align:center;padding:10px;border-bottom:2px solid #111;\">\n        <h1 style=\"font-family:Arial,sans-serif;font-size:1.6rem;font-weight:700;margin:0;text-transform:uppercase;\">County of Los Santos</h1>\n        <h2 style=\"font-family:Arial,sans-serif;font-size:1.05rem;font-weight:600;margin:2px 0 0;\">Notice of Infraction Citation</h2>\n      </td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Citation #:</strong> {{citation_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Agency Case #:</strong> {{case_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Date:</strong> {{general.date}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;font-weight:bold;text-align:right;background-color:#f3f4f6;\">PAY ON OR BEFORE: {{addDays general.date 28}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Time:</strong> {{general.time}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\" colspan=\"2\"><strong>Issuing Agency:</strong> {{officers.0.department}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Service Method:</strong> {{citation_service_method}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Officer Information</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer:</strong> {{officers.0.name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Badge #:</strong> {{officers.0.badgeNumber}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Division / Unit:</strong> {{officers.0.divDetail}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Watch / Shift:</strong> {{officer_watch}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer Contact:</strong> {{officer_contact}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Officer Signature:</strong> {{officer_signature}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Supervisor:</strong> {{supervisor_name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Incident Type:</strong> {{incident_type}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Defendant Information</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Name:</strong> {{defendant_name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Address:</strong> {{defendant_address}}, {{defendant_city_state_zip}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Date of Birth:</strong> {{defendant_dob}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Age:</strong> {{defendant_age}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Gender:</strong> {{defendant_gender}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Race:</strong> {{defendant_race}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Phone:</strong> {{defendant_phone}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Email:</strong> {{defendant_email}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Preferred Contact:</strong> {{contact_preference}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Identification:</strong> {{defendant_id_type}} {{defendant_id_number}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Employer:</strong> {{defendant_employer}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Occupation:</strong> {{defendant_occupation}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Signature (if obtained):</strong> {{defendant_signature}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"></td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Victim / Complainant:</strong> {{victim_name}} {{victim_contact}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Violation &amp; Location Details</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Location of Violation:</strong> {{location.street}}, {{location.district}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Property Seized:</strong> {{#if property_seized}}Yes{{else}}No{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Property Receipt #:</strong> {{property_receipt_number}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:0;border:1px solid #bbb;border-left:none;border-right:none;\">\n        <table style=\"width:100%;border-collapse:collapse;\">\n          <tbody>\n            <tr style=\"background-color:#f3f4f6;\">\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;\">Offense #</td>\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;\" colspan=\"2\">Description</td>\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;text-align:right;\">Fine</td>\n            </tr>\n            {{#each charges}}\n            <tr>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;\">{{@index_1}}</td>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\">{{#with (lookup @root.penalCode chargeId)}}{{charge}}{{/with}}</td>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;text-align:right;\">${{fine}}</td>\n            </tr>\n            {{/each}}\n            <tr>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\" colspan=\"3\">Total Fine:</td>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\">${{charges_total_fine}}</td>\n            </tr>\n          </tbody>\n        </table>\n      </td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Narrative of Events:</strong>\n{{narrative}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Officer Observations:</strong>\n{{officer_observations}}</td>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Witness Statements:</strong>\n{{witness_statements}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Evidence Collected:</strong>\n{{evidence_collected}}</td>\n      <td colspan=\"2\" style=\"padding:10px;white-space:pre-wrap;border-bottom:1px solid #ccc;\"><strong>Victim Impact / Notes:</strong>\n{{victim_impact}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Compliance Information</td>\n    </tr>\n    <tr>\n            <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Payment Methods:</strong> {{payment_methods}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:8px;font-size:0.85rem;border-top:1px solid #bbb;background-color:#f9fafb;\"><strong>Court Filing Notice:</strong> Any court appearance related to this citation must be initiated through the Los Santos Greg E. Joplin Courthouse. Cases must be filed in advance via the official e-form before a hearing will be scheduled.</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:8px;font-size:0.85rem;border-top:1px solid #bbb;white-space:pre-wrap;\">{{compliance_instructions}}</td>\n    </tr>\n  </tbody>\n</table>",
     "form": [
         {
             "type": "section",
@@ -19,26 +19,25 @@
             "name": "general"
         },
         {
-            "type": "text",
+            "type": "hidden",
             "name": "citation_number",
-            "label": "Citation Number",
-            "placeholder": "e.g. IC-240881",
-            "required": true
+            "generateValue": {
+                "type": "pattern",
+                "pattern": "IC-{{date:MMM}}-{{digits:5}}",
+                "uppercase": true
+            }
         },
         {
             "type": "group",
             "fields": [
                 {
-                    "type": "text",
-                    "name": "case_number",
-                    "label": "Agency Case Number",
-                    "placeholder": "Case #"
-                },
-                {
-                    "type": "text",
+                    "type": "dropdown",
                     "name": "citation_service_method",
                     "label": "Service Method",
-                    "placeholder": "e.g. In Person"
+                    "options": [
+                        "In Person",
+                        "Mailed Copy (Issued via MDC)"
+                    ]
                 }
             ]
         },
@@ -67,23 +66,6 @@
                     "name": "officer_contact",
                     "label": "Officer Contact",
                     "placeholder": "e.g. (555) 010-3122"
-                }
-            ]
-        },
-        {
-            "type": "group",
-            "fields": [
-                {
-                    "type": "text",
-                    "name": "officer_signature",
-                    "label": "Officer Signature",
-                    "placeholder": "Full name or digital signature"
-                },
-                {
-                    "type": "text",
-                    "name": "supervisor_name",
-                    "label": "Approving Supervisor",
-                    "placeholder": "Name, Rank, #Badge"
                 }
             ]
         },
@@ -214,23 +196,6 @@
             ]
         },
         {
-            "type": "better-switch",
-            "name": "custody_release",
-            "label": "Released on Promise to Appear",
-            "dataOn": "Released",
-            "dataOff": "Not Released"
-        },
-        {
-            "type": "text",
-            "name": "release_conditions",
-            "label": "Release Conditions",
-            "placeholder": "Conditions of release",
-            "stipulation": {
-                "field": "custody_release",
-                "value": true
-            }
-        },
-        {
             "type": "group",
             "fields": [
                 {
@@ -262,16 +227,6 @@
             "label": "Property Seized",
             "dataOn": "Yes",
             "dataOff": "No"
-        },
-        {
-            "type": "text",
-            "name": "property_receipt_number",
-            "label": "Property Receipt Number",
-            "placeholder": "Receipt #",
-            "stipulation": {
-                "field": "property_seized",
-                "value": true
-            }
         },
         {
             "type": "section",
@@ -340,22 +295,18 @@
             "title": "Compliance"
         },
         {
-            "type": "text",
-            "name": "supporting_documents",
-            "label": "Supporting Documents Provided",
-            "placeholder": "e.g. Photos, Statements"
-        },
-        {
-            "type": "text",
-            "name": "payment_methods",
-            "label": "Accepted Payment Methods",
-            "placeholder": "Online, Mail, In-person"
-        },
-        {
             "type": "textarea",
             "name": "compliance_instructions",
             "label": "Compliance Instructions",
             "placeholder": "Outline how to pay or contest the citation."
+        },
+        {
+            "type": "hidden",
+            "name": "property_receipt_number",
+            "generateValue": {
+                "type": "pattern",
+                "pattern": "PR-{{digits:5}}"
+            }
         }
     ],
     "countyCityStipulation": true

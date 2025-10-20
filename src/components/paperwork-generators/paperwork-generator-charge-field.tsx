@@ -23,6 +23,17 @@ import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
 import configData from '../../../data/config.json';
 
+export type ValueGeneratorConfig =
+    | {
+          type: 'pattern';
+          pattern: string;
+          uppercase?: boolean;
+      }
+    | {
+          type: 'choice';
+          options: string[];
+          uppercase?: boolean;
+      };
 
 const getTypeClasses = (type: Charge['type']) => {
   switch (type) {
@@ -49,6 +60,17 @@ export type FormField = {
     multi?: boolean;
     showDivDetail?: boolean;
     showBadgeNumber?: boolean;
+    generateValue?:
+        | ValueGeneratorConfig
+        | 'trafficCitationNumber'
+        | 'infractionCitationNumber'
+        | 'parkingCitationNumber'
+        | 'insuranceProvider'
+        | 'insurancePolicyNumber'
+        | 'unitSerialNumber'
+        | 'propertyReceiptNumber'
+        | 'parkingInventoryNumber'
+        | 'parkingRespondByDate';
     stipulation?: {
         field: string;
         value: any;
@@ -57,6 +79,7 @@ export type FormField = {
         field: string;
         value: any;
     }[],
+    stipulationMode?: 'all' | 'any';
     fields?: FormField[]; // For group and input_group types
     // Charge field specific config
     showClass?: boolean;
