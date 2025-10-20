@@ -38,7 +38,7 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
   const cardClasses = cn(
     "h-[190px] flex flex-col justify-between transition-all duration-300 ease-in-out relative overflow-hidden",
     !disabled && "group-hover:border-primary/50 group-hover:shadow-lg group-hover:-translate-y-1",
-    disabled && "opacity-50 cursor-not-allowed bg-muted/50"
+    disabled && "cursor-not-allowed bg-muted"
   );
   
   const CardContentComponent = (
