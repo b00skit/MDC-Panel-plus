@@ -8,7 +8,7 @@
     "custom_button_text": "Open MDC Record",
     "custom_button_link": "https://mdc.gta.world/record/{{vehicle_owner}}",
     "custom_button_replace_spaces": true,
-    "output": "<table style=\"width:100%;font-family:'Times New Roman',serif;border-collapse:collapse;border:2px solid #111;background-color:white;color:#111;\">\n  <tbody>\n    <tr>\n      <td colspan=\"4\" style=\"text-align:center;padding:10px;border-bottom:2px solid #111;\">\n        <h1 style=\"font-family:Arial,sans-serif;font-size:1.6rem;font-weight:700;margin:0;text-transform:uppercase;\">County of Los Santos</h1>\n        <h2 style=\"font-family:Arial,sans-serif;font-size:1.05rem;font-weight:600;margin:2px 0 0;\">Notice of Parking Citation</h2>\n        <p style=\"margin:4px 0 0;font-size:0.85rem;\">{{officers.0.department}} &bull; {{officers.0.divDetail}}</p>\n      </td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Citation #:</strong> {{citation_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Date of Issue:</strong> {{general.date}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Time Issued:</strong> {{general.time}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;font-weight:bold;text-align:right;background-color:#f3f4f6;\">PAY ON OR BEFORE: {{addDays general.date 28}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Officer:</strong> {{officers.0.name}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Badge #:</strong> {{officers.0.badgeNumber}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Unit / Call Sign:</strong> {{general.callSign}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Assignment:</strong> {{officer_assignment}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Officer Contact:</strong> {{officer_contact}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\" colspan=\"2\"><strong>Officer Signature:</strong> {{officer_signature}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #ccc;\"><strong>Contest By:</strong> {{respond_by_date}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Vehicle Identification</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Plate:</strong> {{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Reg. State:</strong> {{#if vehicle_registration_state}}{{vehicle_registration_state}}{{else}}N/A{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Reg. Status:</strong> {{#if vehicle_registered}}Valid{{else}}Expired/None{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Owner:</strong> {{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Year:</strong> {{vehicle_year}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Make &amp; Model:</strong> {{vehicle_make_model}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Body Style:</strong> {{vehicle_body_style}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Color:</strong> {{vehicle_color}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Vehicle Identification Number:</strong> {{vehicle_vin}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Insurance Status:</strong> {{#if vehicle_insured}}Insured{{else}}Uninsured{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Insurance Expiration:</strong> {{insurance_expiration}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Insurance Provider:</strong> {{insurance_provider}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Policy #:</strong> {{insurance_policy_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Location of Violation:</strong> {{location.street}}, {{location.district}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Meter / Zone ID:</strong> {{meter_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Observation Start:</strong> {{violation_observed_from}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Observation End:</strong> {{violation_observed_to}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Hazard Lights:</strong> {{#if hazard_lights}}Activated{{else}}Not Activated{{/if}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Violation Details</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Violation Category:</strong> {{violation_category}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Municipal Code:</strong> {{violation_code}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Section/Subsection:</strong> {{violation_section}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:0;border:1px solid #bbb;border-left:none;border-right:none;\">\n        <table style=\"width:100%;border-collapse:collapse;\">\n          <tbody>\n            <tr style=\"background-color:#f3f4f6;\">\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;\" colspan=\"3\">Description of Violation</td>\n              <td style=\"padding:6px;font-weight:bold;border-bottom:1px solid #ccc;text-align:right;\">Fine</td>\n            </tr>\n            {{#each charges}}\n            <tr>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"3\">{{#with (lookup @root.penalCode chargeId)}}{{charge}}{{/with}}</td>\n              <td style=\"padding:6px;border-bottom:1px solid #eee;text-align:right;\">${{fine}}</td>\n            </tr>\n            {{/each}}\n            <tr>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\" colspan=\"3\">Total Amount Due:</td>\n              <td style=\"padding:6px;text-align:right;font-weight:bold;border-top:1px solid #111;\">${{charges_total_fine}}</td>\n            </tr>\n          </tbody>\n        </table>\n      </td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:10px;white-space:pre-wrap;border-bottom:2px solid #111;\">{{parking_reasons}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"background-color:#e5e7eb;padding:6px;border-top:2px solid #111;border-bottom:1px solid #bbb;text-align:center;font-weight:bold;\">Tow / Additional Actions</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Tow Authorized:</strong> {{#if tow_authorized}}Yes{{else}}No{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Photographs Taken:</strong> {{#if photographs_taken}}Yes{{else}}No{{/if}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Tow Company:</strong> {{tow_company}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\"><strong>Tow Destination:</strong> {{tow_destination}}</td>\n    </tr>\n    <tr>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Vehicle Inventory / Property Receipt #:</strong> {{inventory_number}}</td>\n      <td style=\"padding:6px;border-bottom:1px solid #eee;\" colspan=\"2\"><strong>Notes:</strong> {{additional_notes}}</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:8px;font-size:0.85rem;border-top:1px solid #bbb;background-color:#f9fafb;\"><strong>Court Filing Notice:</strong> Any court appearance related to this citation must be initiated through the Los Santos Greg E. Joplin Courthouse. Cases must be filed in advance via the official e-form before a hearing will be scheduled.</td>\n    </tr>\n    <tr>\n      <td colspan=\"4\" style=\"padding:8px;font-size:0.85rem;white-space:pre-wrap;border-top:1px solid #bbb;\">{{payment_instructions}}</td>\n    </tr>\n  </tbody>\n</table>",
+    "output": "<div style=\"font-family:'Courier New',monospace;background-color:#fdf7e2;border:4px double #1c1c1c;padding:18px;color:#1a1a1a;line-height:1.35;\">\n  <div style=\"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;padding-bottom:8px;border-bottom:3px double #1c1c1c;\">\n    <div>\n      <div style=\"font-size:1.25rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;\">COUNTY OF LOS SANTOS</div>\n      <div style=\"font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;\">{{officers.0.department}}</div>\n    </div>\n    <div style=\"text-align:right;font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;\">\n      <div style=\"font-weight:700;\">LSC Form 214-IR</div>\n      <div>Revision {{general.date}}</div>\n      <div style=\"font-style:italic;\">Parking Citation Record</div>\n    </div>\n  </div>\n  <table style=\"width:100%;border-collapse:collapse;\">\n    <tbody>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">1. Citation No.</td>\n        <td colspan=\"2\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{citation_number}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">2. Date Issued</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{general.date}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">3. Time</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{general.time}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">4. Payment Due</td>\n        <td colspan=\"2\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{addDays general.date 28}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">5. Officer</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{officers.0.name}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">6. Badge</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{officers.0.badgeNumber}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">Unit {{general.callSign}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">7. Assignment</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{officer_assignment}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">8. Agency</td>\n        <td colspan=\"2\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{officers.0.department}} &bull; {{officers.0.divDetail}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">9. Officer Contact</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{officer_contact}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">10. Respond By</td>\n        <td colspan=\"2\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{respond_by_date}}</td>\n      </tr>\n      <tr>\n        <td colspan=\"5\" style=\"border:1px solid #1c1c1c;padding:6px;padding:6px 4px;border:none;\"><div style=\"border:2px solid #1c1c1c;border-left:none;border-right:none;padding:4px 0;margin:4px 0;background-color:#efe2bc;text-align:center;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;\">Vehicle Identification</div></td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">11. Plate / State</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{#if vehicle_plate}}{{vehicle_plate}}{{else}}N/A{{/if}} / {{#if vehicle_registration_state}}{{vehicle_registration_state}}{{else}}N/A{{/if}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">12. Reg. Status</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{#if vehicle_registered}}Valid{{else}}Expired/None{{/if}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">Owner: {{#if vehicle_owner}}{{vehicle_owner}}{{else}}N/A{{/if}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">13. Make / Model</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{vehicle_make_model}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">14. Body</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{vehicle_body_style}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">Color {{vehicle_color}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">15. VIN</td>\n        <td colspan=\"2\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{vehicle_vin}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">16. Insurance</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{#if vehicle_insured}}Insured{{else}}Uninsured{{/if}} &bull; {{vehicle_insurance_provider}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">17. Policy / Exp.</td>\n        <td colspan=\"2\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">Policy {{vehicle_insurance_policy}} &bull; Expires {{insurance_expiration}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">18. Location</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{location.street}}, {{location.district}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">19. Observation</td>\n        <td colspan=\"2\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">From {{violation_observed_from}} to {{violation_observed_to}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">20. Hazards</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{#if hazard_lights}}Activated{{else}}Not Activated{{/if}}</td>\n      </tr>\n      <tr>\n        <td colspan=\"5\" style=\"border:1px solid #1c1c1c;padding:6px;padding:6px 4px;border:none;\"><div style=\"border:2px solid #1c1c1c;border-left:none;border-right:none;padding:4px 0;margin:4px 0;background-color:#efe2bc;text-align:center;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;\">Violation Detail</div></td>\n      </tr>\n      <tr>\n        <td colspan=\"5\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;padding:0;\"><table style=\"width:100%;border-collapse:collapse;\">\n  <tbody>\n    <tr style=\"background-color:#e9ddba;text-transform:uppercase;letter-spacing:0.08em;font-size:0.78rem;font-weight:600;\">\n      <td style=\"border:1px solid #1c1c1c;padding:6px;width:65%;\">21. Charge Description</td>\n      <td style=\"border:1px solid #1c1c1c;padding:6px;text-align:right;width:15%;\">Assessment</td>\n      <td style=\"border:1px solid #1c1c1c;padding:6px;text-align:right;width:20%;\">Fine (USD)</td>\n    </tr>\n    {{#any charges}}\n      {{#each charges}}\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.9rem;\">{{#with (lookup @root.penalCode chargeId)}}IC {{id}}. {{charge}}{{/with}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;text-align:right;font-size:0.9rem;\">Citation</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;text-align:right;font-size:0.9rem;\">${{fine}}</td>\n      </tr>\n      {{/each}}\n    {{else}}\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.9rem;\" colspan=\"3\">No violations recorded.</td>\n      </tr>\n    {{/any}}\n  </tbody>\n</table></td>\n      </tr>\n      <tr>\n        <td colspan=\"5\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;white-space:pre-wrap;font-size:0.95rem;\">{{parking_reasons}}</td>\n      </tr>\n      <tr>\n        <td colspan=\"5\" style=\"border:1px solid #1c1c1c;padding:6px;padding:6px 4px;border:none;\"><div style=\"border:2px solid #1c1c1c;border-left:none;border-right:none;padding:4px 0;margin:4px 0;background-color:#efe2bc;text-align:center;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;\">Tow / Supplemental Actions</div></td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">22. Tow Authorized</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{#if tow_authorized}}Yes{{else}}No{{/if}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">23. Photos</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{#if photographs_taken}}Yes{{else}}No{{/if}}</td>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{#if tow_authorized}}{{inventory_number}}{{else}}N/A{{/if}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">24. Tow Company / Destination</td>\n        <td colspan=\"4\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{tow_company}} &bull; {{tow_destination}}</td>\n      </tr>\n      <tr>\n        <td style=\"border:1px solid #1c1c1c;padding:6px;background-color:#f0e6c8;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;\">25. Additional Notes</td>\n        <td colspan=\"4\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;\">{{additional_notes}}</td>\n      </tr>\n      <tr>\n        <td colspan=\"5\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.85rem;white-space:pre-wrap;background-color:#f5ebd0;\">{{payment_instructions}}</td>\n      </tr>\n      <tr>\n        <td colspan=\"5\" style=\"border:1px solid #1c1c1c;padding:6px;font-size:0.95rem;font-size:0.8rem;background-color:#f8f1d9;font-style:italic;\">Court filings related to this citation must be initiated through the Los Santos Greg E. Joplin Courthouse via approved channels prior to scheduling.</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
     "form": [
         {
             "type": "section",
@@ -19,11 +19,13 @@
             "name": "general"
         },
         {
-            "type": "text",
+            "type": "hidden",
             "name": "citation_number",
-            "label": "Citation Number",
-            "placeholder": "e.g. PT-240152",
-            "required": true
+            "generateValue": {
+                "type": "pattern",
+                "pattern": "PT-{{date:MMM}}-{{digits:5}}",
+                "uppercase": true
+            }
         },
         {
             "type": "section",
@@ -50,23 +52,6 @@
                     "name": "officer_contact",
                     "label": "Officer Contact Number",
                     "placeholder": "e.g. (555) 010-4455"
-                }
-            ]
-        },
-        {
-            "type": "group",
-            "fields": [
-                {
-                    "type": "text",
-                    "name": "officer_signature",
-                    "label": "Officer Signature",
-                    "placeholder": "Full name or digital signature"
-                },
-                {
-                    "type": "text",
-                    "name": "respond_by_date",
-                    "label": "Contest / Respond By",
-                    "placeholder": "DD/MM/YYYY"
                 }
             ]
         },
@@ -121,12 +106,6 @@
             "type": "group",
             "fields": [
                 {
-                    "type": "text",
-                    "name": "vehicle_year",
-                    "label": "Vehicle Year",
-                    "placeholder": "2024"
-                },
-                {
                     "type": "datalist",
                     "name": "vehicle_make_model",
                     "label": "Make & Model",
@@ -164,26 +143,6 @@
                     "dataOn": "Insured",
                     "dataOff": "Uninsured",
                     "defaultValue": true
-                },
-                {
-                    "type": "text",
-                    "name": "insurance_provider",
-                    "label": "Insurance Provider",
-                    "placeholder": "e.g. Fleeca Insurance",
-                    "stipulation": {
-                        "field": "vehicle_insured",
-                        "value": true
-                    }
-                },
-                {
-                    "type": "text",
-                    "name": "insurance_policy_number",
-                    "label": "Policy Number",
-                    "placeholder": "Policy #",
-                    "stipulation": {
-                        "field": "vehicle_insured",
-                        "value": true
-                    }
                 }
             ]
         },
@@ -211,12 +170,6 @@
             "fields": [
                 {
                     "type": "text",
-                    "name": "meter_number",
-                    "label": "Meter / Zone Identifier",
-                    "placeholder": "e.g. Meter 24B"
-                },
-                {
-                    "type": "text",
                     "name": "violation_observed_from",
                     "label": "Observation Start",
                     "placeholder": "HH:MM"
@@ -241,35 +194,94 @@
             "title": "Violation Details"
         },
         {
-            "type": "dropdown",
-            "name": "violation_category",
-            "label": "Violation Category",
-            "placeholder": "Select category",
+            "type": "multi-select",
+            "name": "violations",
+            "label": "Violations",
+            "placeholder": "Select all applicable violations",
             "options": [
-                "Meter Violation",
-                "No Parking Zone",
-                "Permit Required Area",
-                "Blocking Driveway",
-                "Fire Hydrant",
-                "Red Zone / Fire Lane",
-                "Disabled Parking",
-                "Other"
-            ]
-        },
-        {
-            "type": "group",
-            "fields": [
                 {
-                    "type": "text",
-                    "name": "violation_code",
-                    "label": "Municipal Code",
-                    "placeholder": "e.g. LSCC \u00a712.21"
+                    "value": "Failed to pay vehicular insurance within the time required by law on any public road.",
+                    "label": "Uninsured Vehicle"
                 },
                 {
-                    "type": "text",
-                    "name": "violation_section",
-                    "label": "Section / Subsection",
-                    "placeholder": "e.g. (a)(2)"
+                    "value": "Next to a fire hydrant, and/or on a firelane marked by red lines.",
+                    "label": "Fire Hydrant/Firelane"
+                },
+                {
+                    "value": "Facing opposing traffic.",
+                    "label": "Facing Opposing Traffic"
+                },
+                {
+                    "value": "Inside any tunnel.",
+                    "label": "In Tunnel"
+                },
+                {
+                    "value": "On any freeway.",
+                    "label": "On Freeway"
+                },
+                {
+                    "value": "On a bridge outside of the City of Los Santos.",
+                    "label": "On Bridge (Outside LS)"
+                },
+                {
+                    "value": "Parking a non-electric vehicle into a parking space with an electric charger.",
+                    "label": "Non-EV in EV Spot"
+                },
+                {
+                    "value": "In a manner that a vehicle takes up two parking spaces.",
+                    "label": "Taking Two Spaces"
+                },
+                {
+                    "value": "No more than 2 motorcycles may park abreast in 1 parking space.",
+                    "label": "Motorcycle Parking Violation"
+                },
+                {
+                    "value": "In a fashion which blocks the flow of traffic.",
+                    "label": "Blocking Traffic Flow"
+                },
+                {
+                    "value": "In a manner that obstructs a lane of traffic and prevents traffic from properly flowing.",
+                    "label": "Obstructing Traffic Lane"
+                },
+                {
+                    "value": "In a manner that obstructs an alleyway used by traffic.",
+                    "label": "Obstructing Alleyway"
+                },
+                {
+                    "value": "In a manner that obstructs a parking lot and prevents vehicles from leaving or entering.",
+                    "label": "Obstructing Parking Lot"
+                },
+                {
+                    "value": "In front of or obstructing a private driveway or an entrance or exit to a private road or path.",
+                    "label": "Obstructing Driveway/Entrance"
+                },
+                {
+                    "value": "In the immediate ambulatory parking or bay area of a hospital or clinic.",
+                    "label": "Obstructing Hospital/Clinic Area"
+                },
+                {
+                    "value": "On or within range of railroad tracks.",
+                    "label": "On Railroad Tracks"
+                },
+                {
+                    "value": "At or near a helipad or an aircraft landing zone.",
+                    "label": "Obstructing Helipad/Landing Zone"
+                },
+                {
+                    "value": "Within a marked crosswalk.",
+                    "label": "In Crosswalk"
+                },
+                {
+                    "value": "On any part of a sidewalk.",
+                    "label": "On Sidewalk"
+                },
+                {
+                    "value": "On any sidewalk that completely obstructs pedestrian foot traffic, or on any median.",
+                    "label": "Obstructing Sidewalk/Median"
+                },
+                {
+                    "value": "In the immediate vicinity of the Banks entrance, including the sidewalk adjacent to the metal barriers.",
+                    "label": "Obstructing Bank Entrance"
                 }
             ]
         },
@@ -343,16 +355,6 @@
             ]
         },
         {
-            "type": "text",
-            "name": "inventory_number",
-            "label": "Inventory / Property Receipt #",
-            "placeholder": "e.g. INV-24115",
-            "stipulation": {
-                "field": "tow_authorized",
-                "value": true
-            }
-        },
-        {
             "type": "better-switch",
             "name": "photographs_taken",
             "label": "Photographs Taken",
@@ -374,6 +376,42 @@
             "name": "additional_notes",
             "label": "Additional Notes",
             "placeholder": "Document any additional remarks, witness information, or safety concerns."
+        },
+        {
+            "type": "hidden",
+            "name": "vehicle_insurance_provider",
+            "generateValue": {
+                "type": "choice",
+                "options": [
+                    "Maze Bank Insurance",
+                    "Fleeca Insurance"
+                ]
+            }
+        },
+        {
+            "type": "hidden",
+            "name": "vehicle_insurance_policy",
+            "generateValue": {
+                "type": "pattern",
+                "pattern": "POL-{{digits:7}}"
+            }
+        },
+        {
+            "type": "hidden",
+            "name": "respond_by_date",
+            "generateValue": {
+                "type": "pattern",
+                "pattern": "{{date+28:dd/MMM/yyyy}}",
+                "uppercase": true
+            }
+        },
+        {
+            "type": "hidden",
+            "name": "inventory_number",
+            "generateValue": {
+                "type": "pattern",
+                "pattern": "TOW-{{digits:5}}"
+            }
         }
     ],
     "countyCityStipulation": true
