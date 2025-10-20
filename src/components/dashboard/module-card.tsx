@@ -28,12 +28,9 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
         '--glow-color': color || 'hsl(var(--primary))',
       } as React.CSSProperties}>
         {color && !disabled && (
-          <>
-            <div
-              className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_farthest-side,var(--glow-color),transparent)] opacity-5 group-hover:opacity-25 transition-opacity duration-300"
-            />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_farthest-corner_at_10%_10%,hsl(var(--card)),transparent)] opacity-50" />
-          </>
+          <div
+            className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_farthest-side,var(--glow-color),transparent)] opacity-5 group-hover:opacity-25 transition-opacity duration-300"
+          />
         )}
         <CardHeader>
           <div className="flex items-center justify-between">
