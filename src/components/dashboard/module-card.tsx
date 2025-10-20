@@ -21,7 +21,7 @@ export type ModuleCardProps = {
 };
 
 export function ModuleCard({ icon, title, description, href, dataAiHint, disabled = false, color, newExpiry }: ModuleCardProps) {
-  const { t } = useScopedI18n('paperworkGenerators.page');
+  const t = useScopedI18n('paperworkGenerators.page');
 
   const isNew = useMemo(() => {
     if (!newExpiry) return false;
