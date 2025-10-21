@@ -40,6 +40,14 @@
                 {
                     "type": "backend",
                     "description": "<b>Paperwork Generators:</b> The ordering of the paperwork generator categories is now pre-defined based on the server configuration."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Settings:</b> Added a new selector for the background logo, being able to select between the LSPD, LSSD or the San Andreas Seal as a background logo in the settings."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>i18n:</b> Added better localization handling in the backend for adding new localizations to the server."
                 }
             ],
             "cacheVersion": "backend-frql-1"
