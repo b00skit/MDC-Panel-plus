@@ -14,5 +14,5 @@ export function getGtawDataUrl(file: GtawDataFile): string {
     return `/api/gtaw-data?${params.toString()}`;
   }
 
-  return `${config.CONTENT_DELIVERY_NETWORK}?file=${file}`;
+  return `${config.CONTENT_DELIVERY_NETWORK}${file}`;
 }
