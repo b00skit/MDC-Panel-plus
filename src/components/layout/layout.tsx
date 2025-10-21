@@ -6,6 +6,25 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger } from '@/compon
 import { SidebarNav } from './sidebar-nav';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { useSettingsStore, type BackgroundLogoOption } from '@/stores/settings-store';
+
+const BACKGROUND_LOGOS: Record<BackgroundLogoOption, { src: string; alt: string; className?: string }> = {
+  sanAndreasSeal: {
+    src: '/img/logos/Logo-SanAndreasSealTransparent.png',
+    alt: 'San Andreas Seal',
+  },
+  lspd: {
+    src: '/img/logos/Logo-LSPD.png',
+    alt: 'Los Santos Police Department',
+    className: 'opacity-20',
+  },
+  lssd: {
+    src: '/img/logos/Logo-LSSD.png',
+    alt: "Los Santos County Sheriff's Department",
+    className: 'opacity-20',
+  },
+};
 
 type LayoutProps = {
   children: ReactNode;
@@ -13,6 +32,9 @@ type LayoutProps = {
 };
 
 export function Layout({ children, footer }: LayoutProps) {
+  const backgroundLogo = useSettingsStore(state => state.backgroundLogo);
+  const activeLogo = BACKGROUND_LOGOS[backgroundLogo] ?? BACKGROUND_LOGOS.sanAndreasSeal;
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -24,11 +46,11 @@ export function Layout({ children, footer }: LayoutProps) {
         >
             <div className="relative w-[60%] h-[60%]">
                 <Image
-                    src="/img/logos/Logo-SanAndreasSeal.png"
-                    alt="San Andreas Seal"
+                    src={activeLogo.src}
+                    alt={activeLogo.alt}
                     fill
                     style={{ objectFit: 'contain' }}
-                    className="opacity-5"
+                    className={cn(activeLogo.className)}
                 />
             </div>
         </div>

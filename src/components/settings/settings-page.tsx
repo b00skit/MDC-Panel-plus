@@ -36,10 +36,11 @@ import { useChargeStore } from '@/stores/charge-store';
 import { useFormStore } from '@/stores/form-store';
 import { Separator } from '@/components/ui/separator';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
-import { useSettingsStore, FactionGroup } from '@/stores/settings-store';
+import { useSettingsStore, FactionGroup, type BackgroundLogoOption } from '@/stores/settings-store';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from 'next-themes';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import Image from 'next/image';
 
 // --- Helper Interfaces ---
 interface DeptRanks {
@@ -148,7 +149,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
     updateAlternativeCharacter,
     removeAlternativeCharacter,
   } = useOfficerStore();
-  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId, analyticsOptOut, toggleAnalytics } = useSettingsStore();
+  const { hiddenFactions, toggleFactionVisibility, setFactionGroups, showHiddenGroups, toggleHiddenGroupVisibility, predefinedCallsigns, defaultCallsignId, addCallsign, removeCallsign, updateCallsign, setDefaultCallsignId, analyticsOptOut, toggleAnalytics, backgroundLogo, setBackgroundLogo } = useSettingsStore();
 
   const [deptRanks, setDeptRanks] = useState<DeptRanks>({});
   const defaultOfficer = officers[0];
@@ -283,7 +284,7 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                     Customize the look and feel of the application.
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <Button variant={theme === 'light' ? 'default' : 'outline'} onClick={() => setTheme('light')}>
                         <Sun className="mr-2" /> Light
@@ -294,6 +295,67 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                     <Button variant={theme === 'system' ? 'default' : 'outline'} onClick={() => setTheme('system')}>
                         <Monitor className="mr-2" /> System
                     </Button>
+                </div>
+                <div className="space-y-4">
+                    <div>
+                        <h4 className="text-sm font-medium leading-none">Background Logo</h4>
+                        <p className="text-sm text-muted-foreground">
+                            Choose the logo that is displayed behind the application content.
+                        </p>
+                    </div>
+                    <RadioGroup
+                        value={backgroundLogo}
+                        onValueChange={(value) => setBackgroundLogo(value as BackgroundLogoOption)}
+                        className="grid gap-3"
+                    >
+                        {[
+                            {
+                                value: 'sanAndreasSeal' as BackgroundLogoOption,
+                                label: 'San Andreas Seal',
+                                image: '/img/logos/Logo-SanAndreasSeal.png',
+                                alt: 'San Andreas Seal',
+                            },
+                            {
+                                value: 'lspd' as BackgroundLogoOption,
+                                label: 'Los Santos Police Department',
+                                image: '/img/logos/Logo-LSPD.png',
+                                alt: 'Los Santos Police Department',
+                            },
+                            {
+                                value: 'lssd' as BackgroundLogoOption,
+                                label: "Los Santos County Sheriff's Department",
+                                image: '/img/logos/Logo-LSSD.png',
+                                alt: "Los Santos County Sheriff's Department",
+                            },
+                        ].map((option) => (
+                            <div key={option.value} className="flex items-center gap-4">
+                                <RadioGroupItem
+                                    value={option.value}
+                                    id={`background-logo-${option.value}`}
+                                    className="sr-only"
+                                />
+                                <Label
+                                    htmlFor={`background-logo-${option.value}`}
+                                    className={cn(
+                                        'flex w-full cursor-pointer items-center gap-4 rounded-lg border bg-background p-3 transition-all',
+                                        backgroundLogo === option.value
+                                            ? 'border-primary ring-2 ring-primary/50'
+                                            : 'hover:border-primary/50'
+                                    )}
+                                >
+                                    <div className="relative h-16 w-16 overflow-hidden rounded-md border bg-muted">
+                                        <Image
+                                            src={option.image}
+                                            alt={option.alt}
+                                            fill
+                                            style={{ objectFit: 'contain' }}
+                                        />
+                                    </div>
+                                    <span className="font-medium">{option.label}</span>
+                                </Label>
+                            </div>
+                        ))}
+                    </RadioGroup>
                 </div>
             </CardContent>
         </Card>

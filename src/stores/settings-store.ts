@@ -16,6 +16,8 @@ export interface PredefinedCallsign {
   value: string;
 }
 
+export type BackgroundLogoOption = 'sanAndreasSeal' | 'lspd' | 'lssd';
+
 interface SettingsState {
   hiddenFactions: string[];
   showHiddenGroups: Record<string, boolean>;
@@ -24,6 +26,7 @@ interface SettingsState {
   defaultCallsignId: number | null;
   analyticsOptOut: boolean;
   experimentalFeatures: string[];
+  backgroundLogo: BackgroundLogoOption;
   toggleFactionVisibility: (groupId: string) => void;
   setFactionGroups: (groups: FactionGroup[]) => void;
   toggleHiddenGroupVisibility: (groupId: string) => void;
@@ -33,6 +36,7 @@ interface SettingsState {
   setDefaultCallsignId: (id: number | null) => void;
   toggleAnalytics: () => void;
   toggleExperimentalFeature: (feature: string) => void;
+  setBackgroundLogo: (logo: BackgroundLogoOption) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -45,6 +49,7 @@ export const useSettingsStore = create<SettingsState>()(
       defaultCallsignId: null,
       analyticsOptOut: false,
       experimentalFeatures: [],
+      backgroundLogo: 'sanAndreasSeal',
       toggleFactionVisibility: (groupId: string) => {
         const { hiddenFactions } = get();
         const newHiddenFactions = hiddenFactions.includes(groupId)
@@ -96,18 +101,22 @@ export const useSettingsStore = create<SettingsState>()(
                 : [...currentFeatures, feature];
             return { experimentalFeatures: newFeatures };
         });
+      },
+      setBackgroundLogo: (logo: BackgroundLogoOption) => {
+        set({ backgroundLogo: logo });
       }
     }),
     {
       name: 'site-settings-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ 
+      partialize: (state) => ({
         hiddenFactions: state.hiddenFactions,
         showHiddenGroups: state.showHiddenGroups,
         predefinedCallsigns: state.predefinedCallsigns,
         defaultCallsignId: state.defaultCallsignId,
         analyticsOptOut: state.analyticsOptOut,
         experimentalFeatures: state.experimentalFeatures,
+        backgroundLogo: state.backgroundLogo,
       }),
     }
   )

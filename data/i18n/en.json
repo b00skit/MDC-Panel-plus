@@ -43,7 +43,16 @@
       "description": "Customize the look and feel of the application.",
       "light": "Light",
       "dark": "Dark",
-      "system": "System"
+      "system": "System",
+      "backgroundLogo": {
+        "title": "Background Logo",
+        "description": "Choose the logo that is displayed behind the application content.",
+        "options": {
+          "sanAndreasSeal": "San Andreas Seal",
+          "lspd": "Los Santos Police Department",
+          "lssd": "Los Santos County Sheriff's Department"
+        }
+      }
     },
     "defaultOfficer": {
       "title": "Default Officer Information",
