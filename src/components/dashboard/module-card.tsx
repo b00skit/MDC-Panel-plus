@@ -26,7 +26,9 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
   const isNew = useMemo(() => {
     if (!newExpiry) return false;
     try {
-      const expiryDate = new Date(newExpiry);
+      // Handle various date formats by replacing separators
+      const sanitizedDate = newExpiry.replace(/[\/\.-]/g, ' ');
+      const expiryDate = new Date(sanitizedDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Compare dates only
       return expiryDate >= today;
@@ -69,7 +71,7 @@ export function ModuleCard({ icon, title, description, href, dataAiHint, disable
           <CardTitle className="font-headline text-xl">{title}</CardTitle>
           <CardDescription className="mt-2">{description}</CardDescription>
         </CardContent>
-        {isNew && <Badge variant="secondary" className="absolute top-2 right-2 text-xs px-1.5 py-0.5">{t('newAddition')}</Badge>}
+        {isNew && <Badge variant="outline" className="absolute bottom-2 right-2 text-xs px-1.5 py-0.5 border-primary text-primary">{t('newAddition')}</Badge>}
       </Card>
   );
 
