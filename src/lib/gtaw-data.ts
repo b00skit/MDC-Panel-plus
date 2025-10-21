@@ -6,7 +6,7 @@ export type GtawDataFile =
   | 'gtaw_vehicles.json'
   | 'gtaw_depa_categories.json';
 
-export const shouldUseLocalGtawData = config.DISABLE_GTAW_CDN === false;
+export const shouldUseLocalGtawData = config.DISABLE_GTAW_CDN === true;
 
 export function getGtawDataUrl(file: GtawDataFile): string {
   if (shouldUseLocalGtawData) {
