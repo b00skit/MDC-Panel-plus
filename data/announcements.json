@@ -1,6 +1,16 @@
 {
     "announcements": [
         {
+            "id": 6,
+            "date": "2025-10-21",
+            "title": "Major Update: Paperwork Generator Revamp",
+            "content": "A new update has been pushed that revamps the Paperwork Generators, giving them a sleek look, adding a NEW tag to newer paperwork generators and adding new realistic global paperwork generators.",
+            "button": {
+                "text": "Paperwork Generators",
+                "href": "/paperwork-generators"
+            }
+        },
+        {
             "id": 5,
             "date": "2025-10-08",
             "title": "Law Update: Implied Consent & Weapons on School Grounds",

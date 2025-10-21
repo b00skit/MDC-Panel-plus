@@ -1,6 +1,50 @@
 {
     "changelogs": [
         {
+            "version": "3.6.0",
+            "type": "Major Update",
+            "date": "2025-10-21",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Created a better switch that's more similar to the Legacy MDC switch, spanning across the page dependant on the content width."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Added a parking ticket and traffic report insurance expiry time so that it's easier to notate the date and time of when the insurance was last active."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Created a new Realistic Parking Ticket paperwork generator for those that wish to be more immersed in realistic paperwork for parking citations."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> Allowed JSON-configured value generators for paperwork, meaning you're able to dynamically generate random values that will appear on the form based on the submission."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> Added a new gradient to Paperwork Generators giving them a light background color on the selection page."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Created a new State Fire Marshals Casefile paperwork generator enabling Fire Marshals the ability to create casefiles from the MDC Panel."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> New paperwork generators now have a NEW tag which will automatically expire on a defined date."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Added local data fetching, allowing alternative or local servers to disable the global CDN for their own local penal code additions."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Paperwork Generators:</b> The ordering of the paperwork generator categories is now pre-defined based on the server configuration."
+                }
+            ],
+            "cacheVersion": "backend-frql-1"
+        },
+        {
             "version": "3.5.2",
             "type": "Minor Update",
             "date": "2025-10-08",
@@ -100,7 +144,7 @@
                 },
                 {
                     "type": "feature",
-                    "description": "<b>Legal Search</b> Created a new AI chatbot-like legal search in which you can cite any questions which will return a result to you based on the penal code and caselaw data."
+                    "description": "<b>Legal Search:</b> Created a new AI chatbot-like legal search in which you can cite any questions which will return a result to you based on the penal code and caselaw data."
                 }
             ]
         },
