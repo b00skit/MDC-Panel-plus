@@ -1,0 +1,75 @@
+
+{
+    "categories": [
+        {
+            "title": "Category A",
+            "substances": [
+                "Benzylmorphine",
+                "Crack Cocaine",
+                "Cocaine",
+                "Heroin",
+                "Opium",
+                "Ecstasy",
+                "Gamma Hydroxybutyric Acid (GHB)",
+                "Lysergic Acid Diethylamide (LSD)",
+                "Mescaline (Peyote)",
+                "Phencyclidine (PCP)",
+                "Psilocybin (\"Magic Mushroom\")"
+            ]
+        },
+        {
+            "title": "Category B",
+            "substances": [
+                "Amphetamines",
+                "Codeine",
+                "Fentanyl",
+                "Methamphetamine",
+                "Methylphenidate (Ritalin)",
+                "Opium (extracts, fluid extracts, poppy, tincture, granulated, powered and raw)",
+                "Oxycodone",
+                "Pentobarbital (Nembutal)",
+                "Morphine"
+            ]
+        },
+        {
+            "title": "Category C",
+            "substances": [
+                "Disubstituted Barbituric Acids",
+                "Methadone",
+                "Benzphetamine (Didrex, Inapetyl)",
+                "Buprenorphine (Buprenex, Temgesic, Subutex, Subuxone)",
+                "Clortermine (Voranil)",
+                "Ketamine",
+                "Nalorphine (Nalline)",
+                "Perampanel",
+                "Testosterone",
+                "Any other Medically Prescribed Controlled Substance"
+            ]
+        },
+        {
+            "title": "Category D",
+            "substances": [
+                "Cannabis",
+                "Cannabinoids",
+                "Ambien",
+                "Diazepam (Valium)",
+                "Lorezapam (Ativan)",
+                "Mazindol",
+                "Phentermine",
+                "Pemoline",
+                "Xanax",
+                "Tramadol"
+            ]
+        },
+        {
+            "title": "Category T",
+            "substances": [
+                "Ganaxolone",
+                "Lomotil",
+                "Motofen",
+                "Parapectoline",
+                "Pregabalin (Lyrica)"
+            ]
+        }
+    ]
+}

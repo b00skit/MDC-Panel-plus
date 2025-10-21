@@ -1,0 +1,3678 @@
+{
+    "Alpha": {
+        "model": "Alpha",
+        "name": "Albany Alpha"
+    },
+    "Buccaneer": {
+        "model": "Buccaneer",
+        "name": "Albany Buccaneer"
+    },
+    "Buccaneer2": {
+        "model": "Buccaneer2",
+        "name": "Albany Buccaneer Custom"
+    },
+    "buccaneer3": {
+        "model": "buccaneer3",
+        "name": "Albany Buccaneer Luxe"
+    },
+    "Cavalcade": {
+        "model": "Cavalcade",
+        "name": "Albany Cavalcade"
+    },
+    "Cavalcade2": {
+        "model": "Cavalcade2",
+        "name": "Albany Cavalcade (Second Generation)"
+    },
+    "ncavalcade": {
+        "model": "ncavalcade",
+        "name": "Albany Cavalcade 2023"
+    },
+    "fxt": {
+        "model": "fxt",
+        "name": "Albany Cavalcade FXT"
+    },
+    "cavalcade3": {
+        "model": "cavalcade3",
+        "name": "Albany Cavalcade XL"
+    },
+    "elegant": {
+        "model": "elegant",
+        "name": "Albany Elegant"
+    },
+    "Emperor": {
+        "model": "Emperor",
+        "name": "Albany Emperor"
+    },
+    "Emperor2": {
+        "model": "Emperor2",
+        "name": "Albany Emperor (Rusty)"
+    },
+    "Emperor3": {
+        "model": "Emperor3",
+        "name": "Albany Emperor (Snow)"
+    },
+    "esperanto": {
+        "model": "esperanto",
+        "name": "Albany Esperanto"
+    },
+    "taxiesperanto": {
+        "model": "taxiesperanto",
+        "name": "Albany Esperanto Taxi"
+    },
+    "BType2": {
+        "model": "BType2",
+        "name": "Albany Fr\u00e4nken Strange"
+    },
+    "Hermes": {
+        "model": "Hermes",
+        "name": "Albany Hermes"
+    },
+    "Lurcher": {
+        "model": "Lurcher",
+        "name": "Albany Lurcher"
+    },
+    "Manana": {
+        "model": "Manana",
+        "name": "Albany Manana"
+    },
+    "Manana2": {
+        "model": "Manana2",
+        "name": "Albany Manana Custom"
+    },
+    "pres": {
+        "model": "pres",
+        "name": "Albany Presidente"
+    },
+    "pres2": {
+        "model": "pres2",
+        "name": "Albany Presidente C-STR"
+    },
+    "Primo": {
+        "model": "Primo",
+        "name": "Albany Primo"
+    },
+    "Primo2": {
+        "model": "Primo2",
+        "name": "Albany Primo Custom"
+    },
+    "Primo3": {
+        "model": "Primo3",
+        "name": "Albany Primo LX"
+    },
+    "BType": {
+        "model": "BType",
+        "name": "Albany Roosevelt"
+    },
+    "BType3": {
+        "model": "BType3",
+        "name": "Albany Roosevelt Valor"
+    },
+    "Stretch": {
+        "model": "Stretch",
+        "name": "Albany Stretch"
+    },
+    "Vstr": {
+        "model": "Vstr",
+        "name": "Albany V-STR"
+    },
+    "Virgo": {
+        "model": "Virgo",
+        "name": "Albany Virgo"
+    },
+    "Washington": {
+        "model": "Washington",
+        "name": "Albany Washington"
+    },
+    "Elegy": {
+        "model": "Elegy",
+        "name": "Annis Elegy Retro Custom"
+    },
+    "Elegy2": {
+        "model": "Elegy2",
+        "name": "Annis Elegy RH8"
+    },
+    "eurosX32": {
+        "model": "eurosX32",
+        "name": "Annis Euros X32"
+    },
+    "Hellion": {
+        "model": "Hellion",
+        "name": "Annis Hellion"
+    },
+    "Kawaii": {
+        "model": "Kawaii",
+        "name": "Annis Kawaii"
+    },
+    "pinnacle": {
+        "model": "pinnacle",
+        "name": "Annis Pinnacle"
+    },
+    "r300": {
+        "model": "r300",
+        "name": "Annis R300"
+    },
+    "LE7B": {
+        "model": "LE7B",
+        "name": "Annis RE-7B"
+    },
+    "Remus": {
+        "model": "Remus",
+        "name": "Annis Remus"
+    },
+    "remustwo": {
+        "model": "remustwo",
+        "name": "Annis Remus II"
+    },
+    "S230": {
+        "model": "S230",
+        "name": "Annis S-230"
+    },
+    "S80": {
+        "model": "S80",
+        "name": "Annis S80RR"
+    },
+    "Savestra": {
+        "model": "Savestra",
+        "name": "Annis Savestra"
+    },
+    "Zr380s": {
+        "model": "Zr380s",
+        "name": "Annis ZR-380s"
+    },
+    "Zr250": {
+        "model": "Zr250",
+        "name": "Annis ZR250"
+    },
+    "Zr350": {
+        "model": "Zr350",
+        "name": "Annis ZR350"
+    },
+    "openwheel1": {
+        "model": "openwheel1",
+        "name": "Benefactor BR8 (Formula Car)"
+    },
+    "Dubsta": {
+        "model": "Dubsta",
+        "name": "Benefactor Dubsta"
+    },
+    "dubsta22": {
+        "model": "dubsta22",
+        "name": "Benefactor Dubsta 2022"
+    },
+    "Dubsta3": {
+        "model": "Dubsta3",
+        "name": "Benefactor Dubsta 6x6"
+    },
+    "Dubsta2": {
+        "model": "Dubsta2",
+        "name": "Benefactor Dubsta Sport"
+    },
+    "Feltzer2": {
+        "model": "Feltzer2",
+        "name": "Benefactor Feltzer"
+    },
+    "feltzer": {
+        "model": "feltzer",
+        "name": "Benefactor Feltzer Coupe"
+    },
+    "Glendale": {
+        "model": "Glendale",
+        "name": "Benefactor Glendale"
+    },
+    "Glendale2": {
+        "model": "Glendale2",
+        "name": "Benefactor Glendale Custom"
+    },
+    "imperial": {
+        "model": "imperial",
+        "name": "Benefactor Imperial"
+    },
+    "imperialev": {
+        "model": "imperialev",
+        "name": "Benefactor Imperial EV"
+    },
+    "imperialpas": {
+        "model": "imperialpas",
+        "name": "Benefactor Imperial Passenger"
+    },
+    "imperialtaxi": {
+        "model": "imperialtaxi",
+        "name": "Benefactor Imperial Taxi"
+    },
+    "jogger": {
+        "model": "jogger",
+        "name": "Benefactor Jogger"
+    },
+    "Krieger": {
+        "model": "Krieger",
+        "name": "Benefactor Krieger"
+    },
+    "Panto": {
+        "model": "Panto",
+        "name": "Benefactor Panto"
+    },
+    "Lcpdpanto": {
+        "model": "Lcpdpanto",
+        "name": "Benefactor Panto (Police)"
+    },
+    "Schafter2": {
+        "model": "Schafter2",
+        "name": "Benefactor Schafter"
+    },
+    "schafteriv": {
+        "model": "schafteriv",
+        "name": "Benefactor Schafter (IV)"
+    },
+    "Schafter4": {
+        "model": "Schafter4",
+        "name": "Benefactor Schafter LWB"
+    },
+    "schafter6": {
+        "model": "schafter6",
+        "name": "Benefactor Schafter LWB (Armored)"
+    },
+    "limo": {
+        "model": "limo",
+        "name": "Benefactor Schafter Stretch E"
+    },
+    "Schafter3": {
+        "model": "Schafter3",
+        "name": "Benefactor Schafter V12"
+    },
+    "schafter5": {
+        "model": "schafter5",
+        "name": "Benefactor Schafter V12 (Armored)"
+    },
+    "Scharmann": {
+        "model": "Scharmann",
+        "name": "Benefactor Scharmann"
+    },
+    "Scheisser": {
+        "model": "Scheisser",
+        "name": "Benefactor Scheisser"
+    },
+    "Schlagen": {
+        "model": "Schlagen",
+        "name": "Benefactor Schlagen GT"
+    },
+    "Schwarzer": {
+        "model": "Schwarzer",
+        "name": "Benefactor Schwartzer"
+    },
+    "Serrano": {
+        "model": "Serrano",
+        "name": "Benefactor Serrano"
+    },
+    "Feltzer3": {
+        "model": "Feltzer3",
+        "name": "Benefactor Stirling GT"
+    },
+    "Streiter2": {
+        "model": "Streiter2",
+        "name": "Benefactor Streiter (Sedan)"
+    },
+    "Streiter": {
+        "model": "Streiter",
+        "name": "Benefactor Streiter (SUV)"
+    },
+    "Surano": {
+        "model": "Surano",
+        "name": "Benefactor Surano"
+    },
+    "vorschlaghammer": {
+        "model": "vorschlaghammer",
+        "name": "Benefactor Vorschlaghammer"
+    },
+    "XLS": {
+        "model": "XLS",
+        "name": "Benefactor XLS"
+    },
+    "XLS2": {
+        "model": "XLS2",
+        "name": "Benefactor XLS (Armored)"
+    },
+    "weevil": {
+        "model": "weevil",
+        "name": "BF Weevil"
+    },
+    "Bmx": {
+        "model": "Bmx",
+        "name": "BMX Bike (Bicycle)"
+    },
+    "envisage": {
+        "model": "envisage",
+        "name": "Bollokan Envisage"
+    },
+    "Prairie": {
+        "model": "Prairie",
+        "name": "Bollokan Prairie"
+    },
+    "arias": {
+        "model": "arias",
+        "name": "Bordeaux Arias"
+    },
+    "sancyb4": {
+        "model": "sancyb4",
+        "name": "Bordeaux Sancy B4"
+    },
+    "feroci": {
+        "model": "feroci",
+        "name": "Bravado Feroci"
+    },
+    "Banshee": {
+        "model": "Banshee",
+        "name": "Bravado Banshee"
+    },
+    "Banshee2": {
+        "model": "Banshee2",
+        "name": "Bravado Banshee 900R"
+    },
+    "Bison": {
+        "model": "Bison",
+        "name": "Bravado Bison"
+    },
+    "Bison2": {
+        "model": "Bison2",
+        "name": "Bravado Bison (McGill-Olsen)"
+    },
+    "Bison3": {
+        "model": "Bison3",
+        "name": "Bravado Bison (Mighty Bush)"
+    },
+    "Buffalo": {
+        "model": "Buffalo",
+        "name": "Bravado Buffalo"
+    },
+    "Buffaloac": {
+        "model": "Buffaloac",
+        "name": "Bravado Buffalo A\/C"
+    },
+    "buffalo5": {
+        "model": "buffalo5",
+        "name": "Bravado Buffalo EVX"
+    },
+    "Buffaloh": {
+        "model": "Buffaloh",
+        "name": "Bravado Buffalo Hellhound"
+    },
+    "Lcumkbuffs": {
+        "model": "Lcumkbuffs",
+        "name": "Bravado Buffalo Pursuit (Unmarked)"
+    },
+    "Lcpdhwy2": {
+        "model": "Lcpdhwy2",
+        "name": "Bravado Buffalo Pursuit SX (HWY)"
+    },
+    "Buffalo2": {
+        "model": "Buffalo2",
+        "name": "Bravado Buffalo S"
+    },
+    "Polbufsc": {
+        "model": "Polbufsc",
+        "name": "Bravado Buffalo S Police"
+    },
+    "Polbufsc2": {
+        "model": "Polbufsc2",
+        "name": "Bravado Buffalo S Slicktop \/ Unmarked"
+    },
+    "Buffalostx": {
+        "model": "Buffalostx",
+        "name": "Bravado Buffalo STX"
+    },
+    "Bufsc": {
+        "model": "Bufsc",
+        "name": "Bravado Buffalo Supercharged"
+    },
+    "Buffalosx": {
+        "model": "Buffalosx",
+        "name": "Bravado Buffalo SX"
+    },
+    "Secbufsx": {
+        "model": "Secbufsx",
+        "name": "Bravado Buffalo SX Security"
+    },
+    "FBI": {
+        "model": "FBI",
+        "name": "Bravado Buffalo Unmarked"
+    },
+    "dorado": {
+        "model": "dorado",
+        "name": "Bravado Dorado"
+    },
+    "DLoader": {
+        "model": "DLoader",
+        "name": "Bravado Duneloader"
+    },
+    "Gauntlet": {
+        "model": "Gauntlet",
+        "name": "Bravado Gauntlet"
+    },
+    "Gauntlet2": {
+        "model": "Gauntlet2",
+        "name": "Bravado Gauntlet (Redwood)"
+    },
+    "Gauntletac": {
+        "model": "Gauntletac",
+        "name": "Bravado Gauntlet A\/C"
+    },
+    "gauntletc": {
+        "model": "gauntletc",
+        "name": "Bravado Gauntlet A\/C Classic"
+    },
+    "Gauntlet3": {
+        "model": "Gauntlet3",
+        "name": "Bravado Gauntlet Classic"
+    },
+    "Gauntlet5": {
+        "model": "Gauntlet5",
+        "name": "Bravado Gauntlet Classic Custom"
+    },
+    "Gauntlet4": {
+        "model": "Gauntlet4",
+        "name": "Bravado Gauntlet Hellfire"
+    },
+    "gauntlets": {
+        "model": "gauntlets",
+        "name": "Bravado Gauntlet S"
+    },
+    "Gauntletv6": {
+        "model": "Gauntletv6",
+        "name": "Bravado Gauntlet V6"
+    },
+    "Gresley": {
+        "model": "Gresley",
+        "name": "Bravado Gresley"
+    },
+    "Gresleyh": {
+        "model": "Gresleyh",
+        "name": "Bravado Gresley Hellhound"
+    },
+    "Paradise": {
+        "model": "Paradise",
+        "name": "Bravado Paradise"
+    },
+    "Polbufsx2": {
+        "model": "Polbufsx2",
+        "name": "Bravado Police Cruiser SX Slicktop \/ Unmarked"
+    },
+    "RatLoader": {
+        "model": "RatLoader",
+        "name": "Bravado Rat-Loader"
+    },
+    "RatLoader2": {
+        "model": "RatLoader2",
+        "name": "Bravado Rat-Truck"
+    },
+    "recursion": {
+        "model": "recursion",
+        "name": "Bravado Recursion"
+    },
+    "Rumpo": {
+        "model": "Rumpo",
+        "name": "Bravado Rumpo"
+    },
+    "Rumpo2": {
+        "model": "Rumpo2",
+        "name": "Bravado Rumpo (Deludamol)"
+    },
+    "newsvan": {
+        "model": "newsvan",
+        "name": "Bravado Rumpo (News Van)"
+    },
+    "Lsfdambulance2": {
+        "model": "Lsfdambulance2",
+        "name": "Bravado Rumpo Ambulance"
+    },
+    "Lcumkrumpo": {
+        "model": "Lcumkrumpo",
+        "name": "Bravado Rumpo C"
+    },
+    "Rumpo3": {
+        "model": "Rumpo3",
+        "name": "Bravado Rumpo Custom"
+    },
+    "Verlierer2": {
+        "model": "Verlierer2",
+        "name": "Bravado Verlierer"
+    },
+    "vulture": {
+        "model": "vulture",
+        "name": "Bravado Vulture"
+    },
+    "Youga": {
+        "model": "Youga",
+        "name": "Bravado Youga"
+    },
+    "Youga2": {
+        "model": "Youga2",
+        "name": "Bravado Youga Classic"
+    },
+    "Youga3": {
+        "model": "Youga3",
+        "name": "Bravado Youga Classic 4x4"
+    },
+    "Brioso2": {
+        "model": "Brioso2",
+        "name": "Brioso 300"
+    },
+    "AirBus": {
+        "model": "AirBus",
+        "name": "Brute Airport Bus"
+    },
+    "Ambulance": {
+        "model": "Ambulance",
+        "name": "Brute Ambulance"
+    },
+    "Boxville5": {
+        "model": "Boxville5",
+        "name": "Brute Boxville (Armoured)"
+    },
+    "Boxville2": {
+        "model": "Boxville2",
+        "name": "Brute Boxville (GoPostal)"
+    },
+    "Boxville3": {
+        "model": "Boxville3",
+        "name": "Brute Boxville (Humane Labs)"
+    },
+    "Boxville": {
+        "model": "Boxville",
+        "name": "Brute Boxville (LSDWP)"
+    },
+    "Boxville4": {
+        "model": "Boxville4",
+        "name": "Brute Boxville (PostOP)"
+    },
+    "Bus": {
+        "model": "Bus",
+        "name": "Brute Bus"
+    },
+    "Camper": {
+        "model": "Camper",
+        "name": "Brute Camper"
+    },
+    "Coach": {
+        "model": "Coach",
+        "name": "Brute Dashound Coach"
+    },
+    "mrtasty": {
+        "model": "mrtasty",
+        "name": "Brute Mr. Tasty"
+    },
+    "Pony": {
+        "model": "Pony",
+        "name": "Brute Pony"
+    },
+    "Pony2": {
+        "model": "Pony2",
+        "name": "Brute Pony (Smoke on the Water)"
+    },
+    "Riot2": {
+        "model": "Riot2",
+        "name": "Brute RCV"
+    },
+    "RentalBus": {
+        "model": "RentalBus",
+        "name": "Brute Rental Shuttle Bus"
+    },
+    "Riot": {
+        "model": "Riot",
+        "name": "Brute Riot Van Police"
+    },
+    "stockade4": {
+        "model": "stockade4",
+        "name": "Brute Stockade"
+    },
+    "Stockade": {
+        "model": "Stockade",
+        "name": "Brute Stockade (Gruppe Six)"
+    },
+    "Lcpdstockade": {
+        "model": "Lcpdstockade",
+        "name": "Brute Stockade (Police)"
+    },
+    "taco2": {
+        "model": "taco2",
+        "name": "Brute Taco"
+    },
+    "Taco": {
+        "model": "Taco",
+        "name": "Brute Taco Van"
+    },
+    "Tanker": {
+        "model": "Tanker",
+        "name": "Brute Tanker Trailer"
+    },
+    "TipTruck": {
+        "model": "TipTruck",
+        "name": "Brute Tipper (First Generation)"
+    },
+    "TipTruck2": {
+        "model": "TipTruck2",
+        "name": "Brute Tipper (Second Generation)"
+    },
+    "TourBus": {
+        "model": "TourBus",
+        "name": "Brute Tourbus"
+    },
+    "UtilliTruck": {
+        "model": "UtilliTruck",
+        "name": "Brute Utility Truck (Crane Cherry Picker #1)"
+    },
+    "UtilliTruck2": {
+        "model": "UtilliTruck2",
+        "name": "Brute Utility Truck (Large Cargo)"
+    },
+    "ghawar": {
+        "model": "ghawar",
+        "name": "Buckingham Ghawar"
+    },
+    "LFMaverick": {
+        "model": "LFMaverick",
+        "name": "Buckingham Life Flight Maverick"
+    },
+    "Maverick": {
+        "model": "Maverick",
+        "name": "Buckingham Maverick"
+    },
+    "Nimbus": {
+        "model": "Nimbus",
+        "name": "Buckingham Nimbus"
+    },
+    "SuperVolito": {
+        "model": "SuperVolito",
+        "name": "Buckingham SuperVolito"
+    },
+    "Supervolito2": {
+        "model": "Supervolito2",
+        "name": "Buckingham SuperVolito Carbon"
+    },
+    "Swift": {
+        "model": "Swift",
+        "name": "Buckingham Swift"
+    },
+    "Swift2": {
+        "model": "Swift2",
+        "name": "Buckingham Swift Deluxe"
+    },
+    "Tug": {
+        "model": "Tug",
+        "name": "Buckingham Tugboat"
+    },
+    "Valkyrie3": {
+        "model": "Valkyrie3",
+        "name": "Buckingham Valkyrie"
+    },
+    "Volatus": {
+        "model": "Volatus",
+        "name": "Buckingham Volatus"
+    },
+    "Bifta": {
+        "model": "Bifta",
+        "name": "B\u00fcrgerfahrzeug (BF) Bifta"
+    },
+    "club": {
+        "model": "club",
+        "name": "B\u00fcrgerfahrzeug (BF) Club"
+    },
+    "Clubgtr": {
+        "model": "Clubgtr",
+        "name": "B\u00fcrgerfahrzeug (BF) Club GTR"
+    },
+    "Dune": {
+        "model": "Dune",
+        "name": "B\u00fcrgerfahrzeug (BF) Dune Buggy"
+    },
+    "Dune3": {
+        "model": "Dune3",
+        "name": "B\u00fcrgerfahrzeug (BF) Dune FAV"
+    },
+    "Furzen": {
+        "model": "Furzen",
+        "name": "B\u00fcrgerfahrzeug (BF) Furzen"
+    },
+    "BfInjection": {
+        "model": "BfInjection",
+        "name": "B\u00fcrgerfahrzeug (BF) Injection"
+    },
+    "Raptor": {
+        "model": "Raptor",
+        "name": "B\u00fcrgerfahrzeug (BF) Raptor"
+    },
+    "Dune2": {
+        "model": "Dune2",
+        "name": "B\u00fcrgerfahrzeug (BF) Space Docker"
+    },
+    "Surfer": {
+        "model": "Surfer",
+        "name": "B\u00fcrgerfahrzeug (BF) Surfer"
+    },
+    "Surfer2": {
+        "model": "Surfer2",
+        "name": "B\u00fcrgerfahrzeug (BF) Surfer (Rusty)"
+    },
+    "Bodhi2": {
+        "model": "Bodhi2",
+        "name": "Canis Bodhi"
+    },
+    "castigator": {
+        "model": "castigator",
+        "name": "Canis Castigator"
+    },
+    "Crusader": {
+        "model": "Crusader",
+        "name": "Canis Crusader"
+    },
+    "FreeCrawler": {
+        "model": "FreeCrawler",
+        "name": "Canis Freecrawler"
+    },
+    "Kalahari": {
+        "model": "Kalahari",
+        "name": "Canis Kalahari"
+    },
+    "Kamacho": {
+        "model": "Kamacho",
+        "name": "Canis Kamacho"
+    },
+    "Mesa": {
+        "model": "Mesa",
+        "name": "Canis Mesa"
+    },
+    "Mesa3": {
+        "model": "Mesa3",
+        "name": "Canis Mesa (Merryweather)"
+    },
+    "Mesa2": {
+        "model": "Mesa2",
+        "name": "Canis Mesa (Snow)"
+    },
+    "mesar": {
+        "model": "mesar",
+        "name": "Canis Mesa 2020"
+    },
+    "Seminole": {
+        "model": "Seminole",
+        "name": "Canis Seminole"
+    },
+    "Lcumksemin": {
+        "model": "Lcumksemin",
+        "name": "Canis Seminole C"
+    },
+    "Seminole2": {
+        "model": "Seminole2",
+        "name": "Canis Seminole Frontier"
+    },
+    "terminus": {
+        "model": "terminus",
+        "name": "Canis Terminus"
+    },
+    "Romero": {
+        "model": "Romero",
+        "name": "Chariot Romero Hearse"
+    },
+    "Fugitive": {
+        "model": "Fugitive",
+        "name": "Cheval Fugitive"
+    },
+    "Bsfug": {
+        "model": "Bsfug",
+        "name": "Cheval Fugitive (Gruppe6)"
+    },
+    "Marshall": {
+        "model": "Marshall",
+        "name": "Cheval Marshall"
+    },
+    "Picador": {
+        "model": "Picador",
+        "name": "Cheval Picador"
+    },
+    "Surge": {
+        "model": "Surge",
+        "name": "Cheval Surge"
+    },
+    "Taipan": {
+        "model": "Taipan",
+        "name": "Cheval Taipan"
+    },
+    "Broadway": {
+        "model": "Broadway",
+        "name": "Classique Broadway"
+    },
+    "Tahoma": {
+        "model": "Tahoma",
+        "name": "Classique Tahoma"
+    },
+    "gtahoma": {
+        "model": "gtahoma",
+        "name": "Classique Tahoma Direct"
+    },
+    "raiden2": {
+        "model": "raiden2",
+        "name": "Coil Raiden S"
+    },
+    "Brawler": {
+        "model": "Brawler",
+        "name": "Coil Brawler"
+    },
+    "Cyclone": {
+        "model": "Cyclone",
+        "name": "Coil Cyclone"
+    },
+    "Raiden": {
+        "model": "Raiden",
+        "name": "Coil Raiden"
+    },
+    "raidenz": {
+        "model": "raidenz",
+        "name": "Coil Raiden Z"
+    },
+    "Taranis": {
+        "model": "Taranis",
+        "name": "Coil Taranis"
+    },
+    "Voltic": {
+        "model": "Voltic",
+        "name": "Coil Voltic"
+    },
+    "Comet7": {
+        "model": "Comet7",
+        "name": "Comet S2 Cabrio"
+    },
+    "Cruiser": {
+        "model": "Cruiser",
+        "name": "Cruiser Bike (Bicycle)"
+    },
+    "Prisonbus": {
+        "model": "Prisonbus",
+        "name": "Dashound Coach (Prison Bus)"
+    },
+    "Ss550": {
+        "model": "Ss550",
+        "name": "Declasse 550SS"
+    },
+    "Alamo": {
+        "model": "Alamo",
+        "name": "Declasse Alamo"
+    },
+    "Alamo3": {
+        "model": "Alamo3",
+        "name": "Declasse Alamo 2600LS"
+    },
+    "Secalamo": {
+        "model": "Secalamo",
+        "name": "Declasse Alamo 2600LS Security Slicktop"
+    },
+    "Polalamo": {
+        "model": "Polalamo",
+        "name": "Declasse Alamo Police"
+    },
+    "Lcpdhwy5": {
+        "model": "Lcpdhwy5",
+        "name": "Declasse Alamo PPV (HWY)"
+    },
+    "Lcumkalamo": {
+        "model": "Lcumkalamo",
+        "name": "Declasse Alamo PPV (Unmarked)"
+    },
+    "Tfpdnalamo": {
+        "model": "Tfpdnalamo",
+        "name": "Declasse Alamo Pursuit Police"
+    },
+    "Tfpdnalamo2": {
+        "model": "Tfpdnalamo2",
+        "name": "Declasse Alamo Pursuit Slicktop \/ Unmarked"
+    },
+    "Alamo2": {
+        "model": "Alamo2",
+        "name": "Declasse Alamo Retro"
+    },
+    "Umkalamo": {
+        "model": "Umkalamo",
+        "name": "Declasse Alamo Slicktop \/ Unmarked"
+    },
+    "Asea": {
+        "model": "Asea",
+        "name": "Declasse Asea"
+    },
+    "Asea2": {
+        "model": "Asea2",
+        "name": "Declasse Asea (Snow)"
+    },
+    "Burrito2": {
+        "model": "Burrito2",
+        "name": "Declasse Burrito (Bugstars)"
+    },
+    "Burrito4": {
+        "model": "Burrito4",
+        "name": "Declasse Burrito (McGill-Olsen)"
+    },
+    "Burrito3": {
+        "model": "Burrito3",
+        "name": "Declasse Burrito (Second Generation)"
+    },
+    "Burrito5": {
+        "model": "Burrito5",
+        "name": "Declasse Burrito (Snow)"
+    },
+    "PoliceT": {
+        "model": "PoliceT",
+        "name": "Declasse Burrito Police Transporter"
+    },
+    "Burrito": {
+        "model": "Burrito",
+        "name": "Declasse Burrito Roof Rack (First Generation)"
+    },
+    "openwheel2": {
+        "model": "openwheel2",
+        "name": "Declasse DR1 (IndyCar) (Formula Car)"
+    },
+    "Tampa2": {
+        "model": "Tampa2",
+        "name": "Declasse Drift Tampa"
+    },
+    "GBurrito2": {
+        "model": "GBurrito2",
+        "name": "Declasse Gang Burrito"
+    },
+    "GBurrito": {
+        "model": "GBurrito",
+        "name": "Declasse Gang Burrito (Lost MC)"
+    },
+    "Granger": {
+        "model": "Granger",
+        "name": "Declasse Granger"
+    },
+    "Granger2civ": {
+        "model": "Granger2civ",
+        "name": "Declasse Granger 3600 LX"
+    },
+    "Lguard": {
+        "model": "Lguard",
+        "name": "Declasse Granger Fire Lifeguard"
+    },
+    "Polgranger": {
+        "model": "Polgranger",
+        "name": "Declasse Granger Police"
+    },
+    "FBI2": {
+        "model": "FBI2",
+        "name": "Declasse Granger Police (Unmarked)"
+    },
+    "Sheriff2": {
+        "model": "Sheriff2",
+        "name": "Declasse Granger Sheriff"
+    },
+    "Unmarkedgranger": {
+        "model": "Unmarkedgranger",
+        "name": "Declasse Granger Unmarked"
+    },
+    "Pranger": {
+        "model": "Pranger",
+        "name": "Declasse Granger Unmarked Parker Ranger"
+    },
+    "Hotring": {
+        "model": "Hotring",
+        "name": "Declasse Hotring Sabre"
+    },
+    "Impaler": {
+        "model": "Impaler",
+        "name": "Declasse Impaler"
+    },
+    "impaler6": {
+        "model": "impaler6",
+        "name": "Declasse Impaler LX"
+    },
+    "impaler5": {
+        "model": "impaler5",
+        "name": "Declasse Impaler SZ"
+    },
+    "Mamba": {
+        "model": "Mamba",
+        "name": "Declasse Mamba"
+    },
+    "merit": {
+        "model": "merit",
+        "name": "Declasse Merit"
+    },
+    "Lcpdmerit": {
+        "model": "Lcpdmerit",
+        "name": "Declasse Merit C"
+    },
+    "Moonbeam": {
+        "model": "Moonbeam",
+        "name": "Declasse Moonbeam"
+    },
+    "Moonbeam2": {
+        "model": "Moonbeam2",
+        "name": "Declasse Moonbeam Custom"
+    },
+    "Premier": {
+        "model": "Premier",
+        "name": "Declasse Premier"
+    },
+    "premierclas": {
+        "model": "premierclas",
+        "name": "Declasse Premier Classic"
+    },
+    "Premierss": {
+        "model": "Premierss",
+        "name": "Declasse Premier SS"
+    },
+    "RancherXL": {
+        "model": "RancherXL",
+        "name": "Declasse Rancher XL"
+    },
+    "RancherXL2": {
+        "model": "RancherXL2",
+        "name": "Declasse Rancher XL (Snow)"
+    },
+    "Rhapsody": {
+        "model": "Rhapsody",
+        "name": "Declasse Rhapsody"
+    },
+    "Sabre": {
+        "model": "Sabre",
+        "name": "Declasse Sabre"
+    },
+    "SabreGT": {
+        "model": "SabreGT",
+        "name": "Declasse Sabre Turbo"
+    },
+    "SabreGT2": {
+        "model": "SabreGT2",
+        "name": "Declasse Sabre Turbo Custom"
+    },
+    "Stalion": {
+        "model": "Stalion",
+        "name": "Declasse Stallion"
+    },
+    "Tampa": {
+        "model": "Tampa",
+        "name": "Declasse Tampa"
+    },
+    "Lctaxi2": {
+        "model": "Lctaxi2",
+        "name": "Declasse Taxi Car"
+    },
+    "Tornado": {
+        "model": "Tornado",
+        "name": "Declasse Tornado"
+    },
+    "Tornado2": {
+        "model": "Tornado2",
+        "name": "Declasse Tornado (Convertible)"
+    },
+    "Tornado4": {
+        "model": "Tornado4",
+        "name": "Declasse Tornado (Mariachi)"
+    },
+    "Tornado3": {
+        "model": "Tornado3",
+        "name": "Declasse Tornado (Rusty)"
+    },
+    "Tornado5": {
+        "model": "Tornado5",
+        "name": "Declasse Tornado Custom"
+    },
+    "Tornado6": {
+        "model": "Tornado6",
+        "name": "Declasse Tornado Rat Rod"
+    },
+    "Tulip": {
+        "model": "Tulip",
+        "name": "Declasse Tulip"
+    },
+    "Tulip2": {
+        "model": "Tulip2",
+        "name": "Declasse Tulip M-100 Mk1"
+    },
+    "Tulip4": {
+        "model": "Tulip4",
+        "name": "Declasse Tulip M-100 Mk2"
+    },
+    "tulip2s": {
+        "model": "tulip2s",
+        "name": "Declasse Tulip M-100 Sedan"
+    },
+    "Vamos": {
+        "model": "Vamos",
+        "name": "Declasse Vamos"
+    },
+    "Vigero": {
+        "model": "Vigero",
+        "name": "Declasse Vigero"
+    },
+    "Vigero2": {
+        "model": "Vigero2",
+        "name": "Declasse Vigero R"
+    },
+    "gtawvigero3": {
+        "model": "gtawvigero3",
+        "name": "Declasse Vigero Rumbler"
+    },
+    "vigero3": {
+        "model": "vigero3",
+        "name": "Declasse Vigero ZX Convertible"
+    },
+    "Voodoo2": {
+        "model": "Voodoo2",
+        "name": "Declasse Voodoo"
+    },
+    "Voodoo": {
+        "model": "Voodoo",
+        "name": "Declasse Voodoo Custom"
+    },
+    "l35s": {
+        "model": "l35s",
+        "name": "Declasse Walton L35"
+    },
+    "l35": {
+        "model": "l35",
+        "name": "Declasse Walton L35 Off-Road Package"
+    },
+    "Yosemite": {
+        "model": "Yosemite",
+        "name": "Declasse Yosemite"
+    },
+    "Dyosemite": {
+        "model": "Dyosemite",
+        "name": "Declasse Yosemite (SUV)"
+    },
+    "yosemite1500": {
+        "model": "yosemite1500",
+        "name": "Declasse Yosemite 1500"
+    },
+    "Lifeguardy": {
+        "model": "Lifeguardy",
+        "name": "Declasse Yosemite Lifeguard (Pickup)"
+    },
+    "Yosemite3": {
+        "model": "Yosemite3",
+        "name": "Declasse Yosemite Rancher"
+    },
+    "deletethis": {
+        "model": "deletethis",
+        "name": "deletethis"
+    },
+    "Exemplar": {
+        "model": "Exemplar",
+        "name": "Dewbauchee Exemplar"
+    },
+    "JB700": {
+        "model": "JB700",
+        "name": "Dewbauchee JB 700"
+    },
+    "Massacro": {
+        "model": "Massacro",
+        "name": "Dewbauchee Massacro"
+    },
+    "Massacro2": {
+        "model": "Massacro2",
+        "name": "Dewbauchee Massacro (Racecar)"
+    },
+    "RapidGT": {
+        "model": "RapidGT",
+        "name": "Dewbauchee Rapid GT"
+    },
+    "RapidGT2": {
+        "model": "RapidGT2",
+        "name": "Dewbauchee Rapid GT (Convertible)"
+    },
+    "RapidGT3": {
+        "model": "RapidGT3",
+        "name": "Dewbauchee Rapid GT Classic"
+    },
+    "Rapidgt4": {
+        "model": "Rapidgt4",
+        "name": "Dewbauchee RapidGT Classic Cabrio"
+    },
+    "Seven70": {
+        "model": "Seven70",
+        "name": "Dewbauchee Seven-70"
+    },
+    "Specter": {
+        "model": "Specter",
+        "name": "Dewbauchee Specter"
+    },
+    "Specter2": {
+        "model": "Specter2",
+        "name": "Dewbauchee Specter Custom"
+    },
+    "Vagner": {
+        "model": "Vagner",
+        "name": "Dewbauchee Vagner"
+    },
+    "Vesper": {
+        "model": "Vesper",
+        "name": "Dewbauchee Vesper"
+    },
+    "Akuma": {
+        "model": "Akuma",
+        "name": "Dinka Akuma"
+    },
+    "akumac": {
+        "model": "akumac",
+        "name": "Dinka Akuma Classic"
+    },
+    "Blista": {
+        "model": "Blista",
+        "name": "Dinka Blista"
+    },
+    "Blista3": {
+        "model": "Blista3",
+        "name": "Dinka Blista (Go Go Monkey)"
+    },
+    "Blista2": {
+        "model": "Blista2",
+        "name": "Dinka Blista Compact"
+    },
+    "Kanjo": {
+        "model": "Kanjo",
+        "name": "Dinka Blista Kanjo"
+    },
+    "chavos": {
+        "model": "chavos",
+        "name": "Dinka Chavos"
+    },
+    "doublec": {
+        "model": "doublec",
+        "name": "Dinka Double C"
+    },
+    "Double": {
+        "model": "Double",
+        "name": "Dinka Double T"
+    },
+    "Double2": {
+        "model": "Double2",
+        "name": "Dinka Double T Custom"
+    },
+    "Enduro": {
+        "model": "Enduro",
+        "name": "Dinka Enduro"
+    },
+    "Flash": {
+        "model": "Flash",
+        "name": "Dinka Flash"
+    },
+    "hakumai": {
+        "model": "hakumai",
+        "name": "Dinka Hakumai"
+    },
+    "Jester": {
+        "model": "Jester",
+        "name": "Dinka Jester"
+    },
+    "Jester2": {
+        "model": "Jester2",
+        "name": "Dinka Jester (Racecar)"
+    },
+    "Jester3": {
+        "model": "Jester3",
+        "name": "Dinka Jester Classic"
+    },
+    "Kanjosj": {
+        "model": "Kanjosj",
+        "name": "Dinka Kanjo SJ"
+    },
+    "Marquis": {
+        "model": "Marquis",
+        "name": "Dinka Marquis"
+    },
+    "Millennial": {
+        "model": "Millennial",
+        "name": "Dinka Millennial"
+    },
+    "Nexus": {
+        "model": "Nexus",
+        "name": "Dinka Nexus"
+    },
+    "perennial": {
+        "model": "perennial",
+        "name": "Dinka Perennial"
+    },
+    "Postlude": {
+        "model": "Postlude",
+        "name": "Dinka Postlude"
+    },
+    "Rt3000": {
+        "model": "Rt3000",
+        "name": "Dinka RT3000"
+    },
+    "Sugoi": {
+        "model": "Sugoi",
+        "name": "Dinka Sugoi"
+    },
+    "Thrust": {
+        "model": "Thrust",
+        "name": "Dinka Thrust"
+    },
+    "Policeb1": {
+        "model": "Policeb1",
+        "name": "Dinka Thrust Police Bike"
+    },
+    "Verus": {
+        "model": "Verus",
+        "name": "Dinka Verus ATV"
+    },
+    "Vindicator": {
+        "model": "Vindicator",
+        "name": "Dinka Vindicator"
+    },
+    "Dominator7": {
+        "model": "Dominator7",
+        "name": "Dominator ASP"
+    },
+    "admiral": {
+        "model": "admiral",
+        "name": "Dundreary Admiral"
+    },
+    "Admiral3": {
+        "model": "Admiral3",
+        "name": "Dundreary Admiral Classic"
+    },
+    "Landstalker": {
+        "model": "Landstalker",
+        "name": "Dundreary Landstalker"
+    },
+    "Leostalker": {
+        "model": "Leostalker",
+        "name": "Dundreary Landstalker Police Utility"
+    },
+    "Landstalker2": {
+        "model": "Landstalker2",
+        "name": "Dundreary Landstalker XL"
+    },
+    "Regina": {
+        "model": "Regina",
+        "name": "Dundreary Regina"
+    },
+    "Virgo3": {
+        "model": "Virgo3",
+        "name": "Dundreary Virgo Classic"
+    },
+    "Virgo2": {
+        "model": "Virgo2",
+        "name": "Dundreary Virgo Classic Custom"
+    },
+    "lokus": {
+        "model": "lokus",
+        "name": "Emperor Lokus"
+    },
+    "altior": {
+        "model": "altior",
+        "name": "Emperor Altior"
+    },
+    "Sheava": {
+        "model": "Sheava",
+        "name": "Emperor ETR1"
+    },
+    "Habanero": {
+        "model": "Habanero",
+        "name": "Emperor Habanero"
+    },
+    "Vectre": {
+        "model": "Vectre",
+        "name": "Emperor Vectre"
+    },
+    "TriBike2": {
+        "model": "TriBike2",
+        "name": "Endurex Race Bike (Bicycle)"
+    },
+    "Cognoscenti": {
+        "model": "Cognoscenti",
+        "name": "Enus Cognoscenti"
+    },
+    "Cog55": {
+        "model": "Cog55",
+        "name": "Enus Cognoscenti 55"
+    },
+    "CogCabrio": {
+        "model": "CogCabrio",
+        "name": "Enus Cognoscenti Cabrio"
+    },
+    "deityciv": {
+        "model": "deityciv",
+        "name": "Enus Deity"
+    },
+    "Huntley": {
+        "model": "Huntley",
+        "name": "Enus Huntley S"
+    },
+    "Jubileeciv": {
+        "model": "Jubileeciv",
+        "name": "Enus Jubilee"
+    },
+    "Paragon": {
+        "model": "Paragon",
+        "name": "Enus Paragon R"
+    },
+    "paragon3": {
+        "model": "paragon3",
+        "name": "Enus Paragon S"
+    },
+    "Stafford": {
+        "model": "Stafford",
+        "name": "Enus Stafford"
+    },
+    "SuperD": {
+        "model": "SuperD",
+        "name": "Enus Super Diamond"
+    },
+    "Windsor": {
+        "model": "Windsor",
+        "name": "Enus Windsor"
+    },
+    "Windsor2": {
+        "model": "Windsor2",
+        "name": "Enus Windsor Drop"
+    },
+    "FQ2": {
+        "model": "FQ2",
+        "name": "Fathom FQ 2"
+    },
+    "fr36": {
+        "model": "fr36",
+        "name": "Fathom FR36"
+    },
+    "Baller": {
+        "model": "Baller",
+        "name": "Gallivanter Baller (First Generation)"
+    },
+    "Baller2": {
+        "model": "Baller2",
+        "name": "Gallivanter Baller (Second Generation)"
+    },
+    "Baller3": {
+        "model": "Baller3",
+        "name": "Gallivanter Baller LE"
+    },
+    "baller5": {
+        "model": "baller5",
+        "name": "Gallivanter Baller LE (Armored)"
+    },
+    "Baller4": {
+        "model": "Baller4",
+        "name": "Gallivanter Baller LE LWB"
+    },
+    "baller6": {
+        "model": "baller6",
+        "name": "Gallivanter Baller LE LWB (Armored)"
+    },
+    "Baller7": {
+        "model": "Baller7",
+        "name": "Gallivanter Baller ST"
+    },
+    "baller8": {
+        "model": "baller8",
+        "name": "Gallivanter Baller ST-D"
+    },
+    "BestiaGTS": {
+        "model": "BestiaGTS",
+        "name": "Grotti Bestia GTS"
+    },
+    "Brioso": {
+        "model": "Brioso",
+        "name": "Grotti Brioso R\/A"
+    },
+    "Carbonizzare": {
+        "model": "Carbonizzare",
+        "name": "Grotti Carbonizzare"
+    },
+    "Cheetah": {
+        "model": "Cheetah",
+        "name": "Grotti Cheetah"
+    },
+    "Cheetah2": {
+        "model": "Cheetah2",
+        "name": "Grotti Cheetah Classic"
+    },
+    "Furia": {
+        "model": "Furia",
+        "name": "Grotti Furia"
+    },
+    "GT500": {
+        "model": "GT500",
+        "name": "Grotti GT500"
+    },
+    "ItaliGTO": {
+        "model": "ItaliGTO",
+        "name": "Grotti Itali GTO"
+    },
+    "stingertt": {
+        "model": "stingertt",
+        "name": "Grotti Itali GTO Stinger TT"
+    },
+    "Italirsx": {
+        "model": "Italirsx",
+        "name": "Grotti Itali RSX"
+    },
+    "Stinger": {
+        "model": "Stinger",
+        "name": "Grotti Stinger"
+    },
+    "StingerGT": {
+        "model": "StingerGT",
+        "name": "Grotti Stinger GT"
+    },
+    "Turismo2": {
+        "model": "Turismo2",
+        "name": "Grotti Turismo Classic"
+    },
+    "TurismoR": {
+        "model": "TurismoR",
+        "name": "Grotti Turismo R"
+    },
+    "Visione": {
+        "model": "Visione",
+        "name": "Grotti Visione"
+    },
+    "ProtoTipo": {
+        "model": "ProtoTipo",
+        "name": "Grotti X80 Proto"
+    },
+    "Khamelion": {
+        "model": "Khamelion",
+        "name": "Hijak Khamelion"
+    },
+    "Ruston": {
+        "model": "Ruston",
+        "name": "Hijak Ruston"
+    },
+    "Airtug": {
+        "model": "Airtug",
+        "name": "HVY Airtug"
+    },
+    "Biff": {
+        "model": "Biff",
+        "name": "HVY Biff"
+    },
+    "Bulldozer": {
+        "model": "Bulldozer",
+        "name": "HVY Bulldozer"
+    },
+    "Forklift": {
+        "model": "Forklift",
+        "name": "HVY Forklift"
+    },
+    "Insurgent2": {
+        "model": "Insurgent2",
+        "name": "HVY Insurgent"
+    },
+    "Policeinsurgent": {
+        "model": "Policeinsurgent",
+        "name": "HVY Insurgent Police"
+    },
+    "Mixer": {
+        "model": "Mixer",
+        "name": "HVY Mixer (First Generation)"
+    },
+    "Mixer2": {
+        "model": "Mixer2",
+        "name": "HVY Mixer (Second Generation)"
+    },
+    "df8": {
+        "model": "df8",
+        "name": "Imponte DF8-90"
+    },
+    "Phoenix2": {
+        "model": "Phoenix2",
+        "name": "Imponte Phoenix 455 RS"
+    },
+    "Dukes3": {
+        "model": "Dukes3",
+        "name": "Imponte Beater Dukes"
+    },
+    "Deluxo": {
+        "model": "Deluxo",
+        "name": "Imponte Deluxo"
+    },
+    "Dukes": {
+        "model": "Dukes",
+        "name": "Imponte Dukes"
+    },
+    "Nightshade": {
+        "model": "Nightshade",
+        "name": "Imponte Nightshade"
+    },
+    "Phoenix": {
+        "model": "Phoenix",
+        "name": "Imponte Phoenix"
+    },
+    "Ruiner": {
+        "model": "Ruiner",
+        "name": "Imponte Ruiner"
+    },
+    "Ruiner3": {
+        "model": "Ruiner3",
+        "name": "Imponte Ruiner (Wrecked)"
+    },
+    "Ruiner4": {
+        "model": "Ruiner4",
+        "name": "Imponte Ruiner ZZ-8"
+    },
+    "inductor": {
+        "model": "inductor",
+        "name": "Inductor Electric Bike"
+    },
+    "inductor2": {
+        "model": "inductor2",
+        "name": "Inductor Junk Electric Bike"
+    },
+    "Coquette": {
+        "model": "Coquette",
+        "name": "Invetero Coquette"
+    },
+    "Coquette3": {
+        "model": "Coquette3",
+        "name": "Invetero Coquette BlackFin"
+    },
+    "Coquette2": {
+        "model": "Coquette2",
+        "name": "Invetero Coquette Classic"
+    },
+    "coquette5": {
+        "model": "coquette5",
+        "name": "Invetero Coquette D1"
+    },
+    "coquette4": {
+        "model": "coquette4",
+        "name": "Invetero Coquette D10"
+    },
+    "Mower": {
+        "model": "Mower",
+        "name": "Jack Sheepe Lawn Mower"
+    },
+    "Jester4": {
+        "model": "Jester4",
+        "name": "Jester RR"
+    },
+    "Hauler": {
+        "model": "Hauler",
+        "name": "JoBuilt Hauler"
+    },
+    "Hauler2": {
+        "model": "Hauler2",
+        "name": "JoBuilt Hauler Custom"
+    },
+    "Mammatus": {
+        "model": "Mammatus",
+        "name": "JoBuilt Mammatus"
+    },
+    "Phantom": {
+        "model": "Phantom",
+        "name": "JoBuilt Phantom"
+    },
+    "Phantom3": {
+        "model": "Phantom3",
+        "name": "JoBuilt Phantom Custom"
+    },
+    "Phantom2": {
+        "model": "Phantom2",
+        "name": "JoBuilt Phantom Wedge"
+    },
+    "Rubble": {
+        "model": "Rubble",
+        "name": "JoBuilt Rubble"
+    },
+    "Trash": {
+        "model": "Trash",
+        "name": "JoBuilt Trashmaster"
+    },
+    "Velum": {
+        "model": "Velum",
+        "name": "Jobuilt Velum"
+    },
+    "Velum2": {
+        "model": "Velum2",
+        "name": "Jobuilt Velum (5-Seater)"
+    },
+    "Benefactor Jogger Passenger": {
+        "model": "Benefactor Jogger Passenger",
+        "name": "joggerpas"
+    },
+    "Z190": {
+        "model": "Z190",
+        "name": "Karin 190z (Z190)"
+    },
+    "Ariant": {
+        "model": "Ariant",
+        "name": "Karin Ariant"
+    },
+    "Asterope": {
+        "model": "Asterope",
+        "name": "Karin Asterope"
+    },
+    "asterope2": {
+        "model": "asterope2",
+        "name": "Karin Asterope GZ"
+    },
+    "asteropers": {
+        "model": "asteropers",
+        "name": "Karin Asterope RS"
+    },
+    "Atlas": {
+        "model": "Atlas",
+        "name": "Karin Atlas"
+    },
+    "BJXL": {
+        "model": "BJXL",
+        "name": "Karin BeeJay XL"
+    },
+    "Boor": {
+        "model": "Boor",
+        "name": "Karin Boor"
+    },
+    "Dilettante": {
+        "model": "Dilettante",
+        "name": "Karin Dilettante"
+    },
+    "Dilettante2": {
+        "model": "Dilettante2",
+        "name": "Karin Dilettante (Merryweather)"
+    },
+    "Dilettantedx": {
+        "model": "Dilettantedx",
+        "name": "Karin Dilettante DX"
+    },
+    "Everon": {
+        "model": "Everon",
+        "name": "Karin Everon"
+    },
+    "Everonb": {
+        "model": "Everonb",
+        "name": "Karin Everon (Non-Arctic)"
+    },
+    "Futo": {
+        "model": "Futo",
+        "name": "Karin Futo"
+    },
+    "Futo2": {
+        "model": "Futo2",
+        "name": "Karin Futo GTX"
+    },
+    "Intruder": {
+        "model": "Intruder",
+        "name": "Karin Intruder"
+    },
+    "Kuruma": {
+        "model": "Kuruma",
+        "name": "Karin Kuruma"
+    },
+    "kurumas": {
+        "model": "kurumas",
+        "name": "Karin Kuruma S"
+    },
+    "Patriotc": {
+        "model": "Patriotc",
+        "name": "Karin Patriot Classic"
+    },
+    "Raider": {
+        "model": "Raider",
+        "name": "Karin Raider"
+    },
+    "Rebel2": {
+        "model": "Rebel2",
+        "name": "Karin Rebel"
+    },
+    "Rebel5": {
+        "model": "Rebel5",
+        "name": "Karin Rebel 4x4"
+    },
+    "Rebel6": {
+        "model": "Rebel6",
+        "name": "Karin Rebel City"
+    },
+    "Rebel4": {
+        "model": "Rebel4",
+        "name": "Karin Rebel SWB"
+    },
+    "Rebel": {
+        "model": "Rebel",
+        "name": "Karin Rusty Rebel"
+    },
+    "Sultan": {
+        "model": "Sultan",
+        "name": "Karin Sultan"
+    },
+    "Sultan2a": {
+        "model": "Sultan2a",
+        "name": "Karin Sultan 2"
+    },
+    "Sultan2": {
+        "model": "Sultan2",
+        "name": "Karin Sultan Classic"
+    },
+    "SultanRS": {
+        "model": "SultanRS",
+        "name": "Karin Sultan RS"
+    },
+    "Sultan3": {
+        "model": "Sultan3",
+        "name": "Karin Sultan RS Classic"
+    },
+    "Technical": {
+        "model": "Technical",
+        "name": "Karin Technical"
+    },
+    "vivanite": {
+        "model": "vivanite",
+        "name": "Karin Vivanite"
+    },
+    "Casco": {
+        "model": "Casco",
+        "name": "Lampadati Casco"
+    },
+    "Cinquemila": {
+        "model": "Cinquemila",
+        "name": "Lampadati Cinquemila"
+    },
+    "Felon": {
+        "model": "Felon",
+        "name": "Lampadati Felon"
+    },
+    "Felon2": {
+        "model": "Felon2",
+        "name": "Lampadati Felon GT"
+    },
+    "FuroreGT": {
+        "model": "FuroreGT",
+        "name": "Lampadati Furore GT"
+    },
+    "Komoda": {
+        "model": "Komoda",
+        "name": "Lampadati Komoda"
+    },
+    "Michelli": {
+        "model": "Michelli",
+        "name": "Lampadati Michelli GT"
+    },
+    "Novak": {
+        "model": "Novak",
+        "name": "Lampadati Novak"
+    },
+    "Pigalle": {
+        "model": "Pigalle",
+        "name": "Lampadati Pigalle"
+    },
+    "tigon": {
+        "model": "tigon",
+        "name": "Lampadati Tigon"
+    },
+    "Tropos": {
+        "model": "Tropos",
+        "name": "Lampadati Tropos Rallye"
+    },
+    "Viseris": {
+        "model": "Viseris",
+        "name": "Lampadati Viseris"
+    },
+    "starfighter": {
+        "model": "starfighter",
+        "name": "LCC Starfighter"
+    },
+    "krust": {
+        "model": "krust",
+        "name": "LCC Krust"
+    },
+    "lycan": {
+        "model": "lycan",
+        "name": "LCS Lycan"
+    },
+    "nightblade2": {
+        "model": "nightblade2",
+        "name": "LCS Nightblade"
+    },
+    "templar": {
+        "model": "templar",
+        "name": "LCS Templar"
+    },
+    "Avarus": {
+        "model": "Avarus",
+        "name": "Liberty City Cycles Avarus"
+    },
+    "Hexer": {
+        "model": "Hexer",
+        "name": "Liberty City Cycles Hexer"
+    },
+    "Innovation": {
+        "model": "Innovation",
+        "name": "Liberty City Cycles Innovation"
+    },
+    "Sanctus": {
+        "model": "Sanctus",
+        "name": "Liberty City Cycles Sanctus"
+    },
+    "lsfdcmd": {
+        "model": "lsfdcmd",
+        "name": "LSFD Command"
+    },
+    "Frogger": {
+        "model": "Frogger",
+        "name": "Maibatsu Frogger"
+    },
+    "Manchez": {
+        "model": "Manchez",
+        "name": "Maibatsu Manchez"
+    },
+    "Manchez3": {
+        "model": "Manchez3",
+        "name": "Maibatsu Manchez Scout C"
+    },
+    "monstrociti": {
+        "model": "monstrociti",
+        "name": "Maibatsu MonstroCiti"
+    },
+    "Mule": {
+        "model": "Mule",
+        "name": "Maibatsu Mule"
+    },
+    "Mule3": {
+        "model": "Mule3",
+        "name": "Maibatsu Mule (Heist)"
+    },
+    "Mule2": {
+        "model": "Mule2",
+        "name": "Maibatsu Mule (Ramp)"
+    },
+    "Nmule": {
+        "model": "Nmule",
+        "name": "Maibatsu Mule 4x4"
+    },
+    "mulef": {
+        "model": "mulef",
+        "name": "Maibatsu Mule 4x4 Flatbed"
+    },
+    "Mule4": {
+        "model": "Mule4",
+        "name": "Maibatsu Mule Custom"
+    },
+    "Penumbra": {
+        "model": "Penumbra",
+        "name": "Maibatsu Penumbra"
+    },
+    "Penumbra2": {
+        "model": "Penumbra2",
+        "name": "Maibatsu Penumbra FF"
+    },
+    "Sanchez2": {
+        "model": "Sanchez2",
+        "name": "Maibatsu Sanchez (Livery 2)"
+    },
+    "Sanchez": {
+        "model": "Sanchez",
+        "name": "Maibatsu Sanchez (Livery)"
+    },
+    "Sunrise1": {
+        "model": "Sunrise1",
+        "name": "Maibatsu Sunrise R"
+    },
+    "vincent": {
+        "model": "vincent",
+        "name": "Maibatsu Vincent"
+    },
+    "Dodo": {
+        "model": "Dodo",
+        "name": "Mammoth Dodo"
+    },
+    "Patriot": {
+        "model": "Patriot",
+        "name": "Mammoth Patriot"
+    },
+    "patriot3": {
+        "model": "patriot3",
+        "name": "Mammoth Patriot Mil-Spec"
+    },
+    "Patriot2": {
+        "model": "Patriot2",
+        "name": "Mammoth Patriot Stretch"
+    },
+    "scamp": {
+        "model": "scamp",
+        "name": "Mammoth Scamp"
+    },
+    "Thruster": {
+        "model": "Thruster",
+        "name": "Mammoth Thruster (Jetpack)"
+    },
+    "chesterfield": {
+        "model": "chesterfield",
+        "name": "Maxwell Chesterfield"
+    },
+    "Asbo": {
+        "model": "Asbo",
+        "name": "Maxwell Asbo"
+    },
+    "Vagrant": {
+        "model": "Vagrant",
+        "name": "Maxwell Vagrant"
+    },
+    "Brickade": {
+        "model": "Brickade",
+        "name": "MTL Brickade"
+    },
+    "RallyTruck": {
+        "model": "RallyTruck",
+        "name": "MTL Dune (Rally Truck)"
+    },
+    "FireTruck": {
+        "model": "FireTruck",
+        "name": "MTL Firetruck"
+    },
+    "Flatbed": {
+        "model": "Flatbed",
+        "name": "MTL Flatbed"
+    },
+    "Flatbed3": {
+        "model": "Flatbed3",
+        "name": "MTL Flatbed (Utility)"
+    },
+    "Lsfdengine": {
+        "model": "Lsfdengine",
+        "name": "MTL Marauder Fire Engine"
+    },
+    "LSFDQuint": {
+        "model": "LSFDQuint",
+        "name": "MTL Marauder Ladder Truck (Quint)"
+    },
+    "Firehazmat": {
+        "model": "Firehazmat",
+        "name": "MTL Marauder Rescue (Squad)"
+    },
+    "Packer": {
+        "model": "Packer",
+        "name": "MTL Packer"
+    },
+    "Mocpacker": {
+        "model": "Mocpacker",
+        "name": "MTL Packer MOC\/MCC"
+    },
+    "Lcpdtruck": {
+        "model": "Lcpdtruck",
+        "name": "MTL Police Emergency Unit"
+    },
+    "Pounder": {
+        "model": "Pounder",
+        "name": "MTL Pounder"
+    },
+    "pounder3": {
+        "model": "pounder3",
+        "name": "MTL Pounder (Livery)"
+    },
+    "Pounder2": {
+        "model": "Pounder2",
+        "name": "MTL Pounder Custom"
+    },
+    "Mtanker2": {
+        "model": "Mtanker2",
+        "name": "MTL Tanker"
+    },
+    "BF400": {
+        "model": "BF400",
+        "name": "Nagasaki BF400"
+    },
+    "Blazer": {
+        "model": "Blazer",
+        "name": "Nagasaki Blazer"
+    },
+    "Blazer2": {
+        "model": "Blazer2",
+        "name": "Nagasaki Blazer Lifeguard"
+    },
+    "Buzzard2": {
+        "model": "Buzzard2",
+        "name": "Nagasaki Buzzard"
+    },
+    "Caddy3": {
+        "model": "Caddy3",
+        "name": "Nagasaki Caddy (Bunker)"
+    },
+    "Caddy2": {
+        "model": "Caddy2",
+        "name": "Nagasaki Caddy (Civilian)"
+    },
+    "Caddy": {
+        "model": "Caddy",
+        "name": "Nagasaki Caddy (Golf)"
+    },
+    "caddyxl": {
+        "model": "caddyxl",
+        "name": "Nagasaki Caddy XL"
+    },
+    "CarbonRS": {
+        "model": "CarbonRS",
+        "name": "Nagasaki Carbon RS"
+    },
+    "Chimera": {
+        "model": "Chimera",
+        "name": "Nagasaki Chimera"
+    },
+    "Dinghy2": {
+        "model": "Dinghy2",
+        "name": "Nagasaki Dinghy (2-Seater)"
+    },
+    "Dinghy": {
+        "model": "Dinghy",
+        "name": "Nagasaki Dinghy (4-Seater)"
+    },
+    "Dinghy3": {
+        "model": "Dinghy3",
+        "name": "Nagasaki Dinghy (Heist)"
+    },
+    "Dinghy4": {
+        "model": "Dinghy4",
+        "name": "Nagasaki Dinghy (Yacht)"
+    },
+    "gobi600": {
+        "model": "gobi600",
+        "name": "Nagasaki Gobi 600"
+    },
+    "hiroshima": {
+        "model": "hiroshima",
+        "name": "Nagasaki Hiroshima"
+    },
+    "Blazer3": {
+        "model": "Blazer3",
+        "name": "Nagasaki Hot Rod Blazer"
+    },
+    "Outlaw": {
+        "model": "Outlaw",
+        "name": "Nagasaki Outlaw"
+    },
+    "proutlaw": {
+        "model": "proutlaw",
+        "name": "Nagasaki Outlaw Police Off-Road"
+    },
+    "Lcpdpigeon": {
+        "model": "Lcpdpigeon",
+        "name": "Nagasaki Police Pigeon"
+    },
+    "Shinobi": {
+        "model": "Shinobi",
+        "name": "Nagasaki Shinobi"
+    },
+    "shinobiold": {
+        "model": "shinobiold",
+        "name": "Nagasaki Shinobi Classic"
+    },
+    "Blazer4": {
+        "model": "Blazer4",
+        "name": "Nagasaki Street Blazer"
+    },
+    "gtawpredator": {
+        "model": "gtawpredator",
+        "name": "New Police Predator"
+    },
+    "Tenf": {
+        "model": "Tenf",
+        "name": "Obey 10F"
+    },
+    "Drafter": {
+        "model": "Drafter",
+        "name": "Obey 8F (EightF) Drafter"
+    },
+    "NineF": {
+        "model": "NineF",
+        "name": "Obey 9F (NineF)"
+    },
+    "NineF2": {
+        "model": "NineF2",
+        "name": "Obey 9F (NineF) Cabrio"
+    },
+    "Argento": {
+        "model": "Argento",
+        "name": "Obey Argento"
+    },
+    "iwagen": {
+        "model": "iwagen",
+        "name": "Obey I-Wagen"
+    },
+    "Omnis2": {
+        "model": "Omnis2",
+        "name": "Obey Omnis"
+    },
+    "Omnis": {
+        "model": "Omnis",
+        "name": "Obey Omnis (Rally)"
+    },
+    "Omniseg": {
+        "model": "Omniseg",
+        "name": "Obey Omnis e-GT"
+    },
+    "Rocoto": {
+        "model": "Rocoto",
+        "name": "Obey Rocoto"
+    },
+    "Tailgater": {
+        "model": "Tailgater",
+        "name": "Obey Tailgater"
+    },
+    "Tailgater2": {
+        "model": "Tailgater2",
+        "name": "Obey Tailgater S"
+    },
+    "Ardent": {
+        "model": "Ardent",
+        "name": "Ocelot Ardent"
+    },
+    "F620": {
+        "model": "F620",
+        "name": "Ocelot F620"
+    },
+    "Jackal": {
+        "model": "Jackal",
+        "name": "Ocelot Jackal"
+    },
+    "Jugular": {
+        "model": "Jugular",
+        "name": "Ocelot Jugular"
+    },
+    "Locust": {
+        "model": "Locust",
+        "name": "Ocelot Locust"
+    },
+    "Lynx": {
+        "model": "Lynx",
+        "name": "Ocelot Lynx"
+    },
+    "Pariah": {
+        "model": "Pariah",
+        "name": "Ocelot Pariah"
+    },
+    "Penetrator": {
+        "model": "Penetrator",
+        "name": "Ocelot Penetrator"
+    },
+    "formula2": {
+        "model": "formula2",
+        "name": "Ocelot R88 (Formula Car)"
+    },
+    "Stromberg": {
+        "model": "Stromberg",
+        "name": "Ocelot Stromberg"
+    },
+    "Swinger": {
+        "model": "Swinger",
+        "name": "Ocelot Swinger"
+    },
+    "XA21": {
+        "model": "XA21",
+        "name": "Ocelot XA-21"
+    },
+    "Autarch": {
+        "model": "Autarch",
+        "name": "\u00d6verfl\u00f6d Autarch"
+    },
+    "EntityXF": {
+        "model": "EntityXF",
+        "name": "\u00d6verfl\u00f6d Entity XF"
+    },
+    "Entity2": {
+        "model": "Entity2",
+        "name": "\u00d6verfl\u00f6d Entity XXR"
+    },
+    "Imorgon": {
+        "model": "Imorgon",
+        "name": "\u00d6verfl\u00f6d Imorgon"
+    },
+    "pipistrello": {
+        "model": "pipistrello",
+        "name": "Overflod Pipistrello"
+    },
+    "Tyrant": {
+        "model": "Tyrant",
+        "name": "\u00d6verfl\u00f6d Tyrant"
+    },
+    "Bati": {
+        "model": "Bati",
+        "name": "Pegassi Bati 801"
+    },
+    "Bati2": {
+        "model": "Bati2",
+        "name": "Pegassi Bati 801RR"
+    },
+    "Esskey": {
+        "model": "Esskey",
+        "name": "Pegassi Esskey"
+    },
+    "FCR": {
+        "model": "FCR",
+        "name": "Pegassi FCR 1000"
+    },
+    "FCR2": {
+        "model": "FCR2",
+        "name": "Pegassi FCR 1000 Custom"
+    },
+    "Infernus": {
+        "model": "Infernus",
+        "name": "Pegassi Infernus"
+    },
+    "Infernus2": {
+        "model": "Infernus2",
+        "name": "Pegassi Infernus Classic"
+    },
+    "Monroe": {
+        "model": "Monroe",
+        "name": "Pegassi Monroe"
+    },
+    "Osiris": {
+        "model": "Osiris",
+        "name": "Pegassi Osiris"
+    },
+    "pizzaboy": {
+        "model": "pizzaboy",
+        "name": "Pegassi Pizza Boy"
+    },
+    "Reaper": {
+        "model": "Reaper",
+        "name": "Pegassi Reaper"
+    },
+    "Ruffian": {
+        "model": "Ruffian",
+        "name": "Pegassi Ruffian"
+    },
+    "Speeder": {
+        "model": "Speeder",
+        "name": "Pegassi Speeder"
+    },
+    "Speeder2": {
+        "model": "Speeder2",
+        "name": "Pegassi Speeder (Yacht)"
+    },
+    "Tempesta": {
+        "model": "Tempesta",
+        "name": "Pegassi Tempesta"
+    },
+    "Tezeract": {
+        "model": "Tezeract",
+        "name": "Pegassi Tezeract"
+    },
+    "Torero": {
+        "model": "Torero",
+        "name": "Pegassi Torero"
+    },
+    "Torero2": {
+        "model": "Torero2",
+        "name": "Pegassi Torero XO"
+    },
+    "Toros": {
+        "model": "Toros",
+        "name": "Pegassi Toros"
+    },
+    "Vacca": {
+        "model": "Vacca",
+        "name": "Pegassi Vacca"
+    },
+    "Vortex": {
+        "model": "Vortex",
+        "name": "Pegassi Vortex"
+    },
+    "Zentorno": {
+        "model": "Zentorno",
+        "name": "Pegassi Zentorno"
+    },
+    "Zorrusso": {
+        "model": "Zorrusso",
+        "name": "Pegassi Zorrusso"
+    },
+    "Pfister811": {
+        "model": "Pfister811",
+        "name": "Pfister 811"
+    },
+    "Astron": {
+        "model": "Astron",
+        "name": "Pfister Astron"
+    },
+    "Comet2": {
+        "model": "Comet2",
+        "name": "Pfister Comet"
+    },
+    "Ccomet": {
+        "model": "Ccomet",
+        "name": "Pfister Comet 2"
+    },
+    "Comet3": {
+        "model": "Comet3",
+        "name": "Pfister Comet Retro Custom"
+    },
+    "Comet6": {
+        "model": "Comet6",
+        "name": "Pfister Comet S2"
+    },
+    "Comet4": {
+        "model": "Comet4",
+        "name": "Pfister Comet Safari"
+    },
+    "Comet5": {
+        "model": "Comet5",
+        "name": "Pfister Comet SR"
+    },
+    "Growler": {
+        "model": "Growler",
+        "name": "Pfister Growler"
+    },
+    "Neon": {
+        "model": "Neon",
+        "name": "Pfister Neon"
+    },
+    "Stardust": {
+        "model": "Stardust",
+        "name": "Pfister Stardust"
+    },
+    "Polalamo2": {
+        "model": "Polalamo2",
+        "name": "Police Alamo"
+    },
+    "Predator": {
+        "model": "Predator",
+        "name": "Police Predator"
+    },
+    "Lcpdpredator": {
+        "model": "Lcpdpredator",
+        "name": "Police Predator LC"
+    },
+    "Deveste": {
+        "model": "Deveste",
+        "name": "Principe Deveste Eight"
+    },
+    "Diablous": {
+        "model": "Diablous",
+        "name": "Principe Diabolus"
+    },
+    "Diablous2": {
+        "model": "Diablous2",
+        "name": "Principe Diabolus Custom"
+    },
+    "Faggio2": {
+        "model": "Faggio2",
+        "name": "Principe Faggio"
+    },
+    "Faggio3": {
+        "model": "Faggio3",
+        "name": "Principe Faggio Mod"
+    },
+    "Faggio": {
+        "model": "Faggio",
+        "name": "Principe Faggio Sport"
+    },
+    "Lectro": {
+        "model": "Lectro",
+        "name": "Principe Lectro"
+    },
+    "Nemesis": {
+        "model": "Nemesis",
+        "name": "Principe Nemesis"
+    },
+    "Emerus": {
+        "model": "Emerus",
+        "name": "Progen Emerus"
+    },
+    "GP1": {
+        "model": "GP1",
+        "name": "Progen GP1"
+    },
+    "ItaliGTB": {
+        "model": "ItaliGTB",
+        "name": "Progen Itali GTB"
+    },
+    "ItaliGTB2": {
+        "model": "ItaliGTB2",
+        "name": "Progen Itali GTB Custom"
+    },
+    "T20": {
+        "model": "T20",
+        "name": "Progen T20"
+    },
+    "Tyrus": {
+        "model": "Tyrus",
+        "name": "Progen Tyrus"
+    },
+    "RCBandito": {
+        "model": "RCBandito",
+        "name": "RC Bandito"
+    },
+    "Rebelspeedo": {
+        "model": "Rebelspeedo",
+        "name": "Rebel Service Utility"
+    },
+    "Redja": {
+        "model": "Redja",
+        "name": "RedJet Ferry Blue"
+    },
+    "Redjab": {
+        "model": "Redjab",
+        "name": "RedJet Ferry Red"
+    },
+    "Cheburek": {
+        "model": "Cheburek",
+        "name": "RUNE Cheburek"
+    },
+    "Zhaba": {
+        "model": "Zhaba",
+        "name": "RUNE Zhaba"
+    },
+    "nfirestorm": {
+        "model": "nfirestorm",
+        "name": "Sandstorm SUV"
+    },
+    "Gchampion": {
+        "model": "Gchampion",
+        "name": "Schyster Champion"
+    },
+    "Deviant": {
+        "model": "Deviant",
+        "name": "Schyster Deviant"
+    },
+    "Fusilade": {
+        "model": "Fusilade",
+        "name": "Schyster Fusilade"
+    },
+    "Scorcher": {
+        "model": "Scorcher",
+        "name": "Scorcher Bike"
+    },
+    "scorcherc": {
+        "model": "scorcherc",
+        "name": "Scorcher Custom"
+    },
+    "Castella": {
+        "model": "Castella",
+        "name": "Shitzu Castella"
+    },
+    "Defiler": {
+        "model": "Defiler",
+        "name": "Shitzu Defiler"
+    },
+    "Hakuchou": {
+        "model": "Hakuchou",
+        "name": "Shitzu Hakuchou"
+    },
+    "Hakuchou2": {
+        "model": "Hakuchou2",
+        "name": "Shitzu Hakuchou Drag"
+    },
+    "Policeb2": {
+        "model": "Policeb2",
+        "name": "Shitzu Hakuchou Police Bike"
+    },
+    "PCJ": {
+        "model": "PCJ",
+        "name": "Shitzu PCJ 600"
+    },
+    "Squalo": {
+        "model": "Squalo",
+        "name": "Shitzu Squalo"
+    },
+    "Suntrap": {
+        "model": "Suntrap",
+        "name": "Shitzu Suntrap"
+    },
+    "Tropic": {
+        "model": "Tropic",
+        "name": "Shitzu Tropic"
+    },
+    "Vader": {
+        "model": "Vader",
+        "name": "Shitzu Vader"
+    },
+    "Seashark": {
+        "model": "Seashark",
+        "name": "Speedophile Seashark"
+    },
+    "Seashark3": {
+        "model": "Seashark3",
+        "name": "Speedophile Seashark (Livery)"
+    },
+    "Seashark2": {
+        "model": "Seashark2",
+        "name": "Speedophile Seashark (Lifeguard)"
+    },
+    "Tractor2": {
+        "model": "Tractor2",
+        "name": "Stanley Fieldmaster"
+    },
+    "Tractor3": {
+        "model": "Tractor3",
+        "name": "Stanley Fieldmaster (Snow)"
+    },
+    "Tractor": {
+        "model": "Tractor",
+        "name": "Stanley Tractor"
+    },
+    "Titan": {
+        "model": "Titan",
+        "name": "Titan"
+    },
+    "Trailers2": {
+        "model": "Trailers2",
+        "name": "Trailer (Box)"
+    },
+    "Trailers": {
+        "model": "Trailers",
+        "name": "Trailer (Container\/Curtain-Side)"
+    },
+    "DockTrailer": {
+        "model": "DockTrailer",
+        "name": "Trailer (Dock)"
+    },
+    "tvtrailer": {
+        "model": "tvtrailer",
+        "name": "Trailer (Fame or Shame)"
+    },
+    "TRFlat": {
+        "model": "TRFlat",
+        "name": "Trailer (Flatbed)"
+    },
+    "TrailerLogs": {
+        "model": "TrailerLogs",
+        "name": "Trailer (Logs)"
+    },
+    "Trailers3": {
+        "model": "Trailers3",
+        "name": "Trailer (Ramp Box)"
+    },
+    "Trailers4": {
+        "model": "Trailers4",
+        "name": "Trailer (White Container)"
+    },
+    "TriBike3": {
+        "model": "TriBike3",
+        "name": "Tri-Cycles Race Bike (Bicycle)"
+    },
+    "Adder": {
+        "model": "Adder",
+        "name": "Truffade Adder"
+    },
+    "Nero": {
+        "model": "Nero",
+        "name": "Truffade Nero"
+    },
+    "Nero2": {
+        "model": "Nero2",
+        "name": "Truffade Nero Custom"
+    },
+    "Thrax": {
+        "model": "Thrax",
+        "name": "Truffade Thrax"
+    },
+    "ZType": {
+        "model": "ZType",
+        "name": "Truffade Z-Type"
+    },
+    "Cypher": {
+        "model": "Cypher",
+        "name": "\u00dcbermacht Cypher"
+    },
+    "Cypherct": {
+        "model": "Cypherct",
+        "name": "\u00dcbermacht Cypher Hatchback"
+    },
+    "Kampfer": {
+        "model": "Kampfer",
+        "name": "Ubermacht Kampfer"
+    },
+    "niobe": {
+        "model": "niobe",
+        "name": "\u00dcbermacht Niobe"
+    },
+    "Oracle2": {
+        "model": "Oracle2",
+        "name": "\u00dcbermacht Oracle"
+    },
+    "Oracle": {
+        "model": "Oracle",
+        "name": "\u00dcbermacht Oracle XS"
+    },
+    "oraclelwb": {
+        "model": "oraclelwb",
+        "name": "\u00dcbermacht Oracle XS-LE"
+    },
+    "Oracxsle": {
+        "model": "Oracxsle",
+        "name": "\u00dcbermacht Oracle XS-LE 2022"
+    },
+    "Rebla": {
+        "model": "Rebla",
+        "name": "\u00dcbermacht Rebla GTS"
+    },
+    "Revolter": {
+        "model": "Revolter",
+        "name": "\u00dcbermacht Revolter"
+    },
+    "Rhinehart": {
+        "model": "Rhinehart",
+        "name": "\u00dcbermacht Rhinehart"
+    },
+    "SC1": {
+        "model": "SC1",
+        "name": "\u00dcbermacht SC1"
+    },
+    "Sentinel2": {
+        "model": "Sentinel2",
+        "name": "\u00dcbermacht Sentinel"
+    },
+    "Sentinelp": {
+        "model": "Sentinelp",
+        "name": "Ubermacht Sentinel 2013 Coupe"
+    },
+    "Sentinelp1": {
+        "model": "Sentinelp1",
+        "name": "Ubermacht Sentinel 2013 Sedan"
+    },
+    "Sentinel3": {
+        "model": "Sentinel3",
+        "name": "\u00dcbermacht Sentinel Classic"
+    },
+    "Sentinelsg3b2": {
+        "model": "Sentinelsg3b2",
+        "name": "Ubermacht Sentinel SG3 Convertible"
+    },
+    "Sentinelsg32": {
+        "model": "Sentinelsg32",
+        "name": "Ubermacht Sentinel SG3 Coupe"
+    },
+    "Sentinelsg3a2": {
+        "model": "Sentinelsg3a2",
+        "name": "Ubermacht Sentinel SG3 Sedan"
+    },
+    "Sentinelsg3c2": {
+        "model": "Sentinelsg3c2",
+        "name": "Ubermacht Sentinel SG3 Wagon"
+    },
+    "Sentinelsg4": {
+        "model": "Sentinelsg4",
+        "name": "Ubermacht Sentinel SG4"
+    },
+    "Sentinel4": {
+        "model": "Sentinel4",
+        "name": "\u00dcbermacht Sentinel Widebody"
+    },
+    "Sentinel": {
+        "model": "Sentinel",
+        "name": "\u00dcbermacht Sentinel XS"
+    },
+    "Seraph": {
+        "model": "Seraph",
+        "name": "\u00dcbermacht Seraph"
+    },
+    "Seraph10": {
+        "model": "Seraph10",
+        "name": "Ubermacht Seraph XS V10"
+    },
+    "sg1150": {
+        "model": "sg1150",
+        "name": "Ubermacht SG1150"
+    },
+    "Vorstand": {
+        "model": "Vorstand",
+        "name": "Ubermacht Vorstand"
+    },
+    "Zion": {
+        "model": "Zion",
+        "name": "\u00dcbermacht Zion"
+    },
+    "Zion2": {
+        "model": "Zion2",
+        "name": "\u00dcbermacht Zion Cabrio"
+    },
+    "Zion3": {
+        "model": "Zion3",
+        "name": "\u00dcbermacht Zion Classic"
+    },
+    "Unmarkedstalker": {
+        "model": "Unmarkedstalker",
+        "name": "Unmarked Dundreary Landstalker Police Utility"
+    },
+    "Umkalamo2": {
+        "model": "Umkalamo2",
+        "name": "Unmarked Police Alamo"
+    },
+    "Unmarkedscout2": {
+        "model": "Unmarkedscout2",
+        "name": "Unmarked Police Scout"
+    },
+    "aleutian": {
+        "model": "aleutian",
+        "name": "Vapid Aleutian"
+    },
+    "Benson": {
+        "model": "Benson",
+        "name": "Vapid Benson"
+    },
+    "benson3": {
+        "model": "benson3",
+        "name": "Vapid Benson Classic"
+    },
+    "Blade": {
+        "model": "Blade",
+        "name": "Vapid Blade"
+    },
+    "bobcatc": {
+        "model": "bobcatc",
+        "name": "Vapid Bobcat 4x4"
+    },
+    "BobcatXL": {
+        "model": "BobcatXL",
+        "name": "Vapid Bobcat XL"
+    },
+    "Bullet": {
+        "model": "Bullet",
+        "name": "Vapid Bullet"
+    },
+    "Cara": {
+        "model": "Cara",
+        "name": "Vapid Caracara"
+    },
+    "caracaran": {
+        "model": "caracaran",
+        "name": "Vapid Caracara 2020"
+    },
+    "Caracara2": {
+        "model": "Caracara2",
+        "name": "Vapid Caracara 4x4"
+    },
+    "Caracara": {
+        "model": "Caracara",
+        "name": "Vapid Caracara 6x6"
+    },
+    "LSFDCaracara": {
+        "model": "LSFDCaracara",
+        "name": "Vapid Caracara Emergency"
+    },
+    "Lssdcara": {
+        "model": "Lssdcara",
+        "name": "Vapid Caracara Police"
+    },
+    "Umkcara": {
+        "model": "Umkcara",
+        "name": "Vapid Caracara Slicktop \/ Unmarked"
+    },
+    "Chino": {
+        "model": "Chino",
+        "name": "Vapid Chino"
+    },
+    "Chino2": {
+        "model": "Chino2",
+        "name": "Vapid Chino Custom"
+    },
+    "Clique": {
+        "model": "Clique",
+        "name": "Vapid Clique"
+    },
+    "Cliqued": {
+        "model": "Cliqued",
+        "name": "Vapid Clique Deluxe"
+    },
+    "clique2": {
+        "model": "clique2",
+        "name": "Vapid Clique Wagon"
+    },
+    "Speedo2": {
+        "model": "Speedo2",
+        "name": "Vapid Clown Van"
+    },
+    "Contender": {
+        "model": "Contender",
+        "name": "Vapid Contender"
+    },
+    "Contender3": {
+        "model": "Contender3",
+        "name": "Vapid Contender Classic"
+    },
+    "e109": {
+        "model": "e109",
+        "name": "Vapid Contender E109"
+    },
+    "contenders": {
+        "model": "contenders",
+        "name": "Vapid Contender Sport"
+    },
+    "TrophyTruck2": {
+        "model": "TrophyTruck2",
+        "name": "Vapid Desert Raid"
+    },
+    "Dominator": {
+        "model": "Dominator",
+        "name": "Vapid Dominator"
+    },
+    "domc": {
+        "model": "domc",
+        "name": "Vapid Dominator Classic"
+    },
+    "dominator10": {
+        "model": "dominator10",
+        "name": "Vapid Dominator FX"
+    },
+    "dominator9": {
+        "model": "dominator9",
+        "name": "Vapid Dominator GT"
+    },
+    "Dominator8": {
+        "model": "Dominator8",
+        "name": "Vapid Dominator GTT"
+    },
+    "Dominator3": {
+        "model": "Dominator3",
+        "name": "Vapid Dominator GTX"
+    },
+    "tfdominator": {
+        "model": "tfdominator",
+        "name": "Vapid Dominator GTX 2024"
+    },
+    "Dominator2": {
+        "model": "Dominator2",
+        "name": "Vapid Dominator Pi\u00dfwasser"
+    },
+    "Ellie": {
+        "model": "Ellie",
+        "name": "Vapid Ellie"
+    },
+    "Executioner": {
+        "model": "Executioner",
+        "name": "Vapid Executioner"
+    },
+    "Swatexecutioner": {
+        "model": "Swatexecutioner",
+        "name": "Vapid Executioner Police Utility"
+    },
+    "PBus2": {
+        "model": "PBus2",
+        "name": "Vapid Festival Bus"
+    },
+    "FlashGT": {
+        "model": "FlashGT",
+        "name": "Vapid Flash GT"
+    },
+    "FMJ": {
+        "model": "FMJ",
+        "name": "Vapid FMJ"
+    },
+    "fortune": {
+        "model": "fortune",
+        "name": "Vapid Fortune"
+    },
+    "GB200": {
+        "model": "GB200",
+        "name": "Vapid GB200"
+    },
+    "Guardian": {
+        "model": "Guardian",
+        "name": "Vapid Guardian"
+    },
+    "Guardianrv": {
+        "model": "Guardianrv",
+        "name": "Vapid Guardian RV"
+    },
+    "Hotknife": {
+        "model": "Hotknife",
+        "name": "Vapid Hotknife"
+    },
+    "huntley2": {
+        "model": "huntley2",
+        "name": "Vapid Huntley"
+    },
+    "Hustler": {
+        "model": "Hustler",
+        "name": "Vapid Hustler"
+    },
+    "Monster": {
+        "model": "Monster",
+        "name": "Vapid Liberator"
+    },
+    "SlamVan2": {
+        "model": "SlamVan2",
+        "name": "Vapid Lost Slamvan"
+    },
+    "Minivan": {
+        "model": "Minivan",
+        "name": "Vapid Minivan"
+    },
+    "Minivan2": {
+        "model": "Minivan2",
+        "name": "Vapid Minivan Custom"
+    },
+    "Peyote": {
+        "model": "Peyote",
+        "name": "Vapid Peyote"
+    },
+    "peyote3": {
+        "model": "peyote3",
+        "name": "Vapid Peyote Custom"
+    },
+    "Peyote2": {
+        "model": "Peyote2",
+        "name": "Vapid Peyote Gasser"
+    },
+    "PBus": {
+        "model": "PBus",
+        "name": "Vapid Police Prison Bus"
+    },
+    "Radi": {
+        "model": "Radi",
+        "name": "Vapid Radius"
+    },
+    "Lcumkradi": {
+        "model": "Lcumkradi",
+        "name": "Vapid Radius C"
+    },
+    "Razor": {
+        "model": "Razor",
+        "name": "Vapid Razor"
+    },
+    "Retinue": {
+        "model": "Retinue",
+        "name": "Vapid Retinue"
+    },
+    "Retinue2": {
+        "model": "Retinue2",
+        "name": "Vapid Retinue MK II"
+    },
+    "Riata": {
+        "model": "Riata",
+        "name": "Vapid Riata"
+    },
+    "Riata3": {
+        "model": "Riata3",
+        "name": "Vapid Riata Classic"
+    },
+    "Riata4": {
+        "model": "Riata4",
+        "name": "Vapid Riata Retro"
+    },
+    "nriata2": {
+        "model": "nriata2",
+        "name": "Vapid Riata S"
+    },
+    "nriata": {
+        "model": "nriata",
+        "name": "Vapid Riata TX"
+    },
+    "Sadler": {
+        "model": "Sadler",
+        "name": "Vapid Sadler"
+    },
+    "Sadler2": {
+        "model": "Sadler2",
+        "name": "Vapid Sadler (Snow)"
+    },
+    "LSFDBrush": {
+        "model": "LSFDBrush",
+        "name": "Vapid Sadler Fire Apparatus"
+    },
+    "LSFDUtility": {
+        "model": "LSFDUtility",
+        "name": "Vapid Sadler Fire Utility"
+    },
+    "LEOUtility": {
+        "model": "LEOUtility",
+        "name": "Vapid Sadler Police Utility"
+    },
+    "Sadler6": {
+        "model": "Sadler6",
+        "name": "Vapid Sadler Retro"
+    },
+    "Sadler7": {
+        "model": "Sadler7",
+        "name": "Vapid Sadler Retro Cabin"
+    },
+    "Sadler8": {
+        "model": "Sadler8",
+        "name": "Vapid Sadler Retro Cabin Crew"
+    },
+    "LSFDWater": {
+        "model": "LSFDWater",
+        "name": "Vapid Sadler Swift Water Rescue"
+    },
+    "Lcpdtru": {
+        "model": "Lcpdtru",
+        "name": "Vapid Sadler TRU"
+    },
+    "Secsadler": {
+        "model": "Secsadler",
+        "name": "Vapid Sadler Utility"
+    },
+    "sadler3": {
+        "model": "sadler3",
+        "name": "Vapid Sadler XL"
+    },
+    "Sandkingrv": {
+        "model": "Sandkingrv",
+        "name": "Vapid Sandking RV"
+    },
+    "Sandkingswb": {
+        "model": "Sandkingswb",
+        "name": "Vapid Sandking SWB 2"
+    },
+    "Sandking2": {
+        "model": "Sandking2",
+        "name": "Vapid Sandking SWB"
+    },
+    "Sandkingut": {
+        "model": "Sandkingut",
+        "name": "Vapid Sandking Utility Crew Cab"
+    },
+    "Sandkingut2": {
+        "model": "Sandkingut2",
+        "name": "Vapid Sandking Utility Single Cab"
+    },
+    "Sandkingut3": {
+        "model": "Sandkingut3",
+        "name": "Vapid Sandking Utility SWB"
+    },
+    "LSFDAmbulance": {
+        "model": "LSFDAmbulance",
+        "name": "Vapid Sandking V-400 Ambulance"
+    },
+    "Sandking": {
+        "model": "Sandking",
+        "name": "Vapid Sandking XL"
+    },
+    "Sandking3": {
+        "model": "Sandking3",
+        "name": "Vapid Sandking XL 2"
+    },
+    "Sandroamer": {
+        "model": "Sandroamer",
+        "name": "Vapid Sandroamer RV"
+    },
+    "sandstorm": {
+        "model": "sandstorm",
+        "name": "Vapid Sandstorm"
+    },
+    "nsandstorm": {
+        "model": "nsandstorm",
+        "name": "Vapid Sandstorm D205"
+    },
+    "hellenstorm": {
+        "model": "hellenstorm",
+        "name": "Vapid Sandstorm D205 Hellenbach"
+    },
+    "nsandstorm2": {
+        "model": "nsandstorm2",
+        "name": "Vapid Sandstorm D205 XL"
+    },
+    "tfpdstorm": {
+        "model": "tfpdstorm",
+        "name": "Vapid Sandstorm Police"
+    },
+    "tfpdstorm2": {
+        "model": "tfpdstorm2",
+        "name": "Vapid Sandstorm Police Slicktop \/ Unmarked"
+    },
+    "sandstormev": {
+        "model": "sandstormev",
+        "name": "Vapid Sandstorm Spark"
+    },
+    "Sandstormxl": {
+        "model": "Sandstormxl",
+        "name": "Vapid Sandstorm XL"
+    },
+    "Scout": {
+        "model": "Scout",
+        "name": "Vapid Scout"
+    },
+    "nscout": {
+        "model": "nscout",
+        "name": "Vapid Scout 2020"
+    },
+    "scoutc": {
+        "model": "scoutc",
+        "name": "Vapid Scout Classic"
+    },
+    "Lcpdpct3": {
+        "model": "Lcpdpct3",
+        "name": "Vapid Scout Interceptor"
+    },
+    "Lcpdhwy4": {
+        "model": "Lcpdhwy4",
+        "name": "Vapid Scout Interceptor (HWY)"
+    },
+    "Lcumkscout": {
+        "model": "Lcumkscout",
+        "name": "Vapid Scout Interceptor Unmarked"
+    },
+    "Polscout": {
+        "model": "Polscout",
+        "name": "Vapid Scout Police"
+    },
+    "polnscout": {
+        "model": "polnscout",
+        "name": "Vapid Scout Police 2020"
+    },
+    "Polscoutk9": {
+        "model": "Polscoutk9",
+        "name": "Vapid Scout Police K9 (Canine)"
+    },
+    "Secscout": {
+        "model": "Secscout",
+        "name": "Vapid Scout Security Slicktop"
+    },
+    "Unmarkedscout": {
+        "model": "Unmarkedscout",
+        "name": "Vapid Scout Slicktop \/ Unmarked"
+    },
+    "polnscout2": {
+        "model": "polnscout2",
+        "name": "Vapid Scout Slicktop \/ Unmarked 2020"
+    },
+    "Scrap": {
+        "model": "Scrap",
+        "name": "Vapid Scrap Truck"
+    },
+    "Sheriff": {
+        "model": "Sheriff",
+        "name": "Vapid Sheriff Cruiser"
+    },
+    "SlamVan": {
+        "model": "SlamVan",
+        "name": "Vapid Slamvan"
+    },
+    "SlamVan3": {
+        "model": "SlamVan3",
+        "name": "Vapid Slamvan Custom"
+    },
+    "Speedo": {
+        "model": "Speedo",
+        "name": "Vapid Speedo"
+    },
+    "Speedoliv": {
+        "model": "Speedoliv",
+        "name": "Vapid Speedo (Livery)"
+    },
+    "Speedopas": {
+        "model": "Speedopas",
+        "name": "Vapid Speedo (Passenger)"
+    },
+    "Speedo4": {
+        "model": "Speedo4",
+        "name": "Vapid Speedo Custom"
+    },
+    "Nspeedo": {
+        "model": "Nspeedo",
+        "name": "Vapid Speedo Express"
+    },
+    "Polnspeedo": {
+        "model": "Polnspeedo",
+        "name": "Vapid Speedo Express Police Transporter"
+    },
+    "Secnspeedo": {
+        "model": "Secnspeedo",
+        "name": "Vapid Speedo Express Utility"
+    },
+    "Lcpdspeedo": {
+        "model": "Lcpdspeedo",
+        "name": "Vapid Speedo Police"
+    },
+    "Coroner": {
+        "model": "Coroner",
+        "name": "Vapid Speedo Utility"
+    },
+    "Stanier": {
+        "model": "Stanier",
+        "name": "Vapid Stanier"
+    },
+    "Stanier2": {
+        "model": "Stanier2",
+        "name": "Vapid Stanier (Second Generation)"
+    },
+    "Polstanier": {
+        "model": "Polstanier",
+        "name": "Vapid Stanier Police (Second Generation)"
+    },
+    "tfpdstanier": {
+        "model": "tfpdstanier",
+        "name": "Vapid Stanier Police Cruiser"
+    },
+    "tfpdstanier2": {
+        "model": "tfpdstanier2",
+        "name": "Vapid Stanier Police Cruiser Slicktop \/ Unmarked"
+    },
+    "Sherstanier": {
+        "model": "Sherstanier",
+        "name": "Vapid Stanier Sheriff (Second Generation)"
+    },
+    "Taxi": {
+        "model": "Taxi",
+        "name": "Vapid Stanier Taxi"
+    },
+    "Lctaxi4": {
+        "model": "Lctaxi4",
+        "name": "Vapid Stanier TaxiCar"
+    },
+    "Police4": {
+        "model": "Police4",
+        "name": "Vapid Stanier Unmarked"
+    },
+    "Unmarkedstanier": {
+        "model": "Unmarkedstanier",
+        "name": "Vapid Stanier Unmarked (Second Generation)"
+    },
+    "steed3": {
+        "model": "steed3",
+        "name": "Vapid Steed"
+    },
+    "Bcat": {
+        "model": "Bcat",
+        "name": "Vapid TARV"
+    },
+    "Lctaxi": {
+        "model": "Lctaxi",
+        "name": "Vapid TaxiCar"
+    },
+    "Torrence": {
+        "model": "Torrence",
+        "name": "Vapid Torrence"
+    },
+    "Lcpdpct2": {
+        "model": "Lcpdpct2",
+        "name": "Vapid Torrence Interceptor"
+    },
+    "Lcumktore2": {
+        "model": "Lcumktore2",
+        "name": "Vapid Torrence Interceptor Unmarked"
+    },
+    "Intcept": {
+        "model": "Intcept",
+        "name": "Vapid Torrence Police Interceptor"
+    },
+    "Intcept2": {
+        "model": "Intcept2",
+        "name": "Vapid Torrence Police Interceptor Slicktop \/ Unmarked"
+    },
+    "towtruck4": {
+        "model": "towtruck4",
+        "name": "Vapid Towtruck (Clean)"
+    },
+    "TowTruck2": {
+        "model": "TowTruck2",
+        "name": "Vapid Towtruck (Slamvan)"
+    },
+    "TowTruck": {
+        "model": "TowTruck",
+        "name": "Vapid Towtruck (Truck)"
+    },
+    "TrophyTruck": {
+        "model": "TrophyTruck",
+        "name": "Vapid Trophy Truck"
+    },
+    "Uranusf": {
+        "model": "Uranusf",
+        "name": "Vapid Uranus"
+    },
+    "UtilliTruck3": {
+        "model": "UtilliTruck3",
+        "name": "Vapid Utility Truck (Van)"
+    },
+    "Victor": {
+        "model": "Victor",
+        "name": "Vapid Victor"
+    },
+    "Vvpi": {
+        "model": "Vvpi",
+        "name": "Vapid Victor Police Interceptor"
+    },
+    "Vvpi3": {
+        "model": "Vvpi3",
+        "name": "Vapid Victor Police Interceptor (Old Generation)"
+    },
+    "Vvpi2": {
+        "model": "Vvpi2",
+        "name": "Vapid Victor Police Interceptor Slicktop \/ Unmarked"
+    },
+    "Victortaxi": {
+        "model": "Victortaxi",
+        "name": "Vapid Victor Taxi"
+    },
+    "Yosemitexl": {
+        "model": "Yosemitexl",
+        "name": "Vapid Yosemite Ramptruck"
+    },
+    "Fagaloa": {
+        "model": "Fagaloa",
+        "name": "Vulcar Fagaloa"
+    },
+    "fagaloac": {
+        "model": "fagaloac",
+        "name": "Vulcar Fagaloa Coupe"
+    },
+    "hachura": {
+        "model": "hachura",
+        "name": "Vulcar Hachura R"
+    },
+    "Ingot": {
+        "model": "Ingot",
+        "name": "Vulcar Ingot"
+    },
+    "Nebula": {
+        "model": "Nebula",
+        "name": "Vulcar Nebula Turbo"
+    },
+    "nebulaw": {
+        "model": "nebulaw",
+        "name": "Vulcar Nebula Wagon"
+    },
+    "Warrener": {
+        "model": "Warrener",
+        "name": "Vulcar Warrener"
+    },
+    "zodiac": {
+        "model": "zodiac",
+        "name": "Vulcar Zodiac"
+    },
+    "Neo": {
+        "model": "Neo",
+        "name": "Vysser Neo"
+    },
+    "Dynasty": {
+        "model": "Dynasty",
+        "name": "Weeny Dynasty"
+    },
+    "Issi2": {
+        "model": "Issi2",
+        "name": "Weeny Issi"
+    },
+    "Issi3": {
+        "model": "Issi3",
+        "name": "Weeny Issi Classic"
+    },
+    "Issi8": {
+        "model": "Issi8",
+        "name": "Weeny Issi Rally"
+    },
+    "Issi7": {
+        "model": "Issi7",
+        "name": "Weeny Issi Sport"
+    },
+    "mpannihilator": {
+        "model": "mpannihilator",
+        "name": "Western Annihilator"
+    },
+    "slayer": {
+        "model": "slayer",
+        "name": "Western Slayer"
+    },
+    "angel": {
+        "model": "angel",
+        "name": "Western Angel"
+    },
+    "Cargobob2": {
+        "model": "Cargobob2",
+        "name": "Western Cargobob"
+    },
+    "Cargobob": {
+        "model": "Cargobob",
+        "name": "Western Company Cargobob"
+    },
+    "Duster": {
+        "model": "Duster",
+        "name": "Western Company Duster"
+    },
+    "diabolus": {
+        "model": "diabolus",
+        "name": "Western Diabolus"
+    },
+    "freeway": {
+        "model": "freeway",
+        "name": "Western Freeway"
+    },
+    "hellfury": {
+        "model": "hellfury",
+        "name": "Western Hellfury"
+    },
+    "deathbike": {
+        "model": "deathbike",
+        "name": "Western Motorcycle Company Apocalypse Deathbike"
+    },
+    "Bagger": {
+        "model": "Bagger",
+        "name": "Western Motorcycle Company Bagger"
+    },
+    "Cliffhanger": {
+        "model": "Cliffhanger",
+        "name": "Western Motorcycle Company Cliffhanger"
+    },
+    "Daemon2": {
+        "model": "Daemon2",
+        "name": "Western Motorcycle Company Daemon"
+    },
+    "Daemon": {
+        "model": "Daemon",
+        "name": "Western Motorcycle Company Daemon (Lost MC)"
+    },
+    "Gargoyle": {
+        "model": "Gargoyle",
+        "name": "Western Motorcycle Company Gargoyle"
+    },
+    "Nightblade": {
+        "model": "Nightblade",
+        "name": "Western Motorcycle Company Nightblade"
+    },
+    "RatBike": {
+        "model": "RatBike",
+        "name": "Western Motorcycle Company Rat Bike"
+    },
+    "Sovereign": {
+        "model": "Sovereign",
+        "name": "Western Motorcycle Company Sovereign"
+    },
+    "Policeb": {
+        "model": "Policeb",
+        "name": "Western Motorcycle Company Sovereign Police Bike"
+    },
+    "Lspdb": {
+        "model": "Lspdb",
+        "name": "Western Motorcycle Company Wintergreen Police Bike"
+    },
+    "Wolfsbane": {
+        "model": "Wolfsbane",
+        "name": "Western Motorcycle Company Wolfsbane"
+    },
+    "ZombieA": {
+        "model": "ZombieA",
+        "name": "Western Motorcycle Company Zombie Bobber"
+    },
+    "ZombieB": {
+        "model": "ZombieB",
+        "name": "Western Motorcycle Company Zombie Chopper"
+    },
+    "Lcpdhwyb": {
+        "model": "Lcpdhwyb",
+        "name": "Western Police Sovereign"
+    },
+    "reever": {
+        "model": "reever",
+        "name": "Western Reever"
+    },
+    "revenant": {
+        "model": "revenant",
+        "name": "Western Revenant"
+    },
+    "slave": {
+        "model": "slave",
+        "name": "Western Slave"
+    },
+    "sovereign2": {
+        "model": "sovereign2",
+        "name": "Western Sovereign"
+    },
+    "spirit": {
+        "model": "spirit",
+        "name": "Western Spirit"
+    },
+    "wayfarer": {
+        "model": "wayfarer",
+        "name": "Western Wayfarer"
+    },
+    "wintergreen": {
+        "model": "wintergreen",
+        "name": "Western WinterGreen"
+    },
+    "wolfsbane2": {
+        "model": "wolfsbane2",
+        "name": "Western Wolfsbane"
+    },
+    "zombiev8": {
+        "model": "zombiev8",
+        "name": "Western Zombie V8"
+    },
+    "TriBike": {
+        "model": "TriBike",
+        "name": "Whippet Race Bike"
+    },
+    "Eudora": {
+        "model": "Eudora",
+        "name": "Willard Eudora"
+    },
+    "Faction": {
+        "model": "Faction",
+        "name": "Willard Faction"
+    },
+    "Faction2": {
+        "model": "Faction2",
+        "name": "Willard Faction Custom"
+    },
+    "Faction3": {
+        "model": "Faction3",
+        "name": "Willard Faction Custom Donk"
+    },
+    "Idaho": {
+        "model": "Idaho",
+        "name": "Willard Idaho"
+    },
+    "marbelle": {
+        "model": "marbelle",
+        "name": "Willard Marbelle"
+    },
+    "paradox": {
+        "model": "paradox",
+        "name": "Willard Paradox"
+    },
+    "solair": {
+        "model": "solair",
+        "name": "Willard Solair"
+    },
+    "Willard": {
+        "model": "Willard",
+        "name": "Willard Willard"
+    },
+    "Sweeper": {
+        "model": "Sweeper",
+        "name": "Wiwang Sweeper"
+    },
+    "leoyosemite": {
+        "model": "leoyosemite",
+        "name": "Yosemite Police Utility"
+    },
+    "Journey": {
+        "model": "Journey",
+        "name": "Zirconium Journey (RV)"
+    },
+    "Journey2": {
+        "model": "Journey2",
+        "name": "Zirconium Journey (RV) N"
+    },
+    "Stratum": {
+        "model": "Stratum",
+        "name": "Zirconium Stratum"
+    }
+}

@@ -1,0 +1,933 @@
+{
+    "2.1.2": {
+        "id": "2.1.2",
+        "charge": "Undue Familiarity",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Attempting or establishing a personal or romantic relationship with employees of the San Andreas Department of Corrections and Rehabilitation.",
+            "Requesting special privileges, out-of-work information, or favors from employees."
+        ],
+        "ic_punishment": "A charge of Undue Familiarity results in a 1-3 point write-up or 9 days in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 2,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.1.3": {
+        "id": "2.1.3",
+        "charge": "Possession, Use, or Sale of Tobacco Products",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Possession, Use, or Sale of Tobacco Product results in a 1-2 point write-up or 9 days in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 2,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.1.4": {
+        "id": "2.1.4",
+        "charge": "Disrespectful Conduct",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Disrespectful Conduct results in a 1-2 point write-up or 9 days in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 4,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.1.5": {
+        "id": "2.1.5",
+        "charge": "Insubordinate Behavior",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Insubordinate Behavior results in a 1-3 point write-up or 9 days in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.1.6": {
+        "id": "2.1.6",
+        "charge": "Improper Usage of Commissary or Canteen Foodstuffs",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Hoarding canteen or commissary. Inmates are permitted to keep snacks and only three fruit."
+        ],
+        "ic_punishment": "A charge of Improper Usage of Commissary or Canteen Foodstuffs results in a 1-2 point write-up or 3 day in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 2,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.1.6a": {
+        "id": "2.1.6a",
+        "charge": "Unauthorized transfer of Commissary",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Transferring commissary items between inmates. This includes the transfer of items when an inmate is to leave the facility upon the conclusion of overturn of a sentence: commissary items are to be returned to the facility staff upon this."
+        ],
+        "ic_punishment": "A charge of Unauthorized transfer of Commissary results in a 1-2 point write-up or 3 day in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 2,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.1.7": {
+        "id": "2.1.7",
+        "charge": "Possession of Prohibited Materials",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Possession of pornographic materials, including any modeling material which shows nudity excluding swim wear.",
+            "Possession of books not on approved lists available from the institutional library.",
+            "Possession of any seditious material.",
+            "Possession of any radical political material."
+        ],
+        "ic_punishment": "A charge of Possession of Prohibited Materials results in a 1-5 point increase and/or 7-21 days in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.1.8": {
+        "id": "2.1.8",
+        "charge": "Interfering in Unit Visibility",
+        "type": "A",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Blocking vision into a cell or internal room with any covering. Interfering with surveillance or sight lines."
+        ],
+        "ic_punishment": "A charge of Interfering in Unit Visibility results in a 1-2 point write-up or 9 days in disciplinary segregation at the discretion of the issuing employee.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 8,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.2": {
+        "id": "2.2.2",
+        "charge": "Obstruction of Official Duties",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Interfering with the duties of employees or government agents by repeated insubordinate behavior or refusing to carry out lawful orders."
+        ],
+        "ic_punishment": "A charge of Obstruction of Official Duties results in a 3 point increase and 21 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 2,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.3": {
+        "id": "2.2.3",
+        "charge": "Resisting Custody",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Resisting Custody results in a 4 point increase and 30 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 2,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.4": {
+        "id": "2.2.4",
+        "charge": "Misuse of Commissary",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Using any commissary item outside of its prescribed purpose.",
+            "Creating intoxicants - \"pruno.\"",
+            "Creating improvised stoves/tattoo guns.",
+            "Creating improvised needles."
+        ],
+        "ic_punishment": "A charge of Misuse of Commissary results in a 4 point increase and 21 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.5": {
+        "id": "2.2.5",
+        "charge": "Gambling",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": ["Betting or gaming with money or other items of value."],
+        "ic_punishment": "A charge of Gambling results in a 3 point increase and 15 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 2,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.6": {
+        "id": "2.2.6",
+        "charge": "Possession of Contraband",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Possession of Contraband - Minor results in a 4 point increase and 42 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 2,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.7": {
+        "id": "2.2.7",
+        "charge": "Vandalism",
+        "type": "AM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [
+            "Damaging or destroying the property of another individual."
+        ],
+        "ic_punishment": "A charge of Vandalism results in a 3 point increase and 21 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.8": {
+        "id": "2.2.8",
+        "charge": "Trespassing or Entering Unauthorized Zone",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Willfully or negligently ignoring restricted area signs and passing into custody-staff only zones without consent of custody staff."
+        ],
+        "ic_punishment": "A charge of Trespassing or Entering Unauthorized Zone results in a 5 point increase and 42 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.9": {
+        "id": "2.2.9",
+        "charge": "Barricading",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Barricading results in a 7 point increase and 63 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 5,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.10": {
+        "id": "2.2.10",
+        "charge": "Look",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Look-out or Alarm results in a 3 point increase and 9 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.11": {
+        "id": "2.2.11",
+        "charge": "Intoxication/Influence",
+        "type": "AM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Intoxication/Influence results in a 4 point increase and 15 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 0,
+            "hours": 12,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.12": {
+        "id": "2.2.12",
+        "charge": "Masturbation",
+        "type": "AM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Masturbation results in a 3 point increase and 3 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.2": {
+        "id": "2.3.2",
+        "charge": "False Information to a Government Employee",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of False Information to a Government Employee results in a 10 point increase and 90 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.3": {
+        "id": "2.3.3",
+        "charge": "Theft",
+        "type": "C",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Theft results in a 5 point increase and 63 days in disciplinary segregation",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.4": {
+        "id": "2.3.4",
+        "charge": "Assault",
+        "type": "C",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Assault results in a 7 point increase and 90 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 3,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.5": {
+        "id": "2.3.5",
+        "charge": "Criminal Threats",
+        "type": "C",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Criminal Threats results in a 5 point increase and 42 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.6": {
+        "id": "2.3.6",
+        "charge": "Possession of Contraband",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Possession of a controlled substance without prescription within ranges of 1-28 grams.",
+            "Possession of an illegal narcotic within ranges of 1-28 grams.",
+            "Possession of hazardous materials or chemicals. (\"Gassing\" cocktail)",
+            "Possession of personal information of an employee."
+        ],
+        "ic_punishment": "A charge of Possession of Contraband - Major results in a 7 point increase and 90 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 2,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.7": {
+        "id": "2.3.7",
+        "charge": "Provocative Behavior",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Issuing challenges, fighting words, or rude gestures to other inmates in an attempt to start a fight.",
+            "Disturbing the peace by shouting after being warned.",
+            "Disrupting the peace of a sleeping block."
+        ],
+        "ic_punishment": "A charge of Provocative Behavior results in a 7 point increase and 63 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.2.8": {
+        "id": "2.2.8",
+        "charge": "Trespassing or Entering Unauthorized Zone",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Willfully or negligently ignoring restricted area signs and passing into custody-staff only zones without consent of custody staff."
+        ],
+        "ic_punishment": "A charge of Trespassing or Entering Unauthorized Zone results in a 5 point increase and 42 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.8": {
+        "id": "2.3.8",
+        "charge": "Lewd or Dissolute Conduct",
+        "type": "C",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [
+            "Soliciting or requesting sexual favors.",
+            "Voluntary sexual conduct not involving penetration."
+        ],
+        "ic_punishment": "A charge of Lewd or Dissolute Conduct results in a 10 point increase and 42 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.9": {
+        "id": "2.3.9",
+        "charge": "Bribery/Influencing",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Offering favors, money, valuables, or other material in exchange for favors from employees.",
+            "Soliciting contraband from employees."
+        ],
+        "ic_punishment": "A charge of Bribery results in a 15 point increase and 130 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 2,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.10": {
+        "id": "2.3.10",
+        "charge": "Extortion",
+        "type": "C",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Extortion results in a 10 point increase and 90 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.11": {
+        "id": "2.3.11",
+        "charge": "Sexual Intercourse",
+        "type": "C",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Sexual Intercourse results in a 10 point increase and 63 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.12": {
+        "id": "2.3.12",
+        "charge": "Prostitution",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Prostitution results in a 10 point increase and 90 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.13": {
+        "id": "2.3.13",
+        "charge": "Disregarding Restraints",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Slipping, avoiding, or interfering with restraints placed by custody staff.",
+            "Interfering with restraints on another inmate."
+        ],
+        "ic_punishment": "A charge of Disregarding Restraints results in a 10 point increase and 63 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.3.14": {
+        "id": "2.3.14",
+        "charge": "Assault/Battery of Staff and/or Correctional Officers",
+        "type": "C",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of battery or assault of staff or correctional officers results in a 15 point increase and 180 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 20,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.2": {
+        "id": "2.4.2",
+        "charge": "Riotous or Seditious Activity",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [
+            "Participating in a large-scale fight, riot, or unrest.",
+            "Planning or engaging in behavior that disrupts facility-wide operations, such as mass vandalism or strike."
+        ],
+        "ic_punishment": "A charge of Riotous or Seditious Activity results in a 20 point increase and 270 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 10,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.3": {
+        "id": "2.4.3",
+        "charge": "Escape",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Escape results in an immediate 50 point increase and a mandatory minimum of 3 years in disciplinary or administrative segregation.",
+        "real_time_punishment": {
+            "days": 10,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.4": {
+        "id": "2.4.4",
+        "charge": "Attempted Escape",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Attempted Escape results in a 50 point increase and a mandatory minimum of 3 years in disciplinary or administrative segregation.",
+        "real_time_punishment": {
+            "days": 10,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.5": {
+        "id": "2.4.5",
+        "charge": "Murder",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Murder results in a 50 point increase and mandatory minimum of 5 years in administrative segregation. Charges to be pursued through San Andreas Courts for extended prison term.",
+        "real_time_punishment": {
+            "days": 10,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": true
+        }
+    },
+    "2.4.6": {
+        "id": "2.4.6",
+        "charge": "Attempted Murder",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": ["Attempting to unlawfully kill another individual."],
+        "ic_punishment": "A charge of Attempted Murder results in a 50 point increase and a mandatory minimum of 3 years in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 8,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": true
+        }
+    },
+    "2.4.7": {
+        "id": "2.4.7",
+        "charge": "Battery",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Battery results in a 15 point increase with a mandatory minimum of 360 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 5,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.8": {
+        "id": "2.4.8",
+        "charge": "Aggravated Battery",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Aggravated Battery results in a 20 point increase with a mandatory minimum of 2 years in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 7,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.9": {
+        "id": "2.4.9",
+        "charge": "Mayhem",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [
+            "Unlawful physical force which results in permanent debilitating injury, grievous bodily harm, permanent scarring, or lameness."
+        ],
+        "ic_punishment": "A charge of Mayhem results in a 30 point increase and a mandatory minimum of 3 years in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 8,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.10": {
+        "id": "2.4.10",
+        "charge": "Assault with a Deadly Weapon",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [
+            "Unlawful physical force using a shiv, dirk, shiv, dagger, or other improvised weapon.",
+            "Unlawful physical force with an augment for fists, such as brass knuckles.",
+            "Threatening physical force with the usage of such an item."
+        ],
+        "ic_punishment": "A charge of Assault with a Deadly Weapon results in a 30 point increase and a mandatory minimum of 3 years in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 6,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.11": {
+        "id": "2.4.11",
+        "charge": "Possession of an Improvised Weapon",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Possession of a tool or item which could be reasonably used to grievously injure another individual, such as a dirk, shiv, dagger, shank, or slicing tool."
+        ],
+        "ic_punishment": "A charge of Possession of an Improvised Weapon results in a 15 point increase and a mandatory minimum of 270 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 4,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.12": {
+        "id": "2.4.12",
+        "charge": "Possession of a Dangerous Weapon",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": ["Possession of a firearm or makeshift projectile tool."],
+        "ic_punishment": "A charge of Possession of a Dangerous Weapon results in a 50 point point increase and a mandatory minimum of 2 years in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 3,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.13": {
+        "id": "2.4.13",
+        "charge": "Manufacture of a Dangerous Weapon/Tool",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Manufacture of a Dangerous Weapon/Tool results in a 10 point increase and a mandatory minimum of 180 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 2,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.14": {
+        "id": "2.4.14",
+        "charge": "Arson",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of Arson results in a 15 point increase and a mandatory minimum of 270 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 10,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.15": {
+        "id": "2.4.15",
+        "charge": "Destruction of a Unit",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Causing wanton destruction of a cell or other room which would cause a cease in function or force the unit to become uninhabitable due to sanitation standards."
+        ],
+        "ic_punishment": "A charge of Destruction of a Unit results in a 10 point increase and a mandatory minimum of 90 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 1,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.16": {
+        "id": "2.4.16",
+        "charge": "Conveyance of Contraband",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Attempting to enter a facility whilst possessing illegal contraband.",
+            "Selling contraband of any type."
+        ],
+        "ic_punishment": "A charge of Conveyance of Contraband results in a 15 point increase and a mandatory minimum of 180 days in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 2,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.17": {
+        "id": "2.4.17",
+        "charge": "Sexual Battery/Rape",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": ["Forceful penetration without consent."],
+        "ic_punishment": "A charge of Sexual Battery/Rape results in a 25 point increase and a mandatory minimum of 1 year in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 8,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.18": {
+        "id": "2.4.18",
+        "charge": "False Imprisonment/Hostage Taking",
+        "type": "CM",
+        "class": {
+            "A": true,
+            "B": true
+        },
+        "criteria": [],
+        "ic_punishment": "A charge of False Imprisonment/Hostage Taking results in a 35 point increase and a mandatory minimum of 3 years in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 4,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    },
+    "2.4.19": {
+        "id": "2.4.19",
+        "charge": "Possession of Contraband",
+        "type": "CM",
+        "class": {
+            "A": false,
+            "B": true
+        },
+        "criteria": [
+            "Unlawful possession of escape instruments, such as digging tools or key molds.",
+            "Possession of beyond one ounce of illegal narcotics or controlled substances. (28+ grams.)"
+        ],
+        "ic_punishment": "A charge of Possession of Contraband - High Risk results in a 25 point increase and a mandatory minimum of 1 year in disciplinary segregation.",
+        "real_time_punishment": {
+            "days": 8,
+            "hours": 0,
+            "minutes": 0,
+            "additional_penal_code_charge_and_sentence_extension": false
+        }
+    }
+}
