@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
 import configData from '../../../data/config.json';
+import { getGtawDataUrl } from '@/lib/gtaw-data';
 import { Alert, AlertTitle } from '../ui/alert';
 import { useScopedI18n } from '@/lib/i18n/client';
 
@@ -158,7 +159,7 @@ export function SimplifiedPenalCodePage() {
     const t = useScopedI18n('simplifiedPenalCode.page');
 
     useEffect(() => {
-        fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
+        fetch(getGtawDataUrl('gtaw_penal_code.json'))
             .then(res => {
                 if (!res.ok) {
                     throw new Error(t('error.fetchFailed'));

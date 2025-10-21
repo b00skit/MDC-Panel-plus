@@ -26,6 +26,7 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog";
 import configData from '../../../data/config.json';
+import { getGtawDataUrl } from '@/lib/gtaw-data';
 import { usePaperworkStore } from '@/stores/paperwork-store';
 import { useI18n, useScopedI18n } from '@/lib/i18n/client';
 
@@ -66,7 +67,7 @@ export default function ReportArchivePage() {
             if (!penalCode || additions.length === 0) {
                 try {
                     const [penalCodeData, additionsData] = await Promise.all([
-                        fetch(`${configData.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`).then(res => res.json()),
+                        fetch(getGtawDataUrl('gtaw_penal_code.json')).then(res => res.json()),
                         fetch('/data/additions.json').then(res => res.json()),
                     ]);
                     setPenalCode(penalCodeData);

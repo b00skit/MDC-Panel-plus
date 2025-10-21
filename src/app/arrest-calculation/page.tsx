@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import configData from '../../../data/config.json';
+import { getGtawDataUrl } from '@/lib/gtaw-data';
 import { useScopedI18n } from '@/lib/i18n/client';
 
 const additionMapping: { [key: string]: string } = {
@@ -118,7 +119,7 @@ function ArrestCalculationContent() {
 
   useEffect(() => {
     if (!penalCode) {
-      fetch(configData.CONTENT_DELIVERY_NETWORK+'?file=gtaw_penal_code.json')
+      fetch(getGtawDataUrl('gtaw_penal_code.json'))
         .then((res) => res.json())
         .then((data: PenalCode) => {
           setPenalCode(data);

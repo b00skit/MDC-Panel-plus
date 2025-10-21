@@ -41,6 +41,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { useAdvancedReportModifiersStore } from '@/stores/advanced-report-modifiers-store';
 import configData from '../../../data/config.json';
+import { getGtawDataUrl } from '@/lib/gtaw-data';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { useBasicReportModifiersStore } from '@/stores/basic-report-modifiers-store';
@@ -126,9 +127,9 @@ export function ArrestCalculatorPage() {
     }
 
     Promise.all([
-      fetch(`${configData.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`).then((res) => res.json()),
+      fetch(getGtawDataUrl('gtaw_penal_code.json')).then((res) => res.json()),
       fetch('/data/additions.json').then((res) => res.json()),
-      fetch(`${configData.CONTENT_DELIVERY_NETWORK}?file=gtaw_depa_categories.json`).then((res) => res.json()),
+      fetch(getGtawDataUrl('gtaw_depa_categories.json')).then((res) => res.json()),
     ])
       .then(([penalCodeData, additionsData, depaData]) => {
         setPenalCode(penalCodeData);

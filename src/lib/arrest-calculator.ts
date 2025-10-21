@@ -2,6 +2,7 @@
 import type { SelectedCharge, Charge, Addition, PenalCode } from '@/stores/charge-store';
 import additionsData from '../../data/additions.json';
 import config from '../../data/config.json';
+import { loadGtawData } from './gtaw-data.server';
 import { areStreetCharges } from './code-enhancement';
 
 const formatTimeInMinutes = (time: { days: number; hours: number; min: number }) => {
@@ -51,7 +52,7 @@ export interface ArrestCalculation {
 }
 
 export async function calculateArrest(report: SelectedCharge[], isParoleViolator: boolean): Promise<ArrestCalculation> {
-  const penalCode: PenalCode = await fetch(`${config.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`).then(res => res.json());
+  const penalCode = await loadGtawData<PenalCode>('gtaw_penal_code.json');
   const additions: Addition[] = additionsData.additions;
 
   const paroleViolationAddition = additions.find(a => a.name === config.PAROLE_VIOLATION_DEFINITION);

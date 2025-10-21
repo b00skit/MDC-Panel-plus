@@ -2,9 +2,9 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import config from '@/../data/config.json';
 import caselaws from '@/../data/caselaws.json';
 import { sanitizeLocations } from '@/lib/sanitize-locations';
+import { loadGtawData } from '@/lib/gtaw-data.server';
 
 const LegalSearchInputSchema = z.object({
   query: z.string().describe("The user's legal question."),
@@ -165,11 +165,7 @@ export const legalSearchFlow = ai.defineFlow(
     outputSchema: LegalSearchOutputSchema,
   },
   async (input) => {
-    const penalCodeRes = await fetch(`${config.CONTENT_DELIVERY_NETWORK}?file=gtaw_penal_code.json`);
-    if (!penalCodeRes.ok) {
-      throw new Error('Failed to fetch penal code data');
-    }
-    const penalCodeData = await penalCodeRes.json();
+    const penalCodeData = await loadGtawData<any>('gtaw_penal_code.json');
 
     const result = await legalSearchPrompt({
       query: input.query,
