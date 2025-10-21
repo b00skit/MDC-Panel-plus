@@ -2,6 +2,7 @@
 {
     "id": "sfm_investigation_casefile",
     "title": "Investigation Casefile",
+    "new_until": "20/NOV/2025",
     "description": "Generate an SFM Investigation Casefile report.",
     "icon": "Flame",
     "icon_color": "#dc2626",
