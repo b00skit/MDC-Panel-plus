@@ -16,6 +16,50 @@ const getType = (type: string | undefined, t: (key: string) => string) => {
     }
 };
 
+const getTypePillStyle = (type: string | undefined) => {
+    const baseStyle = {
+        display: 'inline-block',
+        padding: '0.125rem 0.5rem',
+        borderRadius: '9999px',
+        fontWeight: 'bold',
+        fontSize: '0.75rem',
+        letterSpacing: '0.05em',
+        textTransform: 'uppercase' as const,
+        border: '1px solid transparent',
+    };
+
+    switch (type) {
+        case 'F':
+            return {
+                ...baseStyle,
+                backgroundColor: '#b91c1c',
+                color: '#ffffff',
+                borderColor: '#7f1d1d',
+            };
+        case 'M':
+            return {
+                ...baseStyle,
+                backgroundColor: '#f59e0b',
+                color: '#1f2937',
+                borderColor: '#b45309',
+            };
+        case 'I':
+            return {
+                ...baseStyle,
+                backgroundColor: '#0ea5e9',
+                color: '#0f172a',
+                borderColor: '#0369a1',
+            };
+        default:
+            return {
+                ...baseStyle,
+                backgroundColor: '#e5e7eb',
+                color: '#111827',
+                borderColor: '#9ca3af',
+            };
+    }
+};
+
 const toCamelCase = (str: string) =>
     str
       .toLowerCase()
@@ -122,8 +166,12 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                 <tr>
                     <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}><strong>{t('sections.general.callsign')}</strong></td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.callSign}</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}><strong>{t('sections.location.district')}</strong></td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>{location.district}</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}>
+                        <strong>{`${t('sections.location.district')} / ${t('sections.location.street')}`}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>
+                        {[location.district, location.street].filter(Boolean).join(' / ')}
+                    </td>
                 </tr>
                 <tr>
                     <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
@@ -167,10 +215,6 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     <td style={{ border: '1px solid black', padding: '0.5rem', width: '70%' }} colSpan={3}>{arrest.suspectName}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}><strong>{t('sections.location.street')}</strong></td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>{location.street}</td>
-                </tr>
-                <tr>
                     <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
@@ -201,10 +245,15 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                         title += ` (Category ${row.category})`;
                     }
 
+                    const typeText = getType(chargeDetails.type, (key) => tShared(`${key}` as any));
+                    const typeStyle = getTypePillStyle(chargeDetails.type);
+
                     return (
                         <tr key={row.uniqueId}>
                             <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{title}</td>
-                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{getType(chargeDetails.type, (key) => tShared(`${key}` as any))}</td>
+                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>
+                                <span style={typeStyle}>{typeText}</span>
+                            </td>
                             <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.class}</td>
                             <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.offense}</td>
                         </tr>
