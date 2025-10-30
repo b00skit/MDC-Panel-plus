@@ -125,6 +125,27 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         return tShared(`additionNames.${translationKey}` as any) || name;
     }
 
+    const sectionSpacingCell = {
+        height: '0.75rem',
+        padding: 0,
+        border: 'none',
+    } as const;
+
+    const numberCellStyle = {
+        border: '1px solid black',
+        padding: '0.5rem',
+        textAlign: 'center' as const,
+        fontWeight: 'bold',
+        width: '6%',
+        backgroundColor: '#f4f4f5',
+    };
+
+    const districtStreetLabelRaw = t('sections.general.districtStreet' as any);
+    const districtStreetLabel =
+        typeof districtStreetLabelRaw === 'string' && districtStreetLabelRaw.includes('sections.general.districtStreet')
+            ? `${t('sections.location.district')} / ${t('sections.location.street')}`
+            : districtStreetLabelRaw;
+
     return (
         <table
             ref={innerRef}
@@ -139,13 +160,13 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         >
             <tbody>
                 <tr>
-                    <td colSpan={4} style={{ padding: '1.5rem 1rem 1rem', textAlign: 'center' }}>
+                    <td colSpan={5} style={{ padding: '1.5rem 1rem 1rem', textAlign: 'center' }}>
                         <p style={{ fontSize: '0.95rem', margin: 0, letterSpacing: '0.1em' }}>{header}</p>
                         <p style={{ fontSize: '1.75rem', fontWeight: 'bold', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('title')}</p>
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
                             fontWeight: 'bold',
@@ -158,23 +179,28 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr style={{ backgroundColor: '#f4f4f5' }}>
+                    <td style={numberCellStyle}>#1</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}><strong>{t('sections.general.date')}</strong></td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.date}</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}><strong>{t('sections.general.time')}</strong></td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.time}</td>
                 </tr>
                 <tr>
+                    <td style={numberCellStyle}>#2</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}><strong>{t('sections.general.callsign')}</strong></td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.callSign}</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}>
-                        <strong>{`${t('sections.location.district')} / ${t('sections.location.street')}`}</strong>
+                        <strong>{districtStreetLabel}</strong>
                     </td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>
                         {[location.district, location.street].filter(Boolean).join(' / ')}
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
                             fontWeight: 'bold',
@@ -188,17 +214,21 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                 </tr>
                 {officers.map((officer: any, index: number) => (
                     <tr key={officer.id} style={{ backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb' }}>
-                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '30%', backgroundColor: '#f4f4f5' }}><strong>{t('sections.officers.officerName', { number: index + 1 })}</strong></td>
-                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '30%' }}>{officer.name}</td>
-                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '20%', backgroundColor: '#f4f4f5' }}><strong>{t('sections.officers.rank')}</strong></td>
-                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '20%' }}>
+                        <td style={numberCellStyle}>{`#${index + 1}`}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '28%', backgroundColor: '#f4f4f5' }}><strong>{t('sections.officers.officerName', { number: index + 1 })}</strong></td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '28%' }}>{officer.name}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '19%', backgroundColor: '#f4f4f5' }}><strong>{t('sections.officers.rank')}</strong></td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '19%' }}>
                             <p style={{ margin: '0 0 0.25rem 0' }}>{officer.rank}</p>
                             <p style={{ margin: 0 }}><strong>{t('sections.officers.badge')}</strong> #{officer.badgeNumber}</p>
                         </td>
                     </tr>
                 ))}
                 <tr>
-                    <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
                             fontWeight: 'bold',
@@ -211,11 +241,15 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '30%' }}><strong>{t('sections.suspect.fullName')}</strong></td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '70%' }} colSpan={3}>{arrest.suspectName}</td>
+                    <td style={numberCellStyle}>#1</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '28%' }}><strong>{t('sections.suspect.fullName')}</strong></td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '66%' }} colSpan={3}>{arrest.suspectName}</td>
                 </tr>
                 <tr>
-                    <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
                             fontWeight: 'bold',
@@ -228,12 +262,13 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr style={{ backgroundColor: '#e5e7eb' }}>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold', textAlign: 'center', width: '6%' }}>#</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.description')}</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.type')}</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.class')}</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.offense')}</td>
                 </tr>
-                {report.map((row: any) => {
+                {report.map((row: any, index: number) => {
                     const chargeDetails = penalCode[row.chargeId!];
                     if (!chargeDetails) return null;
 
@@ -250,18 +285,20 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
 
                     return (
                         <tr key={row.uniqueId}>
+                            <td style={numberCellStyle}>{`#${index + 1}`}</td>
                             <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{title}</td>
                             <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>
                                 <span style={typeStyle}>{typeText}</span>
                             </td>
-                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.class}</td>
-                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.offense}</td>
+                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.class ? `Class (${row.class})` : 'Class (N/A)'}</td>
+                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.offense ? `Offence #${row.offense}` : 'Offence #N/A'}</td>
                         </tr>
                     );
                 })}
                 <tr>
+                    <td style={numberCellStyle}></td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', fontWeight: 'bold' }}>{t('sections.charges.headers.addition')}</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontSize: '0.75rem' }} colSpan={3}>
                         {report.map((row: any, index: number) => {
                             const chargeDetails = penalCode[row.chargeId!];
                             if (!chargeDetails) return null;
@@ -276,7 +313,13 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                                     : getAdditionName('Offender');
 
                             return (
-                                <p key={`addition-${row.uniqueId}`} style={{ margin: index === report.length - 1 ? 0 : '0 0 0.25rem 0' }}>
+                                <p
+                                    key={`addition-${row.uniqueId}`}
+                                    style={{
+                                        margin: index === report.length - 1 ? 0 : '0 0 0.25rem 0',
+                                        lineHeight: 1.35,
+                                    }}
+                                >
                                     <strong>{label}</strong>
                                     {additionText}
                                 </p>
@@ -285,7 +328,10 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
                             fontWeight: 'bold',
@@ -298,12 +344,16 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
+                    <td style={numberCellStyle}>#1</td>
                     <td style={{ border: '1px solid black', padding: '0.75rem', lineHeight: 1.5 }} colSpan={4}>
                         <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{arrest.narrative}</p>
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
                             fontWeight: 'bold',
@@ -316,19 +366,24 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '30%' }}><strong>{t('sections.evidence.supporting')}</strong></td>
+                    <td style={numberCellStyle}>#1</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '28%' }}><strong>{t('sections.evidence.supporting')}</strong></td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>
                         <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{evidence.supporting}</p>
                     </td>
                 </tr>
                 <tr>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '30%' }}><strong>{t('sections.evidence.dashcam')}</strong></td>
+                    <td style={numberCellStyle}>#2</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '28%' }}><strong>{t('sections.evidence.dashcam')}</strong></td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>
                         <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{evidence.dashcam}</p>
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={4} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
                         <p style={{
                             fontSize: '1.125rem',
                             fontWeight: 'bold',
@@ -341,6 +396,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
+                    <td style={numberCellStyle}></td>
                     <td style={{ border: '1px solid black', padding: '0.75rem' }} colSpan={2}>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.minSentence')}:</strong> {calculation ? formatTotalTime(calculation.minTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.maxSentence')}:</strong> {calculation ? formatTotalTime(calculation.maxTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>

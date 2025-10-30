@@ -1153,10 +1153,11 @@
           "title": "1. GENERAL INFORMATION",
           "date": "A. DATE",
           "time": "B. TIME (24HR)",
-          "callsign": "C. CALLSIGN"
+          "callsign": "C. CALLSIGN",
+          "districtStreet": "D. DISTRICT / STREET"
         },
         "officers": {
-          "title": "2. OFFICER(S) INFORMATION",
+          "title": "2. OFFICER(S) / DEPUTY INFORMATION",
           "officerName": "A. OFFICER {number} NAME",
           "rank": "B. RANK",
           "badge": "C. BADGE"
@@ -1171,7 +1172,7 @@
           "street": "B. STREET"
         },
         "charges": {
-          "title": "5. CHARGES",
+          "title": "4. CHARGES",
           "headers": {
             "description": "CHARGE DESCRIPTION",
             "type": "TYPE",
