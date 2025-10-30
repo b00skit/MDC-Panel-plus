@@ -1157,7 +1157,7 @@
           "districtStreet": "D. DISTRICT / STREET"
         },
         "officers": {
-          "title": "2. OFFICER(S) / DEPUTY INFORMATION",
+          "title": "2. OFFICER(S) INFORMATION",
           "officerName": "A. OFFICER {number} NAME",
           "rank": "B. RANK",
           "badge": "C. BADGE"

@@ -135,7 +135,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         border: '1px solid black',
         padding: '0.5rem',
         textAlign: 'center' as const,
-        fontWeight: 'bold',
+        fontWeight: 'normal' as const,
         width: '6%',
         backgroundColor: '#f4f4f5',
     };
@@ -179,15 +179,25 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr style={{ backgroundColor: '#f4f4f5' }}>
-                    <td style={numberCellStyle}>#1</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem' }}><strong>{t('sections.general.date')}</strong></td>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}
+                    >
+                        <strong>{t('sections.general.date')}</strong>
+                    </td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.date}</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem' }}><strong>{t('sections.general.time')}</strong></td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}>
+                        <strong>{t('sections.general.time')}</strong>
+                    </td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.time}</td>
                 </tr>
                 <tr>
-                    <td style={numberCellStyle}>#2</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}><strong>{t('sections.general.callsign')}</strong></td>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}
+                    >
+                        <strong>{t('sections.general.callsign')}</strong>
+                    </td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.callSign}</td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}>
                         <strong>{districtStreetLabel}</strong>
@@ -241,9 +251,15 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
-                    <td style={numberCellStyle}>#1</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '28%' }}><strong>{t('sections.suspect.fullName')}</strong></td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '66%' }} colSpan={3}>{arrest.suspectName}</td>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '34%' }}
+                    >
+                        <strong>{t('sections.suspect.fullName')}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '66%' }} colSpan={3}>
+                        {arrest.suspectName}
+                    </td>
                 </tr>
                 <tr>
                     <td colSpan={5} style={sectionSpacingCell}></td>
@@ -297,7 +313,17 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                 })}
                 <tr>
                     <td style={numberCellStyle}></td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', fontWeight: 'bold' }}>{t('sections.charges.headers.addition')}</td>
+                    <td
+                        style={{
+                            border: '1px solid black',
+                            padding: '0.5rem',
+                            backgroundColor: '#f4f4f5',
+                            fontWeight: 'bold',
+                            fontSize: '0.75rem',
+                        }}
+                    >
+                        {t('sections.charges.headers.addition')}
+                    </td>
                     <td style={{ border: '1px solid black', padding: '0.5rem', fontSize: '0.75rem' }} colSpan={3}>
                         {report.map((row: any, index: number) => {
                             const chargeDetails = penalCode[row.chargeId!];
@@ -344,8 +370,7 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
-                    <td style={numberCellStyle}>#1</td>
-                    <td style={{ border: '1px solid black', padding: '0.75rem', lineHeight: 1.5 }} colSpan={4}>
+                    <td style={{ border: '1px solid black', padding: '0.75rem', lineHeight: 1.5 }} colSpan={5}>
                         <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{arrest.narrative}</p>
                     </td>
                 </tr>
@@ -366,15 +391,23 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
-                    <td style={numberCellStyle}>#1</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '28%' }}><strong>{t('sections.evidence.supporting')}</strong></td>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '34%' }}
+                    >
+                        <strong>{t('sections.evidence.supporting')}</strong>
+                    </td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>
                         <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{evidence.supporting}</p>
                     </td>
                 </tr>
                 <tr>
-                    <td style={numberCellStyle}>#2</td>
-                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '28%' }}><strong>{t('sections.evidence.dashcam')}</strong></td>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '34%' }}
+                    >
+                        <strong>{t('sections.evidence.dashcam')}</strong>
+                    </td>
                     <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>
                         <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{evidence.dashcam}</p>
                     </td>
@@ -396,13 +429,12 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     </td>
                 </tr>
                 <tr>
-                    <td style={numberCellStyle}></td>
                     <td style={{ border: '1px solid black', padding: '0.75rem' }} colSpan={2}>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.minSentence')}:</strong> {calculation ? formatTotalTime(calculation.minTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.maxSentence')}:</strong> {calculation ? formatTotalTime(calculation.maxTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.totalFine')}:</strong> ${calculation ? calculation.totals.fine.toLocaleString() : 'N/A'}</p>
                     </td>
-                    <td style={{ border: '1px solid black', padding: '0.75rem' }} colSpan={2}>
+                    <td style={{ border: '1px solid black', padding: '0.75rem' }} colSpan={3}>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.points')}:</strong> {calculation ? Math.round(calculation.totals.modified.points) : 'N/A'}</p>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.bailStatus')}:</strong> {calculation ? tShared(`bailStatus.${toCamelCase(calculation.bailStatus)}` as any) : 'N/A'}</p>
                         <p style={{ margin: 0 }}><strong>{t('sections.summary.bailAmount')}:</strong> ${calculation ? calculation.totals.highestBail.toLocaleString() : 'N/A'}</p>
