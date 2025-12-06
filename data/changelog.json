@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.6.0.01",
+            "type": "Hotfix",
+            "date": "2025-12-06",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Addressed a critical vulnerability with the nodejs packages fixing CVE-2025-55182."
+                }
+            ]
+        },
+        {
             "version": "3.6.0",
             "type": "Major Update",
             "date": "2025-10-21",
