@@ -1,9 +1,9 @@
 
 {
-    "enabled": false,
+    "enabled": true,
     "dismissible": true,
-    "variant": "default",
+    "variant": "destructive",
     "icon": "Info",
-    "title": "Experimental Feature: Legal Search",
-    "content": "We've released a new Experimental Feature called 'Legal Search', you can enable it in your settings or on the changelog."
+    "title": "Security Incident",
+    "content": "NOTICE: On the 05-DEC-2025 around 23:00, the website was attacked by an outside actor attempting to upload a crypto miner using vulnerability CVE-2025-55182 on the container, thankfully my safeguards prevented this attack by shutting down the container. As a result, apart from mild annoyance and downtime, no other malicious actions occured. No data was stolen, no passwords were stolen and the website is now back up online. I apologize to everyone. If anyone is running a localized version of the MDC Panel, please update it to >=3.6.0.01"
 }

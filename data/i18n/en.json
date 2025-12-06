@@ -321,9 +321,9 @@
         }
       },
       "bail": {
-        "noBail": "No Bail",
-        "discretionary": "Discretionary",
-        "autoBail": "Auto Bail"
+        "noBail": "NO BAIL",
+        "discretionary": "DISCRETIONARY",
+        "autoBail": "AUTO BAIL"
       }
     }
   },
@@ -755,15 +755,15 @@
       },
       "autoBail": {
         "na": "N/A",
-        "noBail": "No Bail",
-        "auto": "Auto Bail",
-        "discretionary": "Discretionary"
+        "noBail": "NO BAIL",
+        "auto": "AUTO BAIL",
+        "discretionary": "DISCRETIONARY"
       },
       "bailStatus": {
         "na": "N/A",
-        "notEligible": "Not Eligible",
-        "discretionary": "Discretionary",
-        "eligible": "Eligible"
+        "notEligible": "NOT ELIGIBLE",
+        "discretionary": "DISCRETIONARY",
+        "eligible": "ELIGIBLE"
       },
       "labels": {
         "yes": "Yes",
@@ -928,15 +928,15 @@
       },
       "autoBail": {
         "na": "N/A",
-        "noBail": "No Bail",
-        "auto": "Auto Bail",
-        "discretionary": "Discretionary"
+        "noBail": "NO BAIL",
+        "auto": "AUTO BAIL",
+        "discretionary": "DISCRETIONARY"
       },
       "bailStatus": {
         "na": "N/A",
-        "notEligible": "Not Eligible",
-        "discretionary": "Discretionary",
-        "eligible": "Eligible"
+        "notEligible": "NOT ELIGIBLE",
+        "discretionary": "DISCRETIONARY",
+        "eligible": "ELIGIBLE"
       },
       "labels": {
         "yes": "Yes",
