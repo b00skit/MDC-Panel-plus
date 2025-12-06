@@ -1,4 +1,3 @@
-
 {
     "id": "lspd_ccr",
     "title": "Crime Complaint Report (CCR)",
@@ -6,19 +5,53 @@
     "icon": "FilePlus",
     "icon_color": "#2563eb",
     "is_html_output": false,
-    "output": "[divbox2=white][color=transparent]spacer[/color]\n\n[aligntable=right,0,0,15,0,0,transparent]LOS SANTOS POLICE DEPT.\nOFFICE OF OPERATIONS\nMISSION ROW POLICE STATION\nSINNER STREET 1\nLOS SANTOS\n\n\n\n[/aligntable][aligntable=left,0,15,0,0,0,transparent][bwlspdlogo=130][/bwlspdlogo][/aligntable]\n\n[color=transparent]tt[/color]\n\n[color=transparent]tt[/color]\n\n\n[color=transparent]tt[/color]\n\n[hr][/hr]\n[b]CRIME COMPLAINT REPORT #{{report_number}}[/b]\n\n[b]PERSONNEL INFORMATION[/b]\nFull name(s): {{#each officers}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}\nDepartmental rank(s): {{#each officers}}{{this.rank}}{{#unless @last}}, {{/unless}}{{/each}}\nBadge number(s): {{#each officers}}#{{this.badgeNumber}}{{#unless @last}}, {{/unless}}{{/each}}\nDuty callsign: {{general.callSign}}\n\n[hr][/hr]\n\n[b]TIME AND LOCATION[/b]\nTime and date: {{general.time}} - {{general.date}}\nStreet: {{location.street}}\nArea: {{location.district}}\n{{#if casings_label}}IF CASINGS COLLECTED ADD LABEL HERE: -{{casings_label}}-\n{{/if}}\n\n[hr][/hr]\n\n[b]NARRATIVE[/b]\n{{narrative}}\n\n[hr][/hr]\n\n[b]EVIDENCE[/b]\n{{evidence}}",
+    "output_title": "CCR - {{#if subject_initials}}{{subject_initials}}{{else}}N/A{{/if}} - {{general.date}} [{{crime_tag}}]",
+    "output": "[divbox2=white][color=transparent]spacer[/color]\n\n[aligntable=right,0,0,15,0,0,transparent]LOS SANTOS POLICE DEPT.\nOFFICE OF OPERATIONS\nMISSION ROW POLICE STATION\nSINNER STREET 1\nLOS SANTOS\n\n\n\n[/aligntable][aligntable=left,0,15,0,0,0,transparent][bwlspdlogo=130][/bwlspdlogo][/aligntable]\n\n[color=transparent]tt[/color]\n\n[color=transparent]tt[/color]\n\n\n[color=transparent]tt[/color]\n\n[hr][/hr]\n[b]CRIME COMPLAINT REPORT[/b]\n\n[u][b]PERSONNEL INFORMATION[/b][/u]\n[b]Reporting Officer(s):[/b] {{#each officers}}{{this.rank}} {{this.name}}, #{{this.badgeNumber}}{{#unless @last}}, {{/unless}}{{/each}}\n[b]Callsign:[/b] {{general.callSign}}\n\n[u][b]TIME & LOCATION[/b][/u]\n[b]Date / Time:[/b] {{general.time}} - {{general.date}}\n[b]Street:[/b] {{location.street}}\n[b]Area:[/b] {{location.district}}\n\n[b][u]NARRATIVE[/u][/b]\n[i](The narrative should be detailed and fully describe the incident chronologically.)[/i]\n[list=none]{{narrative}}[/list]\n\n[hr]\n\n[b][u]EVIDENCE[/u][/b]\n[b]Firearm Casings Present:[/b] {{#if evidence.casings_present}}[cbc]{{else}}[cb]{{/if}}\n[i]If collected, list label / locker number:[/i]\n[list]\n[*] {{#if evidence.casings_details}}{{evidence.casings_details}}{{else}}N/A{{/if}}\n[/list]\n\n[b]Blood Evidence Present:[/b] {{#if evidence.blood_present}}[cbc]{{else}}[cb]{{/if}}\n[i]If collected, list label / locker number:[/i]\n[list]\n[*] {{#if evidence.blood_details}}{{evidence.blood_details}}{{else}}N/A{{/if}}\n[/list]\n[altspoiler2=(( OOC blood submission results logs ))]\n{{evidence.blood_ooc_logs}}\n[/altspoiler2]\n\n[b]Weapons Recovered:[/b] {{#if evidence.weapons_recovered}}[cbc]{{else}}[cb]{{/if}}\n[i]If collected, list label / locker number:[/i]\n[list]\n[*] {{#if evidence.weapons_details}}{{evidence.weapons_details}}{{else}}N/A{{/if}}\n[/list]\n\n[b]CCTV Located:[/b] {{#if evidence.cctv_located}}[cbc]{{else}}[cb]{{/if}}\n[i]If yes, list camera location ((and ID)):[/i]\n[list]\n[*] {{#if evidence.cctv_details}}{{evidence.cctv_details}}{{else}}N/A{{/if}}\n[/list]\n\n[b]Photographs Taken:[/b] {{#if evidence.photos_taken}}[cbc]{{else}}[cb]{{/if}}\n[altspoiler2=Photographs]\n{{#if evidence.photos_details}}{{evidence.photos_details}}{{else}}N/A{{/if}}\n[/altspoiler2]\n\n[b]Witnesses Located:[/b] {{#if evidence.witnesses_located}}[cbc]{{else}}[cb]{{/if}}\n[i]If yes, list names and contacts:[/i]\n[list]\n[*] {{#if evidence.witnesses_details}}{{evidence.witnesses_details}}{{else}}N/A{{/if}}\n[/list]\n\n[b]Other Physical Evidence:[/b]\n[list]\n[*] {{#if evidence.other_evidence1}}{{evidence.other_evidence1}}{{else}}N/A{{/if}}\n[*] {{#if evidence.other_evidence2}}{{evidence.other_evidence2}}{{else}}N/A{{/if}}\n[/list]\n\n[hr][/hr]\n[/divbox2]",
     "form": [
-        { "type": "section", "title": "General Information" },
-        { "type": "text", "name": "report_number", "label": "Report Number", "placeholder": "XXX", "required": true },
+        { "type": "section", "title": "Personnel Information" },
         { "type": "general", "name": "general" },
-        { "type": "section", "title": "Officer Information" },
         { "type": "officer", "name": "officers", "multi": true, "showBadgeNumber": true },
-        { "type": "section", "title": "Location Details" },
+        { "type": "section", "title": "Time & Location" },
         { "type": "location", "name": "location", "showDistrict": true },
-        { "type": "text", "name": "casings_label", "label": "Casings Label (Optional)", "placeholder": "Enter casings label if applicable" },
+        { "type": "section", "title": "Topic Title Information" },
+        { "type": "text", "name": "subject_initials", "label": "Subject's Initials", "placeholder": "FL" },
+        { 
+            "type": "dropdown",
+            "name": "crime_tag",
+            "label": "Crime Tag",
+            "options": ["GANGS", "NARCOTICS", "VICE", "ORGANIZED CRIME", "CAPS", "OTHER"],
+            "required": true
+        },
         { "type": "section", "title": "Narrative" },
-        { "type": "textarea", "name": "narrative", "label": "Narrative", "placeholder": "Insert your narrative here...", "required": true },
+        { "type": "textarea", "name": "narrative", "label": "Narrative", "placeholder": "The narrative should be detailed and fully describe the incident chronologically.", "required": true, "defaultValue": "N/A" },
         { "type": "section", "title": "Evidence" },
-        { "type": "textarea", "name": "evidence", "label": "Evidence", "placeholder": "List any evidence collected...", "required": true }
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "evidence.casings_present", "label": "Firearm Casings Present", "defaultValue": false },
+            { "type": "text", "name": "evidence.casings_details", "label": "Casings Details (Label/Locker)", "placeholder": "Label/Locker number", "stipulation": {"field": "evidence.casings_present", "value": true}}
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "evidence.blood_present", "label": "Blood Evidence Present", "defaultValue": false },
+            { "type": "text", "name": "evidence.blood_details", "label": "Blood Evidence Details (Label/Locker)", "placeholder": "Label/Locker number", "stipulation": {"field": "evidence.blood_present", "value": true}}
+        ]},
+        { "type": "textarea", "name": "evidence.blood_ooc_logs", "label": "OOC Blood Submission Logs", "placeholder": "Paste logs here...", "stipulation": {"field": "evidence.blood_present", "value": true}, "defaultValue": "N/A" },
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "evidence.weapons_recovered", "label": "Weapons Recovered", "defaultValue": false },
+            { "type": "text", "name": "evidence.weapons_details", "label": "Weapons Details (Label/Locker)", "placeholder": "Label/Locker number", "stipulation": {"field": "evidence.weapons_recovered", "value": true}}
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "evidence.cctv_located", "label": "CCTV Located", "defaultValue": false },
+            { "type": "text", "name": "evidence.cctv_details", "label": "CCTV Location ((and ID))", "placeholder": "e.g. 24/7 LTD on Vespucci Blvd ((ID 123))", "stipulation": {"field": "evidence.cctv_located", "value": true}}
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "evidence.photos_taken", "label": "Photographs Taken", "defaultValue": false },
+            { "type": "textarea", "name": "evidence.photos_details", "label": "Photographs Details/Links", "placeholder": "Links to images...", "stipulation": {"field": "evidence.photos_taken", "value": true}}
+        ]},
+        { "type": "group", "fields": [
+            { "type": "toggle", "name": "evidence.witnesses_located", "label": "Witnesses Located", "defaultValue": false },
+            { "type": "textarea", "name": "evidence.witnesses_details", "label": "Witness Names and Contacts", "placeholder": "John Doe - 123456", "stipulation": {"field": "evidence.witnesses_located", "value": true}}
+        ]},
+        { "type": "section", "title": "Other Physical Evidence" },
+        { "type": "text", "name": "evidence.other_evidence1", "label": "Other Evidence #1", "placeholder": "e.g. Clothing", "defaultValue": "N/A" },
+        { "type": "text", "name": "evidence.other_evidence2", "label": "Other Evidence #2", "placeholder": "e.g. Shell casings", "defaultValue": "N/A" }
     ]
 }
