@@ -1,6 +1,21 @@
 {
     "changelogs": [
         {
+            "version": "3.6.1",
+            "type": "Minor Update",
+            "date": "2025-12-10",
+            "items": [
+                {
+                    "type": "addition",
+                    "description": "<b>Paperwork Generators:</b> New <u>Death Investigation Report</u> has been added for the Los Santos Police Department."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Paperwork Generators:</b> The <u>Crime Complaint Report</u> has been updated to match the new report made by the Los Santos Police Department."
+                }
+            ]
+        },
+        {
             "version": "3.6.0.01",
             "type": "Hotfix",
             "date": "2025-12-06",
