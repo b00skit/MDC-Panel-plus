@@ -934,8 +934,6 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                                 <BetterSwitch
                                     checked={value}
                                     onCheckedChange={onChange}
-                                    // Use ?? so that empty strings ("") in config are respected
-                                    // and the label is only used if dataOn/dataOff are null/undefined.
                                     textOn={field.dataOn ?? field.label}
                                     textOff={field.dataOff ?? field.label}
                                     className={cn(
@@ -1137,8 +1135,17 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
     const onSubmit = (data: any) => {
         const { officers } = useOfficerStore.getState();
         const { general } = useBasicFormStore.getState().formData;
+        const processedData = { ...data };
+
+        // Process textareas with separator flag
+        generatorConfig.form.forEach(field => {
+            if (field.type === 'textarea' && (field as any).separator && field.name && processedData[field.name]) {
+                processedData[field.name] = processedData[field.name].split('\n').filter((line: string) => line.trim() !== '');
+            }
+        });
+
         const fullData = {
-            ...data,
+            ...processedData,
             officers,
             general,
             penalCode,
