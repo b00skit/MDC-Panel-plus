@@ -354,7 +354,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
         let error: any = errors;
         for (const field of fields) {
             if (error && field in error) {
-                error = error[field];
+                error = (error as any)[field];
             } else {
                 error = null;
                 break;
@@ -887,20 +887,20 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                     </div>
                 );
 
-             case 'toggle':
+            case 'toggle':
                 return (
                     <div key={fieldKey} className="flex items-center space-x-2 pt-6">
                         <Controller
                             name={path}
                             control={control}
                             defaultValue={field.defaultValue === true}
-                            render={({ field: { onChange, value } }) => (
+                            render={({ field: controllerField }) => (
                                 <Switch
                                     id={path}
-                                    checked={value}
+                                    checked={controllerField.value}
                                     onCheckedChange={value => {
-                                        onChange(value);
-                                        trigger(); 
+                                        controllerField.onChange(value);
+                                        trigger();
                                     }}
                                 />
                             )}
@@ -910,6 +910,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                         </Label>
                     </div>
                 );
+
             case 'better-switch': {
                 const limitToOneColumn = !parentType;
                 return (
