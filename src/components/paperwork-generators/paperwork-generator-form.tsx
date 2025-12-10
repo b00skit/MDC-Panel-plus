@@ -75,6 +75,15 @@ const setValueAtPath = (target: Record<string, any>, path: string[], value: any)
     });
 };
 
+const getValueAtPath = (target: any, path: string[]) => {
+    let current = target;
+    for (const segment of path) {
+        if (current === undefined || current === null) return undefined;
+        current = current[segment];
+    }
+    return current;
+};
+
 const mergeDeep = (target: Record<string, any>, source: Record<string, any>): Record<string, any> => {
     Object.entries(source).forEach(([key, value]) => {
         if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
@@ -1135,14 +1144,43 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
     const onSubmit = (data: any) => {
         const { officers } = useOfficerStore.getState();
         const { general } = useBasicFormStore.getState().formData;
-        const processedData = { ...data };
+        
+        // Deep clone to ensure we don't mutate state refs unexpectedly
+        const processedData = JSON.parse(JSON.stringify(data));
 
-        // Process textareas with separator flag
-        generatorConfig.form.forEach(field => {
-            if (field.type === 'textarea' && (field as any).separator && field.name && processedData[field.name]) {
-                processedData[field.name] = processedData[field.name].split('\n').filter((line: string) => line.trim() !== '');
-            }
-        });
+        // Recursive function to process fields, including nested groups
+        const processFields = (fields: FormField[]) => {
+            fields.forEach(field => {
+                // 1. Recurse if the field acts as a container (groups, input_groups, etc.)
+                if (field.fields) {
+                    processFields(field.fields);
+                }
+
+                // 2. Process Separator Logic
+                if (field.type === 'textarea' && (field as any).separator && field.name) {
+                    const pathSegments = splitFieldPath(field.name);
+                    const rawValue = getValueAtPath(processedData, pathSegments);
+
+                    if (typeof rawValue === 'string') {
+                        // Split by newline and filter out empty lines
+                        const splitArray = rawValue
+                            .split('\n')
+                            .map(line => line.trim())
+                            .filter(line => line !== '');
+
+                        // If the list is empty (user typed nothing or just enters), 
+                        // you might want to leave it as null/undefined or an empty array 
+                        // depending on how your Handlebars template handles {{#if}} vs {{#each}}
+                        const finalValue = splitArray.length > 0 ? splitArray : null;
+
+                        setValueAtPath(processedData, pathSegments, finalValue);
+                    }
+                }
+            });
+        };
+
+        // Trigger the recursive processing
+        processFields(generatorConfig.form);
 
         const fullData = {
             ...processedData,
@@ -1160,8 +1198,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
             groupId: groupIdFromParams
         });
 
-        setLastFormValues(data);
-        setFormData(fullData);
+        setLastFormValues(data); // Save the original raw input for restoring the form later
+        setFormData(fullData);   // Save the processed array data for the generator
         router.push('/paperwork-submit');
     };
 
