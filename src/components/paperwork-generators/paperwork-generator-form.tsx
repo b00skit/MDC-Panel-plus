@@ -843,6 +843,9 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                                             if (typeof option === 'string') {
                                                 return <SelectItem key={option} value={option}>{option}</SelectItem>;
                                             }
+                                            if (typeof option === 'object' && option.label && option.value) {
+                                                return <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>;
+                                            }
                                             if (typeof option === 'object' && option.label && option.items) {
                                                 return (
                                                     <SelectGroup key={option.label}>
@@ -903,7 +906,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                             )}
                         />
                         <Label htmlFor={path}>
-                            {watch(path) ? field.dataOn : field.dataOff}
+                            {field.label}
                         </Label>
                     </div>
                 );
@@ -926,8 +929,8 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                                 <BetterSwitch
                                     checked={value}
                                     onCheckedChange={onChange}
-                                    textOn={field.dataOn}
-                                    textOff={field.dataOff}
+                                    textOn={field.dataOn || field.label}
+                                    textOff={field.dataOff || field.label}
                                     className={cn(
                                         limitToOneColumn && 'md:max-w-[calc(100%/3)] md:w-full'
                                     )}
