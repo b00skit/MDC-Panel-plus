@@ -78,4 +78,8 @@ export function registerHelpers(): void {
         }
     }
   });
+  Handlebars.registerHelper('initials', (name) => {
+    if (typeof name !== 'string' || !name) return '';
+    return name.split(' ').map(word => word[0]).join('').toUpperCase();
+  });
 }
