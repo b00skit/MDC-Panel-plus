@@ -16,7 +16,7 @@
         { "type": "section", "title": "Decedent Information" },
         { "type": "text", "name": "decedent.name", "label": "Decedent Name", "placeholder": "First Last" },
         { "type": "group", "fields": [
-            { "type": "dropdown", "name": "decedent.sex", "label": "Sex", "options": ["M", "F"], "dataOn": "Sex", "dataOff": "Sex" },
+            { "type": "dropdown", "name": "decedent.sex", "label": "Sex", "options": ["M", "F"] },
             { "type": "text", "name": "decedent.age", "label": "Approx. Age", "placeholder": "e.g., 25" }
         ]},
         { "type": "textarea", "name": "decedent.ooc_info", "label": "OOC Corpse Info", "placeholder": "Paste /cexamine and /cdamages logs here..." },
@@ -24,33 +24,33 @@
         { "type": "textarea", "name": "narrative", "label": "Narrative", "placeholder": "The narrative should be concise and limited to essential facts observed at the scene.", "required": true, "defaultValue": "-" },
         { "type": "section", "title": "Evidence" },
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "evidence.casings_present", "label": "Firearm Casings Present", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" },
+            { "type": "toggle", "name": "evidence.casings_present", "label": "Firearm Casings Present", "defaultValue": false },
             { "type": "textarea", "name": "evidence.casings_details", "label": "Casings Details (Label/Locker)", "placeholder": "Label/Locker number", "stipulation": {"field": "evidence.casings_present", "value": true}, "separator": true}
         ]},
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "evidence.blood_present", "label": "Blood Evidence Present", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" },
+            { "type": "toggle", "name": "evidence.blood_present", "label": "Blood Evidence Present", "defaultValue": false },
             { "type": "textarea", "name": "evidence.blood_details", "label": "Blood Evidence Details (Label/Locker)", "placeholder": "Label/Locker number", "stipulation": {"field": "evidence.blood_present", "value": true}, "separator": true}
         ]},
         { "type": "textarea", "name": "evidence.blood_ooc_logs", "label": "OOC Blood Submission Logs", "placeholder": "Paste logs here...", "stipulation": {"field": "evidence.blood_present", "value": true}, "defaultValue": "N/A" },
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "evidence.weapons_recovered", "label": "Weapons Recovered", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" },
+            { "type": "toggle", "name": "evidence.weapons_recovered", "label": "Weapons Recovered", "defaultValue": false },
             { "type": "textarea", "name": "evidence.weapons_details", "label": "Weapons Details (Label/Locker)", "placeholder": "Label/Locker number", "stipulation": {"field": "evidence.weapons_recovered", "value": true}, "separator": true}
         ]},
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "evidence.cctv_located", "label": "CCTV Located", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" },
+            { "type": "toggle", "name": "evidence.cctv_located", "label": "CCTV Located", "defaultValue": false },
             { "type": "textarea", "name": "evidence.cctv_details", "label": "CCTV Location ((and ID))", "placeholder": "e.g. 24/7 LTD on Vespucci Blvd ((ID 123))", "stipulation": {"field": "evidence.cctv_located", "value": true}, "separator": true}
         ]},
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "evidence.photos_taken", "label": "Photographs Taken", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" },
+            { "type": "toggle", "name": "evidence.photos_taken", "label": "Photographs Taken", "defaultValue": false },
             { "type": "textarea", "name": "evidence.photos_details", "label": "Photographs Details/Links", "placeholder": "Links to images...", "stipulation": {"field": "evidence.photos_taken", "value": true}}
         ]},
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "evidence.witnesses_located", "label": "Witnesses Located", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" },
+            { "type": "toggle", "name": "evidence.witnesses_located", "label": "Witnesses Located", "defaultValue": false },
             { "type": "textarea", "name": "evidence.witnesses_details", "label": "Witness Names and Contacts", "placeholder": "John Doe - 123456", "stipulation": {"field": "evidence.witnesses_located", "value": true}, "separator": true}
         ]},
         { "type": "group", "fields": [
-            { "type": "toggle", "name": "coroner.report_requested", "label": "Coroner Report Requested", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" },
-            { "type": "toggle", "name": "coroner.report_attached", "label": "Coroner Report Attached", "defaultValue": false, "dataOn": "Yes", "dataOff": "No" }
+            { "type": "toggle", "name": "coroner.report_requested", "label": "Coroner Report Requested", "defaultValue": false },
+            { "type": "toggle", "name": "coroner.report_attached", "label": "Coroner Report Attached", "defaultValue": false, "stipulation": {"field": "coroner.report_requested", "value": true} }
         ]},
         { "type": "textarea", "name": "coroner.report_details", "label": "Coroner Report Details", "placeholder": "Paste Coroner Report here...", "stipulation": {"field": "coroner.report_attached", "value": true}},
         { 
