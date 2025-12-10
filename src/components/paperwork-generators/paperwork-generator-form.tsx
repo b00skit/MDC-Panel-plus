@@ -895,19 +895,23 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                             control={control}
                             defaultValue={field.defaultValue === true}
                             render={({ field: controllerField }) => (
-                                <Switch
-                                    id={path}
-                                    checked={controllerField.value}
-                                    onCheckedChange={value => {
-                                        controllerField.onChange(value);
-                                        trigger();
-                                    }}
-                                />
+                                <>
+                                    <Switch
+                                        id={path}
+                                        checked={controllerField.value}
+                                        onCheckedChange={value => {
+                                            controllerField.onChange(value);
+                                            trigger();
+                                        }}
+                                    />
+                                    <Label htmlFor={path}>
+                                        {controllerField.value
+                                            ? (field.dataOn ?? field.label)
+                                            : (field.dataOff ?? field.label)}
+                                    </Label>
+                                </>
                             )}
                         />
-                        <Label htmlFor={path}>
-                            {field.label}
-                        </Label>
                     </div>
                 );
 
@@ -930,8 +934,10 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
                                 <BetterSwitch
                                     checked={value}
                                     onCheckedChange={onChange}
-                                    textOn={field.dataOn || field.label}
-                                    textOff={field.dataOff || field.label}
+                                    // Use ?? so that empty strings ("") in config are respected
+                                    // and the label is only used if dataOn/dataOff are null/undefined.
+                                    textOn={field.dataOn ?? field.label}
+                                    textOff={field.dataOff ?? field.label}
                                     className={cn(
                                         limitToOneColumn && 'md:max-w-[calc(100%/3)] md:w-full'
                                     )}
