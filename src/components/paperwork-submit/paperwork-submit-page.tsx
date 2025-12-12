@@ -102,7 +102,7 @@ const GeneratedFormattedReport = ({
 
             // Compile main output
             const outputTemplateString = generatorConfig.output
-            const compiledOutputTemplate = Handlebars.compile(outputTemplateString, { noEscape: true });
+            const compiledOutputTemplate = Handlebars.compile(outputTemplateString, { noEscape: !generatorConfig.is_html_output });
             let parsedOutput = compiledOutputTemplate(processedData);
             
             // Compile title if it exists
