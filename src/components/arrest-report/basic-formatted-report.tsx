@@ -16,6 +16,50 @@ const getType = (type: string | undefined, t: (key: string) => string) => {
     }
 };
 
+const getTypePillStyle = (type: string | undefined) => {
+    const baseStyle = {
+        display: 'inline-block',
+        padding: '0.125rem 0.5rem',
+        borderRadius: '9999px',
+        fontWeight: 'bold',
+        fontSize: '0.75rem',
+        letterSpacing: '0.05em',
+        textTransform: 'uppercase' as const,
+        border: '1px solid transparent',
+    };
+
+    switch (type) {
+        case 'F':
+            return {
+                ...baseStyle,
+                backgroundColor: '#b91c1c',
+                color: '#ffffff',
+                borderColor: '#7f1d1d',
+            };
+        case 'M':
+            return {
+                ...baseStyle,
+                backgroundColor: '#f59e0b',
+                color: '#1f2937',
+                borderColor: '#b45309',
+            };
+        case 'I':
+            return {
+                ...baseStyle,
+                backgroundColor: '#0ea5e9',
+                color: '#0f172a',
+                borderColor: '#0369a1',
+            };
+        default:
+            return {
+                ...baseStyle,
+                backgroundColor: '#e5e7eb',
+                color: '#111827',
+                borderColor: '#9ca3af',
+            };
+    }
+};
+
 const toCamelCase = (str: string) =>
     str
       .toLowerCase()
@@ -81,154 +125,319 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         return tShared(`additionNames.${translationKey}` as any) || name;
     }
 
+    const sectionSpacingCell = {
+        height: '0.75rem',
+        padding: 0,
+        border: 'none',
+    } as const;
+
+    const numberCellStyle = {
+        border: '1px solid black',
+        padding: '0.5rem',
+        textAlign: 'center' as const,
+        fontWeight: 'normal' as const,
+        width: '6%',
+        backgroundColor: '#f4f4f5',
+    };
+
+    const districtStreetLabelRaw = t('sections.general.districtStreet' as any);
+    const districtStreetLabel =
+        typeof districtStreetLabelRaw === 'string' && districtStreetLabelRaw.includes('sections.general.districtStreet')
+            ? `${t('sections.location.district')} / ${t('sections.location.street')}`
+            : districtStreetLabelRaw;
+
     return (
-        <table ref={innerRef} style={{ width: '100%', fontFamily: "'Times New Roman', serif", borderCollapse: 'collapse', border: '4px solid black', backgroundColor: 'white', color: 'black' }}>
+        <table
+            ref={innerRef}
+            style={{
+                width: '100%',
+                fontFamily: "'Times New Roman', serif",
+                borderCollapse: 'collapse',
+                border: '6px double black',
+                backgroundColor: 'white',
+                color: 'black',
+            }}
+        >
             <tbody>
                 <tr>
-                    <td colSpan={3} style={{ textAlign: 'center', paddingBottom: '2rem' }}>
-                        <h1 style={{ fontFamily: 'Arial, sans-serif', fontSize: '2rem', fontWeight: 'bold', textTransform: 'uppercase', margin: 0 }}>{header}</h1>
-                        <h2 style={{ fontFamily: 'Arial, sans-serif', fontSize: '1.5rem', fontWeight: 600, margin: 0 }}>{t('title')}</h2>
+                    <td colSpan={5} style={{ padding: '1.5rem 1rem 1rem', textAlign: 'center' }}>
+                        <p style={{ fontSize: '0.95rem', margin: 0, letterSpacing: '0.1em' }}>{header}</p>
+                        <p style={{ fontSize: '1.75rem', fontWeight: 'bold', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('title')}</p>
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.general.title')}</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <tbody>
-                                <tr>
-                                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.general.date')}:</strong> {general.date}</td>
-                                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.general.time')}:</strong> {general.time}</td>
-                                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.general.callsign')}:</strong> {general.callSign}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.officers.title')}</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <tbody>
-                                {officers.map((officer: any, index: number) => (
-                                    <tr key={officer.id}>
-                                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '41.66%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.officers.officerName', { number: index + 1 })}:</strong> {officer.name}</td>
-                                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '33.33%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.officers.rank')}:</strong> {officer.rank}</td>
-                                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '25%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.officers.badge')}:</strong> #{officer.badgeNumber}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.suspect.title')}</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <tbody>
-                                <tr>
-                                    <td style={{ border: '1px solid black', padding: '0.5rem' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.suspect.fullName')}:</strong> {arrest.suspectName}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.location.title')}</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <tbody>
-                                <tr>
-                                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '50%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.location.district')}:</strong> {location.district}</td>
-                                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '50%' }}><strong style={{ fontFamily: 'Arial, sans-serif' }}>{t('sections.location.street')}:</strong> {location.street}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.charges.title')}</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid black' }}>
-                            <thead style={{ backgroundColor: '#E5E7EB' }}>
-                                <tr>
-                                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>{t('sections.charges.headers.description')}</th>
-                                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>{t('sections.charges.headers.type')}</th>
-                                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>{t('sections.charges.headers.class')}</th>
-                                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>{t('sections.charges.headers.offense')}</th>
-                                    <th style={{ border: '1px solid black', padding: '0.5rem', fontFamily: 'Arial, sans-serif' }}>{t('sections.charges.headers.addition')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {report.map((row: any) => {
-                                    const chargeDetails = penalCode[row.chargeId!];
-                                    if (!chargeDetails) return null;
-                                    
-                                    let title = `${chargeDetails.id}. ${chargeDetails.charge}`;
-                                    if (row.offense !== '1') {
-                                        title += ` (Offence #${row.offense})`;
-                                    }
-                                    if (chargeDetails.drugs && row.category) {
-                                        title += ` (Category ${row.category})`;
-                                    }
-                                    
-                                    return (
-                                        <tr key={row.uniqueId}>
-                                            <td style={{ border: '1px solid black', padding: '0.5rem' }}>{title}</td>
-                                            <td style={{ border: '1px solid black', padding: '0.5rem' }}>{getType(chargeDetails.type, (key) => tShared(`${key}` as any))}</td>
-                                            <td style={{ border: '1px solid black', padding: '0.5rem' }}>{row.class}</td>
-                                            <td style={{ border: '1px solid black', padding: '0.5rem' }}>{row.offense}</td>
-                                            <td style={{ border: '1px solid black', padding: '0.5rem' }}>
-                                                {row.addition
-                                                    ? reportIsParoleViolator
-                                                        ? `${getAdditionName(row.addition)} + ${getAdditionName(configData.PAROLE_VIOLATION_DEFINITION)}`
-                                                        : getAdditionName(row.addition)
-                                                    : reportIsParoleViolator
-                                                        ? `${getAdditionName('Offender')} + ${getAdditionName(configData.PAROLE_VIOLATION_DEFINITION)}`
-                                                        : getAdditionName('Offender')}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.narrative.title')}</h3>
-                        <p style={{ border: '1px solid black', padding: '0.5rem', minHeight: '150px', whiteSpace: 'pre-wrap', margin: 0 }}>{arrest.narrative}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.evidence.title')}</h3>
-                        <p style={{ border: '1px solid black', padding: '0.5rem', minHeight: '100px', whiteSpace: 'pre-wrap', margin: '0 0 0.5rem 0' }}>
-                            <strong style={{ fontFamily: 'Arial, sans-serif', display: 'block', marginBottom: '0.25rem' }}>{t('sections.evidence.supporting')}:</strong>
-                            {evidence.supporting}
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                        <p style={{
+                            fontSize: '1.125rem',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                        }}>
+                            {t('sections.general.title')}
                         </p>
-                        <p style={{ border: '1px solid black', padding: '0.5rem', minHeight: '100px', whiteSpace: 'pre-wrap', margin: 0 }}>
-                            <strong style={{ fontFamily: 'Arial, sans-serif', display: 'block', marginBottom: '0.25rem' }}>{t('sections.evidence.dashcam')}:</strong>
-                            {evidence.dashcam}
+                    </td>
+                </tr>
+                <tr style={{ backgroundColor: '#f4f4f5' }}>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}
+                    >
+                        <strong>{t('sections.general.date')}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.date}</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}>
+                        <strong>{t('sections.general.time')}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.time}</td>
+                </tr>
+                <tr>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}
+                    >
+                        <strong>{t('sections.general.callsign')}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>{general.callSign}</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5' }}>
+                        <strong>{districtStreetLabel}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>
+                        {[location.district, location.street].filter(Boolean).join(' / ')}
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                        <p style={{
+                            fontSize: '1.125rem',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                        }}>
+                            {t('sections.officers.title')}
+                        </p>
+                    </td>
+                </tr>
+                {officers.map((officer: any, index: number) => (
+                    <tr key={officer.id} style={{ backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb' }}>
+                        <td style={numberCellStyle}>{`#${index + 1}`}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '28%', backgroundColor: '#f4f4f5' }}><strong>{t('sections.officers.officerName', { number: index + 1 })}</strong></td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '28%' }}>{officer.name}</td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '19%', backgroundColor: '#f4f4f5' }}><strong>{t('sections.officers.rank')}</strong></td>
+                        <td style={{ border: '1px solid black', padding: '0.5rem', width: '19%' }}>
+                            <p style={{ margin: '0 0 0.25rem 0' }}>{officer.rank}</p>
+                            <p style={{ margin: 0 }}><strong>{t('sections.officers.badge')}</strong> #{officer.badgeNumber}</p>
+                        </td>
+                    </tr>
+                ))}
+                <tr>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                        <p style={{
+                            fontSize: '1.125rem',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                        }}>
+                            {t('sections.suspect.title')}
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={3} style={{ borderTop: '2px solid black', padding: '0.5rem' }}>
-                        <h3 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>{t('sections.summary.title')}</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <tbody>
-                                <tr>
-                                    <td style={{ border: '1px solid black', padding: '0.5rem' }}>
-                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.minSentence')}:</strong> {calculation ? formatTotalTime(calculation.minTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.maxSentence')}:</strong> {calculation ? formatTotalTime(calculation.maxTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.totalFine')}:</strong> ${calculation ? calculation.totals.fine.toLocaleString() : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.points')}:</strong> {calculation ? Math.round(calculation.totals.modified.points) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.bailStatus')}:</strong> {calculation ? tShared(`bailStatus.${toCamelCase(calculation.bailStatus)}` as any) : 'N/A'}</p>
-                                        <p style={{ margin: 0 }}><strong>{t('sections.summary.bailAmount')}:</strong> ${calculation ? calculation.totals.highestBail.toLocaleString() : 'N/A'}</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '34%' }}
+                    >
+                        <strong>{t('sections.suspect.fullName')}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', width: '66%' }} colSpan={3}>
+                        {arrest.suspectName}
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                        <p style={{
+                            fontSize: '1.125rem',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                        }}>
+                            {t('sections.charges.title')}
+                        </p>
+                    </td>
+                </tr>
+                <tr style={{ backgroundColor: '#e5e7eb' }}>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold', textAlign: 'center', width: '6%' }}>#</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.description')}</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.type')}</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.class')}</td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontWeight: 'bold' }}>{t('sections.charges.headers.offense')}</td>
+                </tr>
+                {report.map((row: any, index: number) => {
+                    const chargeDetails = penalCode[row.chargeId!];
+                    if (!chargeDetails) return null;
+
+                    let title = `${chargeDetails.id}. ${chargeDetails.charge}`;
+                    if (row.offense !== '1') {
+                        title += ` (Offence #${row.offense})`;
+                    }
+                    if (chargeDetails.drugs && row.category) {
+                        title += ` (Category ${row.category})`;
+                    }
+
+                    const typeText = getType(chargeDetails.type, (key) => tShared(`${key}` as any));
+                    const typeStyle = getTypePillStyle(chargeDetails.type);
+
+                    return (
+                        <tr key={row.uniqueId}>
+                            <td style={numberCellStyle}>{`#${index + 1}`}</td>
+                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{title}</td>
+                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>
+                                <span style={typeStyle}>{typeText}</span>
+                            </td>
+                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.class ? `Class (${row.class})` : 'Class (N/A)'}</td>
+                            <td style={{ border: '1px solid black', padding: '0.5rem', verticalAlign: 'top' }}>{row.offense ? `Offence #${row.offense}` : 'Offence #N/A'}</td>
+                        </tr>
+                    );
+                })}
+                <tr>
+                    <td style={numberCellStyle}></td>
+                    <td
+                        style={{
+                            border: '1px solid black',
+                            padding: '0.5rem',
+                            backgroundColor: '#f4f4f5',
+                            fontWeight: 'bold',
+                            fontSize: '0.75rem',
+                        }}
+                    >
+                        {t('sections.charges.headers.addition')}
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem', fontSize: '0.75rem' }} colSpan={3}>
+                        {report.map((row: any, index: number) => {
+                            const chargeDetails = penalCode[row.chargeId!];
+                            if (!chargeDetails) return null;
+
+                            const label = report.length > 1 ? `${index + 1}. ` : '';
+                            const additionText = row.addition
+                                ? reportIsParoleViolator
+                                    ? `${getAdditionName(row.addition)} + ${getAdditionName(configData.PAROLE_VIOLATION_DEFINITION)}`
+                                    : getAdditionName(row.addition)
+                                : reportIsParoleViolator
+                                    ? `${getAdditionName('Offender')} + ${getAdditionName(configData.PAROLE_VIOLATION_DEFINITION)}`
+                                    : getAdditionName('Offender');
+
+                            return (
+                                <p
+                                    key={`addition-${row.uniqueId}`}
+                                    style={{
+                                        margin: index === report.length - 1 ? 0 : '0 0 0.25rem 0',
+                                        lineHeight: 1.35,
+                                    }}
+                                >
+                                    <strong>{label}</strong>
+                                    {additionText}
+                                </p>
+                            );
+                        })}
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                        <p style={{
+                            fontSize: '1.125rem',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                        }}>
+                            {t('sections.narrative.title')}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style={{ border: '1px solid black', padding: '0.75rem', lineHeight: 1.5 }} colSpan={5}>
+                        <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{arrest.narrative}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                        <p style={{
+                            fontSize: '1.125rem',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                        }}>
+                            {t('sections.evidence.title')}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '34%' }}
+                    >
+                        <strong>{t('sections.evidence.supporting')}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>
+                        <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{evidence.supporting}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                        colSpan={2}
+                        style={{ border: '1px solid black', padding: '0.5rem', backgroundColor: '#f4f4f5', width: '34%' }}
+                    >
+                        <strong>{t('sections.evidence.dashcam')}</strong>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.5rem' }} colSpan={3}>
+                        <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{evidence.dashcam}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={sectionSpacingCell}></td>
+                </tr>
+                <tr>
+                    <td colSpan={5} style={{ borderTop: '2px solid black', padding: '0.75rem 1rem 0.25rem' }}>
+                        <p style={{
+                            fontSize: '1.125rem',
+                            fontWeight: 'bold',
+                            margin: 0,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                        }}>
+                            {t('sections.summary.title')}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style={{ border: '1px solid black', padding: '0.75rem' }} colSpan={2}>
+                        <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.minSentence')}:</strong> {calculation ? formatTotalTime(calculation.minTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
+                        <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.maxSentence')}:</strong> {calculation ? formatTotalTime(calculation.maxTimeCapped, (key, values) => tShared(key, values)) : 'N/A'}</p>
+                        <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.totalFine')}:</strong> ${calculation ? calculation.totals.fine.toLocaleString() : 'N/A'}</p>
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '0.75rem' }} colSpan={3}>
+                        <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.points')}:</strong> {calculation ? Math.round(calculation.totals.modified.points) : 'N/A'}</p>
+                        <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.bailStatus')}:</strong> {calculation ? tShared(`bailStatus.${toCamelCase(calculation.bailStatus)}` as any) : 'N/A'}</p>
+                        <p style={{ margin: 0 }}><strong>{t('sections.summary.bailAmount')}:</strong> ${calculation ? calculation.totals.highestBail.toLocaleString() : 'N/A'}</p>
                     </td>
                 </tr>
             </tbody>
