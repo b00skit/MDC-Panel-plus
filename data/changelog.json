@@ -1,6 +1,25 @@
 {
     "changelogs": [
         {
+            "version": "3.6.2",
+            "type": "Minor Update",
+            "date": "2025-12-12",
+            "items": [
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> The arrest report format was modified to be a bit more overall modern and adds a bit more clarity in certain sections."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Addressed a Sentinel Alert regarding an XSS possibility, not super critical since nothing is published."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Bumped the npm_and_yarn group versions to address a few security concerns."
+                }
+            ]
+        },
+        {
             "version": "3.6.1",
             "type": "Minor Update",
             "date": "2025-12-10",
