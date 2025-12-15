@@ -29,6 +29,7 @@ import { Plus, Trash2, ChevronsUpDown, AlertTriangle, Check } from 'lucide-react
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   useChargeStore,
   type SelectedCharge,
@@ -512,14 +513,24 @@ export function ArrestCalculatorPage() {
                 )}
               </div>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => removeCharge(chargeRow.uniqueId)}
-                className="text-red-500 hover:text-red-700 h-9 w-9"
-              >
-                <Trash2 className="h-5 w-5" />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeCharge(chargeRow.uniqueId)}
+                      className="text-red-500 hover:text-red-700 h-9 w-9"
+                      aria-label={tPage('buttons.removeCharge')}
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{tPage('buttons.removeCharge')}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           );
         })}

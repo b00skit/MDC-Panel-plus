@@ -688,7 +688,8 @@
       },
       "buttons": {
         "addCharge": "Add Charge",
-        "calculate": "Calculate Arrest"
+        "calculate": "Calculate Arrest",
+        "removeCharge": "Remove Charge"
       },
       "paroleViolatorLabel": "Suspect is a Parole Violator",
       "fields": {
