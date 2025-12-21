@@ -1,6 +1,25 @@
 {
     "changelogs": [
         {
+            "version": "3.6.3",
+            "type": "Minor Update",
+            "date": "2025-12-21",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>Framework:</b> Bumped the npm_and_yarn group versions to address a few security concerns."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Caseboard:</b> The interactive map was changed for the caseboard system created by Pengu."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Calculator:</b> A very small UI/UX tweak with the Paperwork Generator, adding a tooltip when removing charges."
+                }
+            ]
+        },
+        {
             "version": "3.6.2",
             "type": "Minor Update",
             "date": "2025-12-12",
