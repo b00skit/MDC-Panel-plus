@@ -18,6 +18,7 @@
     "MAX_IMPOUND_DAYS": 35,
     "MAX_SUSPENSION_DAYS": 35,
     "PAROLE_VIOLATION_DEFINITION": "Parole Violation",
+    "CASEBOARD_ENABLED": true,
     "CONTENT_DELIVERY_NETWORK": "https://sys.booskit.dev/cdn/serve.php?file=",
     "DISABLE_GTAW_CDN": false,
     "URL_GITHUB": "https://github.com/b00skit/MDC-Panel-plus",
@@ -38,5 +39,6 @@
     "URL_DEPA": "https://forum.gta.world/en/topic/30297-drug-enforcement-prevention-act-of-2020-depa/",
     "URL_FOUNDER": "https://cxdezign.dev/",
     "URL_KOFI": "https://ko-fi.com/booskit",
-    "URL_STREETS": "https://forum.gta.world/en/topic/122551-strengthen-traffic-regulations-to-ensure-every-travelers-safety-act-2024-streets-act/"
+    "URL_STREETS": "https://forum.gta.world/en/topic/122551-strengthen-traffic-regulations-to-ensure-every-travelers-safety-act-2024-streets-act/",
+    "URL_CASEBOARD": "https://cb.booskit.dev/"
 }

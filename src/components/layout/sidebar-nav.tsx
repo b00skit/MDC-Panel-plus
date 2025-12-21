@@ -21,6 +21,7 @@ import {
   History,
   Search,
   TextSearch,
+  LayoutTemplate,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
@@ -41,11 +42,14 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import announcementsData from '../../../data/announcements.json';
 import { FeedbackDialog } from '../dashboard/feedback-dialog';
+import configData from '../../../data/config.json';
 
 type SiteConfig = {
   SITE_NAME: string;
   SITE_FAVICON: string;
   URL_GITHUB: string;
+  CASEBOARD_ENABLED: boolean;
+  URL_CASEBOARD: string;
 };
 
 export function SidebarNav() {
@@ -63,6 +67,8 @@ export function SidebarNav() {
       SITE_NAME: 'MDC Panel+',
       SITE_FAVICON: '/img/logos/MDC-Panel-Favicon.svg',
       URL_GITHUB: 'https://github.com/b00skit/MDC-Panel-plus',
+      CASEBOARD_ENABLED: configData.CASEBOARD_ENABLED,
+      URL_CASEBOARD: configData.URL_CASEBOARD,
     });
   }, []);
 
@@ -219,18 +225,29 @@ export function SidebarNav() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={isActive('/map')}
-              tooltip={tNav('map')}
-            >
-              <Link href="/map">
-                <Map />
-                <span>{tNav('map')}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {config?.CASEBOARD_ENABLED ? (
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Caseboard">
+                <a href={config.URL_CASEBOARD} target="_blank" rel="noopener noreferrer">
+                  <LayoutTemplate />
+                  <span>Caseboard</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            ) : (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={isActive('/map')}
+                tooltip={tNav('map')}
+              >
+                <Link href="/map">
+                  <Map />
+                  <span>{tNav('map')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            )}
            <SidebarMenuItem>
             <SidebarMenuButton
               asChild
