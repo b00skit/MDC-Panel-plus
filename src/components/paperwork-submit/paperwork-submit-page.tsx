@@ -15,6 +15,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { registerHelpers } from '@/lib/utils'
 import { useScopedI18n, useI18n } from '@/lib/i18n/client';
+import { sanitizeUrl } from '@/lib/security';
 
 const GeneratedFormattedReport = ({
     innerRef,
@@ -136,7 +137,8 @@ const GeneratedFormattedReport = ({
                 const compiledButtonLinkTemplate = Handlebars.compile(generatorConfig.custom_button_link, { noEscape: true });
                 setCustomButton({
                     text: compiledButtonTextTemplate(processedData),
-                    link: compiledButtonLinkTemplate(buttonData)
+                    // Sanitize URL to prevent XSS from user-generated forms (via /api/paperwork-generators/save)
+                    link: sanitizeUrl(compiledButtonLinkTemplate(buttonData))
                 });
             }
 
