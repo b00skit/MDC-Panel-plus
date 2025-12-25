@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.6.4",
+            "type": "Minor Update",
+            "date": "2025-12-25",
+            "items": [
+                {
+                    "type": "modification",
+                    "description": "<b>UI/UX:</b> Added some holiday spirit to the website, thanks to thegr8moore."
+                }
+            ]
+        },
+        {
             "version": "3.6.3",
             "type": "Minor Update",
             "date": "2025-12-21",
