@@ -20,6 +20,16 @@
             "name": "Bidrift",
             "role": "Contributor",
             "contribution": "Worked on a few relevant features such as the Log Parser in the MDC Panel, actively contributing and helping develop new features through Pull Requests."
+        },
+        {
+            "name": "Pengu",
+            "role": "Caseboard Developer",
+            "contribution": "Created and is the maintainer of the caseboard website accessible via https://cb.booskit.dev/ which has been linked to the MDC Panel."
+        },
+        {
+            "name": "thegr8moore",
+            "role": "Caseboard Developer",
+            "contribution": "Worked on a few relevant features such as the Log Parser in the MDC Panel, actively contributing and helping develop new features through Pull Requests."
         }
     ]
 }
