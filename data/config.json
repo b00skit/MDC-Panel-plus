@@ -19,6 +19,7 @@
     "MAX_SUSPENSION_DAYS": 35,
     "PAROLE_VIOLATION_DEFINITION": "Parole Violation",
     "CASEBOARD_ENABLED": true,
+    "ENABLE_HOLIDAY_MODE": true,
     "CONTENT_DELIVERY_NETWORK": "https://sys.booskit.dev/cdn/serve.php?file=",
     "DISABLE_GTAW_CDN": false,
     "URL_GITHUB": "https://github.com/b00skit/MDC-Panel-plus",
