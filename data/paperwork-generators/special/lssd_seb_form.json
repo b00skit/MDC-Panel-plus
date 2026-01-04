@@ -7,15 +7,16 @@
     "icon_color": "#b91c1c",
     "output_title": "[IL#{{activation_no}}] {{location.street}}, {{incident_type}}",
     "is_html_output": false,
-    "output": "[hr][/hr]\n[center][b][size=125]LOS SANTOS COUNTY SHERIFF'S DEPARTMENT\nSPECIAL ENFORCEMENT BUREAU[/size][/b]\n[size=110]SPECIAL WEAPONS TEAM INCIDENT LOG[/size][/center]\n[hr][/hr]\n[divbox=black][color=white][b][center]INCIDENT INFORMATION[/center][/b][/color][/divbox]\n[table=Arial][tr]\n[td][b]DATE & TIME:[/b][/td]\n[td][b]S.E.B. ACTIVATION NO.:[/b][/td]\n[td][b]LOCATION:[/b][/td]\n[/tr]\n[tr]\n[td]{{general.date}}[/td]\n[td]{{activation_no}}[/td]\n[td]{{location.street}}, {{location.district}}[/td]\n[/tr]\n[tr]\n[td][b]TYPE OF INCIDENT:[/b][/td]\n[td][b]STATION/UNIT REQUESTING:[/b][/td]\n[td][b]AUTHORIZED BY:[/b][/td]\n[/tr]\n[tr]\n[td]{{incident_type}}[/td]\n[td]{{requesting_station}}[/td]\n[td]{{authorized_by}}[/td]\n[/tr][/table]\n\n[divbox=black][color=white][b][center]PERSONNEL[/center][/b][/color][/divbox]\n[divbox=white][center][size=85][b]PERSONNEL LOG[/b][/size][/center]\n[size=85][u][b]FIELD/SEB COMMAND[/b][/u]\n[list]\n[*][b]Incident Commander:[/b] {{incident_commander}}\n[*][b]Team Commander:[/b] {{team_commander}}\n[*][b]Team Leader:[/b] {{team_leader}}\n[/list]\n[u][b]RESPONDING PERSONNEL[/b][/u]\n[list]{{#each officers}}\n[*] {{this.rank}} {{this.name}}{{/each}}[/list][/size]\n[/divbox]\n\n[divbox=black][color=white][b][center]NARRATIVE[/center][/b][/color][/divbox]\n[divbox=white][center][size=85][b]INCIDENT NARRATIVE & EXTERNAL REFERENCES[/b][/size][/center]\n[size=85]{{narrative}}[/size][/divbox]",
+  
+    "output": "[divbox=white][center][sebheader][/center]\n[hr][/hr][divbox=black][color=white][b][center]IL#{{activation_no}}[/center][/b][/color][/divbox]\n[table=Arial][tr]\n[td][b]DATE & TIME:[/b] {{general.date}} - {{general.time}}[/td]\n[td][b]LOCATION:[/b] {{location.street}}, {{location.district}}[/td]\n[tr]\n[td][b]TYPE OF INCIDENT:[/b] {{incident_type}}[/td]\n[td][b]STATION/UNIT REQUESTING:[/b] {{requesting_station}}[/td]\n[/tr][/table]\n[size=85][u][b]SCENE COMMAND[/b][/u]\n[list][*][b]Incident Commander:[/b] {{incident_commander}}\n[*][b]Tactical Commander:[/b] {{tactical_commander}}\n[*][b]Designated Scout:[/b] {{designated_scout}}[/list]\n[u][b]RESPONDING PERSONNEL[/b][/u]\n[list]{{#each officers}}\n[*] {{this.rank}} {{this.name}}{{/each}}[/list][/size]\n\n[divbox=white][center][b]INCIDENT NARRATIVE & EXTERNAL REFERENCES[/b][/center]\n[size=85]{{narrative}}\n[/size][/divbox][/divbox]",
     "form": [
         { "type": "section", "title": "Incident Information" },
         { "type": "general", "name": "general" },
         {
             "type": "group",
             "fields": [
-                { "type": "text", "name": "activation_no", "label": "S.E.B. Activation No.", "placeholder": "e.g., 24-001", "required": true },
-                { "type": "text", "name": "incident_type", "label": "Type of Incident", "placeholder": "e.g., 605B Barricaded - 998", "required": true }
+                { "type": "text", "name": "activation_no", "label": "SEB Activation No. (YY-NNN)", "placeholder": "e.g., 26-001", "required": true },
+                { "type": "text", "name": "incident_type", "label": "Type of Incident", "placeholder": "e.g., BARRICADED, 998, HOSTAGE...", "required": true }
             ]
         },
         { 
@@ -26,14 +27,13 @@
         {
             "type": "group",
             "fields": [
-                { "type": "text", "name": "requesting_station", "label": "Station/Unit Requesting", "placeholder": "e.g., OSS or 60D" },
-                { "type": "text", "name": "authorized_by", "label": "Authorized By", "placeholder": "Name/Rank/Serial" }
+                { "type": "text", "name": "requesting_station", "label": "Station/Unit Requesting", "placeholder": "e.g., OSS or 60D" }
             ]
         },
         { "type": "section", "title": "Personnel" },
         { "type": "text", "name": "incident_commander", "label": "Incident Commander" },
-        { "type": "text", "name": "team_commander", "label": "Team Commander" },
-        { "type": "text", "name": "team_leader", "label": "Team Leader" },
+        { "type": "text", "name": "tactical_commander", "label": "Tactical Commander" },
+        { "type": "text", "name": "designated_scout", "label": "Designated Scout" },
         { "type": "officer", "name": "officers", "multi": true, "showDivDetail": false },
         { "type": "section", "title": "Narrative" },
         { "type": "textarea", "name": "narrative", "label": "Incident Narrative", "placeholder": "Provide a detailed summary of the incident...", "required": true }
