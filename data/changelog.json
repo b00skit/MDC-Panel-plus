@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.6.5",
+            "type": "Minor Update",
+            "date": "2026-01-09",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Paperwork Generators:</b> Updated the unique SEB Form to a newer overall format."
+                }
+            ]
+        },
+        {
             "version": "3.6.4",
             "type": "Minor Update",
             "date": "2025-12-25",
