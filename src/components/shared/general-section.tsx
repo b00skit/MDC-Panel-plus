@@ -78,7 +78,7 @@ export function GeneralSection() {
         general: state.formData.general,
         setFormField: state.setFormField,
     }));
-    const { predefinedCallsigns, defaultCallsignId } = useSettingsStore();
+    const predefinedCallsigns = useSettingsStore(state => state.predefinedCallsigns);
     const t = useScopedI18n('shared.generalSection');
 
     useEffect(() => {
