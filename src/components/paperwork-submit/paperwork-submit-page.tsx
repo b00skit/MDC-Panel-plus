@@ -8,6 +8,7 @@ import { Skeleton } from '../ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { usePaperworkStore } from '@/stores/paperwork-store';
+import { useShallow } from 'zustand/react/shallow';
 import { useArchiveStore } from '@/stores/archive-store';
 import Handlebars from 'handlebars';
 import { ConditionalVariable } from '@/stores/paperwork-builder-store';
@@ -29,7 +30,15 @@ const GeneratedFormattedReport = ({
     onGeneratorLoaded?: (details: { title?: string; description?: string; icon?: string }) => void,
     onTemplateUpdate?: (template: string) => void,
 }) => {
-    const { formData, generatorId, generatorType, groupId } = usePaperworkStore();
+    const { formData, generatorId, generatorType, groupId } = usePaperworkStore(
+        // Use useShallow to prevent unnecessary re-renders when other parts of the store change
+        useShallow((state) => ({
+            formData: state.formData,
+            generatorId: state.generatorId,
+            generatorType: state.generatorType,
+            groupId: state.groupId,
+        }))
+    );
     const [template, setTemplate] = useState('');
     const [generatorConfig, setGeneratorConfig] = useState<{
         output: string;
@@ -166,7 +175,16 @@ const GeneratedFormattedReport = ({
   
 
 function PaperworkSubmitContent() {
-    const { formData, generatorId, generatorType, groupId, lastFormValues } = usePaperworkStore();
+    const { formData, generatorId, generatorType, groupId, lastFormValues } = usePaperworkStore(
+        // Use useShallow to prevent unnecessary re-renders when other parts of the store change
+        useShallow((state) => ({
+            formData: state.formData,
+            generatorId: state.generatorId,
+            generatorType: state.generatorType,
+            groupId: state.groupId,
+            lastFormValues: state.lastFormValues,
+        }))
+    );
     const { archiveReport } = useArchiveStore();
     const { t } = useI18n();
     const tPage = useScopedI18n('paperworkSubmit');

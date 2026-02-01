@@ -13,6 +13,7 @@ import { OfficerSection } from '../shared/officer-section';
 import { GeneralSection } from '../shared/general-section';
 import { Separator } from '../ui/separator';
 import { usePaperworkStore } from '@/stores/paperwork-store';
+import { useShallow } from 'zustand/react/shallow';
 import { useOfficerStore } from '@/stores/officer-store';
 import { useFormStore as useBasicFormStore } from '@/stores/form-store';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
@@ -395,7 +396,17 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
         pendingRestore,
         clearPendingRestore,
         reset: resetPaperworkStore,
-    } = usePaperworkStore();
+    } = usePaperworkStore(
+        // Use useShallow to prevent unnecessary re-renders when other parts of the store change
+        useShallow((state) => ({
+            setGeneratorData: state.setGeneratorData,
+            setFormData: state.setFormData,
+            setLastFormValues: state.setLastFormValues,
+            pendingRestore: state.pendingRestore,
+            clearPendingRestore: state.clearPendingRestore,
+            reset: state.reset,
+        }))
+    );
     const { toast } = useToast();
     
     const [penalCode, setPenalCode] = useState<PenalCode | null>(null);
