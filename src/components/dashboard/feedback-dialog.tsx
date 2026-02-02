@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ThumbsUp, ThumbsDown, LifeBuoy } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, LifeBuoy, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
@@ -119,6 +119,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
                     size="icon"
                     className={cn('h-16 w-16 rounded-full transition-all duration-200', feedbackType === 'positive' && 'scale-110 border-2 border-primary')}
                     onClick={() => setFeedbackType('positive')}
+                    aria-label={t('positiveLabel', undefined, 'Positive feedback')}
                 >
                     <ThumbsUp className="h-8 w-8" />
                 </Button>
@@ -127,6 +128,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
                     size="icon"
                     className={cn('h-16 w-16 rounded-full transition-all duration-200', feedbackType === 'negative' && 'scale-110 border-2 border-destructive')}
                     onClick={() => setFeedbackType('negative')}
+                    aria-label={t('negativeLabel', undefined, 'Negative feedback')}
                 >
                     <ThumbsDown className="h-8 w-8" />
                 </Button>
@@ -173,6 +175,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
             <div className="flex gap-2">
                 <Button variant="outline" onClick={handleClose}>{t('cancel')}</Button>
                 <Button onClick={handleSubmit} disabled={!feedbackType || isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {isSubmitting ? t('submitting') : t('submit')}
                 </Button>
             </div>

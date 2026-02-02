@@ -1492,6 +1492,8 @@
   "feedbackDialog": {
     "title": "Share Your Feedback",
     "description": "Let me know what you think. Your feedback helps me improve.",
+    "positiveLabel": "Positive feedback",
+    "negativeLabel": "Negative feedback",
     "reasons": {
       "title": "What's on your mind?",
       "positive": {
