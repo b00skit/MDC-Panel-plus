@@ -129,6 +129,19 @@ export function SidebarNav() {
             </SidebarMenuItem>
           ))}
 
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive('/map')}
+              tooltip={tNav('map')}
+            >
+              <Link href="/map">
+                <Map />
+                <span>{tNav('map')}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
           {config?.CASEBOARD_ENABLED ? (
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Caseboard">
