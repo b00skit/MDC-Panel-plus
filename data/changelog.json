@@ -1,6 +1,21 @@
 {
     "changelogs": [
         {
+            "version": "3.5.6",
+            "type": "Minor Update",
+            "date": "2026-02-16",
+            "items": [
+                {
+                    "type": "feature",
+                    "description": "<b>Interactive Map:</b> Reintroduced the interactive map, allowing for users to decide between using caseboard and the interactive map offered by this website."
+                },
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Backend bumping of npm_and_yarn dependencies to address security vulnerabilities."
+                }
+            ]
+        },
+        {
             "version": "3.6.5",
             "type": "Minor Update",
             "date": "2026-01-09",
