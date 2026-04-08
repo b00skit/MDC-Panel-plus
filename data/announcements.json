@@ -1,6 +1,12 @@
 {
     "announcements": [
         {
+            "id": 7,
+            "date": "2026-04-08",
+            "title": "Notice: Service Downtime",
+            "content": "Due to a lack of diskspace, we will undergo a migration to a completely new service this week, the IP of the website will most likely change which means there might be a period in which the site is inaccessible due to DNS propagation. Expect anywhere between 4-48 hours of downtime dependant on the complications of the migration."
+        },
+        {
             "id": 6,
             "date": "2025-10-21",
             "title": "Major Update: Paperwork Generator Revamp",
