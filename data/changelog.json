@@ -1,6 +1,21 @@
 {
     "changelogs": [
         {
+            "version": "3.6.7",
+            "type": "Minor Update",
+            "date": "2026-04-08",
+            "items": [
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Calculator:</b> Modified the UI/UX for Bail Summaries, now outlining if someone does not meet bail standards and not offering it as a copyable value."
+                },
+                {
+                    "type": "addition",
+                    "description": "<b>Arrest Report:</b> Added copyable fields to the Arrest Report Summary."
+                }
+            ]
+        },
+        {
             "version": "3.6.6",
             "type": "Minor Update",
             "date": "2026-02-16",
