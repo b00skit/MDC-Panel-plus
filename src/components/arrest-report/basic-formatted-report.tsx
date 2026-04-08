@@ -7,6 +7,13 @@ import { useChargeStore } from '@/stores/charge-store';
 import configData from '../../../data/config.json';
 import { useScopedI18n } from '@/lib/i18n/client';
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 const getType = (type: string | undefined, t: (key: string) => string) => {
     switch (type) {
       case 'F': return t('types.felony');
@@ -145,6 +152,35 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
         typeof districtStreetLabelRaw === 'string' && districtStreetLabelRaw.includes('sections.general.districtStreet')
             ? `${t('sections.location.district')} / ${t('sections.location.street')}`
             : districtStreetLabelRaw;
+
+    const getBailStyles = () => {
+        if (!calculation) return { amount: 0, style: {}, tooltip: '' };
+        
+        const isNoBail = calculation.bailStatus === 'NOT ELIGIBLE';
+        const isDiscretionary = calculation.bailStatus === 'DISCRETIONARY';
+        
+        if (isNoBail) {
+            return {
+                amount: 0,
+                style: { color: '#b91c1c', fontWeight: 'bold' },
+                tooltip: 'Subject is not eligible for bail due to one or more charges.'
+            };
+        }
+        if (isDiscretionary) {
+            return {
+                amount: calculation.totals.highestBail,
+                style: { color: '#d97706', fontWeight: 'bold' },
+                tooltip: 'Bail is discretionary based on the charges.'
+            };
+        }
+        return {
+            amount: calculation.totals.highestBail,
+            style: {},
+            tooltip: ''
+        };
+    };
+
+    const bailData = getBailStyles();
 
     return (
         <table
@@ -437,7 +473,18 @@ export function BasicFormattedReport({ formData, report, penalCode, innerRef }: 
                     <td style={{ border: '1px solid black', padding: '0.75rem' }} colSpan={3}>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.points')}:</strong> {calculation ? Math.round(calculation.totals.modified.points) : 'N/A'}</p>
                         <p style={{ margin: '0 0 0.25rem 0' }}><strong>{t('sections.summary.bailStatus')}:</strong> {calculation ? tShared(`bailStatus.${toCamelCase(calculation.bailStatus)}` as any) : 'N/A'}</p>
-                        <p style={{ margin: 0 }}><strong>{t('sections.summary.bailAmount')}:</strong> ${calculation ? calculation.totals.highestBail.toLocaleString() : 'N/A'}</p>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <p style={{ margin: 0, ...bailData.style }}><strong>{t('sections.summary.bailAmount')}:</strong> ${calculation ? bailData.amount.toLocaleString() : 'N/A'}</p>
+                                </TooltipTrigger>
+                                {bailData.tooltip && (
+                                    <TooltipContent>
+                                        <p>{bailData.tooltip}</p>
+                                    </TooltipContent>
+                                )}
+                            </Tooltip>
+                        </TooltipProvider>
                     </td>
                 </tr>
             </tbody>

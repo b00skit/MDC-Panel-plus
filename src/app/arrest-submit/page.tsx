@@ -176,6 +176,7 @@ function ArrestSubmitContent() {
                 report={report}
                 showCharges={true}
                 showSummary={true}
+                showCopyables={true}
                 clickToCopy={true}
              />
         )}

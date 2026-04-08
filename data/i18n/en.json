@@ -1259,7 +1259,8 @@
         "badgeNo": "{badge} NO.",
         "callsign": "CALLSIGN",
         "divDetail": "{div}/DETAIL",
-        "modifiers": "ARREST REPORT MODIFIERS"
+        "modifiers": "ARREST REPORT MODIFIERS",
+        "dicvsLink": "DICVS LINK"
       },
       "placeholders": {
         "arresteeName": "ARRESTEE NAME",

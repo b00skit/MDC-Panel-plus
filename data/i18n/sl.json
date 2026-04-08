@@ -1248,7 +1248,8 @@
         "badgeNo": "{badge} ŠT.",
         "callsign": "KLICNI ZNAK",
         "divDetail": "{div}/ENOTA",
-        "modifiers": "SPREMEMBE POROČILA O ARETACIJI"
+        "modifiers": "SPREMEMBE POROČILA O ARETACIJI",
+        "dicvsLink": "DICVS POVEZAVA"
       },
       "placeholders": {
         "arresteeName": "IME ARETIRANEGA",

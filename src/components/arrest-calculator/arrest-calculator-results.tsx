@@ -21,11 +21,12 @@ import { Label } from '@/components/ui/label';
 import config from '../../../data/config.json';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import type { ArrestCalculation, ChargeResult } from '@/lib/arrest-calculator';
-import { Skeleton } from '@/components/ui/skeleton';
-import { StreetsAlert } from '../shared/streets-act-warning';
+import { CopyableCard } from '../shared/copyable-card';
 import { useScopedI18n } from '@/lib/i18n/client';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { StreetsAlert } from '../shared/streets-act-warning';
+import type { ArrestCalculation, ChargeResult } from '@/lib/arrest-calculator';
 
 /** ---------- Loading UI ---------- */
 function LoadingTableSkeleton() {
@@ -276,61 +277,6 @@ export function ArrestCalculatorResults({
     return <Badge variant="secondary">{autoBailLabels.na}</Badge>;
   };
 
-  const CopyableCard = ({
-    label,
-    value,
-    tooltipContent,
-  }: {
-    label: string;
-    value: string | number;
-    tooltipContent?: string;
-  }) => {
-    const inputId = `copy-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-    const ariaLabel = getCopyAria(label);
-
-    const handleCopy = () => {
-      navigator.clipboard.writeText(value.toString());
-      toast({
-        title: t('copyables.toastTitle'),
-        description: t('copyables.toastDescription', { label }),
-      });
-    };
-
-    const content = (
-      <Card>
-        <CardContent className="p-4">
-          <Label htmlFor={inputId}>
-            <div className="flex items-center gap-1">
-              {label}
-              {tooltipContent && <Asterisk className="h-3 w-3 text-yellow-500" />}
-            </div>
-          </Label>
-          <div className="flex items-center gap-2 mt-2">
-            <Input id={inputId} value={value} readOnly disabled />
-            <Button size="icon" variant="outline" onClick={handleCopy} aria-label={ariaLabel} title={ariaLabel}>
-              <Clipboard className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-
-    if (tooltipContent) {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>{content}</TooltipTrigger>
-            <TooltipContent>
-              <p>{tooltipContent}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    }
-
-    return content;
-  };
-
   const effectiveParoleStatus =
     paroleViolatorOverride ?? (report.length > 0 ? reportIsParoleViolator : isParoleViolator);
 
@@ -511,7 +457,21 @@ export function ArrestCalculatorResults({
   const modifiedMinDisplay = formatTotalTime(totals.modified.minTime);
   const modifiedMaxDisplay = formatTotalTime(totals.modified.maxTime);
   const totalFineDisplay = formatCurrency(totals.fine);
-  const highestBailDisplay = formatCurrency(totals.highestBail);
+
+  const isNoBail = bailStatus === 'NOT ELIGIBLE';
+  const isDiscretionary = bailStatus === 'DISCRETIONARY';
+  const displayBailCost = isNoBail ? 0 : totals.highestBail;
+  const highestBailDisplay = formatCurrency(displayBailCost);
+
+  let bailColorClass = '';
+  let bailTooltip = '';
+  if (isNoBail) {
+    bailColorClass = 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900';
+    bailTooltip = 'Subject is not eligible for bail due to one or more charges.';
+  } else if (isDiscretionary) {
+    bailColorClass = 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950 dark:text-yellow-400 dark:border-yellow-900';
+    bailTooltip = 'Bail is discretionary based on the charges.';
+  }
 
   const renderOverallBailStatus = () => {
     if (bailStatus === 'NOT ELIGIBLE') {
@@ -975,7 +935,20 @@ export function ArrestCalculatorResults({
                 </div>
                 <div className="rounded-lg border bg-card p-4 text-center shadow-sm">
                   <p className="text-xs font-semibold uppercase text-muted-foreground">{t('summary.mobile.highestBail')}</p>
-                  <p className="mt-1 text-sm font-medium">{highestBailDisplay}</p>
+                  <div className="mt-1 flex items-center justify-center gap-1 text-sm font-medium">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span className={cn("px-2 py-1 rounded", bailColorClass)}>
+                                {highestBailDisplay}
+                            </span>
+                        </TooltipTrigger>
+                        {bailTooltip && (
+                            <TooltipContent>
+                                <p>{bailTooltip}</p>
+                            </TooltipContent>
+                        )}
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
 
@@ -1048,7 +1021,20 @@ export function ArrestCalculatorResults({
                       <TableCell>{formatDaysOrNone(impoundCapped)}</TableCell>
                       <TableCell>{formatDaysOrNone(suspensionCapped)}</TableCell>
                       <TableCell>{renderOverallBailStatus()}</TableCell>
-                      <TableCell>{highestBailDisplay}</TableCell>
+                      <TableCell>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span className={cn("px-2 py-1 rounded font-bold", bailColorClass)}>
+                                    {highestBailDisplay}
+                                </span>
+                            </TooltipTrigger>
+                            {bailTooltip && (
+                                <TooltipContent>
+                                    <p>{bailTooltip}</p>
+                                </TooltipContent>
+                            )}
+                        </Tooltip>
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -1058,7 +1044,7 @@ export function ArrestCalculatorResults({
         )}
 
         {showCopyables && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             <CopyableCard
               label={t('copyables.minMinutes')}
               value={Math.round(minTimeCapped)}
@@ -1073,9 +1059,21 @@ export function ArrestCalculatorResults({
                 hasAnyModifiers ? t('copyables.originalValue', { value: Math.round(totals.original.maxTime) }) : undefined
               }
             />
+            <CopyableCard
+              label={t('summary.table.points')}
+              value={Math.round(totals.modified.points)}
+              tooltipContent={
+                hasAnyModifiers ? t('copyables.originalValue', { value: Math.round(totals.original.points) }) : undefined
+              }
+            />
+            <CopyableCard label={t('summary.table.fine')} value={totals.fine} />
             <CopyableCard label={t('copyables.totalImpound')} value={Math.round(impoundCapped)} />
-            <CopyableCard label={t('copyables.totalSuspension')} value={Math.round(suspensionCapped)} />
-            <CopyableCard label={t('copyables.bailCost')} value={totals.highestBail} />
+            <CopyableCard 
+                label={t('copyables.bailCost')} 
+                value={displayBailCost} 
+                colorClass={bailColorClass}
+                tooltipContent={bailTooltip}
+            />
           </div>
         )}
       </div>

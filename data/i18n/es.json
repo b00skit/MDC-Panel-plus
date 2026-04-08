@@ -1248,8 +1248,10 @@
         "badgeNo": "Nº DE {badge}",
         "callsign": "INDICATIVO",
         "divDetail": "{div}/DETALLE",
-        "modifiers": "MODIFICADORES DEL INFORME DE ARRESTO"
-      },
+        "modifiers": "MODIFICADORES DEL REPORTE DE ARRESTO",
+        "dicvsLink": "ENLACE DICVS"
+        },
+
       "placeholders": {
         "arresteeName": "NOMBRE DEL DETENIDO",
         "sex": "M / F / O",

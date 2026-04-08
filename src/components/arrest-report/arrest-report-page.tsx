@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useChargeStore } from '@/stores/charge-store';
@@ -15,20 +14,27 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, Clipboard } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import { ArrestReportForm } from './arrest-report-form';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
+import { CopyableCard } from '../shared/copyable-card';
 import { useAdvancedReportStore } from '@/stores/advanced-report-store';
 import { AdvancedArrestReportForm } from './advanced-arrest-report-form';
 import configData from '../../../data/config.json';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const getType = (type: string | undefined) => {
   switch (type) {
@@ -41,18 +47,6 @@ const getType = (type: string | undefined) => {
     default:
       return 'Unknown';
   }
-};
-
-const formatTime = (time: { days: number; hours: number; min: number }) => {
-  if (!time) return 'N/A';
-  const parts = [];
-  if (time.days > 0) parts.push(`${time.days} Day(s)`);
-  if (time.hours > 0) parts.push(`${time.hours} Hour(s)`);
-  if (time.min > 0) parts.push(`${time.min} Minute(s)`);
-  if (parts.length === 0) return '0 Minutes';
-
-  const totalMinutes = time.days * 1440 + time.hours * 60 + time.min;
-  return `${parts.join(' ')} (${totalMinutes} mins)`;
 };
 
 const formatTimeSimple = (time: { days: number; hours: number; min: number }) => {
@@ -88,32 +82,6 @@ const formatBailCost = (bailInfo: any) => {
     if (bailInfo.auto === false || !bailInfo.cost || bailInfo.cost === 0) return 'N/A';
     return `$${bailInfo.cost.toLocaleString()}`;
 };
-
-const CopyableCard = ({ label, value }: { label: string, value: string | number }) => {
-    const { toast } = useToast();
-  
-    const handleCopy = () => {
-      navigator.clipboard.writeText(value.toString());
-      toast({
-        title: 'Copied to clipboard!',
-        description: `${label} value has been copied.`,
-      });
-    };
-  
-    return (
-      <Card>
-        <CardContent className="p-4">
-          <Label htmlFor={`copy-${label.toLowerCase().replace(' ', '-')}`}>{label}</Label>
-          <div className="flex items-center gap-2 mt-2">
-            <Input id={`copy-${label.toLowerCase().replace(' ', '-')}`} value={value} readOnly disabled />
-            <Button size="icon" variant="outline" onClick={handleCopy}>
-              <Clipboard className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
 
 export function ArrestReportPage() {
   const { report, penalCode, reportIsParoleViolator, reportInitialized } = useChargeStore();
@@ -233,8 +201,9 @@ export function ArrestReportPage() {
             return chargeDetails.bail.cost;
           }
           
-          if (bailAuto !== false) {
-            acc.bailCost += getBailCost() || 0;
+          const currentBailCost = getBailCost() || 0;
+          if (bailAuto !== false && currentBailCost > acc.bailCost) {
+            acc.bailCost = currentBailCost;
           }
           
           return acc;
@@ -262,6 +231,22 @@ export function ArrestReportPage() {
     
         return `${parts.join(' ')} (${totalMinutes} mins)`;
       }
+
+    const bailStatus = getBailStatus();
+    const isNoBail = bailStatus === 'NOT ELIGIBLE';
+    const isDiscretionary = bailStatus === 'DISCRETIONARY';
+    
+    const displayBailCost = isNoBail ? 0 : totals.bailCost;
+    let bailColorClass = '';
+    let bailTooltip = '';
+
+    if (isNoBail) {
+        bailColorClass = 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900';
+        bailTooltip = 'Subject is not eligible for bail due to one or more charges.';
+    } else if (isDiscretionary) {
+        bailColorClass = 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950 dark:text-yellow-400 dark:border-yellow-900';
+        bailTooltip = 'Bail is discretionary based on the charges.';
+    }
 
     return (
         <div className="space-y-6">
@@ -429,8 +414,7 @@ export function ArrestReportPage() {
                                 <TableCell>{totals.suspension ? 'Yes' : 'No'}</TableCell>
                                 <TableCell>
                                     {(() => {
-                                        const status = getBailStatus();
-                                        switch (status) {
+                                        switch (bailStatus) {
                                             case 'NOT ELIGIBLE':
                                                 return <Badge variant="destructive">NOT ELIGIBLE</Badge>;
                                             case 'DISCRETIONARY':
@@ -442,7 +426,22 @@ export function ArrestReportPage() {
                                         }
                                     })()}
                                 </TableCell>
-                                <TableCell>${totals.bailCost.toLocaleString()}</TableCell>
+                                <TableCell>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <span className={cn("font-bold px-2 py-1 rounded", bailColorClass)}>
+                                                    ${displayBailCost.toLocaleString()}
+                                                </span>
+                                            </TooltipTrigger>
+                                            {bailTooltip && (
+                                                <TooltipContent>
+                                                    <p>{bailTooltip}</p>
+                                                </TooltipContent>
+                                            )}
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </TableCell>
                             </TableRow>
                         </TableBody>
                       </Table>
@@ -453,7 +452,12 @@ export function ArrestReportPage() {
                 <CopyableCard label="Min Minutes" value={totals.minTime} />
                 <CopyableCard label="Max Minutes" value={totals.maxTime} />
                 <CopyableCard label="Total Fine" value={totals.fine} />
-                <CopyableCard label="Bail Cost" value={totals.bailCost} />
+                <CopyableCard 
+                    label="Bail Cost" 
+                    value={displayBailCost} 
+                    colorClass={bailColorClass}
+                    tooltipContent={bailTooltip}
+                />
             </div>
         </div>
     );
@@ -502,5 +506,3 @@ export function ArrestReportPage() {
     </div>
   );
 }
-
-    
