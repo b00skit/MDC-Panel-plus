@@ -2,8 +2,13 @@
 {
     "enabled": true,
     "dismissible": true,
-    "variant": "destructive",
+    "variant": "warning",
     "icon": "Info",
-    "title": "Notice",
-    "content": "Due to a server migration, expect downtime ranging anywhere between 4-48 hours sometime this week, a more exact date and time will be announced via your faction's appropriate discords."
+    "title": "Faction Panel",
+    "content": "After a lot of hard work since 2025, it's time to introduce the all-in-one pocket assistant, roster management and character tracker for faction supervisors and leadership. I'm soon releasing a new Faction Panel that is fully and completely integrated to GTA:W! Reach out to me on discord if you're interested in testing.",
+    "button": {
+        "text": "Check it out!",
+        "type": "href",
+        "action": "https://fp.booskit.dev/welcome"
+    }
 }
