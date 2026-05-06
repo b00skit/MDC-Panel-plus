@@ -1,6 +1,16 @@
 {
     "announcements": [
         {
+            "id": 6,
+            "date": "2026-05-06",
+            "title": "Soon Releasing: Faction Panel",
+            "content": "After a lot of hard work since 2025, it's time to introduce the all-in-one pocket assistant, roster management and character tracker for faction supervisors and leadership. I'm soon releasing a new Faction Panel that is fully and completely integrated to GTA:W! Reach out to me on discord if you're interested in testing.",
+            "button": {
+                "text": "Faction Panel",
+                "href": "https://fp.booskit.dev/welcome"
+            }
+        },
+        {
             "id": 7,
             "date": "2026-04-08",
             "title": "Notice: Service Downtime",
