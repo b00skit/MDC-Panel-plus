@@ -31,7 +31,7 @@ import { TextareaWithPreset, ModifierInputGroup } from '../shared/textarea-with-
 import Handlebars from 'handlebars';
 import { cn, registerHelpers } from '@/lib/utils';
 import configData from '../../../data/config.json';
-import { getGtawDataUrl } from '@/lib/gtaw-data';
+import { getGtawDataUrl, fetchGtawData } from '@/lib/gtaw-data';
 import { FormField, type ValueGeneratorConfig } from './paperwork-generator-charge-field';
 import { BetterSwitch } from '../ui/better-switch';
 import { addDays, format } from 'date-fns';
@@ -563,12 +563,12 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
         const hasLocationFields = generatorConfig.form.some(field => field.type === 'location' || field.optionsSource === 'districts' || field.optionsSource === 'streets');
         
         if (hasChargeField && !penalCode) {
-            fetch(getGtawDataUrl('gtaw_penal_code.json'))
+            fetchGtawData('gtaw_penal_code.json')
                 .then((res) => res.json())
                 .then((data) => setPenalCode(data));
         }
         if (hasLocationFields && locations.districts.length === 0) {
-            fetch(getGtawDataUrl('gtaw_locations.json'))
+            fetchGtawData('gtaw_locations.json')
                 .then(res => res.json())
                 .then(data => {
                     const uniqueDistricts = [...new Set<string>(data.districts || [])];
@@ -585,7 +585,7 @@ function PaperworkGeneratorFormComponent({ generatorConfig, generatorId, generat
             return;
         }
         setIsFetchingVehicles(true);
-        fetch(getGtawDataUrl('gtaw_vehicles.json'))
+        fetchGtawData('gtaw_vehicles.json')
             .then(res => res.json())
             .then(data => {
                 const vehicleNames = Object.values(data).map((vehicle: any) => vehicle.name);

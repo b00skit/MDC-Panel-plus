@@ -17,7 +17,12 @@ export async function loadGtawData<T = unknown>(file: GtawDataFile): Promise<T> 
     return JSON.parse(data) as T;
   }
 
-  const response = await fetch(`${config.CONTENT_DELIVERY_NETWORK}${file}`);
+  let url = `${config.CONTENT_DELIVERY_NETWORK}${file}`;
+  const version = (config as any).CDN_CACHE_VERSION;
+  if (version) {
+    url += `&v=${encodeURIComponent(version)}`;
+  }
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to fetch GTAW data file: ${file}`);
   }

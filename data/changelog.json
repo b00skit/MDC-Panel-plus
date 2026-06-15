@@ -1,6 +1,17 @@
 {
     "changelogs": [
         {
+            "version": "3.6.8",
+            "type": "Minor Update",
+            "date": "2026-06-15",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Modified so the server only fetches the CDN once per CDN refresh, this is to prepare for CDN limitations."
+                }
+            ]
+        },
+        {
             "version": "3.6.7",
             "type": "Minor Update",
             "date": "2026-04-08",

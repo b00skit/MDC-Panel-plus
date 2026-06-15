@@ -41,7 +41,7 @@ import { Combobox } from '../ui/combobox';
 import { Badge } from '../ui/badge';
 import { EvidenceLog, NarrativeSection } from './narrative-sections';
 import configData from '../../../data/config.json';
-import { getGtawDataUrl } from '@/lib/gtaw-data';
+import { getGtawDataUrl, fetchGtawData } from '@/lib/gtaw-data';
 import { useI18n } from '@/lib/i18n/client';
 
 interface DeptRanks {
@@ -713,7 +713,7 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             .then((res) => res.json())
             .then((data) => setDeptRanks(data));
 
-        fetch(getGtawDataUrl('gtaw_locations.json'))
+        fetchGtawData('gtaw_locations.json')
             .then(res => res.json())
             .then(data => {
                 const uniqueDistricts = [...new Set((data.districts || []) as string[])];

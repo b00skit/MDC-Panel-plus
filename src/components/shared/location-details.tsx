@@ -7,7 +7,7 @@ import { Combobox } from '@/components/ui/combobox';
 import { Label } from '@/components/ui/label';
 import { useFormStore } from '@/stores/form-store';
 import configData from '../../../data/config.json';
-import { getGtawDataUrl } from '@/lib/gtaw-data';
+import { getGtawDataUrl, fetchGtawData } from '@/lib/gtaw-data';
 import { useScopedI18n } from '@/lib/i18n/client';
 
 interface LocationDetailsProps {
@@ -28,7 +28,7 @@ export function LocationDetails({
 
 
     useEffect(() => {
-        fetch(getGtawDataUrl('gtaw_locations.json'))
+        fetchGtawData('gtaw_locations.json')
             .then(res => res.json())
             .then(data => {
                 const uniqueDistricts = [...new Set<string>(data.districts || [])];
