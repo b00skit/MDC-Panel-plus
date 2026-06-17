@@ -61,7 +61,8 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
 
     const { report: charges, penalCode } = useChargeStore();
     const { officers: officersFromStore, predefinedOfficers, updateOfficer: updateOfficerInStore, alternativeCharacters, swapOfficer: swapOfficerInStore, setInitialOfficers } = useOfficerStore();
-    const { predefinedCallsigns, defaultCallsignId } = useSettingsStore();
+    const predefinedCallsigns = useSettingsStore(state => state.predefinedCallsigns);
+    const defaultCallsignId = useSettingsStore(state => state.defaultCallsignId);
     
     const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<FormState>({
         // Default values will be populated by the useEffect hook

@@ -169,8 +169,7 @@ type ArrestReportFormHandle = {
 export const ArrestReportForm = forwardRef<ArrestReportFormHandle>(function ArrestReportForm(_, ref) {
   const router = useRouter();
   const t = useScopedI18n('arrestReport.form');
-  const { experimentalFeatures } = useSettingsStore();
-  const showAiFeature = experimentalFeatures.includes('ai_arrest_reports');
+  const showAiFeature = useSettingsStore(state => state.experimentalFeatures.includes('ai_arrest_reports'));
   const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 
   const { formData, setFormField, setAll } = useFormStore();
