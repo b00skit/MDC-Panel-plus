@@ -1,6 +1,29 @@
 {
     "changelogs": [
         {
+            "version": "3.6.9",
+            "type": "Minor Update",
+            "date": "2026-06-21",
+            "items": [
+                {
+                    "type": "backend",
+                    "description": "<b>Server:</b> Bumped a few dependencies to the newest versions."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Arrest Report:</b> Modified the LSPD advanced arrest report to be in-line with their policies in terms of the investigative section and the source of activity section."
+                },
+                {
+                    "type": "feature",
+                    "description": "<b>Arrest Report:</b> Added support for SANFIRE to utilize the Advanced Arrest Report section."
+                },
+                {
+                    "type": "modification",
+                    "description": "<b>Settings:</b> Added the SANFIRE Logo to the website."
+                }
+            ]
+        },
+        {
             "version": "3.6.8",
             "type": "Minor Update",
             "date": "2026-06-15",
