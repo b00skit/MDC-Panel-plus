@@ -17,12 +17,17 @@ const BACKGROUND_LOGOS: Record<BackgroundLogoOption, { src: string; alt: string;
   lspd: {
     src: '/img/logos/Logo-LSPD.png',
     alt: 'Los Santos Police Department',
-    className: 'opacity-20',
+    className: 'opacity-5',
   },
   lssd: {
     src: '/img/logos/Logo-LSSD.png',
     alt: "Los Santos County Sheriff's Department",
-    className: 'opacity-20',
+    className: 'opacity-5',
+  },
+  sanfire: {
+    src: '/img/logos/Logo-SANFIRE.png',
+    alt: 'Office of the State Fire Marshal',
+    className: 'opacity-5',
   },
 };
 

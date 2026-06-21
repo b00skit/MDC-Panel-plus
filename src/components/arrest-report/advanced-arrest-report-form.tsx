@@ -222,11 +222,17 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             );
         }
 
+        const isSanFire = primaryOfficer.department === "State Fire Marshals";
+
         if (watchedFields.modifiers?.markedUnit) {
             sourceParts.push(
                 watchedFields.modifiers?.slicktop
-                    ? t('arrestReport.advancedForm.presets.source.vehicleMarkedSlicktop')
-                    : t('arrestReport.advancedForm.presets.source.vehicleMarkedLightbar')
+                    ? (isSanFire
+                        ? t('arrestReport.advancedForm.presets.source.vehicleMarkedSlicktopSanfire')
+                        : t('arrestReport.advancedForm.presets.source.vehicleMarkedSlicktop'))
+                    : (isSanFire
+                        ? t('arrestReport.advancedForm.presets.source.vehicleMarkedLightbarSanfire')
+                        : t('arrestReport.advancedForm.presets.source.vehicleMarkedLightbar'))
             );
         } else {
             sourceParts.push(t('arrestReport.advancedForm.presets.source.vehicleUnmarked'));
@@ -256,6 +262,12 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
             sourceParts.push(t('arrestReport.advancedForm.presets.source.plainClothesBadge'));
         }
 
+        const time = watchedFields.incident?.time || '';
+        const street = watchedFields.incident?.locationStreet || '';
+        if (time || street) {
+            sourceParts.push(t('arrestReport.advancedForm.presets.source.onPatrol', { time, street }));
+        }
+
         setValue('narrative.source', sourceParts.filter(Boolean).join(' '));
 
     }, [
@@ -267,6 +279,8 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
         watchedFields.modifiers?.inMetroUniform,
         watchedFields.modifiers?.inG3Uniform,
         watchedFields.incident?.date,
+        watchedFields.incident?.time,
+        watchedFields.incident?.locationStreet,
         JSON.stringify(watchedFields.officers),
         watchedFields.presets?.source,
         watchedFields.userModified?.source,
@@ -278,8 +292,6 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
     useEffect(() => {
         if (!watchedFields.presets?.investigation) return;
         if (watchedFields.userModified?.investigation) return;
-        const time = watchedFields.incident?.time || '';
-        const street = watchedFields.incident?.locationStreet || '';
 
         let investigationText = '';
 
@@ -290,23 +302,20 @@ export const AdvancedArrestReportForm = forwardRef((props, ref) => {
                 ? t('arrestReport.advancedForm.presets.investigation.plateKnown', { plate: watchedFields.narrative.vehiclePlate })
                 : t('arrestReport.advancedForm.presets.investigation.plateUnknown');
             investigationText = t('arrestReport.advancedForm.presets.investigation.vehicleObserved', {
-                time,
-                street,
                 color,
                 model,
                 plate,
             });
         } else {
-            investigationText = t('arrestReport.advancedForm.presets.investigation.onPatrol', {
-                time,
-                street,
+            const suspectName = watchedFields.arrestee?.name || t('arrestReport.advancedForm.presets.arrest.defaultSuspect');
+            investigationText = t('arrestReport.advancedForm.presets.investigation.suspectObserved', {
+                suspect: suspectName,
             });
         }
         setValue('narrative.investigation', investigationText.trim());
     }, [
         watchedFields.modifiers?.wasSuspectInVehicle,
-        watchedFields.incident?.time,
-        watchedFields.incident?.locationStreet,
+        watchedFields.arrestee?.name,
         watchedFields.narrative?.vehicleColor,
         watchedFields.narrative?.vehicleModel,
         watchedFields.narrative?.vehiclePlate,

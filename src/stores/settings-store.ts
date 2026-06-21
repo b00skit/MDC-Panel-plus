@@ -16,7 +16,7 @@ export interface PredefinedCallsign {
   value: string;
 }
 
-export type BackgroundLogoOption = 'sanAndreasSeal' | 'lspd' | 'lssd';
+export type BackgroundLogoOption = 'sanAndreasSeal' | 'lspd' | 'lssd' | 'sanfire';
 
 interface SettingsState {
   hiddenFactions: string[];

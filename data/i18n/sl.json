@@ -43,7 +43,17 @@
       "description": "Prilagodite videz in občutek aplikacije.",
       "light": "Svetlo",
       "dark": "Temno",
-      "system": "Sistemsko"
+      "system": "Sistemsko",
+      "backgroundLogo": {
+        "title": "Ozadje logotipa",
+        "description": "Izberite logotip, ki je prikazan v ozadju vsebine aplikacije.",
+        "options": {
+          "sanAndreasSeal": "San Andreas pečat",
+          "lspd": "Policijski oddelek Los Santos",
+          "lssd": "Šerifov oddelek okrožja Los Santos",
+          "sanfire": "Office of the State Fire Marshal"
+        }
+      }
     },
     "defaultOfficer": {
       "title": "Privzete informacije o policistu",
@@ -1215,7 +1225,8 @@
     "advancedReport": {
       "department": {
         "lspd": "POLICIJSKA UPRAVA LOS SANTOS",
-        "lssd": "ŠERIFOVA PISARNA OKROŽJA LOS SANTOS"
+        "lssd": "ŠERIFOVA PISARNA OKROŽJA LOS SANTOS",
+        "sanfire": "Department of Forestry & Fire Protection\nOffice of the State Fire Marshal"
       },
       "title": "POROČILO O ARETACIJI",
       "officer": "{officer}"
@@ -1370,6 +1381,8 @@
           "singleOfficer": "Na dan {date} sem jaz, {rank} {name} (#{badge}), dodeljen {divDetail}, deloval pod enoto {callsign}.",
           "vehicleMarkedSlicktop": "Vozil sem označeno črno-belo vozilo brez strešnih luči.",
           "vehicleMarkedLightbar": "Vozil sem označeno črno-belo vozilo z lučmi na strehi.",
+          "vehicleMarkedSlicktopSanfire": "Vozil sem označeno belo vozilo brez strešnih luči.",
+          "vehicleMarkedLightbarSanfire": "Vozil sem označeno belo vozilo z lučmi na strehi.",
           "vehicleUnmarked": "Vozil sem neoznačeno vozilo.",
           "uniformWithBadge": "Nosil sem svojo oddelčno uniformo {uniform} in sem imel vidno prikazano svojo značko.",
           "patrolUniform": "Nosil sem svojo oddelčno patruljno uniformo in sem imel vidno prikazano svojo značko.",
@@ -1384,11 +1397,12 @@
               "lspd": "metropolitansko BDU",
               "lssd": "SEB BDU"
             }
-          }
+          },
+          "onPatrol": "Približno ob {time} uri sem vozil po {street}."
         },
         "investigation": {
-          "vehicleObserved": "Približno ob {time} uri sem vozil po {street}, ko sem opazil {color} {model}, {plate}.",
-          "onPatrol": "Približno ob {time} uri sem vozil po {street}.",
+          "vehicleObserved": "Opazil sem {color} {model}, {plate}.",
+          "suspectObserved": "Opazil sem osumljenca, {suspect}.",
           "plateKnown": "z registrsko oznako {plate}",
           "plateUnknown": "brez registrske oznake"
         },

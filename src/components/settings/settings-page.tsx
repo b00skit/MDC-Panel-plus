@@ -327,6 +327,12 @@ export function SettingsPage({ initialFactionGroups }: SettingsPageProps) {
                                 image: '/img/logos/Logo-LSSD.png',
                                 alt: "Los Santos County Sheriff's Department",
                             },
+                            {
+                                value: 'sanfire' as BackgroundLogoOption,
+                                label: 'Office of the State Fire Marshal',
+                                image: '/img/logos/Logo-SANFIRE.png',
+                                alt: 'Office of the State Fire Marshal',
+                            },
                         ].map((option) => (
                             <div key={option.value} className="flex items-center gap-4">
                                 <RadioGroupItem

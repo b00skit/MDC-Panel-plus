@@ -50,7 +50,8 @@
         "options": {
           "sanAndreasSeal": "San Andreas Seal",
           "lspd": "Los Santos Police Department",
-          "lssd": "Los Santos County Sheriff's Department"
+          "lssd": "Los Santos County Sheriff's Department",
+          "sanfire": "Office of the State Fire Marshal"
         }
       }
     },
@@ -1226,7 +1227,8 @@
     "advancedReport": {
       "department": {
         "lspd": "LOS SANTOS POLICE DEPARTMENT",
-        "lssd": "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT"
+        "lssd": "LOS SANTOS COUNTY SHERIFF'S DEPARTMENT",
+        "sanfire": "Department of Forestry & Fire Protection\nOffice of the State Fire Marshal"
       },
       "title": "ARREST REPORT",
       "officer": "{officer}"
@@ -1381,6 +1383,8 @@
           "singleOfficer": "On {date}, I, {rank} {name} (#{badge}), assigned to {divDetail}, was deployed under Unit {callsign}.",
           "vehicleMarkedSlicktop": "I was driving a marked black and white slicktop.",
           "vehicleMarkedLightbar": "I was driving a marked black and white with a rooftop light bar.",
+          "vehicleMarkedSlicktopSanfire": "I was driving a marked white slicktop.",
+          "vehicleMarkedLightbarSanfire": "I was driving a marked white unit with a rooftop light bar.",
           "vehicleUnmarked": "I was driving an unmarked vehicle.",
           "uniformWithBadge": "I was wearing my department-issued {uniform} uniform and was openly displaying my badge of office on my uniform.",
           "patrolUniform": "I was wearing my department-issued patrol uniform and was openly displaying my badge of office on my uniform.",
@@ -1395,11 +1399,12 @@
               "lspd": "metropolitan BDU",
               "lssd": "SEB BDU"
             }
-          }
+          },
+          "onPatrol": "At approximately {time} hours, I was driving on {street}."
         },
         "investigation": {
-          "vehicleObserved": "At approximately {time} hours, I was driving on {street} when I observed a {color} {model}, {plate}.",
-          "onPatrol": "At approximately {time} hours, I was driving on {street}.",
+          "vehicleObserved": "I observed a {color} {model}, {plate}.",
+          "suspectObserved": "I observed the suspect, {suspect}.",
           "plateKnown": "with {plate} plates",
           "plateUnknown": "with no plates"
         },

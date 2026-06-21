@@ -43,7 +43,17 @@
       "description": "Personaliza el aspecto y la sensación de la aplicación.",
       "light": "Claro",
       "dark": "Oscuro",
-      "system": "Sistema"
+      "system": "Sistema",
+      "backgroundLogo": {
+        "title": "Logo de fondo",
+        "description": "Elige el logo que se muestra detrás del contenido de la aplicación.",
+        "options": {
+          "sanAndreasSeal": "Sello de San Andreas",
+          "lspd": "Departamento de Policía de Los Santos",
+          "lssd": "Departamento del Alguacil del Condado de Los Santos",
+          "sanfire": "Office of the State Fire Marshal"
+        }
+      }
     },
     "defaultOfficer": {
       "title": "Información del Oficial por Defecto",
@@ -1215,7 +1225,8 @@
     "advancedReport": {
       "department": {
         "lspd": "DEPARTAMENTO DE POLICÍA DE LOS SANTOS",
-        "lssd": "DEPARTAMENTO DEL SHERIFF DEL CONDADO DE LOS SANTOS"
+        "lssd": "DEPARTAMENTO DEL SHERIFF DEL CONDADO DE LOS SANTOS",
+        "sanfire": "Department of Forestry & Fire Protection\nOffice of the State Fire Marshal"
       },
       "title": "INFORME DE ARRESTO",
       "officer": "{officer}"
@@ -1371,6 +1382,8 @@
           "singleOfficer": "El {date}, yo, {rank} {name} (#{badge}), asignado/a a {divDetail}, fui desplegado/a como la Unidad {callsign}.",
           "vehicleMarkedSlicktop": "Conducía una patrulla rotulada en blanco y negro tipo slicktop.",
           "vehicleMarkedLightbar": "Conducía una patrulla rotulada en blanco y negro con barra de luces en el techo.",
+          "vehicleMarkedSlicktopSanfire": "Conducía una patrulla rotulada en blanco tipo slicktop.",
+          "vehicleMarkedLightbarSanfire": "Conducía una unidad blanca rotulada con barra de luces en el techo.",
           "vehicleUnmarked": "Conducía un vehículo sin rotular.",
           "uniformWithBadge": "Vestía mi uniforme {uniform} emitido por el departamento y mostraba visiblemente mi placa en el uniforme.",
           "patrolUniform": "Vestía mi uniforme de patrulla emitido por el departamento y mostraba visiblemente mi placa en el uniforme.",
@@ -1385,11 +1398,12 @@
               "lspd": "BDU metropolitano",
               "lssd": "BDU de SEB"
             }
-          }
+          },
+          "onPatrol": "Aproximadamente a las {time} horas, conducía por {street}."
         },
         "investigation": {
-          "vehicleObserved": "Aproximadamente a las {time} horas, conducía por {street} cuando observé un {model} de color {color}, {plate}.",
-          "onPatrol": "Aproximadamente a las {time} horas, conducía por {street}.",
+          "vehicleObserved": "Observé un {model} de color {color}, {plate}.",
+          "suspectObserved": "Observé al sospechoso, {suspect}.",
           "plateKnown": "con placas {plate}",
           "plateUnknown": "sin placas"
         },

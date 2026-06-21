@@ -11,6 +11,7 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
     const { t } = useI18n();
     const { arrestee, persons, incident, officers, narrative } = formData;
     const isLSSD = officers && officers[0]?.department === "Los Santos County Sheriff's Department";
+    const isSanFire = officers && officers[0]?.department === "State Fire Marshals";
     
     const renderWithBreaks = (text: string | undefined) => {
         if (!text) return <span style={{ fontFamily: "'Times New Roman', serif" }}>N/A</span>;
@@ -76,7 +77,13 @@ export function AdvancedFormattedReport({ formData, innerRef }: AdvancedFormatte
             <thead>
                 <tr>
                     <th colSpan={5} style={reportHeaderStyle}>
-                        {isLSSD ? t('arrestReport.advancedReport.department.lssd') : t('arrestReport.advancedReport.department.lspd')}<br />
+                        {isSanFire ? (
+                            renderWithBreaks(t('arrestReport.advancedReport.department.sanfire'))
+                        ) : isLSSD ? (
+                            t('arrestReport.advancedReport.department.lssd')
+                        ) : (
+                            t('arrestReport.advancedReport.department.lspd')
+                        )}<br />
                         {t('arrestReport.advancedReport.title')}
                     </th>
                 </tr>
